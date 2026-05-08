@@ -148,6 +148,7 @@ export const useEditorStore = create<EditorState & EditorStateExtensions>()(
       selection: null,
       selectionMode: "new" as SelectionMode,
       magicWandTolerance: 32,
+      magicWandContiguous: true,
 
       // --- Crop ---
       cropState: null,
@@ -927,32 +928,56 @@ export const useEditorStore = create<EditorState & EditorStateExtensions>()(
       setSelection: (selection) => set({ selection }),
       setSelectionMode: (mode) => set({ selectionMode: mode }),
       setMagicWandTolerance: (v) => set({ magicWandTolerance: v }),
+      setMagicWandContiguous: (v: boolean) => set({ magicWandContiguous: v }),
 
       invertSelection: () => {
         const { selection, canvasSize } = get();
         if (!selection) return;
-        let mask = selection.mask;
-        // If no mask but bounds exist, create a mask from the bounds
-        if (!mask && selection.bounds) {
-          const totalPixels = canvasSize.width * canvasSize.height;
-          mask = new Uint8Array(totalPixels);
-          const { x, y, width, height } = selection.bounds;
-          const x0 = Math.max(0, Math.floor(x));
-          const y0 = Math.max(0, Math.floor(y));
-          const x1 = Math.min(canvasSize.width, Math.ceil(x + width));
-          const y1 = Math.min(canvasSize.height, Math.ceil(y + height));
+        const oldBounds = selection.bounds;
+        const oldMask = selection.mask;
+
+        const fullW = canvasSize.width;
+        const fullH = canvasSize.height;
+        const inverted = new Uint8Array(fullW * fullH);
+
+        if (oldMask) {
+          // Start with everything selected
+          inverted.fill(1);
+          // Clear pixels that were selected in the old mask
+          for (let row = 0; row < oldBounds.height; row++) {
+            for (let col = 0; col < oldBounds.width; col++) {
+              if (oldMask[row * oldBounds.width + col]) {
+                const absY = oldBounds.y + row;
+                const absX = oldBounds.x + col;
+                if (absX >= 0 && absX < fullW && absY >= 0 && absY < fullH) {
+                  inverted[absY * fullW + absX] = 0;
+                }
+              }
+            }
+          }
+        } else {
+          // Geometric selection (rect/ellipse): invert by marking everything
+          // outside the bounds as selected
+          inverted.fill(1);
+          const x0 = Math.max(0, Math.floor(oldBounds.x));
+          const y0 = Math.max(0, Math.floor(oldBounds.y));
+          const x1 = Math.min(fullW, Math.ceil(oldBounds.x + oldBounds.width));
+          const y1 = Math.min(fullH, Math.ceil(oldBounds.y + oldBounds.height));
           for (let row = y0; row < y1; row++) {
             for (let col = x0; col < x1; col++) {
-              mask[row * canvasSize.width + col] = 255;
+              inverted[row * fullW + col] = 0;
             }
           }
         }
-        if (!mask) return;
-        const inverted = new Uint8Array(mask.length);
-        for (let i = 0; i < mask.length; i++) {
-          inverted[i] = 255 - mask[i];
-        }
-        set({ selection: { ...selection, mask: inverted } });
+
+        set({
+          selection: {
+            ...selection,
+            type: "wand",
+            bounds: { x: 0, y: 0, width: fullW, height: fullH },
+            mask: inverted,
+          },
+        });
       },
 
       // Crop

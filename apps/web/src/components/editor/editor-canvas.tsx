@@ -597,7 +597,7 @@ function useActiveToolHandlers(stageRef: React.RefObject<Konva.Stage | null>) {
   const zoom = useEditorStore((s) => s.zoom);
   const panOffset = useEditorStore((s) => s.panOffset);
   const magicWandTolerance = useEditorStore((s) => s.magicWandTolerance);
-  const fillContiguous = useEditorStore((s) => s.fillContiguous);
+  const magicWandContiguous = useEditorStore((s) => s.magicWandContiguous);
 
   const brushTool = useBrushTool();
   const eraserTool = useEraserTool();
@@ -655,12 +655,12 @@ function useActiveToolHandlers(stageRef: React.RefObject<Konva.Stage | null>) {
         const pointer = stage?.getPointerPosition();
         if (!pointer || !stage) return;
         const pos = { x: (pointer.x - panOffset.x) / zoom, y: (pointer.y - panOffset.y) / zoom };
-        selectionTool.magicWandSelect(stage, pos.x, pos.y, magicWandTolerance, fillContiguous);
+        selectionTool.magicWandSelect(stage, pos.x, pos.y, magicWandTolerance, magicWandContiguous);
       },
       handleMouseMove: () => {},
       handleMouseUp: () => {},
     }),
-    [selectionTool, zoom, panOffset, magicWandTolerance, fillContiguous],
+    [selectionTool, zoom, panOffset, magicWandTolerance, magicWandContiguous],
   );
 
   const eyedropperHandlers = useMemo(

@@ -1,6 +1,6 @@
 import type Konva from "konva";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Ellipse, Group, Line, Rect } from "react-konva";
+import { Ellipse, Group, Line, Rect, Shape } from "react-konva";
 import { useEditorStore } from "@/stores/editor-store";
 import type { SelectionMode, SelectionState } from "@/types/editor";
 
@@ -63,34 +63,74 @@ function floodFillMask(
   const targetR = data[idx];
   const targetG = data[idx + 1];
   const targetB = data[idx + 2];
+  const targetA = data[idx + 3];
 
-  function colorDist(i: number): number {
+  const tolSq = tolerance * tolerance;
+
+  function matchesAt(i: number): boolean {
     const dr = data[i] - targetR;
     const dg = data[i + 1] - targetG;
     const db = data[i + 2] - targetB;
-    return Math.sqrt(dr * dr + dg * dg + db * db);
+    const da = data[i + 3] - targetA;
+    return dr * dr + dg * dg + db * db + da * da <= tolSq;
   }
 
   if (contiguous) {
-    // Scanline flood fill
+    const visited = new Uint8Array(width * height);
     const stack: [number, number][] = [[sx, sy]];
+
     while (stack.length > 0) {
-      const item = stack.pop();
-      if (!item) break;
-      const [cx, cy] = item;
-      if (cx < 0 || cx >= width || cy < 0 || cy >= height) continue;
-      if (mask[cy][cx]) continue;
-      const ci = (cy * width + cx) * 4;
-      if (colorDist(ci) > tolerance) continue;
-      mask[cy][cx] = true;
-      stack.push([cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]);
+      const entry = stack.pop();
+      if (!entry) break;
+      const [seedX, seedY] = entry;
+      let x = seedX;
+
+      while (
+        x > 0 &&
+        !visited[seedY * width + (x - 1)] &&
+        matchesAt((seedY * width + (x - 1)) * 4)
+      ) {
+        x--;
+      }
+
+      let spanAbove = false;
+      let spanBelow = false;
+
+      while (x < width && !visited[seedY * width + x] && matchesAt((seedY * width + x) * 4)) {
+        visited[seedY * width + x] = 1;
+        mask[seedY][x] = true;
+
+        if (seedY > 0) {
+          const aboveIdx = (seedY - 1) * width + x;
+          if (!visited[aboveIdx] && matchesAt(aboveIdx * 4)) {
+            if (!spanAbove) {
+              stack.push([x, seedY - 1]);
+              spanAbove = true;
+            }
+          } else {
+            spanAbove = false;
+          }
+        }
+
+        if (seedY < height - 1) {
+          const belowIdx = (seedY + 1) * width + x;
+          if (!visited[belowIdx] && matchesAt(belowIdx * 4)) {
+            if (!spanBelow) {
+              stack.push([x, seedY + 1]);
+              spanBelow = true;
+            }
+          } else {
+            spanBelow = false;
+          }
+        }
+
+        x++;
+      }
     }
   } else {
-    // Select all matching pixels
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        const ci = (y * width + x) * 4;
-        if (colorDist(ci) <= tolerance) {
+        if (matchesAt((y * width + x) * 4)) {
           mask[y][x] = true;
         }
       }
@@ -588,13 +628,34 @@ export function useSelectionTool(): SelectionToolApi {
 // SelectionOverlay -- renders selection outline with marching ants
 // ---------------------------------------------------------------------------
 
+function maskToEdgePoints(
+  mask: Uint8Array,
+  bounds: { x: number; y: number; width: number; height: number },
+): number[] {
+  const { width: w, height: h, x: ox, y: oy } = bounds;
+  const pts: number[] = [];
+
+  for (let row = 0; row < h; row++) {
+    for (let col = 0; col < w; col++) {
+      if (!mask[row * w + col]) continue;
+      const ax = ox + col;
+      const ay = oy + row;
+      if (col === 0 || !mask[row * w + (col - 1)]) pts.push(ax, ay, ax, ay + 1);
+      if (col === w - 1 || !mask[row * w + (col + 1)]) pts.push(ax + 1, ay, ax + 1, ay + 1);
+      if (row === 0 || !mask[(row - 1) * w + col]) pts.push(ax, ay, ax + 1, ay);
+      if (row === h - 1 || !mask[(row + 1) * w + col]) pts.push(ax, ay + 1, ax + 1, ay + 1);
+    }
+  }
+  return pts;
+}
+
 export function SelectionOverlay({ layerRef }: { layerRef: React.RefObject<Konva.Layer | null> }) {
   const selection = useEditorStore((s) => s.selection);
   const dashOffset = useMarchingAnts(layerRef);
 
   if (!selection) return null;
 
-  const { type, bounds, points } = selection;
+  const { type, bounds, points, mask } = selection;
 
   if (type === "lasso" && points.length >= 6) {
     return (
@@ -642,6 +703,44 @@ export function SelectionOverlay({ layerRef }: { layerRef: React.RefObject<Konva
           y={bounds.y + ry}
           radiusX={rx}
           radiusY={ry}
+          stroke="#ffffff"
+          strokeWidth={1}
+          dash={DASH}
+          dashOffset={dashOffset.current + DASH[0]}
+          listening={false}
+        />
+      </Group>
+    );
+  }
+
+  if (type === "wand" && mask) {
+    const pts = maskToEdgePoints(mask, bounds);
+    return (
+      <Group listening={false}>
+        <Shape
+          sceneFunc={(ctx, shape) => {
+            ctx.beginPath();
+            for (let i = 0; i < pts.length; i += 4) {
+              ctx.moveTo(pts[i], pts[i + 1]);
+              ctx.lineTo(pts[i + 2], pts[i + 3]);
+            }
+            ctx.strokeShape(shape);
+          }}
+          stroke="#000000"
+          strokeWidth={1}
+          dash={DASH}
+          dashOffset={dashOffset.current}
+          listening={false}
+        />
+        <Shape
+          sceneFunc={(ctx, shape) => {
+            ctx.beginPath();
+            for (let i = 0; i < pts.length; i += 4) {
+              ctx.moveTo(pts[i], pts[i + 1]);
+              ctx.lineTo(pts[i + 2], pts[i + 3]);
+            }
+            ctx.strokeShape(shape);
+          }}
           stroke="#ffffff"
           strokeWidth={1}
           dash={DASH}

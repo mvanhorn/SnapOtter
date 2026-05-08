@@ -48,6 +48,8 @@ export function SelectionOptions() {
   const setSelectionMode = useEditorStore((s) => s.setSelectionMode);
   const magicWandTolerance = useEditorStore((s) => s.magicWandTolerance);
   const setMagicWandTolerance = useEditorStore((s) => s.setMagicWandTolerance);
+  const magicWandContiguous = useEditorStore((s) => s.magicWandContiguous);
+  const setMagicWandContiguous = useEditorStore((s) => s.setMagicWandContiguous);
 
   const selectionType: SelectionType =
     activeTool === "marquee-ellipse"
@@ -168,7 +170,7 @@ export function SelectionOptions() {
         </>
       )}
 
-      {/* Magic Wand tolerance */}
+      {/* Magic Wand tolerance + contiguous */}
       {isMagicWand && (
         <>
           <div className="h-4 w-px bg-border" />
@@ -189,6 +191,15 @@ export function SelectionOptions() {
               )}
             />
           </div>
+          <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
+            <input
+              type="checkbox"
+              checked={magicWandContiguous}
+              onChange={(e) => setMagicWandContiguous(e.target.checked)}
+              className="rounded border-border"
+            />
+            Contiguous
+          </label>
         </>
       )}
     </div>
