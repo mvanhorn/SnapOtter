@@ -131,6 +131,7 @@ curl -X POST http://localhost:1349/api/v1/tools/<toolId>/batch \
 | `adjust-colors` | Adjust Colors | `brightness`, `contrast`, `exposure`, `saturation`, `temperature`, `tint`, `hue`, `sharpness`, `red`, `green`, `blue`, `effect` (none/grayscale/sepia/invert) |
 | `sharpening` | Sharpening | `method` (adaptive/unsharp-mask/high-pass), `sigma`, `m1`, `m2`, `x1`, `y2`, `y3`, `amount`, `radius`, `threshold`, `strength`, `kernelSize` (3/5), `denoise` (off/light/medium/strong) |
 | `replace-color` | Replace Color | `sourceColor`, `targetColor` (replacement), `makeTransparent`, `tolerance` |
+| `color-blindness` | Color Blindness Simulation | `simulationType` (protanopia/deuteranopia/tritanopia/protanomaly/deuteranomaly/tritanomaly/achromatopsia/blueConeMonochromacy, default "deuteranomaly") |
 
 ### AI Tools
 

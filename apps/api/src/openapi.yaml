@@ -2053,6 +2053,50 @@ paths:
               schema:
                 $ref: "#/components/schemas/UnauthorizedError"
 
+  /api/v1/tools/color-blindness:
+    post:
+      tags: [Tools]
+      summary: Color blindness simulation
+      description: Simulate how an image appears to people with various types of color vision deficiency.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Image file to process
+                settings:
+                  type: string
+                  description: |
+                    JSON string with options:
+                    - `simulationType` (enum, default "deuteranomaly") -- Type of color vision deficiency to simulate. One of: protanopia, deuteranopia, tritanopia, protanomaly, deuteranomaly, tritanomaly, achromatopsia, blueConeMonochromacy
+      responses:
+        "200":
+          description: Processed image
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+
   /api/v1/tools/gif-tools:
     post:
       tags: [Tools]
