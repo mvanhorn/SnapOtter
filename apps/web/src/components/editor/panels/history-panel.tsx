@@ -21,7 +21,7 @@ import {
   Type,
   Undo2,
 } from "lucide-react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 import { useEditorStore } from "@/stores/editor-store";
 
@@ -84,6 +84,18 @@ export function HistoryPanel() {
 
   // Force re-render when history changes by subscribing to history version
   useEditorStore((s) => s._historyVersion);
+
+  // Subscribe reactively to temporal state for undo/redo button disabled states
+  const pastLength = useSyncExternalStore(
+    (cb) => useEditorStore.temporal.subscribe(cb),
+    () => useEditorStore.temporal.getState().pastStates.length,
+  );
+  const futureLength = useSyncExternalStore(
+    (cb) => useEditorStore.temporal.subscribe(cb),
+    () => useEditorStore.temporal.getState().futureStates.length,
+  );
+  const canUndo = pastLength > 0;
+  const canRedo = futureLength > 0;
 
   const undo = useCallback(() => {
     useEditorStore.temporal.getState().undo();
@@ -151,10 +163,10 @@ export function HistoryPanel() {
         <button
           type="button"
           onClick={undo}
-          disabled={useEditorStore.temporal.getState().pastStates.length === 0}
+          disabled={!canUndo}
           className={cn(
             "p-1 rounded transition-colors",
-            useEditorStore.temporal.getState().pastStates.length > 0
+            canUndo
               ? "text-muted-foreground hover:text-foreground hover:bg-muted"
               : "text-muted-foreground/30 cursor-not-allowed",
           )}
@@ -166,10 +178,10 @@ export function HistoryPanel() {
         <button
           type="button"
           onClick={redo}
-          disabled={useEditorStore.temporal.getState().futureStates.length === 0}
+          disabled={!canRedo}
           className={cn(
             "p-1 rounded transition-colors",
-            useEditorStore.temporal.getState().futureStates.length > 0
+            canRedo
               ? "text-muted-foreground hover:text-foreground hover:bg-muted"
               : "text-muted-foreground/30 cursor-not-allowed",
           )}
@@ -178,9 +190,7 @@ export function HistoryPanel() {
         >
           <Redo2 size={14} />
         </button>
-        <span className="ml-auto text-[10px] text-muted-foreground">
-          {useEditorStore.temporal.getState().pastStates.length} / 50
-        </span>
+        <span className="ml-auto text-[10px] text-muted-foreground">{pastLength} / 50</span>
       </div>
 
       {/* History list */}

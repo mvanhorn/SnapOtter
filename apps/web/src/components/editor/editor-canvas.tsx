@@ -21,10 +21,28 @@ import {
 import useImage from "use-image";
 import { useCanvasZoom } from "@/hooks/use-canvas-zoom";
 import { useEditorStore } from "@/stores/editor-store";
-import type { AdjustmentValues, CanvasObject, FilterConfig, ImageAttrs } from "@/types/editor";
+import type {
+  AdjustmentValues,
+  CanvasObject,
+  FilterConfig,
+  ImageAttrs,
+  ObjectEffects,
+} from "@/types/editor";
 import { ContextMenu, useContextMenu } from "./common/context-menu";
 import { BrushCursorOverlay, useEditorCursor } from "./common/custom-cursor";
 import { LoadingOverlay } from "./common/loading-overlay";
+import { SmartGuidesOverlay } from "./common/smart-guides";
+import {
+  createExposureFilter,
+  createGrainFilter,
+  createMotionBlurFilter,
+  createRadialBlurFilter,
+  createSharpenFilter,
+  createSurfaceBlurFilter,
+  createVibranceFilter,
+  createVignetteFilter,
+  createWarmthFilter,
+} from "./konva-filters";
 import { useBrushTool } from "./tools/brush-tool";
 import { useCloneStampTool } from "./tools/clone-stamp-tool";
 import { CropOverlay } from "./tools/crop-tool";
@@ -39,6 +57,36 @@ import { ActiveSelectionPreview, SelectionOverlay, useSelectionTool } from "./to
 import { useShapeTool } from "./tools/shape-tool";
 import { useTextTool } from "./tools/text-tool";
 import { TransformToolTransformer, useTransformTool } from "./tools/transform-tool";
+
+// Konva's globalCompositeOperationType is not exported, so we define a compatible alias
+type GlobalCompositeOperation =
+  | ""
+  | "source-over"
+  | "source-in"
+  | "source-out"
+  | "source-atop"
+  | "destination-over"
+  | "destination-in"
+  | "destination-out"
+  | "destination-atop"
+  | "lighter"
+  | "copy"
+  | "xor"
+  | "multiply"
+  | "screen"
+  | "overlay"
+  | "darken"
+  | "lighten"
+  | "color-dodge"
+  | "color-burn"
+  | "hard-light"
+  | "soft-light"
+  | "difference"
+  | "exclusion"
+  | "hue"
+  | "saturation"
+  | "color"
+  | "luminosity";
 
 // Module-level stage ref for export dialog access (Issue #6)
 export const editorStageRefHolder: { current: Konva.Stage | null } = {
@@ -80,6 +128,7 @@ function SourceImage({
     if (hasActiveAdjustments || hasActiveFilters) {
       const konvaFilters: Array<((this: Konva.Node, imageData: ImageData) => void) | string> = [];
 
+      // Built-in Konva adjustment filters
       if (adjustments.brightness !== 0) {
         konvaFilters.push(KonvaFilters.Filters.Brighten);
         node.brightness(adjustments.brightness / 100);
@@ -93,6 +142,17 @@ function SourceImage({
         node.hue(adjustments.hue);
         node.saturation(adjustments.saturation / 100);
         node.luminance(adjustments.luminance / 100);
+      }
+
+      // FIX 3: Custom adjustment filters for exposure, vibrance, warmth
+      if (adjustments.exposure !== 0) {
+        konvaFilters.push(createExposureFilter(adjustments.exposure / 100));
+      }
+      if (adjustments.vibrance !== 0) {
+        konvaFilters.push(createVibranceFilter(adjustments.vibrance));
+      }
+      if (adjustments.warmth !== 0) {
+        konvaFilters.push(createWarmthFilter(adjustments.warmth));
       }
 
       // Apply enabled filters
@@ -142,12 +202,63 @@ function SourceImage({
             node.kaleidoscopePower(f.params.power ?? 2);
             node.kaleidoscopeAngle(f.params.angle ?? 0);
             break;
+          // FIX 2: Custom filter types
+          case "motionBlur":
+            konvaFilters.push(
+              createMotionBlurFilter({
+                angle: f.params.angle ?? 0,
+                distance: f.params.distance ?? 10,
+              }),
+            );
+            break;
+          case "radialBlur":
+            konvaFilters.push(
+              createRadialBlurFilter({
+                amount: f.params.amount ?? 10,
+                centerX: f.params.centerX ?? 0.5,
+                centerY: f.params.centerY ?? 0.5,
+              }),
+            );
+            break;
+          case "surfaceBlur":
+            konvaFilters.push(
+              createSurfaceBlurFilter({
+                radius: f.params.radius ?? 5,
+                threshold: f.params.threshold ?? 25,
+              }),
+            );
+            break;
+          case "vignette":
+            konvaFilters.push(
+              createVignetteFilter({
+                amount: f.params.amount ?? 50,
+                midpoint: f.params.midpoint ?? 50,
+              }),
+            );
+            break;
+          case "grain":
+            konvaFilters.push(
+              createGrainFilter({
+                amount: f.params.amount ?? 25,
+                size: f.params.size ?? 25,
+              }),
+            );
+            break;
+          case "sharpen":
+            konvaFilters.push(
+              createSharpenFilter({
+                amount: f.params.amount ?? 0,
+                radius: f.params.radius ?? 1,
+              }),
+            );
+            break;
         }
       }
 
+      // FIX 1: Filters must be set BEFORE caching in Konva
       node.clearCache();
-      node.cache();
       node.filters(konvaFilters);
+      node.cache();
       node.getLayer()?.batchDraw();
     } else {
       node.clearCache();
@@ -207,6 +318,58 @@ function ImageObject({
 }
 
 // ---------------------------------------------------------------------------
+// Object Effects helpers (FIX 5)
+// ---------------------------------------------------------------------------
+
+/**
+ * Compute Konva-compatible props from an object's effects configuration.
+ * Returns props for drop shadow, outer glow, and stroke that can be spread
+ * onto any Konva shape node.
+ */
+function computeEffectProps(effects?: ObjectEffects): Record<string, unknown> {
+  if (!effects) return {};
+  const props: Record<string, unknown> = {};
+
+  // Drop shadow: uses Konva's built-in shadow support
+  if (effects.dropShadow?.enabled) {
+    const ds = effects.dropShadow;
+    const rad = (ds.angle * Math.PI) / 180;
+    props.shadowColor = ds.color;
+    props.shadowBlur = ds.blur;
+    props.shadowOffsetX = Math.cos(rad) * ds.distance;
+    props.shadowOffsetY = Math.sin(rad) * ds.distance;
+    props.shadowOpacity = ds.opacity;
+    props.shadowEnabled = true;
+  }
+
+  // Outer glow: like drop shadow but with zero offset
+  // Only apply if drop shadow is not already active (Konva has one shadow per node)
+  if (effects.outerGlow?.enabled && !effects.dropShadow?.enabled) {
+    const og = effects.outerGlow;
+    props.shadowColor = og.color;
+    props.shadowBlur = og.blur + og.spread;
+    props.shadowOffsetX = 0;
+    props.shadowOffsetY = 0;
+    props.shadowOpacity = og.opacity;
+    props.shadowEnabled = true;
+  }
+
+  // Stroke effect (outer or center position -- Konva draws strokes centered by default)
+  if (effects.stroke?.enabled) {
+    const s = effects.stroke;
+    props.stroke = s.color;
+    props.strokeWidth = s.position === "inside" ? s.width * 2 : s.width;
+    props.strokeEnabled = true;
+    // For "inside" strokes, we double the width and clip via strokeScaleEnabled
+    if (s.position === "inside") {
+      props.strokeScaleEnabled = false;
+    }
+  }
+
+  return props;
+}
+
+// ---------------------------------------------------------------------------
 // Canvas Object Renderer (Issue #3: wire move tool handlers)
 // ---------------------------------------------------------------------------
 
@@ -228,6 +391,8 @@ function CanvasObjectRenderer({
   onTransformEnd?: (e: Konva.KonvaEventObject<Event>) => void;
 }) {
   const draggable = isMoveTool;
+  // FIX 5: Compute effect props (drop shadow, outer glow, stroke) for all shapes
+  const fx = computeEffectProps(obj.effects);
 
   switch (obj.type) {
     case "line": {
@@ -249,6 +414,7 @@ function CanvasObjectRenderer({
           shadowColor={a.shadowColor}
           shadowOffsetX={a.shadowOffsetX}
           shadowOffsetY={a.shadowOffsetY}
+          {...fx}
         />
       );
     }
@@ -273,6 +439,7 @@ function CanvasObjectRenderer({
           onDragMove={onDragMove}
           onDragEnd={onDragEnd}
           onTransformEnd={onTransformEnd}
+          {...fx}
         />
       );
     }
@@ -296,6 +463,7 @@ function CanvasObjectRenderer({
           onDragMove={onDragMove}
           onDragEnd={onDragEnd}
           onTransformEnd={onTransformEnd}
+          {...fx}
         />
       );
     }
@@ -325,6 +493,7 @@ function CanvasObjectRenderer({
           onDragMove={onDragMove}
           onDragEnd={onDragEnd}
           onTransformEnd={onTransformEnd}
+          {...fx}
         />
       );
     }
@@ -347,6 +516,7 @@ function CanvasObjectRenderer({
           onDragMove={onDragMove}
           onDragEnd={onDragEnd}
           onTransformEnd={onTransformEnd}
+          {...fx}
         />
       );
     }
@@ -370,6 +540,7 @@ function CanvasObjectRenderer({
           onDragMove={onDragMove}
           onDragEnd={onDragEnd}
           onTransformEnd={onTransformEnd}
+          {...fx}
         />
       );
     }
@@ -394,6 +565,7 @@ function CanvasObjectRenderer({
           onDragMove={onDragMove}
           onDragEnd={onDragEnd}
           onTransformEnd={onTransformEnd}
+          {...fx}
         />
       );
     }
@@ -761,7 +933,16 @@ export function EditorCanvas({
             const layerObjects = objectsByLayer.get(layer.id) ?? [];
             if (!layer.visible) return null;
             return (
-              <Group key={layer.id} opacity={layer.opacity} listening={layer.id === activeLayerId}>
+              <Group
+                key={layer.id}
+                opacity={layer.opacity}
+                globalCompositeOperation={
+                  layer.blendMode !== "normal"
+                    ? (layer.blendMode as GlobalCompositeOperation)
+                    : undefined
+                }
+                listening={layer.id === activeLayerId}
+              >
                 {layerObjects.map((obj) => (
                   <CanvasObjectRenderer
                     key={obj.id}
@@ -782,6 +963,9 @@ export function EditorCanvas({
           {activeTool === "move" && (
             <MoveToolTransformer transformerRef={moveTool.transformerRef} />
           )}
+
+          {/* FIX 6: Smart guides overlay (shown during drag with move tool) */}
+          {activeTool === "move" && <SmartGuidesOverlay guides={moveTool.smartGuides} />}
 
           {/* Transform tool transformer */}
           {activeTool === "transform" && (
@@ -814,6 +998,9 @@ export function EditorCanvas({
               canvasWidth={canvasSize.width}
               canvasHeight={canvasSize.height}
               zoom={zoom}
+              panOffset={panOffset}
+              stageWidth={stageWidth}
+              stageHeight={stageHeight}
               showGrid={gridVisible}
               showPixelGrid={zoom >= 8}
             />
@@ -839,12 +1026,18 @@ function GridOverlay({
   canvasWidth,
   canvasHeight,
   zoom,
+  panOffset,
+  stageWidth,
+  stageHeight,
   showGrid,
   showPixelGrid,
 }: {
   canvasWidth: number;
   canvasHeight: number;
   zoom: number;
+  panOffset: { x: number; y: number };
+  stageWidth: number;
+  stageHeight: number;
   showGrid: boolean;
   showPixelGrid: boolean;
 }) {
@@ -868,17 +1061,38 @@ function GridOverlay({
           ctx.stroke();
         }
 
+        // FIX 7: Clip pixel grid to the visible viewport to avoid drawing
+        // thousands of lines for large images. Cap at 200 lines per axis.
         if (showPixelGrid) {
           ctx.beginPath();
           ctx.strokeStyle = "rgba(128, 128, 128, 0.1)";
           ctx.lineWidth = 1 / zoom;
-          for (let x = 1; x < canvasWidth; x++) {
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, canvasHeight);
+
+          // Calculate visible region in canvas coordinates from pan/zoom
+          const visMinX = Math.max(0, Math.floor(-panOffset.x / zoom));
+          const visMinY = Math.max(0, Math.floor(-panOffset.y / zoom));
+          const visMaxX = Math.min(canvasWidth, Math.ceil((stageWidth - panOffset.x) / zoom));
+          const visMaxY = Math.min(canvasHeight, Math.ceil((stageHeight - panOffset.y) / zoom));
+
+          const MAX_LINES = 200;
+
+          // Determine step: if visible range exceeds max lines, skip pixels
+          const xRange = visMaxX - visMinX;
+          const yRange = visMaxY - visMinY;
+          const xStep = xRange > MAX_LINES ? Math.ceil(xRange / MAX_LINES) : 1;
+          const yStep = yRange > MAX_LINES ? Math.ceil(yRange / MAX_LINES) : 1;
+
+          // Align start to step boundary
+          const startX = Math.max(1, visMinX - (visMinX % xStep) + xStep);
+          const startY = Math.max(1, visMinY - (visMinY % yStep) + yStep);
+
+          for (let x = startX; x < visMaxX; x += xStep) {
+            ctx.moveTo(x, visMinY);
+            ctx.lineTo(x, visMaxY);
           }
-          for (let y = 1; y < canvasHeight; y++) {
-            ctx.moveTo(0, y);
-            ctx.lineTo(canvasWidth, y);
+          for (let y = startY; y < visMaxY; y += yStep) {
+            ctx.moveTo(visMinX, y);
+            ctx.lineTo(visMaxX, y);
           }
           ctx.stroke();
         }

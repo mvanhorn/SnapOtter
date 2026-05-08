@@ -1,7 +1,7 @@
 // apps/web/src/components/editor/tools/gradient-tool.tsx
 
 import type Konva from "konva";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { generateId } from "@/lib/utils";
 import { useEditorStore } from "@/stores/editor-store";
 import type { CanvasObject } from "@/types/editor";
@@ -11,8 +11,17 @@ interface DragState {
   startY: number;
 }
 
+export interface GradientPreview {
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+  gradientType: "linear" | "radial";
+}
+
 export function useGradientTool() {
   const dragRef = useRef<DragState | null>(null);
+  const [preview, setPreview] = useState<GradientPreview | null>(null);
 
   const handleMouseDown = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
     const { activeTool, zoom, panOffset } = useEditorStore.getState();
@@ -29,14 +38,33 @@ export function useGradientTool() {
     const y = (pointer.y - panOffset.y) / zoom;
 
     dragRef.current = { startX: x, startY: y };
+
+    const { gradientType } = useEditorStore.getState();
+    setPreview({ startX: x, startY: y, endX: x, endY: y, gradientType });
   }, []);
 
-  const handleMouseMove = useCallback((_e: Konva.KonvaEventObject<MouseEvent>) => {
-    // Could show a preview line/circle here; keeping simple for now
+  const handleMouseMove = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
+    if (!dragRef.current) return;
+
+    const { zoom, panOffset, gradientType } = useEditorStore.getState();
+
+    const stage = e.target.getStage();
+    if (!stage) return;
+
+    const pointer = stage.getPointerPosition();
+    if (!pointer) return;
+
+    const endX = (pointer.x - panOffset.x) / zoom;
+    const endY = (pointer.y - panOffset.y) / zoom;
+    const { startX, startY } = dragRef.current;
+
+    setPreview({ startX, startY, endX, endY, gradientType });
   }, []);
 
   const handleMouseUp = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
     if (!dragRef.current) return;
+
+    setPreview(null);
 
     const {
       foregroundColor,
@@ -115,5 +143,5 @@ export function useGradientTool() {
     dragRef.current = null;
   }, []);
 
-  return { handleMouseDown, handleMouseMove, handleMouseUp };
+  return { handleMouseDown, handleMouseMove, handleMouseUp, preview };
 }

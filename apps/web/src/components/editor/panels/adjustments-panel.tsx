@@ -3,6 +3,7 @@
 import { Wand2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SliderRow } from "@/components/editor/common/slider-row";
+import { editorStageRefHolder } from "@/components/editor/editor-canvas";
 import { HistogramPanel } from "@/components/editor/panels/histogram-panel";
 import { cn } from "@/lib/utils";
 import { useEditorStore } from "@/stores/editor-store";
@@ -1035,6 +1036,36 @@ export function AdjustmentsPanel() {
   const adjustments = useEditorStore((s) => s.adjustments);
   const filters = useEditorStore((s) => s.filters);
   const resetAdjustments = useEditorStore((s) => s.resetAdjustments);
+  const canvasSize = useEditorStore((s) => s.canvasSize);
+
+  // Capture imageData from the Konva stage for the histogram
+  const [histogramData, setHistogramData] = useState<ImageData | null>(null);
+
+  useEffect(() => {
+    function captureImageData() {
+      const stage = editorStageRefHolder.current;
+      if (!stage) return;
+      try {
+        const canvas = stage.toCanvas({
+          pixelRatio: 1,
+          x: 0,
+          y: 0,
+          width: canvasSize.width,
+          height: canvasSize.height,
+        });
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        setHistogramData(data);
+      } catch {
+        // Stage may not be ready yet
+      }
+    }
+
+    // Capture on mount and when adjustments/filters change
+    const timer = setTimeout(captureImageData, 100);
+    return () => clearTimeout(timer);
+  }, [adjustments, filters, canvasSize]);
 
   const hasChanges = useMemo(() => {
     const hasAdjustmentChanges = Object.values(adjustments).some((v) => v !== 0);
@@ -1079,7 +1110,7 @@ export function AdjustmentsPanel() {
   return (
     <div className="flex flex-col gap-2 text-sm">
       {/* Histogram */}
-      <HistogramPanel />
+      <HistogramPanel imageData={histogramData} />
 
       {/* Auto Adjustments */}
       <SectionHeader title="Auto" />

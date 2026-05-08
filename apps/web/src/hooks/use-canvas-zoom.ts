@@ -26,10 +26,6 @@ export function useCanvasZoom() {
       if (tweenRef.current) {
         tweenRef.current.destroy();
       }
-      // Update store immediately so all tools get correct coordinates
-      setZoom(targetZoom);
-      setPanOffset(targetPos);
-
       tweenRef.current = new Konva.Tween({
         node: stage,
         scaleX: targetZoom,
@@ -38,7 +34,18 @@ export function useCanvasZoom() {
         y: targetPos.y,
         duration: ZOOM_ANIMATION_DURATION,
         easing: Konva.Easings.EaseOut,
+        onUpdate: () => {
+          // Progressively sync store with the stage's current animated values
+          // so tools always have accurate coordinates during the tween.
+          if (stage) {
+            setZoom(stage.scaleX());
+            setPanOffset({ x: stage.x(), y: stage.y() });
+          }
+        },
         onFinish: () => {
+          // Ensure final values are exact (no floating-point drift)
+          setZoom(targetZoom);
+          setPanOffset(targetPos);
           tweenRef.current?.destroy();
           tweenRef.current = null;
         },

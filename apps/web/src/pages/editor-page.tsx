@@ -2,8 +2,15 @@
 import { Monitor } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { CanvasResizeDialog } from "@/components/editor/common/canvas-resize-dialog";
-import { ExportDialog, saveEditorState } from "@/components/editor/common/export-dialog";
+import {
+  AutosaveRecoveryBanner,
+  ExportDialog,
+  saveEditorState,
+  useAutosave,
+} from "@/components/editor/common/export-dialog";
+import { FillDialog } from "@/components/editor/common/fill-dialog";
 import { ImageResizeDialog } from "@/components/editor/common/image-resize-dialog";
+import { HorizontalRuler, VerticalRuler } from "@/components/editor/common/rulers";
 import { WelcomeScreen } from "@/components/editor/common/welcome-screen";
 import { EditorCanvas } from "@/components/editor/editor-canvas";
 import { EditorOptionsBar } from "@/components/editor/editor-options-bar";
@@ -19,15 +26,28 @@ export function EditorPage() {
   const sourceImageUrl = useEditorStore((s) => s.sourceImageUrl);
   const isDirty = useEditorStore((s) => s.isDirty);
   const loadImage = useEditorStore((s) => s.loadImage);
+  const rulersVisible = useEditorStore((s) => s.rulersVisible);
   const [showExport, setShowExport] = useState(false);
   const [showCanvasResize, setShowCanvasResize] = useState(false);
   const [showImageResize, setShowImageResize] = useState(false);
+  const [fillDialogOpen, setFillDialogOpen] = useState(false);
+
+  // Autosave recovery
+  const { recoveryData, dismissRecovery, restoreRecovery } = useAutosave();
 
   // Issue #10: Shortcuts belong at page level, not canvas level
   useEditorShortcuts({
     onSave: () => saveEditorState(),
     onExport: () => setShowExport(true),
+    onFillDialog: () => setFillDialogOpen(true),
   });
+
+  // Listen for fill-dialog custom event (dispatched from Shift+Backspace shortcut)
+  useEffect(() => {
+    const handler = () => setFillDialogOpen(true);
+    window.addEventListener("snapotter:open-fill-dialog", handler);
+    return () => window.removeEventListener("snapotter:open-fill-dialog", handler);
+  }, []);
 
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
@@ -90,9 +110,21 @@ export function EditorPage() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
+      {/* Autosave recovery banner */}
+      {recoveryData && (
+        <AutosaveRecoveryBanner
+          data={recoveryData}
+          onRestore={restoreRecovery}
+          onDiscard={dismissRecovery}
+        />
+      )}
       <EditorOptionsBar />
+      {/* Horizontal ruler along the top edge */}
+      {rulersVisible && <HorizontalRuler />}
       <div className="flex flex-1 overflow-hidden">
         <EditorToolbar />
+        {/* Vertical ruler along the left edge */}
+        {rulersVisible && <VerticalRuler />}
         <div className="relative flex-1 overflow-hidden bg-muted/30">
           <EditorCanvas
             onCanvasResize={() => setShowCanvasResize(true)}
@@ -106,6 +138,7 @@ export function EditorPage() {
       {showExport && <ExportDialog onClose={() => setShowExport(false)} />}
       <CanvasResizeDialog open={showCanvasResize} onClose={() => setShowCanvasResize(false)} />
       <ImageResizeDialog open={showImageResize} onClose={() => setShowImageResize(false)} />
+      <FillDialog open={fillDialogOpen} onClose={() => setFillDialogOpen(false)} />
     </div>
   );
 }

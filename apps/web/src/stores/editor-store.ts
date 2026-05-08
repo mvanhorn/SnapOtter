@@ -13,6 +13,23 @@ import type {
   ToolType,
 } from "@/types/editor";
 
+// Helpers for objects that use points arrays (line, arrow) vs positioned objects
+function hasPointsArray(obj: CanvasObject): obj is CanvasObject & { attrs: { points: number[] } } {
+  return "points" in obj.attrs && Array.isArray((obj.attrs as { points: number[] }).points);
+}
+
+function isCenterBased(obj: CanvasObject): boolean {
+  return obj.type === "ellipse" || obj.type === "polygon" || obj.type === "star";
+}
+
+// Extended store state with additional fields/methods not yet in the shared interface
+interface EditorStateExtensions {
+  canvasBackground: string;
+  commitHistory: (action: string) => void;
+  batchNudge: (objectIds: string[], dx: number, dy: number) => void;
+  updateLayerThumbnail: (layerId: string, thumbnailDataUrl: string) => void;
+}
+
 const DEFAULT_CANVAS_SIZE = { width: 1920, height: 1080 };
 const DEFAULT_LAYER_ID = "layer-1";
 const MAX_RECENT_COLORS = 12;
@@ -89,7 +106,7 @@ function nextLayerNumber(layers: EditorLayer[]): number {
   return max + 1;
 }
 
-export const useEditorStore = create<EditorState>()(
+export const useEditorStore = create<EditorState & EditorStateExtensions>()(
   temporal(
     (set, get) => ({
       // --- Canvas ---
@@ -97,6 +114,9 @@ export const useEditorStore = create<EditorState>()(
       zoom: 1,
       panOffset: { x: 0, y: 0 },
       cursorPosition: { x: 0, y: 0 },
+
+      // --- Canvas background (used when canvas is resized larger) ---
+      canvasBackground: "#ffffff",
 
       // --- Image ---
       sourceImageUrl: null,
@@ -260,7 +280,7 @@ export const useEditorStore = create<EditorState>()(
         });
       },
 
-      resizeCanvas: (width, height, anchor, _fill) => {
+      resizeCanvas: (width, height, anchor, fill) => {
         const { canvasSize, objects } = get();
         const dw = width - canvasSize.width;
         const dh = height - canvasSize.height;
@@ -283,15 +303,25 @@ export const useEditorStore = create<EditorState>()(
         }
         set({
           canvasSize: { width, height },
+          ...(fill ? { canvasBackground: fill } : {}),
           objects:
             offsetX !== 0 || offsetY !== 0
               ? objects.map((obj) => {
                   const attrs = { ...obj.attrs };
-                  if ("x" in attrs) {
-                    (attrs as { x: number }).x += offsetX;
-                  }
-                  if ("y" in attrs) {
-                    (attrs as { y: number }).y += offsetY;
+                  if (hasPointsArray(obj)) {
+                    const pts = [...(attrs as { points: number[] }).points];
+                    for (let i = 0; i < pts.length; i += 2) {
+                      pts[i] += offsetX;
+                      pts[i + 1] += offsetY;
+                    }
+                    (attrs as { points: number[] }).points = pts;
+                  } else {
+                    if ("x" in attrs) {
+                      (attrs as { x: number }).x += offsetX;
+                    }
+                    if ("y" in attrs) {
+                      (attrs as { y: number }).y += offsetY;
+                    }
                   }
                   return { ...obj, attrs } as CanvasObject;
                 })
@@ -302,10 +332,40 @@ export const useEditorStore = create<EditorState>()(
         });
       },
 
-      resizeImage: (width, height, _resample) => {
+      resizeImage: (width, height, resample) => {
+        void resample; // accepted for future server-side resize; client-side scales objects only
+        const { canvasSize, objects } = get();
+        const scaleX = width / canvasSize.width;
+        const scaleY = height / canvasSize.height;
         set({
           canvasSize: { width, height },
           sourceImageSize: { width, height },
+          objects: objects.map((obj) => {
+            const attrs = { ...obj.attrs };
+            const a = attrs as unknown as Record<string, number>;
+            if (hasPointsArray(obj)) {
+              const pts = [...(attrs as { points: number[] }).points];
+              for (let i = 0; i < pts.length; i += 2) {
+                pts[i] *= scaleX;
+                pts[i + 1] *= scaleY;
+              }
+              (attrs as { points: number[] }).points = pts;
+              if ("strokeWidth" in attrs) a.strokeWidth *= Math.min(scaleX, scaleY);
+            } else {
+              if ("x" in attrs) a.x *= scaleX;
+              if ("y" in attrs) a.y *= scaleY;
+              if ("width" in attrs) a.width *= scaleX;
+              if ("height" in attrs) a.height *= scaleY;
+              if ("radius" in attrs) a.radius *= Math.min(scaleX, scaleY);
+              if ("radiusX" in attrs) a.radiusX *= scaleX;
+              if ("radiusY" in attrs) a.radiusY *= scaleY;
+              if ("innerRadius" in attrs) a.innerRadius *= Math.min(scaleX, scaleY);
+              if ("outerRadius" in attrs) a.outerRadius *= Math.min(scaleX, scaleY);
+              if ("fontSize" in attrs) a.fontSize *= Math.min(scaleX, scaleY);
+              if ("strokeWidth" in attrs) a.strokeWidth *= Math.min(scaleX, scaleY);
+            }
+            return { ...obj, attrs } as CanvasObject;
+          }),
           isDirty: true,
           lastAction: "Resize Image",
           _historyVersion: get()._historyVersion + 1,
@@ -321,34 +381,57 @@ export const useEditorStore = create<EditorState>()(
           sourceImageSize: newSize,
           objects: objects.map((obj) => {
             const attrs = { ...obj.attrs };
-            const hasPos = "x" in attrs && "y" in attrs;
-            const hasSize = "width" in attrs && "height" in attrs;
             const a = attrs as unknown as Record<string, number>;
-            if (hasPos) {
-              if (degrees === 90) {
-                const newX = canvasSize.height - a.y - (hasSize ? a.height : 0);
-                const newY = a.x;
-                a.x = newX;
-                a.y = newY;
-              } else if (degrees === 270) {
-                const newX = a.y;
-                const newY = canvasSize.width - a.x - (hasSize ? a.width : 0);
-                a.x = newX;
-                a.y = newY;
-              } else {
-                a.x = canvasSize.width - a.x - (hasSize ? a.width : 0);
-                a.y = canvasSize.height - a.y - (hasSize ? a.height : 0);
+
+            // Handle points-based objects (line, arrow)
+            if (hasPointsArray(obj)) {
+              const pts = [...(attrs as { points: number[] }).points];
+              for (let i = 0; i < pts.length; i += 2) {
+                const px = pts[i];
+                const py = pts[i + 1];
+                if (degrees === 90) {
+                  pts[i] = canvasSize.height - py;
+                  pts[i + 1] = px;
+                } else if (degrees === 270) {
+                  pts[i] = py;
+                  pts[i + 1] = canvasSize.width - px;
+                } else {
+                  pts[i] = canvasSize.width - px;
+                  pts[i + 1] = canvasSize.height - py;
+                }
               }
-            }
-            if (hasSize && degrees !== 180) {
-              const oldW = a.width;
-              a.width = a.height;
-              a.height = oldW;
-            }
-            if ("radiusX" in attrs && "radiusY" in attrs && degrees !== 180) {
-              const oldRx = a.radiusX;
-              a.radiusX = a.radiusY;
-              a.radiusY = oldRx;
+              (attrs as { points: number[] }).points = pts;
+            } else {
+              const centerBased = isCenterBased(obj);
+              const hasPos = "x" in attrs && "y" in attrs;
+              const hasSize = "width" in attrs && "height" in attrs;
+
+              if (hasPos) {
+                if (degrees === 90) {
+                  const newX = canvasSize.height - a.y - (centerBased ? 0 : hasSize ? a.height : 0);
+                  const newY = a.x;
+                  a.x = newX;
+                  a.y = newY;
+                } else if (degrees === 270) {
+                  const newX = a.y;
+                  const newY = canvasSize.width - a.x - (centerBased ? 0 : hasSize ? a.width : 0);
+                  a.x = newX;
+                  a.y = newY;
+                } else {
+                  a.x = canvasSize.width - a.x - (centerBased ? 0 : hasSize ? a.width : 0);
+                  a.y = canvasSize.height - a.y - (centerBased ? 0 : hasSize ? a.height : 0);
+                }
+              }
+              if (hasSize && degrees !== 180) {
+                const oldW = a.width;
+                a.width = a.height;
+                a.height = oldW;
+              }
+              if ("radiusX" in attrs && "radiusY" in attrs && degrees !== 180) {
+                const oldRx = a.radiusX;
+                a.radiusX = a.radiusY;
+                a.radiusY = oldRx;
+              }
             }
             return { ...obj, attrs } as CanvasObject;
           }),
@@ -363,9 +446,16 @@ export const useEditorStore = create<EditorState>()(
         set({
           objects: objects.map((obj) => {
             const attrs = { ...obj.attrs };
-            if ("x" in attrs) {
-              const a = attrs as unknown as Record<string, number>;
-              const w = "width" in attrs ? a.width : 0;
+            const a = attrs as unknown as Record<string, number>;
+            if (hasPointsArray(obj)) {
+              const pts = [...(attrs as { points: number[] }).points];
+              for (let i = 0; i < pts.length; i += 2) {
+                pts[i] = canvasSize.width - pts[i];
+              }
+              (attrs as { points: number[] }).points = pts;
+            } else if ("x" in attrs) {
+              const centerBased = isCenterBased(obj);
+              const w = centerBased ? 0 : "width" in attrs ? a.width : 0;
               a.x = canvasSize.width - a.x - w;
             }
             return { ...obj, attrs } as CanvasObject;
@@ -381,9 +471,16 @@ export const useEditorStore = create<EditorState>()(
         set({
           objects: objects.map((obj) => {
             const attrs = { ...obj.attrs };
-            if ("y" in attrs) {
-              const a = attrs as unknown as Record<string, number>;
-              const h = "height" in attrs ? a.height : 0;
+            const a = attrs as unknown as Record<string, number>;
+            if (hasPointsArray(obj)) {
+              const pts = [...(attrs as { points: number[] }).points];
+              for (let i = 1; i < pts.length; i += 2) {
+                pts[i] = canvasSize.height - pts[i];
+              }
+              (attrs as { points: number[] }).points = pts;
+            } else if ("y" in attrs) {
+              const centerBased = isCenterBased(obj);
+              const h = centerBased ? 0 : "height" in attrs ? a.height : 0;
               a.y = canvasSize.height - a.y - h;
             }
             return { ...obj, attrs } as CanvasObject;
@@ -403,14 +500,48 @@ export const useEditorStore = create<EditorState>()(
         let maxY = 0;
         for (const obj of objects) {
           const a = obj.attrs as unknown as Record<string, number>;
-          const x = "x" in obj.attrs ? a.x : 0;
-          const y = "y" in obj.attrs ? a.y : 0;
-          const w = "width" in obj.attrs ? a.width : "radiusX" in obj.attrs ? a.radiusX * 2 : 0;
-          const h = "height" in obj.attrs ? a.height : "radiusY" in obj.attrs ? a.radiusY * 2 : 0;
-          minX = Math.min(minX, x);
-          minY = Math.min(minY, y);
-          maxX = Math.max(maxX, x + w);
-          maxY = Math.max(maxY, y + h);
+          const sw = "strokeWidth" in obj.attrs ? a.strokeWidth / 2 : 0;
+          if (hasPointsArray(obj)) {
+            const pts = (obj.attrs as { points: number[] }).points;
+            for (let i = 0; i < pts.length; i += 2) {
+              minX = Math.min(minX, pts[i] - sw);
+              minY = Math.min(minY, pts[i + 1] - sw);
+              maxX = Math.max(maxX, pts[i] + sw);
+              maxY = Math.max(maxY, pts[i + 1] + sw);
+            }
+          } else if (isCenterBased(obj)) {
+            const cx = "x" in obj.attrs ? a.x : 0;
+            const cy = "y" in obj.attrs ? a.y : 0;
+            const rx =
+              "radiusX" in obj.attrs
+                ? a.radiusX
+                : "radius" in obj.attrs
+                  ? a.radius
+                  : "outerRadius" in obj.attrs
+                    ? a.outerRadius
+                    : 0;
+            const ry =
+              "radiusY" in obj.attrs
+                ? a.radiusY
+                : "radius" in obj.attrs
+                  ? a.radius
+                  : "outerRadius" in obj.attrs
+                    ? a.outerRadius
+                    : 0;
+            minX = Math.min(minX, cx - rx - sw);
+            minY = Math.min(minY, cy - ry - sw);
+            maxX = Math.max(maxX, cx + rx + sw);
+            maxY = Math.max(maxY, cy + ry + sw);
+          } else {
+            const x = "x" in obj.attrs ? a.x : 0;
+            const y = "y" in obj.attrs ? a.y : 0;
+            const w = "width" in obj.attrs ? a.width : 0;
+            const h = "height" in obj.attrs ? a.height : 0;
+            minX = Math.min(minX, x - sw);
+            minY = Math.min(minY, y - sw);
+            maxX = Math.max(maxX, x + w + sw);
+            maxY = Math.max(maxY, y + h + sw);
+          }
         }
         minX = Math.max(0, Math.floor(minX));
         minY = Math.max(0, Math.floor(minY));
@@ -431,11 +562,20 @@ export const useEditorStore = create<EditorState>()(
           sourceImageSize: { width: newWidth, height: newHeight },
           objects: objects.map((obj) => {
             const attrs = { ...obj.attrs };
-            if ("x" in attrs) {
-              (attrs as unknown as Record<string, number>).x -= minX;
-            }
-            if ("y" in attrs) {
-              (attrs as unknown as Record<string, number>).y -= minY;
+            if (hasPointsArray(obj)) {
+              const pts = [...(attrs as { points: number[] }).points];
+              for (let i = 0; i < pts.length; i += 2) {
+                pts[i] -= minX;
+                pts[i + 1] -= minY;
+              }
+              (attrs as { points: number[] }).points = pts;
+            } else {
+              if ("x" in attrs) {
+                (attrs as unknown as Record<string, number>).x -= minX;
+              }
+              if ("y" in attrs) {
+                (attrs as unknown as Record<string, number>).y -= minY;
+              }
             }
             return { ...obj, attrs } as CanvasObject;
           }),
@@ -574,15 +714,28 @@ export const useEditorStore = create<EditorState>()(
       },
 
       sendToBack: (objectId) => {
-        const { objects } = get();
+        const { objects, layers } = get();
         const obj = objects.find((o) => o.id === objectId);
         if (!obj) return;
         const newObjects = objects.filter((o) => o.id !== objectId);
-        let insertIdx = 0;
+        // Find the first object on the same layer
+        let insertIdx = -1;
         for (let i = 0; i < newObjects.length; i++) {
           if (newObjects[i].layerId === obj.layerId) {
             insertIdx = i;
             break;
+          }
+        }
+        // If no other objects on the same layer, find the correct position
+        // based on layer ordering (after all objects from earlier layers)
+        if (insertIdx === -1) {
+          const layerIdx = layers.findIndex((l) => l.id === obj.layerId);
+          insertIdx = 0;
+          for (let i = 0; i < newObjects.length; i++) {
+            const objLayerIdx = layers.findIndex((l) => l.id === newObjects[i].layerId);
+            if (objLayerIdx < layerIdx) {
+              insertIdx = i + 1;
+            }
           }
         }
         newObjects.splice(insertIdx, 0, obj);
@@ -767,33 +920,79 @@ export const useEditorStore = create<EditorState>()(
       setMagicWandTolerance: (v) => set({ magicWandTolerance: v }),
 
       invertSelection: () => {
-        const { selection } = get();
+        const { selection, canvasSize } = get();
         if (!selection) return;
-        if (selection.mask) {
-          const inverted = new Uint8Array(selection.mask.length);
-          for (let i = 0; i < selection.mask.length; i++) {
-            inverted[i] = 255 - selection.mask[i];
+        let mask = selection.mask;
+        // If no mask but bounds exist, create a mask from the bounds
+        if (!mask && selection.bounds) {
+          const totalPixels = canvasSize.width * canvasSize.height;
+          mask = new Uint8Array(totalPixels);
+          const { x, y, width, height } = selection.bounds;
+          const x0 = Math.max(0, Math.floor(x));
+          const y0 = Math.max(0, Math.floor(y));
+          const x1 = Math.min(canvasSize.width, Math.ceil(x + width));
+          const y1 = Math.min(canvasSize.height, Math.ceil(y + height));
+          for (let row = y0; row < y1; row++) {
+            for (let col = x0; col < x1; col++) {
+              mask[row * canvasSize.width + col] = 255;
+            }
           }
-          set({ selection: { ...selection, mask: inverted } });
         }
+        if (!mask) return;
+        const inverted = new Uint8Array(mask.length);
+        for (let i = 0; i < mask.length; i++) {
+          inverted[i] = 255 - mask[i];
+        }
+        set({ selection: { ...selection, mask: inverted } });
       },
 
       // Crop
       setCropState: (state) => set({ cropState: state, isCropping: state !== null }),
 
       applyCrop: () => {
-        const { cropState, objects } = get();
+        const { cropState, objects, sourceImageUrl } = get();
         if (!cropState) return;
+
+        // Crop the source image via an offscreen canvas
+        if (sourceImageUrl) {
+          const img = new Image();
+          img.onload = () => {
+            const offscreen = document.createElement("canvas");
+            offscreen.width = cropState.width;
+            offscreen.height = cropState.height;
+            const ctx = offscreen.getContext("2d");
+            if (ctx) {
+              ctx.drawImage(img, -cropState.x, -cropState.y);
+              const croppedUrl = offscreen.toDataURL("image/png");
+              const oldUrl = get().sourceImageUrl;
+              if (oldUrl?.startsWith("blob:")) {
+                URL.revokeObjectURL(oldUrl);
+              }
+              set({ sourceImageUrl: croppedUrl });
+            }
+          };
+          img.src = sourceImageUrl;
+        }
+
         set({
           canvasSize: { width: cropState.width, height: cropState.height },
           sourceImageSize: { width: cropState.width, height: cropState.height },
           objects: objects.map((obj) => {
             const attrs = { ...obj.attrs };
-            if ("x" in attrs) {
-              (attrs as { x: number }).x -= cropState.x;
-            }
-            if ("y" in attrs) {
-              (attrs as { y: number }).y -= cropState.y;
+            if (hasPointsArray(obj)) {
+              const pts = [...(attrs as { points: number[] }).points];
+              for (let i = 0; i < pts.length; i += 2) {
+                pts[i] -= cropState.x;
+                pts[i + 1] -= cropState.y;
+              }
+              (attrs as { points: number[] }).points = pts;
+            } else {
+              if ("x" in attrs) {
+                (attrs as { x: number }).x -= cropState.x;
+              }
+              if ("y" in attrs) {
+                (attrs as { y: number }).y -= cropState.y;
+              }
             }
             return { ...obj, attrs } as CanvasObject;
           }),
@@ -818,10 +1017,18 @@ export const useEditorStore = create<EditorState>()(
       },
 
       cutObjects: () => {
-        const { objects, selectedObjectIds } = get();
-        const selected = objects.filter((o) => selectedObjectIds.includes(o.id));
-        set({ clipboard: selected });
-        get().removeObjects(selectedObjectIds);
+        const state = get();
+        const selected = state.objects.filter((o) => state.selectedObjectIds.includes(o.id));
+        if (!selected.length) return;
+        const idSet = new Set(state.selectedObjectIds);
+        set({
+          clipboard: selected,
+          objects: state.objects.filter((o) => !idSet.has(o.id)),
+          selectedObjectIds: [],
+          isDirty: true,
+          lastAction: "Cut",
+          _historyVersion: state._historyVersion + 1,
+        });
       },
 
       pasteObjects: () => {
@@ -930,6 +1137,54 @@ export const useEditorStore = create<EditorState>()(
       // Pixel brush settings
       setPixelBrushStrength: (strength) =>
         set({ pixelBrushStrength: Math.max(1, Math.min(100, strength)) }),
+
+      // History commit (for operations like nudge that use updateObject
+      // but still need an undo point)
+      commitHistory: (action) => {
+        set({
+          lastAction: action,
+          _historyVersion: get()._historyVersion + 1,
+        });
+      },
+
+      // Batch nudge: move multiple objects and create a history entry
+      batchNudge: (objectIds, dx, dy) => {
+        const idSet = new Set(objectIds);
+        set({
+          objects: get().objects.map((obj) => {
+            if (!idSet.has(obj.id)) return obj;
+            const attrs = { ...obj.attrs };
+            if (hasPointsArray(obj)) {
+              const pts = [...(attrs as { points: number[] }).points];
+              for (let i = 0; i < pts.length; i += 2) {
+                pts[i] += dx;
+                pts[i + 1] += dy;
+              }
+              (attrs as { points: number[] }).points = pts;
+            } else {
+              if ("x" in attrs) {
+                (attrs as unknown as Record<string, number>).x += dx;
+              }
+              if ("y" in attrs) {
+                (attrs as unknown as Record<string, number>).y += dy;
+              }
+            }
+            return { ...obj, attrs } as CanvasObject;
+          }),
+          isDirty: true,
+          lastAction: "Nudge",
+          _historyVersion: get()._historyVersion + 1,
+        });
+      },
+
+      // Layer thumbnail update (actual generation happens in the canvas component)
+      updateLayerThumbnail: (layerId, thumbnailDataUrl) => {
+        set({
+          layers: get().layers.map((l) =>
+            l.id === layerId ? { ...l, thumbnail: thumbnailDataUrl } : l,
+          ),
+        });
+      },
 
       // Right panel
       setRightPanelTab: (tab) => set({ rightPanelTab: tab }),

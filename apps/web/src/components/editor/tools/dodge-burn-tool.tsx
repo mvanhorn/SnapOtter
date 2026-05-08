@@ -179,11 +179,24 @@ export function useDodgeBurnTool(stageRef: React.RefObject<Konva.Stage | null>) 
 
     applyBrushDab(ctx, sourceSnapshot, x, y, canvasSize);
 
-    const dataUrl = canvas.toDataURL();
-    useEditorStore.getState().updateObject(objectId, { src: dataUrl });
+    // Use canvas element directly as image source during the stroke instead of
+    // converting to a data URL on every mouse move (major perf fix).
+    useEditorStore
+      .getState()
+      .updateObject(objectId, { image: canvas } as unknown as Record<string, unknown>);
   }, []);
 
   const handleMouseUp = useCallback(() => {
+    if (strokeRef.current) {
+      const { canvas, objectId } = strokeRef.current;
+      const dataUrl = canvas.toDataURL();
+      useEditorStore
+        .getState()
+        .updateObject(objectId, { src: dataUrl, image: undefined } as unknown as Record<
+          string,
+          unknown
+        >);
+    }
     strokeRef.current = null;
   }, []);
 

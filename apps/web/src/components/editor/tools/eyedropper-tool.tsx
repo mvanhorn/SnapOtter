@@ -49,29 +49,41 @@ interface UseEyedropperToolOptions {
   sampleSize: SampleSize;
 }
 
-export function useEyedropperTool({ stageRef, sampleSize }: UseEyedropperToolOptions) {
+export function useEyedropperTool({
+  stageRef,
+  sampleSize: _sampleSizeProp,
+}: UseEyedropperToolOptions) {
   const setForegroundColor = useEditorStore((s) => s.setForegroundColor);
   const setBackgroundColor = useEditorStore((s) => s.setBackgroundColor);
   const zoom = useEditorStore((s) => s.zoom);
   const panOffset = useEditorStore((s) => s.panOffset);
+  const canvasSize = useEditorStore((s) => s.canvasSize);
+  // Use the sampleSize prop directly (caller wires it from options state)
+  const sampleSize: SampleSize = _sampleSizeProp;
   const [sampledColor, setSampledColor] = useState<string | null>(null);
   const canvasCache = useRef<HTMLCanvasElement | null>(null);
 
   /**
    * Export the visible stage to a flat canvas for pixel sampling.
+   * Uses explicit viewport options to get a consistent unzoomed canvas,
+   * excluding zoom/pan transforms and device pixel ratio.
    * Cached so repeated clicks during one drag don't re-export.
    */
   const getStageCanvas = useCallback((): HTMLCanvasElement | null => {
     const stage = stageRef.current;
     if (!stage) return null;
 
-    // Use toCanvas to get a composited view of all visible layers
+    // Specify explicit viewport to exclude zoom/pan transforms
     const canvas = stage.toCanvas({
       pixelRatio: 1,
+      x: 0,
+      y: 0,
+      width: canvasSize.width,
+      height: canvasSize.height,
     });
     canvasCache.current = canvas;
     return canvas;
-  }, [stageRef]);
+  }, [stageRef, canvasSize]);
 
   /**
    * Invalidate the cache (call on mousedown so we get fresh data).
@@ -102,8 +114,8 @@ export function useEyedropperTool({ stageRef, sampleSize }: UseEyedropperToolOpt
       const x = Math.round((pointer.x - panOffset.x) / zoom);
       const y = Math.round((pointer.y - panOffset.y) / zoom);
 
-      // Bounds check
-      if (x < 0 || y < 0 || x >= canvas.width || y >= canvas.height) {
+      // Bounds check against the actual canvas dimensions (unzoomed)
+      if (x < 0 || y < 0 || x >= canvasSize.width || y >= canvasSize.height) {
         return null;
       }
 
@@ -111,7 +123,7 @@ export function useEyedropperTool({ stageRef, sampleSize }: UseEyedropperToolOpt
       setSampledColor(color);
       return color;
     },
-    [getStageCanvas, sampleSize, zoom, panOffset],
+    [getStageCanvas, sampleSize, zoom, panOffset, canvasSize],
   );
 
   /**

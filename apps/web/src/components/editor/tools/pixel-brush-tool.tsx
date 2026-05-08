@@ -113,11 +113,24 @@ export function usePixelBrushTool(stageRef: React.RefObject<Konva.Stage | null>)
     strokeRef.current.lastX = x;
     strokeRef.current.lastY = y;
 
-    const dataUrl = canvas.toDataURL();
-    useEditorStore.getState().updateObject(objectId, { src: dataUrl });
+    // Use canvas element directly as image source during the stroke instead of
+    // converting to a data URL on every mouse move (major perf fix).
+    useEditorStore
+      .getState()
+      .updateObject(objectId, { image: canvas } as unknown as Record<string, unknown>);
   }, []);
 
   const handleMouseUp = useCallback(() => {
+    if (strokeRef.current) {
+      const { canvas, objectId } = strokeRef.current;
+      const dataUrl = canvas.toDataURL();
+      useEditorStore
+        .getState()
+        .updateObject(objectId, { src: dataUrl, image: undefined } as unknown as Record<
+          string,
+          unknown
+        >);
+    }
     strokeRef.current = null;
   }, []);
 
@@ -203,12 +216,7 @@ function applyBoxBlur(
         for (let kx = -kernelSize; kx <= kernelSize; kx++) {
           const sx = startX + px + kx;
           const sy = startY + py + ky;
-          if (
-            sx < 0 ||
-            sx >= sourceWidth ||
-            sy < 0 ||
-            sy >= source.height / (source.width / sourceWidth)
-          ) {
+          if (sx < 0 || sx >= sourceWidth || sy < 0 || sy >= source.height) {
             continue;
           }
           const si = (sy * sourceWidth + sx) * 4;

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { editorStageRefHolder } from "@/components/editor/editor-canvas";
 import { useEditorStore } from "@/stores/editor-store";
 import type { ToolType } from "@/types/editor";
 
@@ -55,7 +56,11 @@ function cycleSubtool(current: ToolType, cycle: ToolType[]): ToolType {
  *
  * @param callbacks Optional callbacks for save/export dialogs
  */
-export function useEditorShortcuts(callbacks?: { onSave?: () => void; onExport?: () => void }) {
+export function useEditorShortcuts(callbacks?: {
+  onSave?: () => void;
+  onExport?: () => void;
+  onFillDialog?: () => void;
+}) {
   const previousToolRef = useRef<ToolType | null>(null);
   const isSpaceHeldRef = useRef(false);
 
@@ -435,24 +440,34 @@ export function useEditorShortcuts(callbacks?: { onSave?: () => void; onExport?:
     { preventDefault: false },
   );
 
-  // Ctrl+Shift+C / Cmd+Shift+C - Copy merged
+  // Ctrl+Shift+C / Cmd+Shift+C - Copy merged (use Konva stage ref for proper composite)
   useHotkeys(
     "mod+shift+c",
     (e) => {
       e.preventDefault();
-      // Export visible layers to clipboard as PNG
-      const stageCanvas = document.querySelector(
-        "[data-testid='editor-canvas'] canvas",
-      ) as HTMLCanvasElement | null;
-      if (!stageCanvas) return;
-      stageCanvas.toBlob(async (blob) => {
-        if (!blob) return;
-        try {
-          await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-        } catch {
-          // Clipboard API not available
-        }
-      }, "image/png");
+      const stage = editorStageRefHolder.current;
+      if (!stage) return;
+      const { canvasSize } = useEditorStore.getState();
+      const dataUrl = stage.toDataURL({
+        pixelRatio: 1,
+        mimeType: "image/png",
+        x: 0,
+        y: 0,
+        width: canvasSize.width,
+        height: canvasSize.height,
+      });
+      fetch(dataUrl)
+        .then((res) => res.blob())
+        .then(async (blob) => {
+          try {
+            await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+          } catch {
+            // Clipboard API not available
+          }
+        })
+        .catch(() => {
+          // Export failed silently
+        });
     },
     { preventDefault: true },
   );
@@ -806,15 +821,18 @@ export function useEditorShortcuts(callbacks?: { onSave?: () => void; onExport?:
     { preventDefault: true },
   );
 
-  // Shift+Backspace - Fill dialog (trigger callback or use fill tool)
+  // Shift+Backspace - Open fill dialog
   useHotkeys(
     "shift+backspace",
     (e) => {
       if (isInputFocused()) return;
       e.preventDefault();
-      // Fill dialog would be handled by Agent 1's fill-dialog component
-      // For now, switch to fill tool as a fallback
-      useEditorStore.getState().setTool("fill");
+      if (callbacks?.onFillDialog) {
+        callbacks.onFillDialog();
+      } else {
+        // Fallback: dispatch custom event for FillDialog listener
+        window.dispatchEvent(new CustomEvent("snapotter:open-fill-dialog"));
+      }
     },
     { preventDefault: true },
   );
@@ -863,6 +881,7 @@ export function useEditorShortcuts(callbacks?: { onSave?: () => void; onExport?:
 /** Nudge all selected objects by (dx, dy) pixels. */
 function nudgeSelected(dx: number, dy: number): void {
   const state = useEditorStore.getState();
+  if (state.selectedObjectIds.length === 0) return;
   for (const id of state.selectedObjectIds) {
     const obj = state.objects.find((o) => o.id === id);
     if (!obj) continue;
@@ -874,4 +893,9 @@ function nudgeSelected(dx: number, dy: number): void {
       });
     }
   }
+  // Create a history entry so the nudge is undoable
+  useEditorStore.setState((s) => ({
+    _historyVersion: s._historyVersion + 1,
+    lastAction: "Nudge",
+  }));
 }

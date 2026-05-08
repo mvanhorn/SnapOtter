@@ -238,6 +238,9 @@ export function useSelectionTool(): SelectionToolApi {
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentPoints, setCurrentPoints] = useState<number[]>([]);
   const startRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const isDrawingRef = useRef(false);
+  // Polygon vertices for lasso-poly mode
+  const polyVerticesRef = useRef<number[]>([]);
 
   const selectionMode = useEditorStore((s) => s.selectionMode);
 
@@ -256,71 +259,227 @@ export function useSelectionTool(): SelectionToolApi {
       const nb = newSel.bounds;
 
       if (mode === "add") {
+        // Union of the two bounding boxes
         const x = Math.min(eb.x, nb.x);
         const y = Math.min(eb.y, nb.y);
-        setSelection({
-          ...newSel,
-          bounds: {
-            x,
-            y,
-            width: Math.max(eb.x + eb.width, nb.x + nb.width) - x,
-            height: Math.max(eb.y + eb.height, nb.y + nb.height) - y,
-          },
-        });
+        const right = Math.max(eb.x + eb.width, nb.x + nb.width);
+        const bottom = Math.max(eb.y + eb.height, nb.y + nb.height);
+
+        // For mask-based selections (wand, lasso), merge masks
+        if (existingSelection.mask && newSel.mask) {
+          const unionW = right - x;
+          const unionH = bottom - y;
+          const merged = new Uint8Array(unionW * unionH);
+          // Copy existing mask into merged
+          for (let row = 0; row < eb.height; row++) {
+            for (let col = 0; col < eb.width; col++) {
+              const si = row * eb.width + col;
+              const di = (row + eb.y - y) * unionW + (col + eb.x - x);
+              if (existingSelection.mask[si]) merged[di] = 1;
+            }
+          }
+          // OR new mask into merged
+          for (let row = 0; row < nb.height; row++) {
+            for (let col = 0; col < nb.width; col++) {
+              const si = row * nb.width + col;
+              const di = (row + nb.y - y) * unionW + (col + nb.x - x);
+              if (newSel.mask?.[si]) merged[di] = 1;
+            }
+          }
+          setSelection({
+            type: newSel.type,
+            points: [],
+            bounds: { x, y, width: unionW, height: unionH },
+            mask: merged,
+          });
+        } else {
+          setSelection({
+            ...newSel,
+            bounds: { x, y, width: right - x, height: bottom - y },
+          });
+        }
       } else {
-        // subtract: use the new bounds minus overlap (simplified)
-        setSelection(newSel);
+        // Subtract mode: remove the intersection of the new selection from the existing one
+        if (existingSelection.mask && newSel.mask) {
+          // Mask-based subtract: AND inverse of new mask with old mask
+          const result = new Uint8Array(eb.width * eb.height);
+          for (let row = 0; row < eb.height; row++) {
+            for (let col = 0; col < eb.width; col++) {
+              const absX = eb.x + col;
+              const absY = eb.y + row;
+              const ei = row * eb.width + col;
+              // Check if this pixel is in the new selection's mask
+              const relX = absX - nb.x;
+              const relY = absY - nb.y;
+              let inNew = false;
+              if (relX >= 0 && relX < nb.width && relY >= 0 && relY < nb.height) {
+                inNew = newSel.mask?.[relY * nb.width + relX] === 1;
+              }
+              result[ei] = existingSelection.mask[ei] && !inNew ? 1 : 0;
+            }
+          }
+          setSelection({
+            type: existingSelection.type,
+            points: existingSelection.points,
+            bounds: eb,
+            mask: result,
+          });
+        } else {
+          // Geometric subtract for rectangular selections
+          // If the new selection fully contains the old one, deselect
+          if (
+            nb.x <= eb.x &&
+            nb.y <= eb.y &&
+            nb.x + nb.width >= eb.x + eb.width &&
+            nb.y + nb.height >= eb.y + eb.height
+          ) {
+            setSelection(null);
+            return;
+          }
+          // Otherwise keep the existing selection with its bounds reduced where they overlap
+          // This is a simplified approach: we keep the existing bounds but trim from the side
+          // with the largest overlap
+          const overlapX1 = Math.max(eb.x, nb.x);
+          const overlapY1 = Math.max(eb.y, nb.y);
+          const overlapX2 = Math.min(eb.x + eb.width, nb.x + nb.width);
+          const overlapY2 = Math.min(eb.y + eb.height, nb.y + nb.height);
+
+          // No overlap means nothing to subtract
+          if (overlapX2 <= overlapX1 || overlapY2 <= overlapY1) {
+            return;
+          }
+
+          // Determine which side the overlap is on and trim accordingly
+          const trimLeft = overlapX1 === eb.x ? overlapX2 - eb.x : 0;
+          const trimRight = overlapX2 === eb.x + eb.width ? eb.x + eb.width - overlapX1 : 0;
+          const trimTop = overlapY1 === eb.y ? overlapY2 - eb.y : 0;
+          const trimBottom = overlapY2 === eb.y + eb.height ? eb.y + eb.height - overlapY1 : 0;
+
+          const maxTrim = Math.max(trimLeft, trimRight, trimTop, trimBottom);
+          let newBounds = { ...eb };
+          if (maxTrim === trimLeft && trimLeft > 0) {
+            newBounds = {
+              x: eb.x + trimLeft,
+              y: eb.y,
+              width: eb.width - trimLeft,
+              height: eb.height,
+            };
+          } else if (maxTrim === trimRight && trimRight > 0) {
+            newBounds = { x: eb.x, y: eb.y, width: eb.width - trimRight, height: eb.height };
+          } else if (maxTrim === trimTop && trimTop > 0) {
+            newBounds = {
+              x: eb.x,
+              y: eb.y + trimTop,
+              width: eb.width,
+              height: eb.height - trimTop,
+            };
+          } else if (maxTrim === trimBottom && trimBottom > 0) {
+            newBounds = { x: eb.x, y: eb.y, width: eb.width, height: eb.height - trimBottom };
+          }
+
+          if (newBounds.width <= 0 || newBounds.height <= 0) {
+            setSelection(null);
+          } else {
+            setSelection({
+              type: existingSelection.type,
+              points: existingSelection.points,
+              bounds: newBounds,
+            });
+          }
+        }
       }
     },
     [existingSelection, setSelection],
   );
 
+  const isPolyLasso = useCallback(() => {
+    return useEditorStore.getState().activeTool === "lasso-poly";
+  }, []);
+
   const onMouseDown = useCallback(
     (pos: { x: number; y: number }, _stage?: Konva.Stage) => {
-      setIsDrawing(true);
-      startRef.current = pos;
-      if (selectionType === "lasso") {
-        setCurrentPoints([pos.x, pos.y]);
+      if (selectionType === "lasso" && isPolyLasso()) {
+        // Polygonal lasso: each click adds a vertex
+        if (!isDrawingRef.current) {
+          // Start a new polygon
+          setIsDrawing(true);
+          isDrawingRef.current = true;
+          polyVerticesRef.current = [pos.x, pos.y];
+          setCurrentPoints([pos.x, pos.y]);
+        } else {
+          // Add another vertex
+          polyVerticesRef.current = [...polyVerticesRef.current, pos.x, pos.y];
+          setCurrentPoints([...polyVerticesRef.current]);
+        }
       } else {
-        setCurrentPoints([]);
+        // Freehand lasso, rect, or ellipse
+        setIsDrawing(true);
+        isDrawingRef.current = true;
+        startRef.current = pos;
+        if (selectionType === "lasso") {
+          setCurrentPoints([pos.x, pos.y]);
+        } else {
+          setCurrentPoints([]);
+        }
       }
     },
-    [selectionType],
+    [selectionType, isPolyLasso],
   );
 
   const onMouseMove = useCallback(
     (pos: { x: number; y: number }) => {
-      if (!isDrawing) return;
+      if (!isDrawingRef.current) return;
 
-      if (selectionType === "lasso") {
+      if (selectionType === "lasso" && isPolyLasso()) {
+        // Polygonal lasso: show rubber band line from last vertex to cursor
+        const verts = polyVerticesRef.current;
+        setCurrentPoints([...verts, pos.x, pos.y]);
+      } else if (selectionType === "lasso") {
+        // Freehand lasso
         setCurrentPoints((prev) => [...prev, pos.x, pos.y]);
       } else {
         const s = startRef.current;
         setCurrentPoints([s.x, s.y, pos.x, pos.y]);
       }
     },
-    [isDrawing, selectionType],
+    [selectionType, isPolyLasso],
   );
 
-  const onMouseUp = useCallback(() => {
-    if (!isDrawing) return;
-    setIsDrawing(false);
-
-    if (selectionType === "lasso") {
-      if (currentPoints.length < 6) {
+  const finalizeLasso = useCallback(
+    (points: number[]) => {
+      if (points.length < 6) {
         setSelection(null);
         setCurrentPoints([]);
         return;
       }
-      const xs = currentPoints.filter((_, i) => i % 2 === 0);
-      const ys = currentPoints.filter((_, i) => i % 2 === 1);
+      const xs = points.filter((_, i) => i % 2 === 0);
+      const ys = points.filter((_, i) => i % 2 === 1);
       const bounds = {
         x: Math.min(...xs),
         y: Math.min(...ys),
         width: Math.max(...xs) - Math.min(...xs),
         height: Math.max(...ys) - Math.min(...ys),
       };
-      mergeSelection({ type: "lasso", points: currentPoints, bounds }, selectionMode);
+      mergeSelection({ type: "lasso", points, bounds }, selectionMode);
+      setCurrentPoints([]);
+    },
+    [selectionMode, mergeSelection, setSelection],
+  );
+
+  const onMouseUp = useCallback(() => {
+    if (!isDrawingRef.current) return;
+
+    if (selectionType === "lasso" && isPolyLasso()) {
+      // Polygonal lasso: mouseUp does NOT close the polygon, only dblclick does.
+      // The vertex was already added in onMouseDown, so nothing to do here.
+      return;
+    }
+
+    setIsDrawing(false);
+    isDrawingRef.current = false;
+
+    if (selectionType === "lasso") {
+      finalizeLasso(currentPoints);
     } else {
       if (currentPoints.length < 4) {
         setCurrentPoints([]);
@@ -346,30 +505,26 @@ export function useSelectionTool(): SelectionToolApi {
       );
     }
     setCurrentPoints([]);
-  }, [isDrawing, currentPoints, selectionType, selectionMode, mergeSelection, setSelection]);
+  }, [
+    currentPoints,
+    selectionType,
+    selectionMode,
+    mergeSelection,
+    setSelection,
+    finalizeLasso,
+    isPolyLasso,
+  ]);
 
   const onDoubleClick = useCallback(() => {
     // Close polygonal lasso
-    if (selectionType === "lasso" && currentPoints.length >= 6) {
+    if (selectionType === "lasso" && isDrawingRef.current) {
       setIsDrawing(false);
-      const xs = currentPoints.filter((_, i) => i % 2 === 0);
-      const ys = currentPoints.filter((_, i) => i % 2 === 1);
-      mergeSelection(
-        {
-          type: "lasso",
-          points: currentPoints,
-          bounds: {
-            x: Math.min(...xs),
-            y: Math.min(...ys),
-            width: Math.max(...xs) - Math.min(...xs),
-            height: Math.max(...ys) - Math.min(...ys),
-          },
-        },
-        selectionMode,
-      );
-      setCurrentPoints([]);
+      isDrawingRef.current = false;
+      const verts = polyVerticesRef.current;
+      finalizeLasso(verts);
+      polyVerticesRef.current = [];
     }
-  }, [selectionType, currentPoints, selectionMode, mergeSelection]);
+  }, [selectionType, finalizeLasso]);
 
   const selectAll = useCallback(() => {
     setSelection({
@@ -385,16 +540,33 @@ export function useSelectionTool(): SelectionToolApi {
 
   const magicWandSelect = useCallback(
     (stage: Konva.Stage, x: number, y: number, tolerance: number, contiguous: boolean) => {
-      const canvas = stage.toCanvas();
+      // Use explicit viewport options to get a consistent unzoomed canvas,
+      // ignoring zoom/pan transforms and device pixel ratio
+      const canvas = stage.toCanvas({
+        pixelRatio: 1,
+        x: 0,
+        y: 0,
+        width: canvasSize.width,
+        height: canvasSize.height,
+      });
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const imageData = ctx.getImageData(0, 0, canvasSize.width, canvasSize.height);
       const mask = floodFillMask(imageData, x, y, tolerance, contiguous);
       const bounds = maskToBounds(mask);
       if (!bounds) return;
-      mergeSelection({ type: "rect", points: [], bounds }, selectionMode);
+
+      // Convert the boolean[][] mask to a flat Uint8Array within the bounds region
+      const flatMask = new Uint8Array(bounds.width * bounds.height);
+      for (let row = 0; row < bounds.height; row++) {
+        for (let col = 0; col < bounds.width; col++) {
+          flatMask[row * bounds.width + col] = mask[bounds.y + row][bounds.x + col] ? 1 : 0;
+        }
+      }
+
+      mergeSelection({ type: "wand", points: [], bounds, mask: flatMask }, selectionMode);
     },
-    [selectionMode, mergeSelection],
+    [selectionMode, mergeSelection, canvasSize],
   );
 
   return {

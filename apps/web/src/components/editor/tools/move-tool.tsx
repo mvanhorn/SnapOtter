@@ -383,22 +383,44 @@ export function useMoveTool(): MoveToolApi {
   const onTransformEnd = useCallback(
     (e: Konva.KonvaEventObject<Event>) => {
       const node = e.target;
+      const id = node.id();
       const scaleX = node.scaleX();
       const scaleY = node.scaleY();
 
-      // Normalize scale into width/height
+      // Normalize scale into absolute dimensions
       const newWidth = Math.max(1, node.width() * scaleX);
       const newHeight = Math.max(1, node.height() * scaleY);
       node.scaleX(1);
       node.scaleY(1);
 
-      updateObject(node.id(), {
+      // Look up the object type to write the correct attributes
+      const obj = useEditorStore.getState().objects.find((o) => o.id === id);
+      const newAttrs: Record<string, unknown> = {
         x: node.x(),
         y: node.y(),
-        width: newWidth,
-        height: newHeight,
         rotation: node.rotation(),
-      });
+      };
+
+      if (obj?.type === "ellipse") {
+        // Convert width/height to radiusX/radiusY for ellipses
+        newAttrs.radiusX = newWidth / 2;
+        newAttrs.radiusY = newHeight / 2;
+      } else if (obj?.type === "polygon") {
+        // Convert to radius for polygons (average of width/height / 2)
+        newAttrs.radius = (newWidth + newHeight) / 4;
+      } else if (obj?.type === "star") {
+        // Scale outerRadius and innerRadius proportionally for stars
+        const starAttrs = obj.attrs as { outerRadius: number; innerRadius: number };
+        const avgScale = (Math.abs(scaleX) + Math.abs(scaleY)) / 2;
+        newAttrs.outerRadius = starAttrs.outerRadius * avgScale;
+        newAttrs.innerRadius = starAttrs.innerRadius * avgScale;
+      } else {
+        // Rectangles, images, text: use width/height directly
+        newAttrs.width = newWidth;
+        newAttrs.height = newHeight;
+      }
+
+      updateObject(id, newAttrs);
     },
     [updateObject],
   );

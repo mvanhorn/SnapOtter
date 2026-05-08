@@ -9,7 +9,7 @@ export default defineConfig({
   retries: 0,
   reporter: "html",
   use: {
-    baseURL: "http://localhost:1351",
+    baseURL: `http://localhost:${process.env.EDITOR_TEST_PORT ?? "1349"}`,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     viewport: { width: 1440, height: 900 },

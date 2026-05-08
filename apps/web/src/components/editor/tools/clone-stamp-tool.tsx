@@ -145,11 +145,25 @@ export function useCloneStampTool(stageRef: React.RefObject<Konva.Stage | null>)
 
     paintDab(ctx, sourceSnapshot, x, y, offsetX, offsetY, brushSize, brushOpacity, canvasSize);
 
-    const dataUrl = canvas.toDataURL();
-    useEditorStore.getState().updateObject(objectId, { src: dataUrl });
+    // Use canvas element directly as image source during the stroke instead of
+    // converting to a data URL on every mouse move (major perf fix).
+    // The "image" property is a runtime-only hint for the renderer; cast to bypass strict attrs type.
+    useEditorStore
+      .getState()
+      .updateObject(objectId, { image: canvas } as unknown as Record<string, unknown>);
   }, []);
 
   const handleMouseUp = useCallback(() => {
+    if (stampRef.current) {
+      const { canvas, objectId } = stampRef.current;
+      const dataUrl = canvas.toDataURL();
+      useEditorStore
+        .getState()
+        .updateObject(objectId, { src: dataUrl, image: undefined } as unknown as Record<
+          string,
+          unknown
+        >);
+    }
     stampRef.current = null;
   }, []);
 

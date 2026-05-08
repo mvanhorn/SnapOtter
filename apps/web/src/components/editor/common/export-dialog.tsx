@@ -542,9 +542,33 @@ interface AutosaveData {
   state: AutosaveState;
 }
 
-export function saveEditorState(): void {
+/**
+ * Convert a blob: URL to a data: URL. Returns the original string
+ * if it is not a blob URL or if the fetch fails.
+ */
+async function blobUrlToDataUrl(url: string): Promise<string> {
+  if (!url.startsWith("blob:")) return url;
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    return await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () => resolve(url);
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return url;
+  }
+}
+
+export async function saveEditorState(): Promise<void> {
   try {
     const s = useEditorStore.getState();
+
+    // Convert blob URLs to data URLs so they survive localStorage round-trip
+    const sourceImageUrl = s.sourceImageUrl ? await blobUrlToDataUrl(s.sourceImageUrl) : null;
+
     const data: AutosaveData = {
       version: 1,
       timestamp: Date.now(),
@@ -555,16 +579,21 @@ export function saveEditorState(): void {
         adjustments: s.adjustments,
         filters: s.filters,
         guides: s.guides,
-        sourceImageUrl: s.sourceImageUrl,
+        sourceImageUrl,
         sourceImageSize: s.sourceImageSize,
         foregroundColor: s.foregroundColor,
         backgroundColor: s.backgroundColor,
       },
     };
-    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(data));
-    useEditorStore.setState({ lastAutoSave: Date.now() });
+
+    try {
+      localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(data));
+      useEditorStore.setState({ lastAutoSave: Date.now() });
+    } catch (storageErr) {
+      console.warn("[SnapOtter] Autosave failed (localStorage quota may be exceeded):", storageErr);
+    }
   } catch {
-    // localStorage might be full or unavailable
+    // Serialization or fetch error
   }
 }
 

@@ -204,14 +204,49 @@ export function TransformToolTransformer({
   const handleTransformEnd = useCallback(
     (e: Konva.KonvaEventObject<Event>) => {
       const node = e.target;
+      const id = node.id();
       const scaleX = node.scaleX();
       const scaleY = node.scaleY();
       const newW = Math.max(1, node.width() * scaleX);
       const newH = Math.max(1, node.height() * scaleY);
+
+      // Reset scale on the Konva node
       node.scaleX(1);
       node.scaleY(1);
       node.width(newW);
       node.height(newH);
+
+      // Directly update the store with the new attributes
+      if (id) {
+        const obj = useEditorStore.getState().objects.find((o) => o.id === id);
+        const newAttrs: Record<string, unknown> = {
+          x: node.x(),
+          y: node.y(),
+          rotation: node.rotation(),
+        };
+
+        if (obj?.type === "ellipse") {
+          // Convert width/height to radiusX/radiusY for ellipses
+          newAttrs.radiusX = newW / 2;
+          newAttrs.radiusY = newH / 2;
+        } else if (obj?.type === "polygon") {
+          // Convert width/height to radius for polygons
+          newAttrs.radius = (newW + newH) / 4;
+        } else if (obj?.type === "star") {
+          // Scale outerRadius and innerRadius proportionally for stars
+          const starAttrs = obj.attrs as { outerRadius: number; innerRadius: number };
+          const avgScale = (Math.abs(scaleX) + Math.abs(scaleY)) / 2;
+          newAttrs.outerRadius = starAttrs.outerRadius * avgScale;
+          newAttrs.innerRadius = starAttrs.innerRadius * avgScale;
+        } else {
+          // Rectangles, images, text: use width/height directly
+          newAttrs.width = newW;
+          newAttrs.height = newH;
+        }
+
+        useEditorStore.getState().updateObject(id, newAttrs);
+      }
+
       onTransformEnd?.(e);
     },
     [onTransformEnd],

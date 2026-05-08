@@ -369,9 +369,31 @@ function LayerRow({
     setEditing(false);
   }, [editName, layer.name, onRename]);
 
+  // Timer-based single-click vs double-click differentiation for the name button
+  const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleNameClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (clickTimerRef.current) {
+        // Second click within threshold: enter rename mode
+        clearTimeout(clickTimerRef.current);
+        clickTimerRef.current = null;
+        setEditing(true);
+      } else {
+        // First click: start timer; if no second click, select the layer
+        clickTimerRef.current = setTimeout(() => {
+          clickTimerRef.current = null;
+          onSelect();
+        }, 250);
+      }
+    },
+    [onSelect],
+  );
+
   const handleDoubleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    setEditing(true);
+    // Handled by the timer-based approach in handleNameClick
   }, []);
 
   const handleKeyDown = useCallback(
@@ -526,6 +548,7 @@ function LayerRow({
               "block text-xs truncate text-left bg-transparent border-0 p-0 w-full cursor-pointer",
               isActive ? "text-foreground font-medium" : "text-muted-foreground",
             )}
+            onClick={handleNameClick}
             onDoubleClick={handleDoubleClick}
             onPointerDown={(e) => e.stopPropagation()}
             data-testid={`layer-name-${layer.id}`}

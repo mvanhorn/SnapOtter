@@ -834,7 +834,8 @@ describe("Selection", () => {
     };
     act((s) => s.setSelection(sel));
     act((s) => s.invertSelection());
-    expect(state().selection?.mask).toBeUndefined();
+    // After fix: invertSelection now creates a mask from bounds and inverts it
+    expect(state().selection?.mask).toBeDefined();
   });
 });
 
@@ -1198,10 +1199,13 @@ describe("Canvas Transforms", () => {
     act((s) => s.addObject(makeRect({ id: "r1", x: 100, y: 200 })));
     act((s) => s.trimCanvas());
     expect(state().isDirty).toBe(true);
-    expect(state().canvasSize).toEqual({ width: 100, height: 50 });
+    // Trim now includes strokeWidth (1px / 2 = 0.5px per side -> 1px extra per axis)
+    expect(state().canvasSize).toEqual({ width: 102, height: 52 });
     const obj = state().objects[0];
-    expect(obj.type === "rect" && obj.attrs.x).toBe(0);
-    expect(obj.type === "rect" && obj.attrs.y).toBe(0);
+    // Object at (100,200) with stroke half-width 0.5: trim origin is floor(99.5)=99
+    // so x = 100 - 99 = 1, y = 200 - 199 = 1
+    expect(obj.type === "rect" && obj.attrs.x).toBe(1);
+    expect(obj.type === "rect" && obj.attrs.y).toBe(1);
   });
 
   it("trimCanvas no-ops when no objects exist", () => {
@@ -1243,5 +1247,550 @@ describe("Cursor Position", () => {
   it("setCursorPosition updates position", () => {
     act((s) => s.setCursorPosition({ x: 150, y: 250 }));
     expect(state().cursorPosition).toEqual({ x: 150, y: 250 });
+  });
+});
+
+// ===========================================================================
+// Helper factories for new object types
+// ===========================================================================
+
+function makeEllipse(
+  overrides: Partial<{ id: string; layerId: string; x: number; y: number }> = {},
+): CanvasObject {
+  return {
+    id: overrides.id ?? "ellipse-1",
+    type: "ellipse",
+    layerId: overrides.layerId ?? state().activeLayerId,
+    attrs: {
+      x: overrides.x ?? 200,
+      y: overrides.y ?? 150,
+      radiusX: 80,
+      radiusY: 50,
+      fill: "#00ff00",
+      stroke: "#000000",
+      strokeWidth: 2,
+      rotation: 0,
+      opacity: 1,
+    },
+  };
+}
+
+function makeArrow(overrides: Partial<{ id: string; layerId: string }> = {}): CanvasObject {
+  return {
+    id: overrides.id ?? "arrow-1",
+    type: "arrow",
+    layerId: overrides.layerId ?? state().activeLayerId,
+    attrs: {
+      points: [10, 20, 110, 120],
+      fill: "#000",
+      stroke: "#000",
+      strokeWidth: 3,
+      pointerLength: 10,
+      pointerWidth: 10,
+      rotation: 0,
+      opacity: 1,
+    },
+  };
+}
+
+// ===========================================================================
+// resizeImage with object scaling
+// ===========================================================================
+
+describe("resizeImage object scaling", () => {
+  it("scales rect positions and dimensions proportionally", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeRect({ id: "r1", x: 100, y: 200 })));
+    act((s) => s.resizeImage(400, 300));
+    const obj = state().objects[0];
+    expect(obj.type).toBe("rect");
+    if (obj.type === "rect") {
+      expect(obj.attrs.x).toBe(50); // 100 * (400/800)
+      expect(obj.attrs.y).toBe(100); // 200 * (300/600)
+      expect(obj.attrs.width).toBe(50); // 100 * 0.5
+      expect(obj.attrs.height).toBe(25); // 50 * 0.5
+    }
+  });
+
+  it("scales line/arrow points arrays proportionally", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeLine({ id: "l1" })));
+    // line points: [0, 0, 100, 100]
+    act((s) => s.resizeImage(400, 300));
+    const obj = state().objects[0];
+    expect(obj.type).toBe("line");
+    if (obj.type === "line") {
+      expect(obj.attrs.points[0]).toBe(0); // 0 * 0.5
+      expect(obj.attrs.points[1]).toBe(0); // 0 * 0.5
+      expect(obj.attrs.points[2]).toBe(50); // 100 * 0.5
+      expect(obj.attrs.points[3]).toBe(50); // 100 * 0.5
+    }
+  });
+
+  it("scales ellipse radii proportionally", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeEllipse({ id: "e1", x: 200, y: 150 })));
+    act((s) => s.resizeImage(400, 300));
+    const obj = state().objects[0];
+    expect(obj.type).toBe("ellipse");
+    if (obj.type === "ellipse") {
+      expect(obj.attrs.x).toBe(100); // 200 * 0.5
+      expect(obj.attrs.y).toBe(75); // 150 * 0.5
+      expect(obj.attrs.radiusX).toBe(40); // 80 * 0.5
+      expect(obj.attrs.radiusY).toBe(25); // 50 * 0.5
+    }
+  });
+
+  it("scales text fontSize and position", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeText({ id: "t1", x: 50, y: 60 })));
+    act((s) => s.resizeImage(400, 300));
+    const obj = state().objects[0];
+    expect(obj.type).toBe("text");
+    if (obj.type === "text") {
+      expect(obj.attrs.x).toBe(25); // 50 * 0.5
+      expect(obj.attrs.y).toBe(30); // 60 * 0.5
+      expect(obj.attrs.fontSize).toBe(8); // 16 * 0.5
+    }
+  });
+
+  it("scales strokeWidth", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeRect({ id: "r1" })));
+    act((s) => s.resizeImage(400, 300));
+    const obj = state().objects[0];
+    if (obj.type === "rect") {
+      expect(obj.attrs.strokeWidth).toBe(0.5); // 1 * 0.5
+    }
+  });
+
+  it("handles non-uniform scaling (different scaleX/scaleY)", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeRect({ id: "r1", x: 100, y: 200 })));
+    // Scale width by 2x, height by 0.5x
+    act((s) => s.resizeImage(1600, 300));
+    const obj = state().objects[0];
+    if (obj.type === "rect") {
+      expect(obj.attrs.x).toBe(200); // 100 * 2
+      expect(obj.attrs.y).toBe(100); // 200 * 0.5
+      expect(obj.attrs.width).toBe(200); // 100 * 2
+      expect(obj.attrs.height).toBe(25); // 50 * 0.5
+      // strokeWidth scales by min(scaleX, scaleY) = min(2, 0.5) = 0.5
+      expect(obj.attrs.strokeWidth).toBe(0.5);
+    }
+  });
+});
+
+// ===========================================================================
+// rotateCanvas with points-based objects
+// ===========================================================================
+
+describe("rotateCanvas with line objects", () => {
+  it("rotates line points 90 degrees clockwise", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    // line with points [0, 0, 100, 100]
+    act((s) => s.addObject(makeLine({ id: "l1" })));
+    act((s) => s.rotateCanvas(90));
+    const obj = state().objects[0];
+    if (obj.type === "line") {
+      // 90 deg CW: newX = canvasHeight - py, newY = px
+      // canvasHeight was 600 before rotation
+      expect(obj.attrs.points[0]).toBe(600); // 600 - 0
+      expect(obj.attrs.points[1]).toBe(0); // 0
+      expect(obj.attrs.points[2]).toBe(500); // 600 - 100
+      expect(obj.attrs.points[3]).toBe(100); // 100
+    }
+  });
+
+  it("rotates line points 270 degrees clockwise", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeLine({ id: "l1" })));
+    act((s) => s.rotateCanvas(270));
+    const obj = state().objects[0];
+    if (obj.type === "line") {
+      // 270 deg CW: newX = py, newY = canvasWidth - px
+      // canvasWidth was 800 before rotation
+      expect(obj.attrs.points[0]).toBe(0); // 0
+      expect(obj.attrs.points[1]).toBe(800); // 800 - 0
+      expect(obj.attrs.points[2]).toBe(100); // 100
+      expect(obj.attrs.points[3]).toBe(700); // 800 - 100
+    }
+  });
+
+  it("rotates line points 180 degrees", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeLine({ id: "l1" })));
+    act((s) => s.rotateCanvas(180));
+    const obj = state().objects[0];
+    if (obj.type === "line") {
+      // 180 deg: newX = canvasWidth - px, newY = canvasHeight - py
+      expect(obj.attrs.points[0]).toBe(800); // 800 - 0
+      expect(obj.attrs.points[1]).toBe(600); // 600 - 0
+      expect(obj.attrs.points[2]).toBe(700); // 800 - 100
+      expect(obj.attrs.points[3]).toBe(500); // 600 - 100
+    }
+  });
+});
+
+// ===========================================================================
+// flipCanvas with points-based objects
+// ===========================================================================
+
+describe("flipCanvas with line objects", () => {
+  it("flipCanvasHorizontal flips line points x-coordinates", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeLine({ id: "l1" })));
+    act((s) => s.flipCanvasHorizontal());
+    const obj = state().objects[0];
+    if (obj.type === "line") {
+      // Flip horizontal: newX = canvasWidth - px, y unchanged
+      expect(obj.attrs.points[0]).toBe(800); // 800 - 0
+      expect(obj.attrs.points[1]).toBe(0); // unchanged
+      expect(obj.attrs.points[2]).toBe(700); // 800 - 100
+      expect(obj.attrs.points[3]).toBe(100); // unchanged
+    }
+  });
+
+  it("flipCanvasVertical flips line points y-coordinates", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeLine({ id: "l1" })));
+    act((s) => s.flipCanvasVertical());
+    const obj = state().objects[0];
+    if (obj.type === "line") {
+      // Flip vertical: x unchanged, newY = canvasHeight - py
+      expect(obj.attrs.points[0]).toBe(0); // unchanged
+      expect(obj.attrs.points[1]).toBe(600); // 600 - 0
+      expect(obj.attrs.points[2]).toBe(100); // unchanged
+      expect(obj.attrs.points[3]).toBe(500); // 600 - 100
+    }
+  });
+});
+
+// ===========================================================================
+// flipCanvas/rotateCanvas with center-based objects (ellipse)
+// ===========================================================================
+
+describe("transform with center-based objects", () => {
+  it("flipCanvasHorizontal correctly flips ellipse center position (no width subtraction)", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeEllipse({ id: "e1", x: 200, y: 150 })));
+    act((s) => s.flipCanvasHorizontal());
+    const obj = state().objects[0];
+    if (obj.type === "ellipse") {
+      // Center-based: newX = canvasWidth - x (no width subtraction)
+      expect(obj.attrs.x).toBe(600); // 800 - 200
+      expect(obj.attrs.y).toBe(150); // unchanged
+    }
+  });
+
+  it("rotateCanvas 90 correctly rotates ellipse center position", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeEllipse({ id: "e1", x: 200, y: 150 })));
+    act((s) => s.rotateCanvas(90));
+    const obj = state().objects[0];
+    if (obj.type === "ellipse") {
+      // Center-based 90 deg: newX = canvasHeight - y (no height subtraction), newY = x
+      expect(obj.attrs.x).toBe(450); // 600 - 150
+      expect(obj.attrs.y).toBe(200); // original x
+      // Radii swap for 90 deg rotation
+      expect(obj.attrs.radiusX).toBe(50); // was radiusY
+      expect(obj.attrs.radiusY).toBe(80); // was radiusX
+    }
+  });
+});
+
+// ===========================================================================
+// trimCanvas with points-based objects
+// ===========================================================================
+
+describe("trimCanvas with line objects", () => {
+  it("computes correct bounds from line points", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    // Line with points [50, 100, 250, 300], strokeWidth = 2
+    const lineObj: CanvasObject = {
+      id: "l1",
+      type: "line",
+      layerId: state().activeLayerId,
+      attrs: {
+        points: [50, 100, 250, 300],
+        stroke: "#000",
+        strokeWidth: 2,
+        tension: 0,
+        lineCap: "round",
+        lineJoin: "round",
+        opacity: 1,
+        globalCompositeOperation: "source-over",
+      },
+    };
+    act((s) => s.addObject(lineObj));
+    act((s) => s.trimCanvas());
+    // Bounds: minX = 50-1=49, minY = 100-1=99, maxX = 250+1=251, maxY = 300+1=301
+    // Trimmed size = ceil(251) - floor(49) = 251-49 = 202, ceil(301) - floor(99) = 301-99 = 202
+    expect(state().canvasSize).toEqual({ width: 202, height: 202 });
+  });
+
+  it("offsets line points after trim", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    const lineObj: CanvasObject = {
+      id: "l1",
+      type: "line",
+      layerId: state().activeLayerId,
+      attrs: {
+        points: [50, 100, 250, 300],
+        stroke: "#000",
+        strokeWidth: 2,
+        tension: 0,
+        lineCap: "round",
+        lineJoin: "round",
+        opacity: 1,
+        globalCompositeOperation: "source-over",
+      },
+    };
+    act((s) => s.addObject(lineObj));
+    act((s) => s.trimCanvas());
+    const obj = state().objects[0];
+    if (obj.type === "line") {
+      // minX = floor(49) = 49, minY = floor(99) = 99
+      expect(obj.attrs.points[0]).toBe(1); // 50 - 49
+      expect(obj.attrs.points[1]).toBe(1); // 100 - 99
+      expect(obj.attrs.points[2]).toBe(201); // 250 - 49
+      expect(obj.attrs.points[3]).toBe(201); // 300 - 99
+    }
+  });
+});
+
+// ===========================================================================
+// applyCrop with points-based objects
+// ===========================================================================
+
+describe("applyCrop with line objects", () => {
+  it("shifts line points by crop offset", () => {
+    act((s) => s.loadImage("blob:test", 800, 600));
+    act((s) => s.addObject(makeLine({ id: "l1" })));
+    // line points: [0, 0, 100, 100]
+    act((s) => s.setCropState({ x: 20, y: 30, width: 400, height: 300, aspectRatio: null }));
+    act((s) => s.applyCrop());
+    const obj = state().objects[0];
+    if (obj.type === "line") {
+      expect(obj.attrs.points[0]).toBe(-20); // 0 - 20
+      expect(obj.attrs.points[1]).toBe(-30); // 0 - 30
+      expect(obj.attrs.points[2]).toBe(80); // 100 - 20
+      expect(obj.attrs.points[3]).toBe(70); // 100 - 30
+    }
+  });
+});
+
+// ===========================================================================
+// invertSelection for bounds-based selections
+// ===========================================================================
+
+describe("invertSelection for bounds-based selections", () => {
+  it("creates mask from bounds and inverts it", () => {
+    // Use a small canvas for tractable mask sizes
+    useEditorStore.setState({ canvasSize: { width: 10, height: 10 } });
+    const sel = {
+      type: "rect" as const,
+      points: [2, 2, 6, 6],
+      bounds: { x: 2, y: 2, width: 4, height: 4 },
+    };
+    act((s) => s.setSelection(sel));
+    act((s) => s.invertSelection());
+    const mask = state().selection?.mask;
+    expect(mask).toBeDefined();
+  });
+
+  it("mask has correct dimensions (canvasSize width * height)", () => {
+    useEditorStore.setState({ canvasSize: { width: 10, height: 10 } });
+    const sel = {
+      type: "rect" as const,
+      points: [2, 2, 6, 6],
+      bounds: { x: 2, y: 2, width: 4, height: 4 },
+    };
+    act((s) => s.setSelection(sel));
+    act((s) => s.invertSelection());
+    const mask = state().selection?.mask;
+    expect(mask?.length).toBe(100); // 10 * 10
+  });
+
+  it("area inside bounds is 0 after inversion, outside is 255", () => {
+    useEditorStore.setState({ canvasSize: { width: 10, height: 10 } });
+    const sel = {
+      type: "rect" as const,
+      points: [2, 2, 6, 6],
+      bounds: { x: 2, y: 2, width: 4, height: 4 },
+    };
+    act((s) => s.setSelection(sel));
+    act((s) => s.invertSelection());
+    const mask = state().selection!.mask!;
+    // Inside the bounds (rows 2-5, cols 2-5) should be 0 (was 255, now inverted)
+    expect(mask[2 * 10 + 2]).toBe(0); // row 2, col 2
+    expect(mask[5 * 10 + 5]).toBe(0); // row 5, col 5
+    // Outside the bounds should be 255 (was 0, now inverted)
+    expect(mask[0 * 10 + 0]).toBe(255); // row 0, col 0
+    expect(mask[9 * 10 + 9]).toBe(255); // row 9, col 9
+  });
+});
+
+// ===========================================================================
+// cutObjects atomic
+// ===========================================================================
+
+describe("cutObjects atomic", () => {
+  it("removes selected objects and stores in clipboard atomically", () => {
+    act((s) => s.addObject(makeRect({ id: "r1" })));
+    act((s) => s.addObject(makeRect({ id: "r2" })));
+    act((s) => s.setSelectedObjects(["r1"]));
+    act((s) => s.cutObjects());
+    // clipboard should contain the cut object
+    expect(state().clipboard).toHaveLength(1);
+    expect(state().clipboard?.[0].id).toBe("r1");
+    // r1 removed from objects
+    expect(state().objects).toHaveLength(1);
+    expect(state().objects[0].id).toBe("r2");
+    // selection cleared
+    expect(state().selectedObjectIds).toEqual([]);
+  });
+
+  it("creates history entry with Cut action", () => {
+    act((s) => s.addObject(makeRect({ id: "r1" })));
+    act((s) => s.setSelectedObjects(["r1"]));
+    const versionBefore = state()._historyVersion;
+    act((s) => s.cutObjects());
+    expect(state().lastAction).toBe("Cut");
+    expect(state()._historyVersion).toBe(versionBefore + 1);
+  });
+
+  it("does nothing when no objects selected", () => {
+    act((s) => s.addObject(makeRect({ id: "r1" })));
+    act((s) => s.setSelectedObjects([]));
+    const objsBefore = state().objects.length;
+    const versionBefore = state()._historyVersion;
+    act((s) => s.cutObjects());
+    expect(state().objects.length).toBe(objsBefore);
+    expect(state().clipboard).toBeNull();
+    expect(state()._historyVersion).toBe(versionBefore);
+  });
+});
+
+// ===========================================================================
+// sendToBack with multiple layers
+// ===========================================================================
+
+describe("sendToBack with multiple layers", () => {
+  it("places object at start of its layer's section, not at index 0", () => {
+    const layer1Id = state().activeLayerId;
+    act((s) => s.addLayer());
+    const layer2Id = state().activeLayerId;
+    // Add objects to layer 1
+    act((s) => s.addObject(makeRect({ id: "l1-r1", layerId: layer1Id })));
+    act((s) => s.addObject(makeRect({ id: "l1-r2", layerId: layer1Id })));
+    // Add objects to layer 2
+    act((s) => s.addObject(makeRect({ id: "l2-r1", layerId: layer2Id })));
+    act((s) => s.addObject(makeRect({ id: "l2-r2", layerId: layer2Id })));
+    // Send last object of layer 2 to back within its layer
+    act((s) => s.sendToBack("l2-r2"));
+    // l2-r2 should be before l2-r1 but after layer 1 objects
+    const ids = state().objects.map((o) => o.id);
+    const l2r2Idx = ids.indexOf("l2-r2");
+    const l2r1Idx = ids.indexOf("l2-r1");
+    const l1r2Idx = ids.indexOf("l1-r2");
+    expect(l2r2Idx).toBeLessThan(l2r1Idx);
+    expect(l2r2Idx).toBeGreaterThan(l1r2Idx);
+  });
+
+  it("handles case when no other objects on same layer", () => {
+    const layer1Id = state().activeLayerId;
+    act((s) => s.addLayer());
+    const layer2Id = state().activeLayerId;
+    // Add objects to layer 1
+    act((s) => s.addObject(makeRect({ id: "l1-r1", layerId: layer1Id })));
+    // Add single object to layer 2
+    act((s) => s.addObject(makeRect({ id: "l2-r1", layerId: layer2Id })));
+    // sendToBack should still work (no other objects on the same layer)
+    act((s) => s.sendToBack("l2-r1"));
+    const ids = state().objects.map((o) => o.id);
+    // l2-r1 should still be after layer 1 objects
+    expect(ids.indexOf("l2-r1")).toBeGreaterThan(ids.indexOf("l1-r1"));
+  });
+});
+
+// ===========================================================================
+// batchNudge
+// ===========================================================================
+
+describe("batchNudge", () => {
+  it("moves multiple objects by dx, dy", () => {
+    act((s) => s.addObject(makeRect({ id: "r1", x: 10, y: 20 })));
+    act((s) => s.addObject(makeRect({ id: "r2", x: 50, y: 60 })));
+    act((s) => s.batchNudge(["r1", "r2"], 5, -3));
+    const r1 = state().objects.find((o) => o.id === "r1")!;
+    const r2 = state().objects.find((o) => o.id === "r2")!;
+    if (r1.type === "rect") {
+      expect(r1.attrs.x).toBe(15); // 10 + 5
+      expect(r1.attrs.y).toBe(17); // 20 - 3
+    }
+    if (r2.type === "rect") {
+      expect(r2.attrs.x).toBe(55); // 50 + 5
+      expect(r2.attrs.y).toBe(57); // 60 - 3
+    }
+  });
+
+  it("moves line objects (points array) by dx, dy", () => {
+    act((s) => s.addObject(makeLine({ id: "l1" })));
+    // line points: [0, 0, 100, 100]
+    act((s) => s.batchNudge(["l1"], 10, 20));
+    const obj = state().objects[0];
+    if (obj.type === "line") {
+      expect(obj.attrs.points[0]).toBe(10); // 0 + 10
+      expect(obj.attrs.points[1]).toBe(20); // 0 + 20
+      expect(obj.attrs.points[2]).toBe(110); // 100 + 10
+      expect(obj.attrs.points[3]).toBe(120); // 100 + 20
+    }
+  });
+
+  it("creates history entry with Nudge action", () => {
+    act((s) => s.addObject(makeRect({ id: "r1", x: 10, y: 20 })));
+    const versionBefore = state()._historyVersion;
+    act((s) => s.batchNudge(["r1"], 1, 1));
+    expect(state().lastAction).toBe("Nudge");
+    expect(state()._historyVersion).toBe(versionBefore + 1);
+  });
+});
+
+// ===========================================================================
+// commitHistory
+// ===========================================================================
+
+describe("commitHistory", () => {
+  it("increments _historyVersion", () => {
+    const versionBefore = state()._historyVersion;
+    act((s) => s.commitHistory("Test Action"));
+    expect(state()._historyVersion).toBe(versionBefore + 1);
+  });
+
+  it("sets lastAction to provided string", () => {
+    act((s) => s.commitHistory("My Custom Action"));
+    expect(state().lastAction).toBe("My Custom Action");
+  });
+});
+
+// ===========================================================================
+// updateLayerThumbnail
+// ===========================================================================
+
+describe("updateLayerThumbnail", () => {
+  it("sets thumbnail on the specified layer", () => {
+    const layerId = state().layers[0].id;
+    act((s) => s.updateLayerThumbnail(layerId, "data:image/png;base64,abc123"));
+    expect(state().layers[0].thumbnail).toBe("data:image/png;base64,abc123");
+  });
+
+  it("does not affect other layers", () => {
+    act((s) => s.addLayer());
+    const firstId = state().layers[0].id;
+    const secondId = state().layers[1].id;
+    act((s) => s.updateLayerThumbnail(firstId, "data:image/png;base64,first"));
+    expect(state().layers[0].thumbnail).toBe("data:image/png;base64,first");
+    expect(state().layers[1].thumbnail).toBeNull();
   });
 });
