@@ -389,7 +389,7 @@ function MenuItemRow({ item, onClose }: { item: MenuItem; onClose: () => void })
         </div>
         {submenuOpen && (
           <div
-            className="absolute left-full top-0 ml-0.5 min-w-[180px] bg-popover border border-border rounded-md shadow-lg py-1 z-[60]"
+            className="absolute left-full top-0 ml-0.5 min-w-[180px] bg-card border border-border rounded-md shadow-lg py-1 z-[60]"
             role="menu"
             onMouseEnter={handleEnter}
             onMouseLeave={handleLeave}
@@ -488,7 +488,7 @@ export function EditorMenuBar(props: MenuBarCallbacks) {
           </button>
           {openMenu === menu.testId && (
             <div
-              className="absolute left-0 top-full mt-0.5 min-w-[220px] bg-popover border border-border rounded-md shadow-lg py-1 z-50"
+              className="absolute left-0 top-full mt-0.5 min-w-[220px] bg-card border border-border rounded-md shadow-lg py-1 z-50"
               data-testid={`menu-dropdown-${menu.testId}`}
               role="menu"
             >
