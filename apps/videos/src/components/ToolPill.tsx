@@ -19,6 +19,9 @@ export const ToolPill: React.FC<{
         color: "white",
         ...TEXT.toolPill,
         whiteSpace: "nowrap",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        backgroundImage: "linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, transparent 100%)",
         ...style,
       }}
     >

@@ -475,7 +475,16 @@ export const ToolGalaxy: React.FC = () => {
           }}
         >
           <ClipReveal startFrame={580}>
-            <span style={{ ...TEXT.sectionTitle }}>tools. Zero cloud dependency.</span>
+            <span style={{ ...TEXT.sectionTitle }}>
+              <Counter
+                from={0}
+                to={TOOLS.length}
+                startFrame={580}
+                duration={30}
+                style={{ ...TEXT.sectionTitle, color: COLOR.accent, display: "inline" }}
+              />{" "}
+              tools. Zero cloud dependency.
+            </span>
           </ClipReveal>
         </div>
       )}
