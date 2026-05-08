@@ -1,6 +1,7 @@
 import type React from "react";
-import { AbsoluteFill, Series } from "remotion";
+import { AbsoluteFill, Series, staticFile } from "remotion";
 import { GrainOverlay } from "@/components/GrainOverlay";
+import { BackgroundMusic } from "@/lib/audio";
 import { AiToolsScene } from "./scenes/AiToolsScene";
 import { ApiDocsScene } from "./scenes/ApiDocsScene";
 import { BatchProcessingScene } from "./scenes/BatchProcessingScene";
@@ -41,6 +42,13 @@ export const ProductDemo: React.FC = () => {
       </Series>
 
       <GrainOverlay opacity={0.02} />
+      <BackgroundMusic
+        src={staticFile("audio/product-demo.mp3")}
+        volume={0.3}
+        fadeInFrames={30}
+        fadeOutFrames={60}
+        totalFrames={2250}
+      />
     </AbsoluteFill>
   );
 };

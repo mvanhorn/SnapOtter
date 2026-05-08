@@ -1,6 +1,7 @@
 import type React from "react";
-import { AbsoluteFill, Series } from "remotion";
+import { AbsoluteFill, Series, staticFile } from "remotion";
 import { GrainOverlay } from "@/components/GrainOverlay";
+import { BackgroundMusic } from "@/lib/audio";
 import { COLOR } from "@/lib/colors";
 import { AiShowcaseScene } from "./scenes/AiShowcaseScene";
 import { FeatureBurstScene } from "./scenes/FeatureBurstScene";
@@ -38,6 +39,13 @@ export const XLaunchVideo: React.FC = () => {
       </Series>
 
       <GrainOverlay opacity={0.03} />
+      <BackgroundMusic
+        src={staticFile("audio/x-launch.mp3")}
+        volume={0.4}
+        fadeInFrames={30}
+        fadeOutFrames={60}
+        totalFrames={1050}
+      />
     </AbsoluteFill>
   );
 };

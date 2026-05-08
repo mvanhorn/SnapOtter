@@ -1,7 +1,8 @@
 import type React from "react";
-import { AbsoluteFill, Series } from "remotion";
+import { AbsoluteFill, Series, staticFile } from "remotion";
 import { GradientBlob } from "@/components/GradientBlob";
 import { GrainOverlay } from "@/components/GrainOverlay";
+import { BackgroundMusic } from "@/lib/audio";
 import { COLOR } from "@/lib/colors";
 import { AmbientOpenScene } from "./scenes/AmbientOpenScene";
 import { CTAScene } from "./scenes/CTAScene";
@@ -74,6 +75,13 @@ export const PromoTeaser: React.FC = () => {
       </Series>
 
       <GrainOverlay opacity={0.03} />
+      <BackgroundMusic
+        src={staticFile("audio/promo-teaser.mp3")}
+        volume={0.5}
+        fadeInFrames={15}
+        fadeOutFrames={45}
+        totalFrames={600}
+      />
     </AbsoluteFill>
   );
 };
