@@ -23,7 +23,7 @@ import type {
   Guide,
 } from "@/types/editor";
 
-type ExportFormat = "png" | "jpeg" | "webp";
+type ExportFormat = "png" | "jpeg" | "webp" | "avif" | "tiff" | "gif" | "jxl";
 
 interface ExportSettings {
   format: ExportFormat;
@@ -34,10 +34,19 @@ interface ExportSettings {
   transparent: boolean;
 }
 
-const FORMAT_OPTIONS: { value: ExportFormat; label: string; supportsTransparency: boolean }[] = [
-  { value: "png", label: "PNG", supportsTransparency: true },
-  { value: "jpeg", label: "JPEG", supportsTransparency: false },
-  { value: "webp", label: "WebP", supportsTransparency: true },
+const FORMAT_OPTIONS: {
+  value: ExportFormat;
+  label: string;
+  supportsTransparency: boolean;
+  needsServerConvert: boolean;
+}[] = [
+  { value: "png", label: "PNG", supportsTransparency: true, needsServerConvert: false },
+  { value: "jpeg", label: "JPEG", supportsTransparency: false, needsServerConvert: false },
+  { value: "webp", label: "WebP", supportsTransparency: true, needsServerConvert: false },
+  { value: "avif", label: "AVIF", supportsTransparency: true, needsServerConvert: true },
+  { value: "tiff", label: "TIFF", supportsTransparency: true, needsServerConvert: true },
+  { value: "gif", label: "GIF", supportsTransparency: true, needsServerConvert: true },
+  { value: "jxl", label: "JXL", supportsTransparency: true, needsServerConvert: true },
 ];
 
 function getMimeType(format: ExportFormat): string {
@@ -48,6 +57,8 @@ function getMimeType(format: ExportFormat): string {
       return "image/jpeg";
     case "webp":
       return "image/webp";
+    default:
+      return "image/png";
   }
 }
 
@@ -169,23 +180,51 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
       });
     }
 
-    // Convert data URL to blob for download
-    fetch(dataUrl)
-      .then((res) => res.blob())
-      .then((blob) => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `export.${settings.format}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        markClean();
-      })
-      .catch((err) => {
-        console.error("Export failed:", err);
-      });
+    const formatOpt = FORMAT_OPTIONS.find((f) => f.value === settings.format);
+    if (formatOpt?.needsServerConvert) {
+      fetch(dataUrl)
+        .then((res) => res.blob())
+        .then(async (pngBlob) => {
+          const formData = new FormData();
+          formData.append("file", pngBlob, "export.png");
+          formData.append(
+            "settings",
+            JSON.stringify({ format: settings.format, quality: settings.quality }),
+          );
+          const res = await fetch("/api/v1/tools/convert", { method: "POST", body: formData });
+          if (!res.ok) throw new Error("Server conversion failed");
+          const json = await res.json();
+          if (json.downloadUrl) {
+            const a = document.createElement("a");
+            a.href = json.downloadUrl;
+            a.download = `export.${settings.format}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            markClean();
+          }
+        })
+        .catch((err) => {
+          console.error("Export failed:", err);
+        });
+    } else {
+      fetch(dataUrl)
+        .then((res) => res.blob())
+        .then((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `export.${settings.format}`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          markClean();
+        })
+        .catch((err) => {
+          console.error("Export failed:", err);
+        });
+    }
   }, [settings, canvasSize, markClean]);
 
   // Issue #6: Copy to clipboard using Konva stage
