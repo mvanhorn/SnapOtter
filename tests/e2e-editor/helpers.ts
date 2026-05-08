@@ -51,3 +51,14 @@ export async function drawOnCanvas(
   await page.mouse.up();
   await page.waitForTimeout(300);
 }
+
+export async function loadTestImage(page: Page): Promise<void> {
+  await page.route("**/test-fixture.png", (route) =>
+    route.fulfill({
+      path: "tests/fixtures/test-200x150.png",
+      contentType: "image/png",
+    }),
+  );
+  await page.goto(`/editor?url=${encodeURIComponent("/test-fixture.png")}`);
+  await page.waitForTimeout(2000);
+}

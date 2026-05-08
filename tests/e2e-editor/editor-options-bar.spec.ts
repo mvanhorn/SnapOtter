@@ -80,30 +80,26 @@ test.describe("Editor Options Bar", () => {
 
   test("selection options show mode dropdown", async ({ editorPage: page }) => {
     await selectTool(page, "marquee-rect");
+    await page.waitForTimeout(500);
 
     // The options bar should show Type and Mode sections
     await expect(page.getByText("Type:")).toBeVisible();
     await expect(page.getByText("Mode:")).toBeVisible();
 
-    // Type buttons: Rect, Ellipse, Lasso
-    const rectBtn = page.locator("button[aria-label='Rectangular']");
-    const ellipseBtn = page.locator("button[aria-label='Elliptical']");
-    const lassoBtn = page.locator("button[aria-label='Lasso']");
+    // Type buttons: Rect, Ellipse, Lasso (use getByRole for robust matching)
+    await expect(page.getByRole("button", { name: "Rectangular" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Elliptical" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Lasso" }).first()).toBeVisible();
 
-    await expect(rectBtn).toBeVisible();
-    await expect(ellipseBtn).toBeVisible();
-    await expect(lassoBtn).toBeVisible();
-
-    // Rect should be active (pressed) since we selected marquee-rect
-    await expect(rectBtn).toHaveAttribute("aria-pressed", "true");
+    // Rect should be active since we selected marquee-rect
+    await expect(page.getByRole("button", { name: "Rectangular" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
 
     // Mode buttons: New, Add, Sub
-    const newBtn = page.locator("button[aria-label='New Selection']");
-    const addBtn = page.locator("button[aria-label='Add to Selection']");
-    const subBtn = page.locator("button[aria-label='Subtract from Selection']");
-
-    await expect(newBtn).toBeVisible();
-    await expect(addBtn).toBeVisible();
-    await expect(subBtn).toBeVisible();
+    await expect(page.getByRole("button", { name: "New Selection" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Add to Selection" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Subtract from Selection" })).toBeVisible();
   });
 });
