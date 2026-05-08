@@ -806,18 +806,19 @@ describe("Selection", () => {
   });
 
   it("invertSelection flips mask bytes", () => {
+    useEditorStore.setState({ canvasSize: { width: 3, height: 1 } });
     const mask = new Uint8Array([0, 128, 255]);
     const sel: SelectionState = {
       type: "rect",
-      points: [0, 0, 100, 100],
-      bounds: { x: 0, y: 0, width: 100, height: 100 },
+      points: [0, 0, 3, 1],
+      bounds: { x: 0, y: 0, width: 3, height: 1 },
       mask,
     };
     act((s) => s.setSelection(sel));
     act((s) => s.invertSelection());
     const inverted = state().selection?.mask;
-    expect(inverted?.[0]).toBe(255);
-    expect(inverted?.[1]).toBe(127);
+    expect(inverted?.[0]).toBe(1);
+    expect(inverted?.[1]).toBe(0);
     expect(inverted?.[2]).toBe(0);
   });
 
@@ -1612,7 +1613,7 @@ describe("invertSelection for bounds-based selections", () => {
     expect(mask?.length).toBe(100); // 10 * 10
   });
 
-  it("area inside bounds is 0 after inversion, outside is 255", () => {
+  it("area inside bounds is 0 after inversion, outside is 1", () => {
     useEditorStore.setState({ canvasSize: { width: 10, height: 10 } });
     const sel = {
       type: "rect" as const,
@@ -1622,12 +1623,10 @@ describe("invertSelection for bounds-based selections", () => {
     act((s) => s.setSelection(sel));
     act((s) => s.invertSelection());
     const mask = state().selection!.mask!;
-    // Inside the bounds (rows 2-5, cols 2-5) should be 0 (was 255, now inverted)
-    expect(mask[2 * 10 + 2]).toBe(0); // row 2, col 2
-    expect(mask[5 * 10 + 5]).toBe(0); // row 5, col 5
-    // Outside the bounds should be 255 (was 0, now inverted)
-    expect(mask[0 * 10 + 0]).toBe(255); // row 0, col 0
-    expect(mask[9 * 10 + 9]).toBe(255); // row 9, col 9
+    expect(mask[2 * 10 + 2]).toBe(0);
+    expect(mask[5 * 10 + 5]).toBe(0);
+    expect(mask[0 * 10 + 0]).toBe(1);
+    expect(mask[9 * 10 + 9]).toBe(1);
   });
 });
 

@@ -169,6 +169,18 @@ vi.mock("@/components/tools/transparency-fixer-settings", () => ({
 vi.mock("@/components/tools/content-aware-resize-settings", () => ({
   ContentAwareResizeSettings: () => null,
 }));
+vi.mock("@/components/tools/beautify-settings", () => ({
+  BeautifySettings: () => null,
+}));
+vi.mock("@/components/tools/meme-generator-settings", () => ({
+  MemeGeneratorSettings: () => null,
+}));
+vi.mock("@/components/tools/meme-generator-preview", () => ({
+  MemeGeneratorPreview: () => null,
+}));
+vi.mock("@/components/tools/color-blindness-settings", () => ({
+  ColorBlindnessSettings: () => null,
+}));
 
 // ---------------------------------------------------------------------------
 // Import after mocks
@@ -319,6 +331,35 @@ describe("toolRegistry", () => {
     expect(border?.livePreview).toBe(true);
   });
 
+  it("beautify has livePreview enabled", () => {
+    const beautify = toolRegistry.get("beautify");
+    expect(beautify).toBeDefined();
+    expect(beautify?.livePreview).toBe(true);
+    expect(beautify?.displayMode).toBe("live-preview");
+  });
+
+  it("meme-generator has no-dropzone display mode with ResultsPanel", () => {
+    const meme = toolRegistry.get("meme-generator");
+    expect(meme).toBeDefined();
+    expect(meme?.displayMode).toBe("no-dropzone");
+    expect(meme?.ResultsPanel).toBeDefined();
+    expect(meme?.Settings).toBeDefined();
+  });
+
+  it("color-blindness uses before-after display mode", () => {
+    const cb = toolRegistry.get("color-blindness");
+    expect(cb).toBeDefined();
+    expect(cb?.displayMode).toBe("before-after");
+    expect(cb?.Settings).toBeDefined();
+  });
+
+  it("transparency-fixer uses before-after display mode", () => {
+    const tf = toolRegistry.get("transparency-fixer");
+    expect(tf).toBeDefined();
+    expect(tf?.displayMode).toBe("before-after");
+    expect(tf?.Settings).toBeDefined();
+  });
+
   it("crop uses interactive-crop display mode", () => {
     const crop = toolRegistry.get("crop");
     expect(crop?.displayMode).toBe("interactive-crop");
@@ -388,6 +429,32 @@ describe("getToolRegistryEntry", () => {
     expect(entry).toBeDefined();
     expect(entry?.displayMode).toBe("side-by-side");
     expect(entry?.Settings).toBeDefined();
+  });
+
+  it("returns entry for beautify with live-preview display", () => {
+    const entry = getToolRegistryEntry("beautify");
+    expect(entry).toBeDefined();
+    expect(entry?.displayMode).toBe("live-preview");
+    expect(entry?.livePreview).toBe(true);
+  });
+
+  it("returns entry for meme-generator with ResultsPanel", () => {
+    const entry = getToolRegistryEntry("meme-generator");
+    expect(entry).toBeDefined();
+    expect(entry?.displayMode).toBe("no-dropzone");
+    expect(entry?.ResultsPanel).toBeDefined();
+  });
+
+  it("returns entry for color-blindness", () => {
+    const entry = getToolRegistryEntry("color-blindness");
+    expect(entry).toBeDefined();
+    expect(entry?.displayMode).toBe("before-after");
+  });
+
+  it("no duplicate tool IDs in registry", () => {
+    const ids = [...toolRegistry.keys()];
+    const unique = new Set(ids);
+    expect(ids.length).toBe(unique.size);
   });
 });
 
