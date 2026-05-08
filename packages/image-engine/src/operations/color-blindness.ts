@@ -1,4 +1,4 @@
-import type { ColorBlindnessType, Sharp } from "../types.js";
+import type { ColorBlindnessOptions, ColorBlindnessType, Sharp } from "../types.js";
 
 type Matrix3x3 = [[number, number, number], [number, number, number], [number, number, number]];
 
@@ -45,9 +45,6 @@ export const COLOR_BLINDNESS_MATRICES: Record<ColorBlindnessType, Matrix3x3> = {
   ],
 };
 
-export async function colorBlindness(
-  image: Sharp,
-  options: { type: ColorBlindnessType },
-): Promise<Sharp> {
+export async function colorBlindness(image: Sharp, options: ColorBlindnessOptions): Promise<Sharp> {
   return image.recomb(COLOR_BLINDNESS_MATRICES[options.type]);
 }
