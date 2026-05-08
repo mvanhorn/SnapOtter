@@ -313,6 +313,11 @@ const MemeGeneratorSettings = lazy(() =>
     default: m.MemeGeneratorSettings,
   })),
 );
+const MemeGeneratorPreview = lazy(() =>
+  import("@/components/tools/meme-generator-preview").then((m) => ({
+    default: m.MemeGeneratorPreview,
+  })),
+);
 
 // ── Color tool wrapper ─────────────────────────────────────────────
 // Color tools share a single component but differ by toolId.
@@ -375,7 +380,14 @@ export const toolRegistry = new Map<string, ToolRegistryEntry>([
   ["watermark-image", { displayMode: "before-after", Settings: WatermarkImageSettings }],
   ["text-overlay", { displayMode: "before-after", Settings: TextOverlaySettings }],
   ["compose", { displayMode: "before-after", Settings: ComposeSettings }],
-  ["meme-generator", { displayMode: "no-dropzone", Settings: MemeGeneratorSettings }],
+  [
+    "meme-generator",
+    {
+      displayMode: "no-dropzone",
+      Settings: MemeGeneratorSettings,
+      ResultsPanel: MemeGeneratorPreview,
+    },
+  ],
 
   // Utilities
   ["info", { displayMode: "before-after", Settings: InfoSettings }],
