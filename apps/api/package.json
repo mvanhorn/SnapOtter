@@ -12,9 +12,6 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@snapotter/ai": "workspace:*",
-    "@snapotter/image-engine": "workspace:*",
-    "@snapotter/shared": "workspace:*",
     "@fastify/cors": "^11.0.0",
     "@fastify/multipart": "^9.0.0",
     "@fastify/rate-limit": "^10.2.0",
@@ -22,6 +19,9 @@
     "@neplex/vectorizer": "^0.0.5",
     "@scalar/fastify-api-reference": "^1.49.5",
     "@sentry/node": "^10.49.0",
+    "@snapotter/ai": "workspace:*",
+    "@snapotter/image-engine": "workspace:*",
+    "@snapotter/shared": "workspace:*",
     "archiver": "^7.0.1",
     "better-sqlite3": "^11.7.0",
     "dotenv": "^16.4.0",
@@ -31,6 +31,7 @@
     "fflate": "^0.8.2",
     "js-yaml": "^4.1.1",
     "mupdf": "^1.27.0",
+    "opentype.js": "^2.0.0",
     "p-queue": "^9.1.0",
     "pdfkit": "^0.18.0",
     "piscina": "^5.1.4",
