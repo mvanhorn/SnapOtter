@@ -59,3 +59,4 @@ audit_report.md
 tests/benchmark/bench-limits-results-mac.jsonl
 .superpowers/
 scripts/setup-cloudflare-email.sh
+apps/videos
