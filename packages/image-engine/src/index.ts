@@ -2,6 +2,7 @@ export * from "./engine.js";
 export * from "./formats/detect.js";
 export { analyzeImage, applyCorrections, scaleCorrections } from "./operations/auto-enhance.js";
 export { brightness } from "./operations/brightness.js";
+export { COLOR_BLINDNESS_MATRICES, colorBlindness } from "./operations/color-blindness.js";
 export { colorChannels } from "./operations/color-channels.js";
 export { compress } from "./operations/compress.js";
 export { contrast } from "./operations/contrast.js";

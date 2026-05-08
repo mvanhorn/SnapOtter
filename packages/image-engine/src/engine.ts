@@ -1,5 +1,6 @@
 import sharp from "sharp";
 import { brightness } from "./operations/brightness.js";
+import { colorBlindness } from "./operations/color-blindness.js";
 import { colorChannels } from "./operations/color-channels.js";
 import { compress } from "./operations/compress.js";
 import { contrast } from "./operations/contrast.js";
@@ -17,6 +18,7 @@ import { sharpen, sharpenAdvanced } from "./operations/sharpen.js";
 import { stripMetadata } from "./operations/strip-metadata.js";
 import type {
   BrightnessOptions,
+  ColorBlindnessOptions,
   ColorChannelOptions,
   CompressOptions,
   ContrastOptions,
@@ -55,6 +57,7 @@ const OPERATION_MAP: Record<
   brightness: (img, opts) => brightness(img, opts as unknown as BrightnessOptions),
   contrast: (img, opts) => contrast(img, opts as unknown as ContrastOptions),
   saturation: (img, opts) => saturation(img, opts as unknown as SaturationOptions),
+  "color-blindness": (img, opts) => colorBlindness(img, opts as unknown as ColorBlindnessOptions),
   "color-channels": (img, opts) => colorChannels(img, opts as unknown as ColorChannelOptions),
   grayscale: (img) => grayscale(img),
   sepia: (img) => sepia(img),

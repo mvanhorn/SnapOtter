@@ -190,3 +190,17 @@ export interface OptimizeForWebOptions {
   progressive?: boolean;
   stripMetadata?: boolean;
 }
+
+export type ColorBlindnessType =
+  | "protanopia"
+  | "deuteranopia"
+  | "tritanopia"
+  | "protanomaly"
+  | "deuteranomaly"
+  | "tritanomaly"
+  | "achromatopsia"
+  | "blueConeMonochromacy";
+
+export interface ColorBlindnessOptions {
+  type: ColorBlindnessType;
+}
