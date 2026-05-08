@@ -489,4 +489,610 @@ describe("Beautify", () => {
     const result = JSON.parse(res.body);
     expect(result.downloadUrl).toBeDefined();
   });
+
+  // ── Dark device frame variants ──────────────────────────────────────
+
+  const DARK_FRAMES = ["iphone-dark", "macbook-dark", "ipad-dark"] as const;
+
+  for (const frame of DARK_FRAMES) {
+    it(`frame: ${frame}`, async () => {
+      const payload = createMultipartPayload([
+        { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+        {
+          name: "settings",
+          content: JSON.stringify({ frame, shadowPreset: "none" }),
+        },
+      ]);
+
+      const res = await post("/api/v1/tools/beautify", payload);
+      expect(res.statusCode).toBe(200);
+
+      const result = JSON.parse(res.body);
+      const dlRes = await app.inject({
+        method: "GET",
+        url: result.downloadUrl,
+        headers: { authorization: `Bearer ${adminToken}` },
+      });
+      expect(dlRes.statusCode).toBe(200);
+
+      const meta = await sharp(dlRes.rawPayload).metadata();
+      expect(meta.width).toBeGreaterThan(200);
+      expect(meta.height).toBeGreaterThan(150);
+    });
+  }
+
+  // ── Frame with title ────────────────────────────────────────────────
+
+  it("macOS frame with custom title", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          frame: "macos-light",
+          frameTitle: "My Application",
+          shadowPreset: "none",
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  it("browser frame with URL title", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          frame: "browser-light",
+          frameTitle: "snapotter.com",
+          shadowPreset: "none",
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.height).toBeGreaterThan(150 + 72);
+  });
+
+  // ── All watermark positions ─────────────────────────────────────────
+
+  const WATERMARK_POSITIONS = [
+    "top-left",
+    "top-right",
+    "bottom-left",
+    "bottom-right",
+    "center",
+  ] as const;
+
+  for (const pos of WATERMARK_POSITIONS) {
+    it(`watermark position: ${pos}`, async () => {
+      const payload = createMultipartPayload([
+        { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+        {
+          name: "settings",
+          content: JSON.stringify({
+            watermarkText: "SnapOtter",
+            watermarkPosition: pos,
+            watermarkOpacity: 70,
+          }),
+        },
+      ]);
+
+      const res = await post("/api/v1/tools/beautify", payload);
+      expect(res.statusCode).toBe(200);
+
+      const result = JSON.parse(res.body);
+      expect(result.downloadUrl).toBeDefined();
+    });
+  }
+
+  // ── WebP output format ──────────────────────────────────────────────
+
+  it("WebP output format", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          backgroundType: "solid",
+          backgroundColor: "#ffffff",
+          shadowPreset: "none",
+          borderRadius: 0,
+          frame: "none",
+          outputFormat: "webp",
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toContain(".webp");
+
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.format).toBe("webp");
+  });
+
+  it("WebP output forced to PNG when alpha needed", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          backgroundType: "transparent",
+          outputFormat: "webp",
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    // WebP supports alpha, so it should NOT be forced to PNG
+    expect(result.downloadUrl).toContain(".webp");
+  });
+
+  it("JPEG output forced to PNG when border radius applied", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "photo.jpg", contentType: "image/jpeg", content: JPG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          borderRadius: 20,
+          backgroundType: "solid",
+          shadowPreset: "none",
+          outputFormat: "jpeg",
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toContain(".png");
+  });
+
+  // ── Feature combinations ────────────────────────────────────────────
+
+  it("all features combined: frame + shadow + gradient + watermark + social", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          backgroundType: "linear-gradient",
+          gradientStops: [
+            { color: "#ff6b6b", position: 0 },
+            { color: "#4ecdc4", position: 100 },
+          ],
+          gradientAngle: 45,
+          frame: "macos-dark",
+          frameTitle: "Terminal",
+          shadowPreset: "dramatic",
+          padding: 80,
+          borderRadius: 16,
+          watermarkText: "snapotter.com",
+          watermarkPosition: "bottom-right",
+          watermarkOpacity: 40,
+          socialPreset: "twitter",
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.width).toBe(1600);
+    expect(meta.height).toBe(900);
+  });
+
+  it("device frame + shadow + solid background", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          frame: "iphone",
+          shadowPreset: "medium",
+          backgroundType: "solid",
+          backgroundColor: "#1a1a2e",
+          padding: 100,
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Edge cases ──────────────────────────────────────────────────────
+
+  it("image backgroundType without bgImage falls back to transparent", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          backgroundType: "image",
+          shadowPreset: "none",
+          padding: 20,
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.hasAlpha).toBe(true);
+  });
+
+  it("shadow with zero padding (shadow extends beyond image)", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          padding: 0,
+          shadowPreset: "dramatic",
+          backgroundType: "transparent",
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  it("gradient angle boundary 0", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          backgroundType: "linear-gradient",
+          gradientAngle: 0,
+          gradientStops: [
+            { color: "#000000", position: 0 },
+            { color: "#ffffff", position: 100 },
+          ],
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("gradient angle boundary 360", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          backgroundType: "linear-gradient",
+          gradientAngle: 360,
+          gradientStops: [
+            { color: "#000000", position: 0 },
+            { color: "#ffffff", position: 100 },
+          ],
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("large border radius on small image (clamped to half)", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.jpg", contentType: "image/jpeg", content: JPG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          borderRadius: 64,
+          shadowPreset: "none",
+          padding: 20,
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  // ── XSS prevention in text inputs ───────────────────────────────────
+
+  it("watermark with HTML/SVG special characters", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          watermarkText: '<script>alert("xss")</script>&"test\'',
+          watermarkPosition: "center",
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  it("frame title with special characters", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          frame: "macos-light",
+          frameTitle: '<img onerror="alert(1)"/> & "quotes"',
+          shadowPreset: "none",
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  // ── Validation edge cases ───────────────────────────────────────────
+
+  it("padding out of range (>256) returns 400", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ padding: 300 }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("border radius out of range (>64) returns 400", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ borderRadius: 100 }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("shadow blur out of range (>100) returns 400", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ shadowPreset: "custom", shadowBlur: 200 }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("invalid background type returns 400", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ backgroundType: "neon-glow" }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("invalid frame type returns 400", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ frame: "android" }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("gradient with fewer than 2 stops returns 400", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          backgroundType: "linear-gradient",
+          gradientStops: [{ color: "#ff0000", position: 0 }],
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("gradient stop with invalid hex color returns 400", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          backgroundType: "linear-gradient",
+          gradientStops: [
+            { color: "red", position: 0 },
+            { color: "#0000ff", position: 100 },
+          ],
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("malformed JSON settings returns 400", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      { name: "settings", content: "{not valid json" },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(400);
+  });
+
+  // ── Output content verification ─────────────────────────────────────
+
+  it("solid background pixel color is correct", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          backgroundType: "solid",
+          backgroundColor: "#ff0000",
+          padding: 50,
+          shadowPreset: "none",
+          borderRadius: 0,
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+
+    const { data, info } = await sharp(dlRes.rawPayload)
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const topLeftR = data[0];
+    const topLeftG = data[1];
+    const topLeftB = data[2];
+    expect(topLeftR).toBe(255);
+    expect(topLeftG).toBe(0);
+    expect(topLeftB).toBe(0);
+    expect(info.width).toBe(200 + 100);
+    expect(info.height).toBe(150 + 100);
+  });
+
+  it("transparent background has alpha=0 at corners", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          backgroundType: "transparent",
+          padding: 30,
+          shadowPreset: "none",
+          borderRadius: 0,
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+
+    const { data } = await sharp(dlRes.rawPayload).raw().toBuffer({ resolveWithObject: true });
+    const topLeftAlpha = data[3];
+    expect(topLeftAlpha).toBe(0);
+  });
+
+  it("padding=0, no shadow, no radius preserves original dimensions", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          padding: 0,
+          shadowPreset: "none",
+          borderRadius: 0,
+          backgroundType: "solid",
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.width).toBe(200);
+    expect(meta.height).toBe(150);
+  });
 });
