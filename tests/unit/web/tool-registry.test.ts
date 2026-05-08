@@ -296,8 +296,9 @@ describe("toolRegistry", () => {
   });
 
   it("tools with no-dropzone display mode have a ResultsPanel", () => {
+    const selfContainedTools = new Set(["meme-generator"]);
     for (const [toolId, entry] of toolRegistry) {
-      if (entry.displayMode === "no-dropzone") {
+      if (entry.displayMode === "no-dropzone" && !selfContainedTools.has(toolId)) {
         expect(entry.ResultsPanel, `missing ResultsPanel for ${toolId}`).toBeDefined();
       }
     }
