@@ -105,9 +105,7 @@ describe("analyzeImage", () => {
     // Wide spread centered at 128 gives stdev ~60 (contrast ~50) and mean ~128 (exposure ~50).
     // Both scores land inside the [40,60] dead zone, so corrections should be zero.
     const midGrayBuffer = await sharp(
-      Buffer.from(
-        Array.from({ length: 100 * 100 * 3 }, (_, i) => 24 + Math.floor(Math.random() * 208)),
-      ),
+      Buffer.from(Array.from({ length: 100 * 100 * 3 }, (_, i) => 24 + ((i * 97) % 208))),
       { raw: { width: 100, height: 100, channels: 3 } },
     )
       .png()
