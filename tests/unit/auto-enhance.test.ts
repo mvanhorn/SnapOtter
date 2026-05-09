@@ -280,4 +280,55 @@ describe("applyCorrections pipeline (CLAHE + normalise + gamma)", () => {
       enhStats.channels[2].mean * 0.114;
     expect(Math.abs(enhLum - origLum)).toBeLessThan(origLum * 0.15);
   });
+
+  it("does not darken a bright-but-normal image (exposure score ~55-65)", async () => {
+    const brightishBuffer = await sharp({
+      create: { width: 100, height: 100, channels: 3, background: { r: 160, g: 160, b: 160 } },
+    })
+      .png()
+      .toBuffer();
+
+    const analysis = await analyzeImage(brightishBuffer);
+    expect(analysis.scores.exposure).toBeGreaterThan(55);
+    expect(analysis.scores.exposure).toBeLessThan(70);
+
+    const enhanced = applyCorrections(sharp(brightishBuffer), analysis.corrections, "auto", 50, {});
+    const enhancedBuf = await enhanced.toBuffer();
+    const enhStats = await sharp(enhancedBuf).stats();
+    const origStats = await sharp(brightishBuffer).stats();
+
+    const origLum =
+      origStats.channels[0].mean * 0.299 +
+      origStats.channels[1].mean * 0.587 +
+      origStats.channels[2].mean * 0.114;
+    const enhLum =
+      enhStats.channels[0].mean * 0.299 +
+      enhStats.channels[1].mean * 0.587 +
+      enhStats.channels[2].mean * 0.114;
+
+    // Must NOT darken by more than 10%
+    expect(enhLum).toBeGreaterThan(origLum * 0.9);
+  });
+
+  it("each enhancement mode produces output without crashing", async () => {
+    const modes = ["auto", "portrait", "landscape", "low-light", "food", "document"] as const;
+    for (const mode of modes) {
+      const analysis = await analyzeImage(PNG_200x150);
+      const enhanced = applyCorrections(sharp(PNG_200x150), analysis.corrections, mode, 50, {});
+      const buf = await enhanced.toBuffer();
+      expect(buf.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("intensity 100 produces a visibly different output from intensity 0", async () => {
+    const analysis = await analyzeImage(PNG_200x150);
+
+    const low = applyCorrections(sharp(PNG_200x150), analysis.corrections, "auto", 0, {});
+    const high = applyCorrections(sharp(PNG_200x150), analysis.corrections, "auto", 100, {});
+
+    const lowBuf = await low.toBuffer();
+    const highBuf = await high.toBuffer();
+
+    expect(Buffer.compare(lowBuf, highBuf)).not.toBe(0);
+  });
 });
