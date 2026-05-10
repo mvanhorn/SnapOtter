@@ -1,9 +1,9 @@
 openapi: 3.1.0
 info:
   title: SnapOtter API
-  version: 1.15.9
+  version: 1.16.0
   description: |
-    REST API for SnapOtter, a self-hosted image processing platform with 50 tools.
+    REST API for SnapOtter, a self-hosted image processing platform with 51 tools.
 
     ## Authentication
 
@@ -685,12 +685,10 @@ paths:
     post:
       tags: [Tools]
       summary: Color adjustments
-      description: |
+      description: >
         Consolidated color adjustment tool. Adjusts brightness, contrast, exposure,
         saturation, temperature, tint, hue, sharpness, color channels, and effects
-        in a single pass. This is the primary color adjustment endpoint; the
-        brightness-contrast, saturation, color-channels, and color-effects endpoints
-        are aliases that accept the same settings schema.
+        in a single pass.
       security:
         - bearerAuth: []
       requestBody:
@@ -721,226 +719,6 @@ paths:
                     - `green` (number 0-200, default 100) - Green channel multiplier
                     - `blue` (number 0-200, default 100) - Blue channel multiplier
                     - `effect` (string, default "none") - One of: none, grayscale, sepia, invert
-      responses:
-        "200":
-          description: Processed image
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ToolResponse"
-        "400":
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Authentication required
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UnauthorizedError"
-
-  /api/v1/tools/brightness-contrast:
-    post:
-      tags: [Tools]
-      summary: Brightness and contrast
-      description: Adjust brightness, contrast, saturation, color channels, and effects. Alias for adjust-colors.
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              required: [file]
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: Image file to process
-                settings:
-                  type: string
-                  description: |
-                    JSON string with options:
-                    - `brightness` (number -100 to 100, default 0) — Brightness adjustment
-                    - `contrast` (number -100 to 100, default 0) — Contrast adjustment
-                    - `saturation` (number -100 to 100, default 0) — Saturation adjustment
-                    - `exposure` (number -100 to 100, default 0) — Exposure adjustment
-                    - `temperature` (number -100 to 100, default 0) — Color temperature
-                    - `tint` (number -100 to 100, default 0) — Tint adjustment
-                    - `hue` (number -180 to 180, default 0) — Hue rotation
-                    - `sharpness` (number 0 to 100, default 0) — Sharpness
-                    - `red` (number 0-200, default 100) — Red channel multiplier
-                    - `green` (number 0-200, default 100) — Green channel multiplier
-                    - `blue` (number 0-200, default 100) — Blue channel multiplier
-                    - `effect` (string, default "none") — One of: none, grayscale, sepia, invert
-      responses:
-        "200":
-          description: Processed image
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ToolResponse"
-        "400":
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Authentication required
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UnauthorizedError"
-
-  /api/v1/tools/saturation:
-    post:
-      tags: [Tools]
-      summary: Saturation and exposure
-      description: Adjust color saturation and exposure settings.
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              required: [file]
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: Image file to process
-                settings:
-                  type: string
-                  description: |
-                    JSON string with options:
-                    - `brightness` (number -100 to 100, default 0) — Brightness adjustment
-                    - `contrast` (number -100 to 100, default 0) — Contrast adjustment
-                    - `saturation` (number -100 to 100, default 0) — Saturation adjustment
-                    - `exposure` (number -100 to 100, default 0) — Exposure adjustment
-                    - `temperature` (number -100 to 100, default 0) — Color temperature
-                    - `tint` (number -100 to 100, default 0) — Tint adjustment
-                    - `hue` (number -180 to 180, default 0) — Hue rotation
-                    - `sharpness` (number 0 to 100, default 0) — Sharpness
-                    - `red` (number 0-200, default 100) — Red channel multiplier
-                    - `green` (number 0-200, default 100) — Green channel multiplier
-                    - `blue` (number 0-200, default 100) — Blue channel multiplier
-                    - `effect` (string, default "none") — One of: none, grayscale, sepia, invert
-      responses:
-        "200":
-          description: Processed image
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ToolResponse"
-        "400":
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Authentication required
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UnauthorizedError"
-
-  /api/v1/tools/color-channels:
-    post:
-      tags: [Tools]
-      summary: Color channels
-      description: Adjust individual RGB color channels.
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              required: [file]
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: Image file to process
-                settings:
-                  type: string
-                  description: |
-                    JSON string with options:
-                    - `brightness` (number -100 to 100, default 0) — Brightness adjustment
-                    - `contrast` (number -100 to 100, default 0) — Contrast adjustment
-                    - `saturation` (number -100 to 100, default 0) — Saturation adjustment
-                    - `exposure` (number -100 to 100, default 0) — Exposure adjustment
-                    - `temperature` (number -100 to 100, default 0) — Color temperature
-                    - `tint` (number -100 to 100, default 0) — Tint adjustment
-                    - `hue` (number -180 to 180, default 0) — Hue rotation
-                    - `sharpness` (number 0 to 100, default 0) — Sharpness
-                    - `red` (number 0-200, default 100) — Red channel multiplier
-                    - `green` (number 0-200, default 100) — Green channel multiplier
-                    - `blue` (number 0-200, default 100) — Blue channel multiplier
-                    - `effect` (string, default "none") — One of: none, grayscale, sepia, invert
-      responses:
-        "200":
-          description: Processed image
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ToolResponse"
-        "400":
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Authentication required
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UnauthorizedError"
-
-  /api/v1/tools/color-effects:
-    post:
-      tags: [Tools]
-      summary: Color effects
-      description: Apply color effects like grayscale, sepia, or invert.
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              required: [file]
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: Image file to process
-                settings:
-                  type: string
-                  description: |
-                    JSON string with options:
-                    - `brightness` (number -100 to 100, default 0) — Brightness adjustment
-                    - `contrast` (number -100 to 100, default 0) — Contrast adjustment
-                    - `saturation` (number -100 to 100, default 0) — Saturation adjustment
-                    - `exposure` (number -100 to 100, default 0) — Exposure adjustment
-                    - `temperature` (number -100 to 100, default 0) — Color temperature
-                    - `tint` (number -100 to 100, default 0) — Tint adjustment
-                    - `hue` (number -180 to 180, default 0) — Hue rotation
-                    - `sharpness` (number 0 to 100, default 0) — Sharpness
-                    - `red` (number 0-200, default 100) — Red channel multiplier
-                    - `green` (number 0-200, default 100) — Green channel multiplier
-                    - `blue` (number 0-200, default 100) — Blue channel multiplier
-                    - `effect` (string, default "none") — One of: none, grayscale, sepia, invert
       responses:
         "200":
           description: Processed image
@@ -2957,6 +2735,189 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UnauthorizedError"
+
+  /api/v1/tools/meme-generator:
+    post:
+      tags: [Tools]
+      summary: Meme generator
+      description: >
+        Create memes using templates or custom images. Supports two modes:
+        (1) Template mode - send JSON body with `templateId` and `textBoxes`.
+        (2) Custom image mode - send multipart with `file` and `settings`.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Custom image file (optional if using templateId)
+                settings:
+                  type: string
+                  description: |
+                    JSON string with options:
+                    - `templateId` (string, optional) - ID of a meme template from /api/v1/meme-templates
+                    - `textLayout` (string, default "top-bottom") - One of: top-bottom, top-only, bottom-only, center, side-by-side
+                    - `textBoxes` (array of {id, text}) - Text content for each position
+                    - `fontFamily` (string, default "anton") - One of: anton, arial-black, comic-sans, montserrat, bebas-neue, permanent-marker, roboto
+                    - `fontSize` (number 8-200, optional) - Font size in pixels
+                    - `textColor` (hex string, default "#ffffff") - Text color
+                    - `strokeColor` (hex string, default "#000000") - Text outline color
+                    - `textAlign` (string, default "center") - One of: left, center, right
+                    - `allCaps` (boolean, default true) - Convert text to uppercase
+          application/json:
+            schema:
+              type: object
+              description: Template mode - send templateId and textBoxes as JSON body
+              properties:
+                templateId:
+                  type: string
+                  description: ID of a meme template
+                textBoxes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      text:
+                        type: string
+      responses:
+        "200":
+          description: Processed meme image
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolResponse"
+        "400":
+          description: Invalid input or template not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+        "422":
+          description: Processing failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/v1/meme-templates:
+    get:
+      tags: [Tools]
+      summary: List meme templates
+      description: Returns the full manifest of available meme templates including text box positions.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Meme template manifest
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  templates:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        filename:
+                          type: string
+                        width:
+                          type: integer
+                        height:
+                          type: integer
+                        textBoxes:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              x:
+                                type: number
+                              y:
+                                type: number
+                              width:
+                                type: number
+                              height:
+                                type: number
+                              defaultText:
+                                type: string
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+
+  /api/v1/meme-templates/full/{filename}:
+    get:
+      tags: [Tools]
+      summary: Get meme template image
+      description: Serve a full-size meme template image.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Template image filename
+      responses:
+        "200":
+          description: Template image
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Invalid filename
+        "404":
+          description: Template not found
+
+  /api/v1/meme-templates/thumbs/{filename}:
+    get:
+      tags: [Tools]
+      summary: Get meme template thumbnail
+      description: Serve a thumbnail of a meme template.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Template thumbnail filename
+      responses:
+        "200":
+          description: Thumbnail image
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Invalid filename
+        "404":
+          description: Thumbnail not found
 
   /api/v1/tools/compare:
     post:

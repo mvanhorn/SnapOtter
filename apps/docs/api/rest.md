@@ -163,6 +163,7 @@ All AI tools run on your hardware (CPU or NVIDIA GPU). No internet required.
 | `watermark-image` | Image Watermark | `opacity`, `position`, `scale` - second file is the watermark |
 | `text-overlay` | Text Overlay | `text`, `font`, `fontSize`, `color`, `x`, `y`, `background`, `padding`, `borderRadius` |
 | `compose` | Image Composition | `x`, `y`, `opacity`, `blend` - second file is layered on top |
+| `meme-generator` | Meme Generator | `templateId`, `textLayout` (top-bottom/top-only/bottom-only/center/side-by-side), `textBoxes` ([{id, text}]), `fontFamily` (anton/arial-black/comic-sans/montserrat/bebas-neue/permanent-marker/roboto), `fontSize`, `textColor`, `strokeColor`, `textAlign`, `allCaps`. Supports template mode (JSON body with `templateId`) or custom image mode (multipart with file). |
 
 ### Utilities
 
@@ -374,6 +375,17 @@ Manage AI feature bundles (install/uninstall AI model packages in the Docker env
 | `POST` | `/api/v1/admin/features/:bundleId/install` | Admin (`features:manage`) | Install a feature bundle (async, returns `jobId` for progress tracking) |
 | `POST` | `/api/v1/admin/features/:bundleId/uninstall` | Admin (`features:manage`) | Uninstall a feature bundle and clean up model files |
 | `GET` | `/api/v1/admin/features/disk-usage` | Admin (`features:manage`) | Get total disk usage of AI models |
+
+## Meme Templates
+
+Supporting API for the meme generator tool.
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| `GET` | `/api/v1/meme-templates` | Auth | List all available meme templates with text box positions |
+| `GET` | `/api/v1/meme-templates/full/:filename` | Auth | Serve full-size template image |
+| `GET` | `/api/v1/meme-templates/thumbs/:filename` | Auth | Serve template thumbnail |
+| `GET` | `/api/v1/meme-templates/fonts/:filename` | Auth | Serve font file used for meme text rendering |
 
 ## Error Responses
 
