@@ -14,8 +14,12 @@ export default defineConfig({
 
   head: [
     ["meta", { name: "theme-color", content: "#3b82f6" }],
-    ["link", { rel: "icon", type: "image/png", href: "/favicon.png" }],
+    ["link", { rel: "icon", type: "image/png", sizes: "48x48", href: "/favicon.png" }],
+    ["link", { rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    ["link", { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" }],
     ["link", { rel: "llms-txt", href: "/llms.txt" }],
+    ["meta", { property: "og:image", content: "https://docs.snapotter.com/logo.png" }],
+    ["meta", { property: "og:url", content: "https://docs.snapotter.com" }],
   ],
 
   vite: {
