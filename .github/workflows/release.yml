@@ -25,6 +25,17 @@ jobs:
 
       - uses: ./.github/actions/setup
 
+      - name: Save release notes
+        id: notes
+        run: |
+          if [ -f .release-notes.md ]; then
+            cp .release-notes.md /tmp/release-notes.md
+            echo "has_notes=true" >> "$GITHUB_OUTPUT"
+            echo "Custom release notes found -- will apply after release."
+          else
+            echo "No .release-notes.md found -- using default release notes."
+          fi
+
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,6 +59,16 @@ jobs:
               exit 1
             fi
           fi
+
+      - name: Update GitHub release notes
+        if: steps.notes.outputs.has_notes == 'true' && steps.check.outputs.version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Updating release v${{ steps.check.outputs.version }} with custom notes..."
+          gh release edit "v${{ steps.check.outputs.version }}" \
+            --notes-file /tmp/release-notes.md
+          echo "Release notes updated successfully."
 
   docker:
     name: Build (${{ matrix.platform }})
