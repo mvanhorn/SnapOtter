@@ -40,7 +40,7 @@ export const FEATURE_BUNDLES: Record<string, FeatureBundleInfo> = {
     name: "Object Eraser & Colorize",
     description: "Erase objects from photos and colorize B&W images",
     estimatedSize: "1-2 GB",
-    enablesTools: ["erase-object", "colorize"],
+    enablesTools: ["erase-object", "colorize", "content-aware-crop"],
   },
   "upscale-enhance": {
     id: "upscale-enhance",

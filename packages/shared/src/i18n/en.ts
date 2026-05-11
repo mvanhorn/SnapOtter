@@ -119,6 +119,10 @@ export const en = {
       name: "Content-Aware Resize",
       description: "Intelligently resize images while preserving important content",
     },
+    "content-aware-crop": {
+      name: "Content-Aware Crop",
+      description: "Extend canvas with AI-powered fill",
+    },
     colorize: {
       name: "AI Colorization",
       description: "Convert black & white photos to full color using AI deep learning models",
