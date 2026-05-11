@@ -1,4 +1,4 @@
-import { Download } from "lucide-react";
+import { Download, Minus, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
@@ -99,15 +99,33 @@ export function CompressControls({ settings: initialSettings, onChange }: Compre
             </label>
             <span className="text-xs font-mono text-foreground">{quality}</span>
           </div>
-          <input
-            id="compress-quality"
-            type="range"
-            min={1}
-            max={100}
-            value={quality}
-            onChange={(e) => setQuality(Number(e.target.value))}
-            className="w-full mt-1"
-          />
+          <div className="flex items-center gap-1.5 mt-1">
+            <button
+              type="button"
+              onClick={() => setQuality((q) => Math.max(1, q - 1))}
+              disabled={quality <= 1}
+              className="p-1 rounded border border-border text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+            >
+              <Minus className="h-3 w-3" />
+            </button>
+            <input
+              id="compress-quality"
+              type="range"
+              min={1}
+              max={100}
+              value={quality}
+              onChange={(e) => setQuality(Number(e.target.value))}
+              className="flex-1 min-w-0"
+            />
+            <button
+              type="button"
+              onClick={() => setQuality((q) => Math.min(100, q + 1))}
+              disabled={quality >= 100}
+              className="p-1 rounded border border-border text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+            >
+              <Plus className="h-3 w-3" />
+            </button>
+          </div>
           <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
             <span>Smallest file</span>
             <span>Best quality</span>
