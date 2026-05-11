@@ -1,6 +1,8 @@
 import { FileImage, ImageUp, Upload } from "lucide-react";
 import { type DragEvent, useCallback, useEffect, useState } from "react";
+import { useUrlImport } from "@/hooks/use-url-import";
 import { cn } from "@/lib/utils";
+import { UrlImportModal } from "./url-import-modal";
 
 const IMAGE_EXTENSIONS = new Set([
   "jpg",
@@ -79,6 +81,7 @@ export function isImageFile(file: File): boolean {
 
 interface DropzoneProps {
   onFiles?: (files: File[]) => void;
+  onUrlImport?: (file: File) => void;
   accept?: string;
   multiple?: boolean;
   /** Files that have already been dropped (for showing count & list). */
@@ -96,6 +99,7 @@ function expandAccept(accept?: string): string | undefined {
 
 export function Dropzone({
   onFiles,
+  onUrlImport,
   accept,
   multiple = true,
   currentFiles = [],
@@ -103,6 +107,27 @@ export function Dropzone({
 }: DropzoneProps) {
   const resolvedAccept = expandAccept(accept);
   const [isDragging, setIsDragging] = useState(false);
+  const [urlInput, setUrlInput] = useState("");
+  const [urlLoading, setUrlLoading] = useState(false);
+  const [urlError, setUrlError] = useState<string | null>(null);
+  const [showBulkModal, setShowBulkModal] = useState(false);
+
+  const { importSingleUrl } = useUrlImport();
+
+  const handleUrlSubmit = useCallback(async () => {
+    const url = urlInput.trim();
+    if (!url) return;
+    setUrlLoading(true);
+    setUrlError(null);
+    const file = await importSingleUrl(url);
+    if (file) {
+      setUrlInput("");
+      onUrlImport?.(file);
+    } else {
+      setUrlError("Could not fetch image from URL");
+    }
+    setUrlLoading(false);
+  }, [urlInput, importSingleUrl, onUrlImport]);
 
   const handleDrag = useCallback((e: DragEvent) => {
     e.preventDefault();
@@ -224,6 +249,58 @@ export function Dropzone({
           PNG, JPG, WebP, HEIC, RAW, PSD, and 65+ formats
         </p>
 
+        {!compact && onUrlImport && (
+          <>
+            <div className="flex items-center gap-2 w-full max-w-xs">
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-xs text-muted-foreground">or</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+            <div className="flex gap-2 w-full max-w-sm">
+              <input
+                type="url"
+                value={urlInput}
+                onChange={(e) => {
+                  setUrlInput(e.target.value);
+                  setUrlError(null);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleUrlSubmit();
+                  }
+                }}
+                onClick={(e) => e.stopPropagation()}
+                placeholder="Paste image URL..."
+                className="flex-1 rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                disabled={urlLoading}
+              />
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleUrlSubmit();
+                }}
+                disabled={urlLoading || !urlInput.trim()}
+                className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+              >
+                {urlLoading ? "..." : "Add"}
+              </button>
+            </div>
+            {urlError && <p className="text-xs text-destructive">{urlError}</p>}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowBulkModal(true);
+              }}
+              className="text-xs text-primary hover:text-primary/80"
+            >
+              Import multiple URLs...
+            </button>
+          </>
+        )}
+
         {hasMultipleFiles && (
           <div className="flex flex-col items-center gap-2 mt-1">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
@@ -244,6 +321,16 @@ export function Dropzone({
           </div>
         )}
       </div>
+
+      {showBulkModal && (
+        <UrlImportModal
+          onClose={() => setShowBulkModal(false)}
+          onImport={(files) => {
+            for (const file of files) onUrlImport?.(file);
+            setShowBulkModal(false);
+          }}
+        />
+      )}
     </section>
   );
 }
