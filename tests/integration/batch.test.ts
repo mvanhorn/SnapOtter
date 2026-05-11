@@ -316,6 +316,108 @@ describe("Batch with default settings", () => {
   });
 });
 
+// ── Exotic format batch processing ─────────────────────────────
+describe("Exotic format batch processing", () => {
+  const FORMATS_DIR = join(FIXTURES, "formats");
+
+  const exoticFormats = [
+    { ext: "pbm", mime: "image/x-portable-bitmap" },
+    { ext: "pgm", mime: "image/x-portable-graymap" },
+    { ext: "ppm", mime: "image/x-portable-pixmap" },
+    { ext: "tiff", mime: "image/tiff" },
+    { ext: "qoi", mime: "application/octet-stream" },
+    { ext: "jp2", mime: "image/jp2" },
+    { ext: "svgz", mime: "image/svg+xml" },
+    { ext: "dds", mime: "application/octet-stream" },
+    { ext: "dpx", mime: "application/octet-stream" },
+    { ext: "eps", mime: "application/postscript" },
+    { ext: "tga", mime: "image/x-tga" },
+    { ext: "psd", mime: "image/vnd.adobe.photoshop" },
+    { ext: "hdr", mime: "image/vnd.radiance" },
+    { ext: "ico", mime: "image/x-icon" },
+    { ext: "cur", mime: "image/x-icon" },
+  ];
+
+  const formatsNeedingDelegates = [
+    { ext: "fits", mime: "application/fits" },
+    { ext: "exr", mime: "image/x-exr" },
+  ];
+
+  const settings = JSON.stringify({ mode: "quality", quality: 50 });
+
+  async function batchCompress(ext: string, mime: string) {
+    const fileBuffer = readFileSync(join(FORMATS_DIR, `sample.${ext}`));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: `sample.${ext}`, contentType: mime, content: fileBuffer },
+      { name: "settings", content: settings },
+    ]);
+    return app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compress/batch",
+      headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
+      body,
+    });
+  }
+
+  for (const { ext, mime } of exoticFormats) {
+    it(`processes ${ext.toUpperCase()} through batch compress`, async () => {
+      const res = await batchCompress(ext, mime);
+      expect(res.statusCode).toBe(200);
+      const fileResults = JSON.parse(res.headers["x-file-results"] as string);
+      expect(fileResults["0"]).toBeDefined();
+    });
+  }
+
+  for (const { ext, mime } of formatsNeedingDelegates) {
+    it(`processes ${ext.toUpperCase()} through batch compress (needs ImageMagick delegate)`, async () => {
+      const res = await batchCompress(ext, mime);
+      expect([200, 422]).toContain(res.statusCode);
+    });
+  }
+
+  it("processes mixed exotic formats (PBM + TIFF + QOI) in one batch", async () => {
+    const pbm = readFileSync(join(FORMATS_DIR, "sample.pbm"));
+    const tiff = readFileSync(join(FORMATS_DIR, "sample.tiff"));
+    const qoi = readFileSync(join(FORMATS_DIR, "sample.qoi"));
+
+    const { body, contentType } = createMultipartPayload([
+      {
+        name: "file",
+        filename: "sample.pbm",
+        contentType: "image/x-portable-bitmap",
+        content: pbm,
+      },
+      { name: "file", filename: "sample.tiff", contentType: "image/tiff", content: tiff },
+      {
+        name: "file",
+        filename: "sample.qoi",
+        contentType: "application/octet-stream",
+        content: qoi,
+      },
+      { name: "settings", content: settings },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compress/batch",
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const fileResults = JSON.parse(res.headers["x-file-results"] as string);
+    expect(fileResults["0"]).toBeDefined();
+    expect(fileResults["1"]).toBeDefined();
+    expect(fileResults["2"]).toBeDefined();
+
+    const zip = new AdmZip(res.rawPayload);
+    expect(zip.getEntries().length).toBe(3);
+  });
+});
+
 // ── Batch preserves upload order ────────────────────────────────
 describe("Batch preserves upload order", () => {
   it("X-File-Results indices match upload order", async () => {

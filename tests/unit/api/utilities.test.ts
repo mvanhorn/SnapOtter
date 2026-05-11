@@ -567,6 +567,128 @@ describe("validateImageBuffer", () => {
       expect(result.format).toBe("jxl");
     }
   });
+
+  // -- Exotic formats from fixture files ------------------------------------
+
+  describe("validates exotic formats", () => {
+    const { readFileSync } = require("node:fs");
+    const FORMATS_DIR = join(FIXTURES, "formats");
+
+    it("accepts PBM file", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.pbm"));
+      const result = await validateImageBuffer(buf, "sample.pbm");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("pbm");
+    });
+
+    it("accepts PGM file", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.pgm"));
+      const result = await validateImageBuffer(buf, "sample.pgm");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("pgm");
+    });
+
+    it("accepts PPM file", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.ppm"));
+      const result = await validateImageBuffer(buf, "sample.ppm");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("ppm");
+    });
+
+    it("accepts DDS file", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.dds"));
+      const result = await validateImageBuffer(buf, "sample.dds");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("dds");
+    });
+
+    it("accepts DPX file", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.dpx"));
+      const result = await validateImageBuffer(buf, "sample.dpx");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("dpx");
+    });
+
+    it("accepts FITS file", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.fits"));
+      const result = await validateImageBuffer(buf, "sample.fits");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("fits");
+    });
+
+    it("accepts JP2 file", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.jp2"));
+      const result = await validateImageBuffer(buf, "sample.jp2");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("jp2");
+    });
+
+    it("accepts QOI file", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.qoi"));
+      const result = await validateImageBuffer(buf, "sample.qoi");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("qoi");
+    });
+
+    it("accepts SVGZ file (detected as svg)", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.svgz"));
+      const result = await validateImageBuffer(buf, "sample.svgz");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("svg");
+    });
+
+    it("accepts EPS file", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.eps"));
+      const result = await validateImageBuffer(buf, "sample.eps");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("eps");
+    });
+
+    it("accepts CUR file with CUR magic bytes", async () => {
+      // Build a buffer with proper CUR magic (00 00 02 00) since the fixture
+      // has ICO magic bytes (00 00 01 00) which gets detected as ico instead
+      const curBuf = Buffer.alloc(64);
+      curBuf[0] = 0x00;
+      curBuf[1] = 0x00;
+      curBuf[2] = 0x02;
+      curBuf[3] = 0x00;
+      curBuf[4] = 0x01;
+      const result = await validateImageBuffer(curBuf, "sample.cur");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("cur");
+    });
+
+    it("accepts HEIF file", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.heif"));
+      const result = await validateImageBuffer(buf, "sample.heif");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("heif");
+    });
+
+    it("accepts APNG file (detected as png)", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.apng"));
+      const result = await validateImageBuffer(buf, "sample.apng");
+      expect(result.valid).toBe(true);
+      if (result.valid) expect(result.format).toBe("png");
+    });
+
+    it("accepts DNG file (detected as raw)", async () => {
+      const buf = readFileSync(join(FORMATS_DIR, "sample.dng"));
+      const result = await validateImageBuffer(buf, "sample.dng");
+      expect(result.valid).toBe(true);
+      if (result.valid) {
+        expect(result.format).toBe("raw");
+        expect(result.width).toBe(0);
+        expect(result.height).toBe(0);
+      }
+    });
+
+    it("rejects a PDF file", async () => {
+      const pdfBuffer = Buffer.from("%PDF-1.4 fake content");
+      const result = await validateImageBuffer(pdfBuffer, "test.pdf");
+      expect(result.valid).toBe(false);
+    });
+  });
 });
 
 // ---------------------------------------------------------------------------

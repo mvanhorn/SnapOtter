@@ -223,6 +223,30 @@ describe("detectFormat", () => {
       expect(format).toBe("jxl");
     });
 
+    it("detects PPM P3 (ASCII) magic bytes", async () => {
+      // P3 = 0x50 0x33
+      const buf = Buffer.from([0x50, 0x33, 0x0a, 0x23, 0, 0, 0, 0, 0, 0, 0, 0]);
+      expect(await detectFormat(buf)).toBe("ppm");
+    });
+
+    it("detects PPM P6 (binary) magic bytes", async () => {
+      // P6 = 0x50 0x36
+      const buf = Buffer.from([0x50, 0x36, 0x0a, 0x36, 0, 0, 0, 0, 0, 0, 0, 0]);
+      expect(await detectFormat(buf)).toBe("ppm");
+    });
+
+    it("detects JP2 box signature magic bytes", async () => {
+      const buf = Buffer.from([
+        0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20, 0x0d, 0x0a, 0x87, 0x0a, 0, 0, 0, 0,
+      ]);
+      expect(await detectFormat(buf)).toBe("jp2");
+    });
+
+    it("detects J2K raw codestream magic bytes", async () => {
+      const buf = Buffer.from([0xff, 0x4f, 0xff, 0x51, 0, 0, 0, 0, 0, 0, 0, 0]);
+      expect(await detectFormat(buf)).toBe("jp2");
+    });
+
     it("returns 'unknown' for unrecognized bytes", async () => {
       const buf = Buffer.from([0xde, 0xad, 0xbe, 0xef, 0, 0, 0, 0, 0, 0, 0, 0]);
       const format = await detectFormat(buf);
@@ -272,6 +296,52 @@ describe("detectFormat", () => {
     it("detects QOI magic bytes", async () => {
       const buf = Buffer.from([0x71, 0x6f, 0x69, 0x66, 0, 0, 0, 0, 0, 0, 0, 0]);
       expect(await detectFormat(buf)).toBe("qoi");
+    });
+  });
+
+  describe("exotic format detection from fixtures", () => {
+    it("detects sample.ppm as ppm (P6 magic bytes)", async () => {
+      const buffer = readFileSync(path.join(FORMATS_DIR, "sample.ppm"));
+      expect(await detectFormat(buffer)).toBe("ppm");
+    });
+
+    it("detects sample.dng as tiff (DNG shares TIFF magic bytes)", async () => {
+      const buffer = readFileSync(path.join(FORMATS_DIR, "sample.dng"));
+      expect(await detectFormat(buffer)).toBe("tiff");
+    });
+
+    it("detects sample.jp2 as jp2 (JPEG 2000 box signature)", async () => {
+      const buffer = readFileSync(path.join(FORMATS_DIR, "sample.jp2"));
+      expect(await detectFormat(buffer)).toBe("jp2");
+    });
+
+    it("detects sample.svgz as svg (Sharp reads gzip-compressed SVG)", async () => {
+      const buffer = readFileSync(path.join(FORMATS_DIR, "sample.svgz"));
+      expect(await detectFormat(buffer)).toBe("svg");
+    });
+
+    // PBM (P4) and PGM (P5) have no magic byte entries and Sharp cannot parse them
+    it("cannot detect sample.pbm (no P4 magic bytes registered)", async () => {
+      const buffer = readFileSync(path.join(FORMATS_DIR, "sample.pbm"));
+      expect(await detectFormat(buffer)).toBe("unknown");
+    });
+
+    it("cannot detect sample.pgm (no P5 magic bytes registered)", async () => {
+      const buffer = readFileSync(path.join(FORMATS_DIR, "sample.pgm"));
+      expect(await detectFormat(buffer)).toBe("unknown");
+    });
+
+    // HDR has a text header (#?RGBE) not matched by magic byte table
+    it("cannot detect sample.hdr (Radiance text header not in magic bytes)", async () => {
+      const buffer = readFileSync(path.join(FORMATS_DIR, "sample.hdr"));
+      expect(await detectFormat(buffer)).toBe("unknown");
+    });
+
+    // TGA has no reliable magic bytes; its header can collide with other formats
+    it("does not reliably detect sample.tga (no TGA-specific magic bytes)", async () => {
+      const buffer = readFileSync(path.join(FORMATS_DIR, "sample.tga"));
+      // TGA detection is extension-based in validateImageBuffer, not in detectFormat
+      expect(await detectFormat(buffer)).not.toBe("tga");
     });
   });
 
