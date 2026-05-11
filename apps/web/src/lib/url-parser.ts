@@ -33,7 +33,6 @@ export function extractUrls(input: string): string[] {
       continue;
     }
 
-    line = line.trim();
     if (isValidHttpUrl(line)) {
       urls.push(line);
     }
