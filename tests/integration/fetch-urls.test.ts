@@ -8,41 +8,10 @@
 import { readFileSync } from "node:fs";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { join } from "node:path";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-// Mock the SSRF validation to allow localhost in tests.
-// We keep the real safeFetch logic but skip the private-IP DNS check.
-vi.mock("../../apps/api/src/lib/ssrf.js", async (importOriginal) => {
-  const original = (await importOriginal()) as Record<string, unknown>;
-  return {
-    ...original,
-    // validateFetchUrl that allows localhost for tests
-    validateFetchUrl: async (_url: string) => {
-      // No-op: allow all URLs in tests (including localhost)
-    },
-    // safeFetch that skips SSRF validation but still does the real fetch
-    safeFetch: async (url: string, signal?: AbortSignal) => {
-      const MAX_REDIRECTS = 5;
-      let currentUrl = url;
-      for (let i = 0; i <= MAX_REDIRECTS; i++) {
-        const res = await fetch(currentUrl, {
-          signal,
-          redirect: "manual",
-          headers: { "User-Agent": "SnapOtter/1.0 (image-fetch)" },
-        });
-        if (res.status >= 300 && res.status < 400) {
-          const location = res.headers.get("location");
-          if (!location) throw new Error("Redirect without Location header");
-          currentUrl = new URL(location, currentUrl).href;
-          if (i === MAX_REDIRECTS) throw new Error("Too many redirects");
-          continue;
-        }
-        return res;
-      }
-      throw new Error("Too many redirects");
-    },
-  };
-});
+// SSRF private-IP checks are bypassed via the SSRF_ALLOW_PRIVATE=1 env var
+// set in vitest.config.ts, so the real safeFetch works against localhost.
 
 import { buildTestApp, loginAsAdmin, type TestApp } from "./test-server.js";
 

@@ -48,8 +48,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install system dependencies (HEIC + ExifTool)
-        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libheif-examples libheif-plugin-x265 libheif-plugin-libde265 libimage-exiftool-perl
+      - name: Install system dependencies (HEIC + ExifTool + ImageMagick + exotic format tools)
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libheif-examples libheif-plugin-x265 libheif-plugin-libde265 libimage-exiftool-perl imagemagick ghostscript libjxl-tools libopenjp2-tools
+
+      - name: Allow ImageMagick to read EPS/PS via Ghostscript delegate
+        run: |
+          POLICY_FILE=$(find /etc/ImageMagick* -name policy.xml 2>/dev/null | head -1)
+          if [ -n "$POLICY_FILE" ]; then
+            sudo sed -i 's/<policy domain="coder" rights="none" pattern="EPS"/<policy domain="coder" rights="read" pattern="EPS"/' "$POLICY_FILE"
+            sudo sed -i 's/<policy domain="coder" rights="none" pattern="PS"/<policy domain="coder" rights="read" pattern="PS"/' "$POLICY_FILE"
+          fi
 
       - uses: ./.github/actions/setup
       - run: pnpm test:ci
