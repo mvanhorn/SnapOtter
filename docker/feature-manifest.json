@@ -128,7 +128,7 @@
           "minSize": 0
         }
       ],
-      "enablesTools": ["erase-object", "colorize"]
+      "enablesTools": ["erase-object", "colorize", "content-aware-crop"]
     },
     "upscale-enhance": {
       "name": "Upscale & Enhance",

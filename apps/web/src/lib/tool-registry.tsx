@@ -78,6 +78,11 @@ const ContentAwareResizeSettings = lazy(() =>
     default: m.ContentAwareResizeSettings,
   })),
 );
+const ContentAwareCropSettings = lazy(() =>
+  import("@/components/tools/content-aware-crop-settings").then((m) => ({
+    default: m.ContentAwareCropSettings,
+  })),
+);
 const CropSettings = lazy(() =>
   import("@/components/tools/crop-settings").then((m) => ({ default: m.CropSettings })),
 );
@@ -495,6 +500,7 @@ export const toolRegistry = new Map<string, ToolRegistryEntry>([
   ["restore-photo", { displayMode: "before-after", Settings: RestorePhotoSettings }],
   ["transparency-fixer", { displayMode: "before-after", Settings: TransparencyFixerSettings }],
   ["content-aware-resize", { displayMode: "side-by-side", Settings: ContentAwareResizeSettings }],
+  ["content-aware-crop", { displayMode: "before-after", Settings: ContentAwareCropSettings }],
 ]);
 
 export function getToolRegistryEntry(toolId: string): ToolRegistryEntry | undefined {
