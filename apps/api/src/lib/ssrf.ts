@@ -11,14 +11,20 @@ function isPrivateIPv4(ip: string): boolean {
   if (a === 127) return true;
   if (a === 169 && b === 254) return true;
   if (a === 0) return true;
+  if (a === 100 && b >= 64 && b <= 127) return true;
+  if (a === 192 && b === 0 && parts[2] === 0) return true;
+  if (a === 198 && (b === 18 || b === 19)) return true;
+  if (a >= 240) return true;
   return false;
 }
 
 function isPrivateIPv6(ip: string): boolean {
-  const normalized = ip.replace(/^\[|]$/g, "");
+  const normalized = ip.replace(/^\[|]$/g, "").toLowerCase();
   if (normalized === "::1") return true;
+  if (normalized === "::") return true;
   if (normalized.startsWith("fe80:")) return true;
   if (normalized.startsWith("fc") || normalized.startsWith("fd")) return true;
+  if (normalized.startsWith("2001:db8:")) return true;
   if (normalized.includes("::ffff:")) {
     const v4 = normalized.split("::ffff:")[1];
     if (v4 && isPrivateIPv4(v4)) return true;
@@ -79,8 +85,8 @@ export async function safeFetch(url: string, signal?: AbortSignal): Promise<Resp
     if (res.status >= 300 && res.status < 400) {
       const location = res.headers.get("location");
       if (!location) throw new Error("Redirect without Location header");
+      await res.body?.cancel();
       currentUrl = new URL(location, currentUrl).href;
-      if (i === MAX_REDIRECTS) throw new Error("Too many redirects");
       continue;
     }
 
