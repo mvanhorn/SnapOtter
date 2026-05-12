@@ -3,6 +3,7 @@ import { readFile, stat, writeFile } from "node:fs/promises";
 import { extname, join } from "node:path";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import sharp from "sharp";
+import { readImageDimensions } from "../lib/exiftool.js";
 import { validateImageBuffer } from "../lib/file-validation.js";
 import { sanitizeFilename } from "../lib/filename.js";
 import { decodeToSharpCompat, needsCliDecode } from "../lib/format-decoders.js";
@@ -135,7 +136,9 @@ export async function fileRoutes(app: FastifyInstance): Promise<void> {
     if (!data) {
       return reply.status(400).send({ error: "No file provided" });
     }
-    let buffer = await data.toBuffer();
+    const originalBuffer = await data.toBuffer();
+    let buffer = originalBuffer;
+    const ext = data.filename?.split(".").pop()?.toLowerCase();
 
     const validation = await validateImageBuffer(buffer, data.filename);
     if (!validation.valid) {
@@ -168,11 +171,27 @@ export async function fileRoutes(app: FastifyInstance): Promise<void> {
     }
 
     try {
+      const preMeta = await sharp(buffer).metadata();
+      let origWidth = preMeta.width ?? 0;
+      let origHeight = preMeta.height ?? 0;
+
+      if (validation.format === "raw") {
+        const dims = await readImageDimensions(originalBuffer, ext);
+        if (dims) {
+          origWidth = dims.width;
+          origHeight = dims.height;
+        }
+      }
+
       const webp = await sharp(buffer)
         .resize(1200, 1200, { fit: "inside", withoutEnlargement: true })
         .webp({ quality: 80 })
         .toBuffer();
-      return reply.header("Content-Type", "image/webp").send(webp);
+      return reply
+        .header("Content-Type", "image/webp")
+        .header("X-Original-Width", String(origWidth))
+        .header("X-Original-Height", String(origHeight))
+        .send(webp);
     } catch {
       return reply.status(422).send({
         error: `Failed to generate preview for ${validation.format.toUpperCase()} file`,

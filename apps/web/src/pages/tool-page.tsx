@@ -631,6 +631,8 @@ export function ToolPage() {
           src={originalBlobUrl}
           filename={fname}
           fileSize={fsize}
+          originalWidth={currentEntry?.originalWidth}
+          originalHeight={currentEntry?.originalHeight}
           {...(isLivePreview && previewTransform
             ? {
                 cssRotate: previewTransform.rotate,

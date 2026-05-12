@@ -65,7 +65,13 @@ export function needsServerPreview(file: File): boolean {
   return SERVER_PREVIEW_EXTENSIONS.has(ext);
 }
 
-export async function fetchDecodedPreview(file: File): Promise<string | null> {
+export interface DecodedPreview {
+  url: string;
+  originalWidth: number | null;
+  originalHeight: number | null;
+}
+
+export async function fetchDecodedPreview(file: File): Promise<DecodedPreview | null> {
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -75,8 +81,16 @@ export async function fetchDecodedPreview(file: File): Promise<string | null> {
       body: formData,
     });
     if (!res.ok) return null;
+
+    const w = Number(res.headers.get("X-Original-Width"));
+    const h = Number(res.headers.get("X-Original-Height"));
+
     const blob = await res.blob();
-    return URL.createObjectURL(blob);
+    return {
+      url: URL.createObjectURL(blob),
+      originalWidth: w > 0 ? w : null,
+      originalHeight: h > 0 ? h : null,
+    };
   } catch {
     return null;
   }

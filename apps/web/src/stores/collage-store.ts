@@ -141,7 +141,7 @@ export const useCollageStore = create<CollageState>((set, get) => ({
     for (const img of newImages) {
       if (img.previewLoading) {
         const imgId = img.id;
-        fetchDecodedPreview(img.file).then((url) => {
+        fetchDecodedPreview(img.file).then((result) => {
           const current = get();
           const idx = current.images.findIndex((i) => i.id === imgId);
           if (idx === -1) return;
@@ -149,7 +149,7 @@ export const useCollageStore = create<CollageState>((set, get) => ({
           updated[idx] = {
             ...updated[idx],
             previewLoading: false,
-            ...(url ? { previewBlobUrl: url } : {}),
+            ...(result ? { previewBlobUrl: result.url } : {}),
           };
           set({ images: updated });
         });

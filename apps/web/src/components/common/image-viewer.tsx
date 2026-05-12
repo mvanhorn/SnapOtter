@@ -19,6 +19,8 @@ interface ImageViewerProps {
   src: string;
   filename: string;
   fileSize: number;
+  originalWidth?: number | null;
+  originalHeight?: number | null;
   cssRotate?: number;
   cssFlipH?: boolean;
   cssFlipV?: boolean;
@@ -34,6 +36,8 @@ export function ImageViewer({
   src,
   filename,
   fileSize,
+  originalWidth,
+  originalHeight,
   cssRotate,
   cssFlipH,
   cssFlipV,
@@ -298,9 +302,9 @@ export function ImageViewer({
       <div className="flex items-center justify-between px-3 py-1.5 border-t border-border text-xs text-muted-foreground shrink-0">
         <span className="truncate mr-2">{filename}</span>
         <div className="flex items-center gap-3 shrink-0">
-          {naturalWidth != null && naturalHeight != null && (
+          {(originalWidth || naturalWidth) != null && (originalHeight || naturalHeight) != null && (
             <span>
-              {naturalWidth} x {naturalHeight}
+              {originalWidth || naturalWidth} x {originalHeight || naturalHeight}
             </span>
           )}
           <span>{formatFileSize(fileSize)}</span>

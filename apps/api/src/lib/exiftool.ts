@@ -135,6 +135,34 @@ export async function writeMetadata(
   }
 }
 
+export async function readImageDimensions(
+  buffer: Buffer,
+  ext?: string,
+): Promise<{ width: number; height: number } | null> {
+  try {
+    const bin = await findExiftool();
+    const suffix = ext ? `.${ext.replace(/^\./, "")}` : ".jpg";
+    const id = randomUUID();
+    const tempPath = join(tmpdir(), `exif-dim-${id}${suffix}`);
+
+    try {
+      await writeFile(tempPath, buffer);
+      const { stdout } = await execFileAsync(
+        bin,
+        ["-json", "-ImageWidth", "-ImageHeight", tempPath],
+        { timeout: 10_000 },
+      );
+      const [data] = JSON.parse(stdout);
+      if (!data?.ImageWidth || !data?.ImageHeight) return null;
+      return { width: data.ImageWidth, height: data.ImageHeight };
+    } finally {
+      await rm(tempPath, { force: true }).catch(() => {});
+    }
+  } catch {
+    return null;
+  }
+}
+
 /** Settings shape that buildTagArgs accepts */
 export interface EditMetadataSettings {
   title?: string;

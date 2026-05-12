@@ -10,6 +10,8 @@ export interface FileEntry {
   processedFilename: string | null;
   processedSize: number | null;
   originalSize: number;
+  originalWidth: number | null;
+  originalHeight: number | null;
   status: "pending" | "processing" | "completed" | "failed";
   error: string | null;
   serverFileId?: string;
@@ -29,6 +31,8 @@ function createEntry(file: File): FileEntry {
     processedFilename: null,
     processedSize: null,
     originalSize: file.size,
+    originalWidth: null,
+    originalHeight: null,
     status: "pending",
     error: null,
     serverFileId: undefined,
@@ -147,13 +151,23 @@ export const useFileStore = create<FileState>((set, get) => ({
     for (let i = 0; i < entries.length; i++) {
       if (needsServerPreview(entries[i].file)) {
         const file = entries[i].file;
-        fetchDecodedPreview(file).then((url) => {
+        fetchDecodedPreview(file).then((result) => {
           const state = get();
           if (state.entries[i]?.file !== file) return;
           const updated = [...state.entries];
           const oldBlobUrl = updated[i].blobUrl;
-          updated[i] = { ...updated[i], previewLoading: false, ...(url ? { blobUrl: url } : {}) };
-          if (url && oldBlobUrl) URL.revokeObjectURL(oldBlobUrl);
+          updated[i] = {
+            ...updated[i],
+            previewLoading: false,
+            ...(result
+              ? {
+                  blobUrl: result.url,
+                  originalWidth: result.originalWidth,
+                  originalHeight: result.originalHeight,
+                }
+              : {}),
+          };
+          if (result && oldBlobUrl) URL.revokeObjectURL(oldBlobUrl);
           set({ entries: updated, ...deriveSelected(updated, state.selectedIndex) });
         });
       }
@@ -171,13 +185,23 @@ export const useFileStore = create<FileState>((set, get) => ({
       const i = oldLen + j;
       if (needsServerPreview(newEntries[j].file)) {
         const file = newEntries[j].file;
-        fetchDecodedPreview(file).then((url) => {
+        fetchDecodedPreview(file).then((result) => {
           const state = get();
           if (state.entries[i]?.file !== file) return;
           const updated = [...state.entries];
           const oldBlobUrl = updated[i].blobUrl;
-          updated[i] = { ...updated[i], previewLoading: false, ...(url ? { blobUrl: url } : {}) };
-          if (url && oldBlobUrl) URL.revokeObjectURL(oldBlobUrl);
+          updated[i] = {
+            ...updated[i],
+            previewLoading: false,
+            ...(result
+              ? {
+                  blobUrl: result.url,
+                  originalWidth: result.originalWidth,
+                  originalHeight: result.originalHeight,
+                }
+              : {}),
+          };
+          if (result && oldBlobUrl) URL.revokeObjectURL(oldBlobUrl);
           set({ entries: updated, ...deriveSelected(updated, state.selectedIndex) });
         });
       }
