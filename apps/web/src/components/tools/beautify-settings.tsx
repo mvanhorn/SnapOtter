@@ -152,9 +152,20 @@ const SHADOW_CSS: Record<string, string> = {
   dramatic: "0px 20px 80px rgba(0,0,0,0.5)",
 };
 
-function buildPreviewStyle(settings: Record<string, unknown>): React.CSSProperties {
+function hexToRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function buildPreviewStyle(
+  settings: Record<string, unknown>,
+  bgImageUrl?: string | null,
+): React.CSSProperties {
   const bg = settings.backgroundType as string;
   let background: string | undefined;
+  const extra: React.CSSProperties = {};
 
   if (bg === "solid") {
     background = settings.backgroundColor as string;
@@ -165,15 +176,34 @@ function buildPreviewStyle(settings: Record<string, unknown>): React.CSSProperti
   } else if (bg === "radial-gradient") {
     const stops = settings.gradientStops as GradientStop[];
     background = `radial-gradient(circle, ${stops.map((s) => `${s.color} ${s.position}%`).join(", ")})`;
+  } else if (bg === "image" && bgImageUrl) {
+    extra.backgroundImage = `url("${bgImageUrl}")`;
+    extra.backgroundSize = "cover";
+    extra.backgroundPosition = "center";
   }
 
   const shadowPreset = settings.shadowPreset as string;
+  let boxShadow: string | undefined;
+  if (shadowPreset === "custom") {
+    const blur = settings.shadowBlur as number;
+    const ox = settings.shadowOffsetX as number;
+    const oy = settings.shadowOffsetY as number;
+    const color = settings.shadowColor as string;
+    const opacity = (settings.shadowOpacity as number) / 100;
+    boxShadow = `${ox}px ${oy}px ${blur}px ${hexToRgba(color, opacity)}`;
+  } else if (shadowPreset !== "none") {
+    boxShadow = SHADOW_CSS[shadowPreset];
+  }
+
+  const frame = settings.frame as string;
+  const hasFrame = frame && frame !== "none";
 
   return {
     background,
+    ...extra,
     padding: `${settings.padding}px`,
-    borderRadius: `${settings.borderRadius}px`,
-    boxShadow: SHADOW_CSS[shadowPreset],
+    borderRadius: hasFrame ? "0px" : `${settings.borderRadius}px`,
+    boxShadow,
   };
 }
 
@@ -182,6 +212,265 @@ function presetGradientCSS(preset: BeautifyPreset): string {
   if (preset.backgroundType === "solid") return preset.backgroundColor;
   const stops = preset.gradientStops.map((s) => `${s.color} ${s.position}%`).join(", ");
   return `linear-gradient(${preset.gradientAngle}deg, ${stops})`;
+}
+
+// -- Frame & watermark preview overlay --------------------------------------
+
+const TRAFFIC_LIGHTS = [{ color: "#ff5f57" }, { color: "#febc2e" }, { color: "#28c840" }];
+
+const DEVICE_LABELS: Record<string, string> = {
+  iphone: "iPhone",
+  macbook: "MacBook",
+  ipad: "iPad",
+};
+
+function renderMacosFrame(isDark: boolean, title: string): React.ReactNode {
+  return (
+    <div
+      data-testid="frame-preview-macos"
+      style={{
+        height: 36,
+        background: isDark ? "#323233" : "#f1f0ef",
+        borderBottom: `0.5px solid ${isDark ? "#555555" : "#c5c5c5"}`,
+        borderRadius: "8px 8px 0 0",
+        display: "flex",
+        alignItems: "center",
+        paddingLeft: 14,
+        position: "relative",
+        flexShrink: 0,
+      }}
+    >
+      {TRAFFIC_LIGHTS.map((tl) => (
+        <div
+          key={tl.color}
+          style={{
+            width: 12,
+            height: 12,
+            borderRadius: "50%",
+            background: tl.color,
+            marginRight: 8,
+          }}
+        />
+      ))}
+      {title && (
+        <span
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            textAlign: "center",
+            fontSize: 12,
+            color: isDark ? "#d4d4d4" : "#4b4b4b",
+            pointerEvents: "none",
+          }}
+        >
+          {title}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function renderWindowsFrame(isDark: boolean, title: string): React.ReactNode {
+  const btnColor = isDark ? "#999" : "#666";
+  return (
+    <div
+      data-testid="frame-preview-windows"
+      style={{
+        height: 36,
+        background: isDark ? "#2b2b2b" : "#f3f3f3",
+        borderBottom: `0.5px solid ${isDark ? "#3a3a3a" : "#e0e0e0"}`,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingLeft: 12,
+        flexShrink: 0,
+      }}
+    >
+      <span style={{ fontSize: 12, color: isDark ? "#ffffff" : "#1a1a1a" }}>{title}</span>
+      <div style={{ display: "flex", height: "100%" }}>
+        {["─", "□", "✕"].map((icon) => (
+          <div
+            key={icon}
+            style={{
+              width: 46,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: btnColor,
+              fontSize: 12,
+            }}
+          >
+            {icon}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function renderBrowserFrame(isDark: boolean, title: string): React.ReactNode {
+  return (
+    <div data-testid="frame-preview-browser" style={{ flexShrink: 0 }}>
+      <div
+        style={{
+          height: 36,
+          background: isDark ? "#323233" : "#f1f0ef",
+          display: "flex",
+          alignItems: "center",
+          paddingLeft: 14,
+          borderRadius: "8px 8px 0 0",
+        }}
+      >
+        {TRAFFIC_LIGHTS.map((tl) => (
+          <div
+            key={tl.color}
+            style={{
+              width: 12,
+              height: 12,
+              borderRadius: "50%",
+              background: tl.color,
+              marginRight: 8,
+            }}
+          />
+        ))}
+        <div
+          style={{
+            marginLeft: 12,
+            padding: "4px 16px",
+            borderRadius: "6px 6px 0 0",
+            background: isDark ? "#1e1e1e" : "#ffffff",
+            fontSize: 11,
+            color: isDark ? "#d4d4d4" : "#4b4b4b",
+          }}
+        >
+          {title || "New Tab"}
+        </div>
+      </div>
+      <div
+        style={{
+          height: 36,
+          background: isDark ? "#1e1e1e" : "#ffffff",
+          display: "flex",
+          alignItems: "center",
+          padding: "0 12px",
+          borderTop: `0.5px solid ${isDark ? "#444" : "#e0e0e0"}`,
+        }}
+      >
+        <div
+          style={{
+            flex: 1,
+            background: isDark ? "#323233" : "#f1f0ef",
+            borderRadius: 6,
+            padding: "4px 10px",
+            fontSize: 11,
+            color: isDark ? "#999" : "#666",
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          <span style={{ fontSize: 10 }}>{"🔒"}</span>
+          <span>example.com</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function renderDeviceFrame(isDark: boolean, deviceType: string): React.ReactNode {
+  const label = DEVICE_LABELS[deviceType] || deviceType;
+  return (
+    <div
+      data-testid={`frame-preview-${deviceType}`}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "6px 12px",
+        background: isDark ? "#1d1d1f" : "#e8e8e8",
+        borderRadius: "12px 12px 0 0",
+        flexShrink: 0,
+      }}
+    >
+      <span
+        style={{
+          fontSize: 11,
+          color: isDark ? "#999" : "#666",
+          letterSpacing: "0.5px",
+          textTransform: "uppercase" as const,
+        }}
+      >
+        {label} Frame
+      </span>
+    </div>
+  );
+}
+
+const WATERMARK_POS_STYLES: Record<string, React.CSSProperties> = {
+  "top-left": { top: 8, left: 8 },
+  "top-right": { top: 8, right: 8 },
+  center: { top: "50%", left: "50%", transform: "translate(-50%, -50%)" },
+  "bottom-left": { bottom: 8, left: 8 },
+  "bottom-right": { bottom: 8, right: 8 },
+};
+
+function renderWatermark(text: string, position: string, opacity: number): React.ReactNode {
+  return (
+    <div
+      data-testid="watermark-preview"
+      style={{
+        position: "absolute",
+        ...WATERMARK_POS_STYLES[position],
+        color: "#ffffff",
+        fontSize: 14,
+        fontWeight: 600,
+        opacity: opacity / 100,
+        textShadow: "0 1px 3px rgba(0,0,0,0.5)",
+        pointerEvents: "none",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {text}
+    </div>
+  );
+}
+
+function renderFramePreview(
+  frame: string,
+  title: string,
+  watermarkText?: string,
+  watermarkPosition?: string,
+  watermarkOpacity?: number,
+): React.ReactNode {
+  let frameNode: React.ReactNode = null;
+  let watermarkNode: React.ReactNode = null;
+
+  if (frame !== "none") {
+    const isDark = frame.endsWith("-dark");
+    const type = frame.replace(/-(?:light|dark)$/, "");
+
+    if (type === "macos") frameNode = renderMacosFrame(isDark, title);
+    else if (type === "windows") frameNode = renderWindowsFrame(isDark, title);
+    else if (type === "browser") frameNode = renderBrowserFrame(isDark, title);
+    else frameNode = renderDeviceFrame(isDark, type);
+  }
+
+  if (watermarkText) {
+    watermarkNode = renderWatermark(
+      watermarkText,
+      watermarkPosition || "bottom-right",
+      watermarkOpacity ?? 50,
+    );
+  }
+
+  if (!frameNode && !watermarkNode) return null;
+  return (
+    <>
+      {frameNode}
+      {watermarkNode}
+    </>
+  );
 }
 
 // -- Background tab types ---------------------------------------------------
@@ -248,6 +537,7 @@ export interface BeautifyControlsProps {
   settings?: Record<string, unknown>;
   onChange?: (settings: Record<string, unknown>) => void;
   onImageStyle?: (style: React.CSSProperties | null) => void;
+  onImageOverlay?: (children: React.ReactNode) => void;
   onBackgroundImage?: (file: File | null) => void;
 }
 
@@ -255,6 +545,7 @@ export function BeautifyControls({
   settings: initialSettings,
   onChange,
   onImageStyle,
+  onImageOverlay,
   onBackgroundImage,
 }: BeautifyControlsProps) {
   // State
@@ -268,7 +559,17 @@ export function BeautifyControls({
   const [gradientAngle, setGradientAngle] = useState(135);
   const [gradientMode, setGradientMode] = useState<"linear" | "radial">("linear");
   const [bgImageFile, setBgImageFile] = useState<File | null>(null);
+  const [bgImageUrl, setBgImageUrl] = useState<string | null>(null);
   const bgInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (bgImageFile) {
+      const url = URL.createObjectURL(bgImageFile);
+      setBgImageUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+    setBgImageUrl(null);
+  }, [bgImageFile]);
 
   const [frameType, setFrameType] = useState<FrameType>("macos");
   const [frameTheme, setFrameTheme] = useState<FrameTheme>("light");
@@ -325,6 +626,11 @@ export function BeautifyControls({
     onBgImageRef.current = onBackgroundImage;
   });
 
+  const onOverlayRef = useRef(onImageOverlay);
+  useEffect(() => {
+    onOverlayRef.current = onImageOverlay;
+  });
+
   // Resolve frame string from type + theme
   const resolvedFrame = frameType === "none" ? "none" : (`${frameType}-${frameTheme}` as const);
 
@@ -336,7 +642,7 @@ export function BeautifyControls({
         : "linear-gradient"
       : backgroundType;
 
-  // Propagate changes
+  // Propagate changes to parent and apply live preview.
   useEffect(() => {
     const vals: Record<string, unknown> = {
       backgroundType: resolvedBgType,
@@ -359,7 +665,20 @@ export function BeautifyControls({
       watermarkOpacity,
     };
     onChangeRef.current?.(vals);
-    onImageStyleRef.current?.(buildPreviewStyle(vals));
+    onImageStyleRef.current?.(buildPreviewStyle(vals, bgImageUrl));
+    onOverlayRef.current?.(
+      renderFramePreview(
+        resolvedFrame,
+        frameTitle,
+        watermarkText,
+        watermarkPosition,
+        watermarkOpacity,
+      ),
+    );
+    return () => {
+      onImageStyleRef.current?.(null);
+      onOverlayRef.current?.(null);
+    };
   }, [
     resolvedBgType,
     backgroundColor,
@@ -379,6 +698,7 @@ export function BeautifyControls({
     watermarkText,
     watermarkPosition,
     watermarkOpacity,
+    bgImageUrl,
   ]);
 
   const clearPreset = () => setSelectedPreset(null);
@@ -964,8 +1284,10 @@ export function BeautifyControls({
 
 export function BeautifySettings({
   onImageStyle,
+  onImageOverlay,
 }: {
   onImageStyle?: (style: React.CSSProperties | null) => void;
+  onImageOverlay?: (children: React.ReactNode) => void;
 }) {
   const { files, setProcessedUrl, setSizes, setJobId } = useFileStore();
   const { processFiles, processAllFiles, processing, error, downloadUrl, progress } =
@@ -1048,6 +1370,7 @@ export function BeautifySettings({
       <BeautifyControls
         onChange={handleSettingsChange}
         onImageStyle={onImageStyle}
+        onImageOverlay={onImageOverlay}
         onBackgroundImage={handleBgImageChange}
       />
 

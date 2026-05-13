@@ -214,6 +214,7 @@ export function ToolPage() {
   const [previewTransform, setPreviewTransform] = useState<PreviewTransform | null>(null);
   const [previewFilter, setPreviewFilter] = useState<string>("");
   const [imageWrapperStyle, setImageWrapperStyle] = useState<React.CSSProperties | null>(null);
+  const [imageWrapperChildren, setImageWrapperChildren] = useState<React.ReactNode>(null);
   const [bgPreview, setBgPreview] = useState<BgPreviewState | null>(null);
 
   const [cropCrop, setCropCrop] = useState<Crop>({
@@ -260,7 +261,6 @@ export function ToolPage() {
 
     setPreviewTransform(null);
     setPreviewFilter("");
-    setImageWrapperStyle(null);
     setBgPreview(null);
     setCropCrop({ unit: "%", x: 0, y: 0, width: 100, height: 100 });
     setCropAspect(undefined);
@@ -271,6 +271,26 @@ export function ToolPage() {
     setEraserSliderInitPos(null);
     setMobileSettingsOpen(true);
   }, [toolId]);
+
+  const toolAccept = registryEntry?.accept;
+  const toolAcceptExts = useMemo(
+    () => toolAccept?.split(",").map((e) => e.trim().replace(/^\./, "").toLowerCase()),
+    [toolAccept],
+  );
+  const toolFileFilter = useMemo(() => {
+    if (!toolAcceptExts) return undefined;
+    return (file: File) => {
+      const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+      return toolAcceptExts.includes(ext);
+    };
+  }, [toolAcceptExts]);
+  const toolAcceptDescription = useMemo(
+    () =>
+      toolAcceptExts
+        ? `${toolAcceptExts.map((e) => e.toUpperCase()).join(", ")} files only`
+        : undefined,
+    [toolAcceptExts],
+  );
 
   const handleFiles = useCallback(
     (newFiles: File[]) => {
@@ -298,13 +318,15 @@ export function ToolPage() {
     input.type = "file";
     input.multiple = true;
     input.accept =
+      toolAccept ??
       "image/*,.avif,.heic,.heif,.hif,.jxl,.dng,.cr2,.cr3,.nef,.nrw,.arw,.orf,.rw2,.raf,.pef,.3fr,.iiq,.srw,.x3f,.rwl,.gpr,.fff,.mrw,.mef,.kdc,.dcr,.erf,.ptx,.tga,.psd,.exr,.hdr,.svgz,.jp2,.j2k,.qoi,.eps,.dds,.cur,.apng,.dpx,.cin,.fits,.ppm,.pgm,.pbm,.pfm";
     input.onchange = (e) => {
-      const newFiles = Array.from((e.target as HTMLInputElement).files || []);
+      const selected = Array.from((e.target as HTMLInputElement).files || []);
+      const newFiles = toolFileFilter ? selected.filter(toolFileFilter) : selected;
       if (newFiles.length > 0) addFiles(newFiles);
     };
     input.click();
-  }, [addFiles]);
+  }, [addFiles, toolAccept, toolFileFilter]);
 
   const handleDownloadAll = useCallback(() => {
     if (!batchZipBlob) return;
@@ -381,6 +403,7 @@ export function ToolPage() {
     onPreviewTransform: isLivePreview ? setPreviewTransform : undefined,
     onPreviewFilter: isLivePreview ? setPreviewFilter : undefined,
     onImageStyle: isLivePreview ? setImageWrapperStyle : undefined,
+    onImageOverlay: isLivePreview ? (c: React.ReactNode) => setImageWrapperChildren(c) : undefined,
     onBgPreview: setBgPreview,
     cropProps:
       displayMode === "interactive-crop"
@@ -442,9 +465,11 @@ export function ToolPage() {
           <Dropzone
             onFiles={handleFiles}
             onUrlImport={handleUrlImport}
-            accept="image/*"
+            accept={toolAccept ?? "image/*"}
             multiple
             currentFiles={files}
+            fileFilter={toolFileFilter}
+            acceptDescription={toolAcceptDescription}
           />
         );
       const ResultsPanel = registryEntry.ResultsPanel;
@@ -560,6 +585,7 @@ export function ToolPage() {
           filename={selectedFileName ?? files[0].name}
           fileSize={selectedFileSize ?? files[0].size}
           imageWrapperStyle={imageWrapperStyle}
+          imageWrapperChildren={imageWrapperChildren}
         />
       );
     }
@@ -642,6 +668,7 @@ export function ToolPage() {
             : {})}
           {...(isLivePreview && previewFilter ? { cssFilter: previewFilter } : {})}
           {...(isLivePreview && imageWrapperStyle ? { imageWrapperStyle } : {})}
+          {...(isLivePreview && imageWrapperChildren ? { imageWrapperChildren } : {})}
         />
       );
     }
@@ -650,9 +677,11 @@ export function ToolPage() {
       <Dropzone
         onFiles={handleFiles}
         onUrlImport={handleUrlImport}
-        accept="image/*"
+        accept={toolAccept ?? "image/*"}
         multiple
         currentFiles={files}
+        fileFilter={toolFileFilter}
+        acceptDescription={toolAcceptDescription}
       />
     );
   }

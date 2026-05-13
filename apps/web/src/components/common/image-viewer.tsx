@@ -27,6 +27,7 @@ interface ImageViewerProps {
   cssFilter?: string;
   bgPreview?: BgPreviewState;
   imageWrapperStyle?: React.CSSProperties;
+  imageWrapperChildren?: React.ReactNode;
 }
 
 const ZOOM_STEPS = [10, 25, 50, 75, 100, 150, 200, 300, 500, 1000];
@@ -44,6 +45,7 @@ export function ImageViewer({
   cssFilter,
   bgPreview,
   imageWrapperStyle,
+  imageWrapperChildren,
 }: ImageViewerProps) {
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
   const [naturalWidth, setNaturalWidth] = useState<number | null>(null);
@@ -261,13 +263,17 @@ export function ImageViewer({
           <div
             style={{
               ...imageWrapperStyle,
-              display: "inline-block",
+              display: imageWrapperChildren ? "inline-flex" : "inline-block",
+              flexDirection: imageWrapperChildren ? ("column" as const) : undefined,
+              position: imageWrapperChildren ? ("relative" as const) : undefined,
+              boxSizing: "border-box" as const,
               overflow: "hidden",
               maxWidth: "100%",
               maxHeight: "100%",
               transition: "all 0.15s ease",
             }}
           >
+            {imageWrapperChildren}
             <img
               ref={imgRef}
               src={src}
@@ -275,12 +281,22 @@ export function ImageViewer({
               onLoad={handleImageLoad}
               onError={handleImageError}
               className="select-none"
-              style={{
-                display: "block",
-                maxWidth: "100%",
-                maxHeight: "100%",
-                objectFit: "contain" as const,
-              }}
+              style={
+                imageWrapperChildren
+                  ? {
+                      display: "block",
+                      flex: "1 1 0",
+                      minHeight: 0,
+                      maxWidth: "100%",
+                      objectFit: "contain" as const,
+                    }
+                  : {
+                      display: "block",
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      objectFit: "contain" as const,
+                    }
+              }
               draggable={false}
             />
           </div>

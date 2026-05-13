@@ -53,12 +53,15 @@ export interface ToolRegistryEntry {
   displayMode: DisplayMode;
   /** Whether this tool supports live preview transforms (rotate, color). */
   livePreview?: boolean;
+  /** Override the default file-picker accept string (e.g. ".svg,.svgz"). */
+  accept?: string;
   /** The settings component for this tool. */
   Settings: React.ComponentType<{
     onPreviewTransform?: (t: PreviewTransform) => void;
     onPreviewFilter?: (filter: string) => void;
     onBgPreview?: (state: BgPreviewState | null) => void;
     onImageStyle?: (style: React.CSSProperties | null) => void;
+    onImageOverlay?: (children: React.ReactNode) => void;
     cropProps?: CropProps;
     eraserProps?: EraserProps;
   }>;
@@ -445,7 +448,10 @@ export const toolRegistry = new Map<string, ToolRegistryEntry>([
   ],
 
   // Format & Conversion
-  ["svg-to-raster", { displayMode: "before-after", Settings: SvgToRasterSettings }],
+  [
+    "svg-to-raster",
+    { displayMode: "before-after", accept: ".svg,.svgz", Settings: SvgToRasterSettings },
+  ],
   ["vectorize", { displayMode: "before-after", Settings: VectorizeSettings }],
   ["gif-tools", { displayMode: "before-after", Settings: GifToolsSettings }],
 
