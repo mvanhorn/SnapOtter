@@ -51,79 +51,111 @@ CODEFORMER_SIZE = 512
 
 # ── Scratch detection ─────────────────────────────────────────────────
 
-def detect_scratches(img_bgr, sensitivity="medium"):
-    """Detect scratches, tears, and spots using morphological analysis.
-
-    Uses top-hat and black-hat transforms with oriented line kernels
-    to find both bright and dark linear structures at multiple scales
-    and angles. Returns a binary mask (255 = damage, 0 = clean).
-    """
+def detect_scratches(img_bgr, _sensitivity=None):
     gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
-
-    # CLAHE for local contrast enhancement to reveal faint scratches
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-    enhanced = clahe.apply(gray)
-
-    # Sensitivity controls the detection threshold
-    thresh_map = {"light": 170, "medium": 130, "heavy": 90}
-    thresh = thresh_map.get(sensitivity, 130)
-
     h, w = gray.shape
     base_dim = min(h, w)
 
-    # Scale kernel sizes to image resolution
-    kernel_sizes = [
-        max(9, base_dim // 80),
-        max(15, base_dim // 50),
-        max(25, base_dim // 30),
-    ]
+    # Pre-filter compression artifacts before enhancement
+    filtered = cv2.bilateralFilter(gray, d=5, sigmaColor=50, sigmaSpace=50)
 
-    mask = np.zeros_like(gray)
+    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+    enhanced = clahe.apply(filtered)
+
+    # Adaptive kernel sizing based on image dimensions
+    if base_dim < 300:
+        max_k = max(9, base_dim // 15)
+        kernel_sizes = [9, max_k | 1]
+    else:
+        kernel_sizes = [
+            max(9, base_dim // 80),
+            max(15, base_dim // 50),
+            max(25, base_dim // 30),
+        ]
+
+    angles = [0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5]
+
+    # Accumulate morphological responses before thresholding
+    response = np.zeros_like(gray, dtype=np.float32)
 
     for ksize in kernel_sizes:
-        ksize = ksize | 1  # ensure odd
-        for angle in [0, 45, 90, 135]:
-            kernel = _make_line_kernel(ksize, angle)
-
-            # Black-hat: detects dark structures (dark scratches on light areas)
+        ksize = ksize | 1
+        for angle in angles:
+            kernel = _make_line_kernel_rotated(ksize, angle)
             blackhat = cv2.morphologyEx(enhanced, cv2.MORPH_BLACKHAT, kernel)
-            # Top-hat: detects bright structures (light scratches on dark areas)
             tophat = cv2.morphologyEx(enhanced, cv2.MORPH_TOPHAT, kernel)
-
             combined = cv2.add(blackhat, tophat)
-            _, binary = cv2.threshold(combined, thresh, 255, cv2.THRESH_BINARY)
-            mask = cv2.bitwise_or(mask, binary)
+            response = np.maximum(response, combined.astype(np.float32))
 
-    # Clean up: remove isolated noise pixels
+    # Adaptive threshold via Otsu on the response map
+    response_u8 = np.clip(response, 0, 255).astype(np.uint8)
+    otsu_thresh, mask = cv2.threshold(response_u8, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    if otsu_thresh < 60:
+        return np.zeros_like(gray)
+
+    # Connected component filtering
+    mask = _filter_components(mask, h * w)
+
+    # Post-processing
     kernel_open = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel_open)
 
-    # Connect nearby scratch segments
-    kernel_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    kernel_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel_close)
 
-    # Dilate to include scratch edges for cleaner inpainting
-    kernel_dilate = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
-    mask = cv2.dilate(mask, kernel_dilate, iterations=1)
+    # Coverage cap: if > 15%, keep only strongest detections
+    coverage = np.count_nonzero(mask) / (h * w)
+    if coverage > 0.15:
+        print(f"[restore] Coverage cap triggered: {coverage:.1%} > 15%, keeping strongest detections",
+              file=sys.stderr, flush=True)
+        masked_response = response_u8.copy()
+        masked_response[mask == 0] = 0
+        nonzero = masked_response[masked_response > 0]
+        if len(nonzero) > 0:
+            target_count = int(h * w * 0.15)
+            cutoff = np.percentile(nonzero, max(0, 100 * (1 - target_count / len(nonzero))))
+            _, mask = cv2.threshold(response_u8, max(cutoff, otsu_thresh), 255, cv2.THRESH_BINARY)
+            mask = _filter_components(mask, h * w)
+
+    # Dilate for cleaner inpainting boundaries
+    kernel_dilate = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    mask = cv2.dilate(mask, kernel_dilate, iterations=2)
 
     return mask
 
 
-def _make_line_kernel(size, angle):
-    """Create an oriented line structuring element."""
+def _make_line_kernel_rotated(size, angle_deg):
     kernel = np.zeros((size, size), np.uint8)
     mid = size // 2
-    if angle == 0:
-        kernel[mid, :] = 1
-    elif angle == 90:
-        kernel[:, mid] = 1
-    elif angle == 45:
-        for i in range(size):
-            kernel[i, i] = 1
-    elif angle == 135:
-        for i in range(size):
-            kernel[i, size - 1 - i] = 1
-    return kernel
+    kernel[mid, :] = 1
+    if angle_deg == 0:
+        return kernel
+    M = cv2.getRotationMatrix2D((float(mid), float(mid)), angle_deg, 1.0)
+    rotated = cv2.warpAffine(kernel, M, (size, size),
+                              flags=cv2.INTER_NEAREST,
+                              borderMode=cv2.BORDER_CONSTANT, borderValue=0)
+    if np.count_nonzero(rotated) == 0:
+        rotated[mid, mid] = 1
+    return rotated
+
+
+def _filter_components(mask, total_pixels):
+    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=8)
+    max_area = int(total_pixels * 0.05)
+    filtered = np.zeros_like(mask)
+
+    for i in range(1, num_labels):
+        area = stats[i, cv2.CC_STAT_AREA]
+        if area < 20 or area > max_area:
+            continue
+        bw = stats[i, cv2.CC_STAT_WIDTH]
+        bh = stats[i, cv2.CC_STAT_HEIGHT]
+        elongation = max(bw, bh) / max(min(bw, bh), 1)
+        if elongation >= 2.5 or area >= 200:
+            filtered[labels == i] = 255
+
+    return filtered
 
 
 # ── LaMa inpainting ──────────────────────────────────────────────────
