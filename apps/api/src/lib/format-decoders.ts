@@ -235,16 +235,29 @@ async function decodeTga(buffer: Buffer): Promise<Buffer> {
  * because EXR files are typically stored in linear light.
  */
 async function decodeExr(buffer: Buffer): Promise<Buffer> {
-  const cmd = await findMagickCmd();
   const id = randomUUID();
   const inputPath = join(tmpdir(), `exr-in-${id}.exr`);
   const outputPath = join(tmpdir(), `exr-out-${id}.png`);
 
   try {
     await writeFile(inputPath, buffer);
+
+    // ImageMagick needs the OpenEXR delegate which is often missing on macOS
+    try {
+      const cmd = await findMagickCmd();
+      await execFileAsync(
+        cmd,
+        magickArgs(cmd, [inputPath, "-colorspace", "sRGB", "-depth", "8", `png:${outputPath}`]),
+        { timeout: 120_000 },
+      );
+      return await readFile(outputPath);
+    } catch {
+      // ImageMagick failed, try ffmpeg
+    }
+
     await execFileAsync(
-      cmd,
-      magickArgs(cmd, [inputPath, "-colorspace", "sRGB", `png:${outputPath}`]),
+      "ffmpeg",
+      ["-y", "-i", inputPath, "-pix_fmt", "rgba", "-update", "1", outputPath],
       { timeout: 120_000 },
     );
     return await readFile(outputPath);
@@ -267,7 +280,7 @@ async function decodeHdr(buffer: Buffer): Promise<Buffer> {
     await writeFile(inputPath, buffer);
     await execFileAsync(
       cmd,
-      magickArgs(cmd, [inputPath, "-colorspace", "sRGB", `png:${outputPath}`]),
+      magickArgs(cmd, [inputPath, "-colorspace", "sRGB", "-depth", "8", `png:${outputPath}`]),
       { timeout: 120_000 },
     );
     return await readFile(outputPath);

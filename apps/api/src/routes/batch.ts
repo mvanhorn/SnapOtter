@@ -37,6 +37,11 @@ export async function registerBatchRoutes(app: FastifyInstance): Promise<void> {
     async (request: FastifyRequest<{ Params: { toolId: string } }>, reply: FastifyReply) => {
       const { toolId } = request.params;
 
+      // Batch processing (especially with AI) can take tens of minutes.
+      // Disable the Node.js HTTP socket timeout so the connection is not
+      // dropped while images are still being processed.
+      request.raw.socket?.setTimeout?.(0);
+
       // Look up the tool config from the registry
       const toolConfig = getToolConfig(toolId);
       if (!toolConfig) {

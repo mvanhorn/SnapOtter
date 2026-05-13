@@ -86,6 +86,12 @@ const app = Fastify({
   routerOptions: { maxParamLength: 500 },
 });
 
+// Image processing (especially AI batch) can run for tens of minutes.
+// Node.js defaults to a 5-minute requestTimeout which kills long-running
+// connections. Set a generous default; per-route overrides disable it entirely.
+app.server.requestTimeout = 30 * 60 * 1000;
+app.server.headersTimeout = 60 * 1000;
+
 app.removeContentTypeParser("application/json");
 app.addContentTypeParser("application/json", { parseAs: "string" }, (_request, body, done) => {
   try {
