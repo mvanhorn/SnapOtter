@@ -2,11 +2,18 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useSta
 
 type Point = { x: number; y: number };
 type Stroke = { points: Point[]; size: number };
+type ImageStrokeData = {
+  strokes: Stroke[];
+  canvasSize: { w: number; h: number };
+  naturalSize: { w: number; h: number };
+};
 
 export interface EraserCanvasRef {
   exportMask: () => Promise<Blob | null>;
+  exportAllMasks: () => Promise<Map<string, Blob>>;
   getMaskCenter: () => number | null;
   clear: () => void;
+  clearAll: () => void;
   undo: () => void;
 }
 
@@ -14,10 +21,11 @@ interface EraserCanvasProps {
   imageSrc: string;
   brushSize: number;
   onStrokeChange: (hasStrokes: boolean) => void;
+  onMaskedCountChange?: (count: number) => void;
 }
 
 export const EraserCanvas = forwardRef<EraserCanvasRef, EraserCanvasProps>(function EraserCanvas(
-  { imageSrc, brushSize, onStrokeChange },
+  { imageSrc, brushSize, onStrokeChange, onMaskedCountChange },
   ref,
 ) {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -28,6 +36,7 @@ export const EraserCanvas = forwardRef<EraserCanvasRef, EraserCanvasProps>(funct
   const naturalRef = useRef({ w: 0, h: 0 });
 
   const strokesRef = useRef<Stroke[]>([]);
+  const allStrokesRef = useRef<Map<string, ImageStrokeData>>(new Map());
   const drawingRef = useRef(false);
   const currentPointsRef = useRef<Point[]>([]);
 
@@ -51,13 +60,35 @@ export const EraserCanvas = forwardRef<EraserCanvasRef, EraserCanvasProps>(funct
     });
   }, []);
 
-  // Reset strokes when image changes
-  // biome-ignore lint/correctness/useExhaustiveDependencies: imageSrc triggers intentional reset
+  // Persist current strokes to the per-image map
+  const persistStrokes = useCallback(() => {
+    if (!canvasSize || !naturalRef.current.w) return;
+    const map = allStrokesRef.current;
+    if (strokesRef.current.length > 0) {
+      map.set(imageSrc, {
+        strokes: [...strokesRef.current],
+        canvasSize: { ...canvasSize },
+        naturalSize: { ...naturalRef.current },
+      });
+    } else {
+      map.delete(imageSrc);
+    }
+  }, [imageSrc, canvasSize]);
+
+  // Restore strokes when image changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: imageSrc triggers intentional restore
   useEffect(() => {
-    strokesRef.current = [];
+    const saved = allStrokesRef.current.get(imageSrc);
+    if (saved) {
+      strokesRef.current = [...saved.strokes];
+      naturalRef.current = saved.naturalSize;
+    } else {
+      strokesRef.current = [];
+    }
     currentPointsRef.current = [];
-    onStrokeChange(false);
-    setCanvasSize(null);
+    onStrokeChange(strokesRef.current.length > 0);
+    setCanvasSize(saved?.canvasSize ?? null);
+    onMaskedCountChange?.(allStrokesRef.current.size);
   }, [imageSrc, onStrokeChange]);
 
   const drawStroke = useCallback((ctx: CanvasRenderingContext2D, stroke: Stroke) => {
@@ -101,11 +132,13 @@ export const EraserCanvas = forwardRef<EraserCanvasRef, EraserCanvasProps>(funct
         strokesRef.current.pop();
         onStrokeChange(strokesRef.current.length > 0);
         redraw();
+        persistStrokes();
+        onMaskedCountChange?.(allStrokesRef.current.size);
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [onStrokeChange, redraw]);
+  }, [onStrokeChange, onMaskedCountChange, redraw, persistStrokes]);
 
   // Get canvas-relative point from event
   const getPoint = useCallback((e: React.MouseEvent | React.TouchEvent): Point | null => {
@@ -178,8 +211,10 @@ export const EraserCanvas = forwardRef<EraserCanvasRef, EraserCanvasProps>(funct
       currentPointsRef.current = [];
       onStrokeChange(true);
       redraw();
+      persistStrokes();
+      onMaskedCountChange?.(allStrokesRef.current.size);
     }
-  }, [brushSize, onStrokeChange, redraw]);
+  }, [brushSize, onStrokeChange, onMaskedCountChange, redraw, persistStrokes]);
 
   const handleLeave = useCallback(() => {
     setCursorPos(null);
@@ -239,6 +274,53 @@ export const EraserCanvas = forwardRef<EraserCanvasRef, EraserCanvasProps>(funct
           mask.toBlob((b) => resolve(b), "image/png");
         });
       },
+      exportAllMasks: async () => {
+        persistStrokes();
+        const results = new Map<string, Blob>();
+        for (const [src, data] of allStrokesRef.current) {
+          if (data.strokes.length === 0) continue;
+          const mask = document.createElement("canvas");
+          mask.width = data.naturalSize.w;
+          mask.height = data.naturalSize.h;
+          const ctx = mask.getContext("2d");
+          if (!ctx) continue;
+          ctx.fillStyle = "black";
+          ctx.fillRect(0, 0, data.naturalSize.w, data.naturalSize.h);
+          const sx = data.naturalSize.w / data.canvasSize.w;
+          const sy = data.naturalSize.h / data.canvasSize.h;
+          ctx.fillStyle = "white";
+          ctx.strokeStyle = "white";
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          for (const stroke of data.strokes) {
+            const scaledSize = stroke.size * Math.max(sx, sy);
+            if (stroke.points.length === 1) {
+              ctx.beginPath();
+              ctx.arc(
+                stroke.points[0].x * sx,
+                stroke.points[0].y * sy,
+                scaledSize / 2,
+                0,
+                Math.PI * 2,
+              );
+              ctx.fill();
+            } else {
+              ctx.beginPath();
+              ctx.lineWidth = scaledSize;
+              ctx.moveTo(stroke.points[0].x * sx, stroke.points[0].y * sy);
+              for (let i = 1; i < stroke.points.length; i++) {
+                ctx.lineTo(stroke.points[i].x * sx, stroke.points[i].y * sy);
+              }
+              ctx.stroke();
+            }
+          }
+          const blob = await new Promise<Blob | null>((resolve) => {
+            mask.toBlob((b) => resolve(b), "image/png");
+          });
+          if (blob) results.set(src, blob);
+        }
+        return results;
+      },
       getMaskCenter: () => {
         if (strokesRef.current.length === 0 || !canvasSize) return null;
         let minX = Infinity;
@@ -258,14 +340,26 @@ export const EraserCanvas = forwardRef<EraserCanvasRef, EraserCanvasProps>(funct
         currentPointsRef.current = [];
         onStrokeChange(false);
         redraw();
+        persistStrokes();
+        onMaskedCountChange?.(allStrokesRef.current.size);
+      },
+      clearAll: () => {
+        allStrokesRef.current.clear();
+        strokesRef.current = [];
+        currentPointsRef.current = [];
+        onStrokeChange(false);
+        onMaskedCountChange?.(0);
+        redraw();
       },
       undo: () => {
         strokesRef.current.pop();
         onStrokeChange(strokesRef.current.length > 0);
         redraw();
+        persistStrokes();
+        onMaskedCountChange?.(allStrokesRef.current.size);
       },
     }),
-    [canvasSize, onStrokeChange, redraw],
+    [canvasSize, onStrokeChange, onMaskedCountChange, redraw, persistStrokes],
   );
 
   return (
