@@ -18,7 +18,11 @@ type AuditEvent =
   | "ROLE_CREATED"
   | "ROLE_UPDATED"
   | "ROLE_DELETED"
-  | "SETTINGS_UPDATED";
+  | "SETTINGS_UPDATED"
+  | "OIDC_LOGIN_SUCCESS"
+  | "OIDC_USER_CREATED"
+  | "OIDC_USER_LINKED"
+  | "OIDC_LOGIN_FAILED";
 
 /**
  * Emit a structured audit log entry for security-relevant events.
@@ -60,6 +64,7 @@ function deriveTargetType(event: AuditEvent): string | null {
     event.startsWith("USER_") ||
     event.startsWith("LOGIN") ||
     event.startsWith("PASSWORD") ||
+    event.startsWith("OIDC_") ||
     event === "LOGOUT"
   )
     return "user";

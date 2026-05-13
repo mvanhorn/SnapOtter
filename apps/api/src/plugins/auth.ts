@@ -130,7 +130,7 @@ export function requireAdmin(request: FastifyRequest, reply: FastifyReply): Auth
 
 const SESSION_DURATION_MS = env.SESSION_DURATION_HOURS * 60 * 60 * 1000;
 
-function createSessionToken(): string {
+export function createSessionToken(): string {
   return randomUUID();
 }
 
@@ -205,7 +205,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
         .where(eq(schema.users.username, body.username))
         .get();
 
-      if (!user) {
+      if (!user || !user.passwordHash) {
         auditLog(request.log, "LOGIN_FAILED", { username: body.username, reason: "unknown_user" });
         return reply.status(401).send({ error: "Invalid credentials" });
       }
@@ -254,11 +254,41 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
   app.post("/api/auth/logout", async (request: FastifyRequest, reply: FastifyReply) => {
     const token = extractToken(request);
     const user = getAuthUser(request);
+    let logoutUrl: string | undefined;
+
     if (token) {
+      const session = db.select().from(schema.sessions).where(eq(schema.sessions.id, token)).get();
+
+      if (session?.idToken && env.OIDC_ENABLED) {
+        try {
+          // @ts-expect-error -- oidc.ts is created in a later task; try/catch handles its absence at runtime
+          const { getOidcEndSessionEndpoint } = await import("./oidc.js");
+          const endSessionEndpoint = getOidcEndSessionEndpoint();
+          if (endSessionEndpoint) {
+            const params = new URLSearchParams({
+              id_token_hint: session.idToken,
+              post_logout_redirect_uri: `${env.EXTERNAL_URL}/login`,
+            });
+            logoutUrl = `${endSessionEndpoint}?${params.toString()}`;
+          }
+        } catch {
+          // OIDC plugin not loaded or discovery not cached
+        }
+      }
+
       db.delete(schema.sessions).where(eq(schema.sessions.id, token)).run();
     }
+
+    // Clear the session cookie
+    const cookieReply = reply as FastifyReply & {
+      clearCookie?: (name: string, opts: Record<string, unknown>) => void;
+    };
+    if (typeof cookieReply.clearCookie === "function") {
+      cookieReply.clearCookie("snapotter-session", { path: "/" });
+    }
+
     auditLog(request.log, "LOGOUT", { userId: user?.id });
-    return reply.send({ ok: true });
+    return reply.send({ ok: true, ...(logoutUrl && { logoutUrl }) });
   });
 
   // GET /api/auth/session
@@ -306,6 +336,11 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
         role: user.role,
         mustChangePassword: env.SKIP_MUST_CHANGE_PASSWORD ? false : user.mustChangePassword,
         permissions: getPermissions(user.role),
+        authProvider: user.authProvider ?? "local",
+        loginMethod: session.idToken ? "oidc" : "local",
+        email: user.email ?? null,
+        hasLocalPassword: !!user.passwordHash,
+        hasOidcLink: !!user.externalId,
         analyticsEnabled: user.analyticsEnabled ?? null,
         analyticsConsentShownAt: user.analyticsConsentShownAt?.getTime() ?? null,
         analyticsConsentRemindAt: user.analyticsConsentRemindAt?.getTime() ?? null,
@@ -340,6 +375,13 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
 
     if (!user) {
       return reply.status(404).send({ error: "User not found", code: "NOT_FOUND" });
+    }
+
+    if (!user.passwordHash) {
+      return reply.status(400).send({
+        error: "Password changes are managed by your identity provider.",
+        code: "OIDC_NO_PASSWORD",
+      });
     }
 
     const valid = await verifyPassword(body.currentPassword, user.passwordHash);
@@ -388,6 +430,10 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
         username: schema.users.username,
         role: schema.users.role,
         team: schema.users.team,
+        authProvider: schema.users.authProvider,
+        email: schema.users.email,
+        externalId: schema.users.externalId,
+        passwordHash: schema.users.passwordHash,
         createdAt: schema.users.createdAt,
       })
       .from(schema.users)
@@ -399,8 +445,14 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
 
     return reply.send({
       users: users.map((u) => ({
-        ...u,
+        id: u.id,
+        username: u.username,
+        role: u.role,
         team: teamNameById.get(u.team) ?? u.team,
+        authProvider: u.authProvider ?? "local",
+        email: u.email ?? null,
+        hasLocalPassword: !!u.passwordHash,
+        hasOidcLink: !!u.externalId,
         createdAt: u.createdAt.toISOString(),
       })),
       maxUsers: MAX_USERS,
@@ -682,6 +734,13 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
         return reply.status(404).send({ error: "User not found", code: "NOT_FOUND" });
       }
 
+      if (!user.passwordHash) {
+        return reply.status(400).send({
+          error: "Cannot reset password for OIDC user.",
+          code: "OIDC_NO_PASSWORD",
+        });
+      }
+
       const newHash = await hashPassword(body.newPassword);
 
       db.update(schema.users)
@@ -747,10 +806,13 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
 // ── Token extraction ───────────────────────────────────────────────
 
 function extractToken(request: FastifyRequest): string | null {
-  // Check Authorization header: "Bearer <token>"
   const authHeader = request.headers.authorization;
   if (authHeader?.startsWith("Bearer ")) {
     return authHeader.slice(7);
+  }
+  const cookies = (request as FastifyRequest & { cookies?: Record<string, string> }).cookies;
+  if (cookies?.["snapotter-session"]) {
+    return cookies["snapotter-session"];
   }
   return null;
 }
