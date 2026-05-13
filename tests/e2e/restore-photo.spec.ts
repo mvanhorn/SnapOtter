@@ -35,10 +35,10 @@ test.describe("Restore Photo tool", () => {
   test("page loads with correct UI controls", async ({ loggedInPage: page }) => {
     await skipIfFeatureNotInstalled(page);
 
-    // Mode buttons
-    await expect(page.getByRole("button", { name: "Light" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Auto" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Heavy" })).toBeVisible();
+    // Mode buttons should NOT be present
+    await expect(page.getByRole("button", { name: "Light" })).not.toBeVisible();
+    await expect(page.getByRole("button", { name: "Auto" })).not.toBeVisible();
+    await expect(page.getByRole("button", { name: "Heavy" })).not.toBeVisible();
 
     // Feature checkboxes
     await expect(page.getByText("Scratch Removal")).toBeVisible();
@@ -99,7 +99,26 @@ test.describe("Restore Photo tool", () => {
     await expect(denoiseLabel).toBeVisible();
   });
 
-  test("JPG - auto mode restores and shows download", async ({ loggedInPage: page }) => {
+  test("colorize strength slider visible only when auto-colorize enabled", async ({
+    loggedInPage: page,
+  }) => {
+    await skipIfFeatureNotInstalled(page);
+
+    const strengthLabel = page.getByText("Colorize Strength");
+
+    // Auto-colorize is OFF by default - strength hidden
+    await expect(strengthLabel).not.toBeVisible();
+
+    // Enable auto-colorize - strength visible
+    await page.getByText("Auto-Colorize").click();
+    await expect(strengthLabel).toBeVisible();
+
+    // Disable auto-colorize - strength hidden again
+    await page.getByText("Auto-Colorize").click();
+    await expect(strengthLabel).not.toBeVisible();
+  });
+
+  test("JPG - restores and shows download", async ({ loggedInPage: page }) => {
     await skipIfFeatureNotInstalled(page);
     await uploadFile(page, fixturePath("test-portrait.jpg"));
 
