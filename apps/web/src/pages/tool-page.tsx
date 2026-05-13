@@ -245,6 +245,7 @@ export function ToolPage() {
   const eraserRef = useRef<EraserCanvasRef | null>(null);
   const [eraserHasStrokes, setEraserHasStrokes] = useState(false);
   const [eraserBrushSize, setEraserBrushSize] = useState(30);
+  const [eraserMaskedCount, setEraserMaskedCount] = useState(0);
   // Center of the painted mask as a 0-100 percentage — used to init the slider at the right spot
   const [eraserSliderInitPos, setEraserSliderInitPos] = useState<number | null>(null);
 
@@ -267,6 +268,7 @@ export function ToolPage() {
     setCropShowGrid(true);
     setCropImgDimensions(null);
     setEraserHasStrokes(false);
+    setEraserMaskedCount(0);
     setEraserBrushSize(30);
     setEraserSliderInitPos(null);
     setMobileSettingsOpen(true);
@@ -422,6 +424,7 @@ export function ToolPage() {
             brushSize: eraserBrushSize,
             onBrushSizeChange: setEraserBrushSize,
             onMaskCenter: setEraserSliderInitPos,
+            maskedFileCount: eraserMaskedCount,
           }
         : undefined,
   };
@@ -507,6 +510,7 @@ export function ToolPage() {
           imageSrc={originalBlobUrl}
           brushSize={eraserBrushSize}
           onStrokeChange={setEraserHasStrokes}
+          onMaskedCountChange={setEraserMaskedCount}
         />
       );
     }

@@ -44,6 +44,7 @@ export interface EraserProps {
   brushSize: number;
   onBrushSizeChange: (size: number) => void;
   onMaskCenter?: (centerPct: number) => void;
+  maskedFileCount: number;
 }
 
 // ── Registry entry ─────────────────────────────────────────────────
