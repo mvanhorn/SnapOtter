@@ -261,7 +261,6 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
 
       if (session?.idToken && env.OIDC_ENABLED) {
         try {
-          // @ts-expect-error -- oidc.ts is created in a later task; try/catch handles its absence at runtime
           const { getOidcEndSessionEndpoint } = await import("./oidc.js");
           const endSessionEndpoint = getOidcEndSessionEndpoint();
           if (endSessionEndpoint) {
