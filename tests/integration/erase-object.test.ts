@@ -252,4 +252,27 @@ describe("erase-object", () => {
 
     expect([202, 501]).toContain(res.statusCode);
   }, 60_000);
+
+  it("handles two sequential erase requests (202 or 501)", async () => {
+    for (const filename of ["first.png", "second.png"]) {
+      const { body, contentType } = createMultipartPayload([
+        { name: "file", filename, contentType: "image/png", content: PNG },
+        { name: "mask", filename: "mask.png", contentType: "image/png", content: MASK },
+      ]);
+
+      const res = await app.inject({
+        method: "POST",
+        url: "/api/v1/tools/erase-object",
+        headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+        body,
+      });
+
+      expect([202, 501]).toContain(res.statusCode);
+      if (res.statusCode === 202) {
+        const result = JSON.parse(res.body);
+        expect(result.jobId).toBeDefined();
+        expect(result.async).toBe(true);
+      }
+    }
+  }, 120_000);
 });
