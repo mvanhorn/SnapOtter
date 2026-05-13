@@ -12,7 +12,7 @@ import { formatZodErrors } from "../../lib/errors.js";
 import { sanitizeFilename } from "../../lib/filename.js";
 import { encodeJxl } from "../../lib/format-encoders.js";
 import { decodeHeic, encodeHeic } from "../../lib/heic-converter.js";
-import { isSvgBuffer, sanitizeSvg } from "../../lib/svg-sanitize.js";
+import { decompressSvgz, isSvgBuffer, sanitizeSvg } from "../../lib/svg-sanitize.js";
 import { createWorkspace } from "../../lib/workspace.js";
 import { updateJobProgress } from "../progress.js";
 
@@ -96,7 +96,7 @@ async function convertSvg(
       break;
   }
 
-  const baseName = sanitizeFilename(filename).replace(/\.svg$/i, "");
+  const baseName = sanitizeFilename(filename).replace(/\.svgz?$/i, "");
   return { buffer, filename: `${baseName}.${ext}`, ext };
 }
 
@@ -193,7 +193,27 @@ export function registerSvgToRaster(app: FastifyInstance) {
           currentFile: file.filename,
         });
 
-        if (!isSvgBuffer(file.buffer)) {
+        let decompressed: Buffer;
+        try {
+          decompressed = decompressSvgz(file.buffer);
+        } catch (err) {
+          errors.push({
+            filename: file.filename,
+            error: err instanceof Error ? err.message : "Invalid SVGZ file",
+          });
+          completedFiles++;
+          updateJobProgress({
+            jobId,
+            status: "processing",
+            totalFiles: files.length,
+            completedFiles,
+            failedFiles: errors.length,
+            errors,
+          });
+          return;
+        }
+
+        if (!isSvgBuffer(decompressed)) {
           errors.push({ filename: file.filename, error: "Not a valid SVG file" });
           completedFiles++;
           updateJobProgress({
@@ -209,7 +229,7 @@ export function registerSvgToRaster(app: FastifyInstance) {
 
         let sanitized: Buffer;
         try {
-          sanitized = sanitizeSvg(file.buffer);
+          sanitized = sanitizeSvg(decompressed);
         } catch (err) {
           errors.push({
             filename: file.filename,
@@ -338,7 +358,7 @@ export function registerSvgToRaster(app: FastifyInstance) {
             chunks.push(chunk);
           }
           fileBuffer = Buffer.concat(chunks);
-          filename = sanitizeFilename(part.filename ?? "output").replace(/\.svg$/i, "");
+          filename = sanitizeFilename(part.filename ?? "output").replace(/\.svgz?$/i, "");
         } else if (part.fieldname === "settings") {
           settingsRaw = part.value as string;
         }
@@ -354,13 +374,20 @@ export function registerSvgToRaster(app: FastifyInstance) {
       return reply.status(400).send({ error: "No SVG file provided" });
     }
 
+    try {
+      fileBuffer = decompressSvgz(fileBuffer);
+    } catch (err) {
+      return reply.status(400).send({
+        error: err instanceof Error ? err.message : "Invalid SVGZ file",
+      });
+    }
+
     if (!isSvgBuffer(fileBuffer)) {
       return reply.status(400).send({
         error: "File is not a valid SVG. This tool only accepts SVG files.",
       });
     }
 
-    // Sanitize SVG to prevent XXE, SSRF, and script injection
     try {
       fileBuffer = sanitizeSvg(fileBuffer);
     } catch (err) {
