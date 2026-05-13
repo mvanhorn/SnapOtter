@@ -39,6 +39,13 @@ async function processImageEnhancement(
   filename: string,
 ) {
   const outputFormat = await resolveOutputFormat(inputBuffer, filename);
+
+  // HDR/EXR decodes can produce 16-bit buffers; CLAHE requires 8-bit (VIPS_FORMAT_UCHAR)
+  const inputMeta = await sharp(inputBuffer).metadata();
+  if (inputMeta.depth && inputMeta.depth !== "uchar") {
+    inputBuffer = await sharp(inputBuffer).toColourspace("srgb").png().toBuffer();
+  }
+
   const analysis = await analyzeImage(inputBuffer);
   const meta = await sharp(inputBuffer).metadata();
   const hasAlpha = meta.hasAlpha === true;
