@@ -90,6 +90,31 @@ export async function decodeToSharpCompat(
   }
 }
 
+/**
+ * Last-resort decode: convert any image to PNG via ImageMagick.
+ * Used when Sharp's bundled decoders fail (e.g. AVIF 2.0 bitstreams).
+ */
+export async function decodeAnyFormat(buffer: Buffer, format: string): Promise<Buffer> {
+  const cmd = await findMagickCmd();
+  const id = randomUUID();
+  const ext = format || "img";
+  const inputPath = join(tmpdir(), `any-in-${id}.${ext}`);
+  const outputPath = join(tmpdir(), `any-out-${id}.png`);
+
+  try {
+    await writeFile(inputPath, buffer);
+    await execFileAsync(
+      cmd,
+      magickArgs(cmd, [inputPath, "-colorspace", "sRGB", `png:${outputPath}`]),
+      { timeout: 120_000 },
+    );
+    return await readFile(outputPath);
+  } finally {
+    await rm(inputPath, { force: true }).catch(() => {});
+    await rm(outputPath, { force: true }).catch(() => {});
+  }
+}
+
 // ── ImageMagick helpers ────────────────────────────────────────
 
 let cachedMagickCmd: string | null = null;

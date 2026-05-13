@@ -13,7 +13,7 @@ import { formatZodErrors } from "../lib/errors.js";
 import { isToolInstalled } from "../lib/feature-status.js";
 import { validateImageBuffer } from "../lib/file-validation.js";
 import { sanitizeFilename } from "../lib/filename.js";
-import { decodeToSharpCompat, needsCliDecode } from "../lib/format-decoders.js";
+import { decodeAnyFormat, decodeToSharpCompat, needsCliDecode } from "../lib/format-decoders.js";
 import { decodeHeic } from "../lib/heic-converter.js";
 import type { WorkerInput, WorkerOutput } from "../lib/image-worker.js";
 import { decompressSvgz, sanitizeSvg } from "../lib/svg-sanitize.js";
@@ -241,6 +241,27 @@ export function createToolRoute<T>(app: FastifyInstance, config: ToolRouteConfig
           return reply.status(400).send({
             error: err instanceof Error ? err.message : "Invalid SVG",
           });
+        }
+      }
+
+      // AVIF can pass metadata validation but fail pixel decode when
+      // Sharp's bundled libheif lacks support for the bitstream version.
+      // A 1x1 resize forces a minimal pixel decode to catch this early.
+      if (validation.format === "avif") {
+        try {
+          await sharp(fileBuffer).resize(1).raw().toBuffer();
+        } catch {
+          try {
+            reportProgress(10, "Decoding...");
+            fileBuffer = await decodeAnyFormat(fileBuffer, "avif");
+            const ext = filename.match(/\.[^.]+$/)?.[0];
+            if (ext) filename = `${filename.slice(0, -ext.length)}.png`;
+          } catch (fallbackErr) {
+            return reply.status(422).send({
+              error: "Failed to decode AVIF file",
+              details: fallbackErr instanceof Error ? fallbackErr.message : String(fallbackErr),
+            });
+          }
         }
       }
 

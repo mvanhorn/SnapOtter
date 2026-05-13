@@ -625,16 +625,26 @@ def main():
         # ── Step 5: Colorization ─────────────────────────────────
         colorized = False
         if do_colorize and bw_detected:
-            emit_progress(82, "Colorizing B&W photo")
-            try:
-                result, colorized = colorize_bw(result, intensity=0.85)
-                if colorized:
-                    steps_applied.append("colorize")
-                    emit_progress(92, "Colorization complete")
-                else:
-                    emit_progress(92, "Colorization model not available")
-            except Exception as e:
-                emit_progress(92, f"Colorization skipped: {str(e)[:40]}")
+            total_pixels = orig_h * orig_w
+            has_gpu = device == "cuda"
+            max_pixels = 8_000_000 if has_gpu else 2_000_000
+
+            if total_pixels > max_pixels and not has_gpu:
+                mp = total_pixels / 1_000_000
+                emit_progress(92, f"Colorization skipped: image too large for CPU ({mp:.1f}MP, max 2MP)")
+            elif not os.path.exists(DDCOLOR_MODEL_PATH):
+                emit_progress(92, "Colorization skipped: DDColor model not installed")
+            else:
+                emit_progress(82, "Colorizing B&W photo")
+                try:
+                    result, colorized = colorize_bw(result, intensity=0.85)
+                    if colorized:
+                        steps_applied.append("colorize")
+                        emit_progress(92, "Colorization complete")
+                    else:
+                        emit_progress(92, "Colorization model not available")
+                except Exception as e:
+                    emit_progress(92, f"Colorization skipped: {str(e)[:40]}")
         else:
             emit_progress(92, "Colorization skipped")
 

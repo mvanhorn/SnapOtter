@@ -31,9 +31,10 @@ const IDLE_PROGRESS: ToolProgress = {
 const AI_PYTHON_TOOLS = new Set<string>(PYTHON_SIDECAR_TOOLS);
 
 // Tools that are not Python sidecar but still need an extended XHR timeout.
-const LONG_RUNNING_TOOLS = new Set<string>(["content-aware-resize", "content-aware-crop"]);
+const LONG_RUNNING_TOOLS = new Set<string>(["content-aware-resize", "ai-canvas-expand"]);
 
 const UPLOAD_WEIGHT = 15;
+const SSE_STALL_TIMEOUT_MS = 300_000;
 
 export function useToolProcessor(toolId: string) {
   const { processing, error, processedUrl, originalSize, processedSize, setProcessing, setError } =
@@ -45,6 +46,7 @@ export function useToolProcessor(toolId: string) {
   const xhrRef = useRef<XMLHttpRequest | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const stallTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isAiTool = AI_PYTHON_TOOLS.has(toolId);
   const toolName = TOOLS.find((t) => t.id === toolId)?.name ?? toolId;
@@ -56,6 +58,7 @@ export function useToolProcessor(toolId: string) {
       if (eventSourceRef.current) eventSourceRef.current.close();
       if (xhrRef.current) xhrRef.current.abort();
       if (abortRef.current) abortRef.current.abort();
+      if (stallTimerRef.current) clearTimeout(stallTimerRef.current);
     };
   }, []);
 
@@ -91,6 +94,33 @@ export function useToolProcessor(toolId: string) {
       const clientJobId = generateId();
       let asyncMode = false;
 
+      const clearStallTimer = () => {
+        if (stallTimerRef.current) {
+          clearTimeout(stallTimerRef.current);
+          stallTimerRef.current = null;
+        }
+      };
+
+      const resetStallTimer = () => {
+        clearStallTimer();
+        stallTimerRef.current = setTimeout(() => {
+          if (eventSourceRef.current) {
+            eventSourceRef.current.close();
+            eventSourceRef.current = null;
+          }
+          if (elapsedRef.current) clearInterval(elapsedRef.current);
+          useFileStore.getState().updateEntry(capturedIndex, {
+            status: "failed",
+            error: "Processing timed out",
+          });
+          setError(
+            "Processing timed out with no progress for 5 minutes. Try again or use a smaller image.",
+          );
+          setProcessing(false);
+          setProgress(IDLE_PROGRESS);
+        }, SSE_STALL_TIMEOUT_MS);
+      };
+
       // Open SSE for real-time progress from the server (all tools)
       try {
         const es = new EventSource(`/api/v1/jobs/${clientJobId}/progress`);
@@ -101,8 +131,11 @@ export function useToolProcessor(toolId: string) {
             const data = JSON.parse(event.data);
             if (data.type !== "single") return;
 
+            if (asyncMode) resetStallTimer();
+
             // AI tools deliver results via SSE (they return 202 from the XHR)
             if (data.phase === "complete" && data.result) {
+              clearStallTimer();
               if (elapsedRef.current) clearInterval(elapsedRef.current);
               es.close();
               eventSourceRef.current = null;
@@ -124,6 +157,7 @@ export function useToolProcessor(toolId: string) {
             }
 
             if (data.phase === "failed" && asyncMode) {
+              clearStallTimer();
               if (elapsedRef.current) clearInterval(elapsedRef.current);
               es.close();
               eventSourceRef.current = null;
@@ -202,6 +236,7 @@ export function useToolProcessor(toolId: string) {
       xhr.onload = () => {
         if (xhr.status === 202) {
           asyncMode = true;
+          resetStallTimer();
           return;
         }
 
@@ -248,6 +283,7 @@ export function useToolProcessor(toolId: string) {
       };
 
       xhr.onerror = () => {
+        clearStallTimer();
         if (elapsedRef.current) clearInterval(elapsedRef.current);
         if (eventSourceRef.current) {
           eventSourceRef.current.close();
@@ -259,6 +295,7 @@ export function useToolProcessor(toolId: string) {
       };
 
       xhr.ontimeout = () => {
+        clearStallTimer();
         if (elapsedRef.current) clearInterval(elapsedRef.current);
         if (eventSourceRef.current) {
           eventSourceRef.current.close();

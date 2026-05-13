@@ -11,7 +11,7 @@ import { formatZodErrors } from "../../lib/errors.js";
 import { isToolInstalled } from "../../lib/feature-status.js";
 import { validateImageBuffer } from "../../lib/file-validation.js";
 import { sanitizeFilename } from "../../lib/filename.js";
-import { decodeToSharpCompat, needsCliDecode } from "../../lib/format-decoders.js";
+import { decodeAnyFormat, decodeToSharpCompat, needsCliDecode } from "../../lib/format-decoders.js";
 import { decodeHeic } from "../../lib/heic-converter.js";
 import { resolveOutputFormat } from "../../lib/output-format.js";
 import { createWorkspace } from "../../lib/workspace.js";
@@ -113,6 +113,21 @@ export function registerRestorePhoto(app: FastifyInstance) {
 
       // Auto-orient to fix EXIF rotation
       fileBuffer = await autoOrient(fileBuffer);
+
+      // AVIF can pass metadata validation but fail pixel decode when
+      // Sharp's bundled libheif lacks support for the bitstream version.
+      // Convert early (the sidecar needs PNG anyway); fall back to ImageMagick.
+      if (validation.format === "avif") {
+        try {
+          fileBuffer = await sharp(fileBuffer).png().toBuffer();
+        } catch {
+          request.log.warn(
+            { toolId: "restore-photo" },
+            "Sharp AVIF decode failed, using ImageMagick",
+          );
+          fileBuffer = await decodeAnyFormat(fileBuffer, "avif");
+        }
+      }
     } catch (err) {
       request.log.error({ err, toolId: "restore-photo" }, "Input decoding failed");
       return reply.status(422).send({

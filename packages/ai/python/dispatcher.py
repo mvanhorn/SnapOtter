@@ -118,7 +118,12 @@ def _run_script_main(script_name, args):
 
     Since some scripts (like remove_bg.py) manipulate file descriptors directly
     (os.dup2), we use a pipe at the fd level rather than StringIO.
+
+    A drain thread reads the pipe concurrently to prevent deadlock when
+    scripts produce more than 64 KB of stdout (e.g. ONNX runtime logging).
     """
+    import threading
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # ── Feature gate: reject scripts whose bundle is not installed ──
@@ -150,6 +155,20 @@ def _run_script_main(script_name, args):
     old_sys_stdout = sys.stdout
     sys.stdout = os.fdopen(1, "w", closefd=False)
 
+    # Drain the pipe in a background thread so the pipe buffer never fills.
+    captured_chunks = []
+
+    def _drain():
+        with os.fdopen(read_fd, "r") as f:
+            while True:
+                chunk = f.read(8192)
+                if not chunk:
+                    break
+                captured_chunks.append(chunk)
+
+    drain_thread = threading.Thread(target=_drain, daemon=True)
+    drain_thread.start()
+
     exit_code = 0
     try:
         sys.argv = ["script.py"] + args
@@ -178,7 +197,7 @@ def _run_script_main(script_name, args):
         # Flush before restoring
         sys.stdout.flush()
 
-        # Restore stdout fd
+        # Restore stdout fd (closes the pipe write end, unblocking the drain thread)
         os.dup2(real_stdout_fd, 1)
         os.close(real_stdout_fd)
 
@@ -188,10 +207,8 @@ def _run_script_main(script_name, args):
         # Restore sys.argv
         sys.argv = old_argv
 
-    # Read captured output from the pipe
-    read_file = os.fdopen(read_fd, "r")
-    captured = read_file.read()
-    read_file.close()
+    drain_thread.join(timeout=10)
+    captured = "".join(captured_chunks)
 
     return captured.strip(), exit_code
 
