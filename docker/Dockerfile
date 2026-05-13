@@ -273,7 +273,10 @@ ENV PORT=1349 \
     SESSION_DURATION_HOURS=168 \
     LOGIN_ATTEMPT_LIMIT=500 \
     LOG_LEVEL=info \
-    TRUST_PROXY=true
+    TRUST_PROXY=true \
+    OIDC_ENABLED=false \
+    EXTERNAL_URL= \
+    COOKIE_SECRET=
 
 # NVIDIA Container Toolkit env vars (harmless on non-GPU systems)
 ENV NVIDIA_VISIBLE_DEVICES=all \

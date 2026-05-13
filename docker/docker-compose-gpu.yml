@@ -33,6 +33,20 @@ services:
       - MAX_USERS=${MAX_USERS:-0}
       - SESSION_DURATION_HOURS=${SESSION_DURATION_HOURS:-168}
       - TRUST_PROXY=${TRUST_PROXY:-true}
+      # OIDC Authentication (optional)
+      # - EXTERNAL_URL=https://photos.example.com
+      # - OIDC_ENABLED=false
+      # - OIDC_ISSUER_URL=
+      # - OIDC_CLIENT_ID=
+      # - OIDC_CLIENT_SECRET=
+      # - OIDC_SCOPES=openid profile email
+      # - OIDC_AUTO_CREATE_USERS=true
+      # - OIDC_DEFAULT_ROLE=user
+      # - OIDC_AUTO_LINK_USERS=false
+      # - OIDC_PROVIDER_NAME=
+      # - OIDC_USERNAME_CLAIM=preferred_username
+      # - OIDC_CLOCK_TOLERANCE=30
+      # - COOKIE_SECRET=
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:1349/api/v1/health"]
