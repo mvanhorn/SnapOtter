@@ -113,8 +113,7 @@ test.describe("Beautify Screenshot", () => {
     await uploadTestImage(page);
     await page.waitForTimeout(1000);
 
-    // Default preset has macos-light frame; verify traffic light dots appear.
-    // The initial preview uses setTimeout(0) to survive the parent reset effect.
+    // Default preset has macos-light frame; verify traffic light dots appear
     await expect(page.getByTestId("frame-preview-macos")).toBeVisible({ timeout: 5000 });
   });
 
@@ -204,5 +203,96 @@ test.describe("Beautify Screenshot", () => {
 
     await expect(page.getByTestId("watermark-preview")).toBeVisible();
     await expect(page.getByTestId("watermark-preview")).toContainText("My Watermark");
+  });
+
+  // ---------------------------------------------------------------------------
+  // Regression: image must remain visible with all presets and overlays
+  // ---------------------------------------------------------------------------
+
+  test("image stays visible for every preset (no zero-height collapse)", async ({
+    loggedInPage: page,
+  }) => {
+    await page.goto("/beautify");
+    await uploadTestImage(page);
+    await page.waitForTimeout(1000);
+
+    const presets = [
+      "Purple Haze",
+      "Flamingo",
+      "Ocean",
+      "Midnight",
+      "Mint",
+      "Sunset",
+      "Clean White",
+      "No Background",
+    ];
+    const img = page.locator("img.select-none").first();
+
+    for (const name of presets) {
+      await page.getByRole("button", { name, exact: true }).click();
+      await page.waitForTimeout(400);
+
+      const box = await img.boundingBox();
+      expect(box, `Image collapsed for preset "${name}"`).not.toBeNull();
+      expect(box!.height, `Image height is 0 for preset "${name}"`).toBeGreaterThan(10);
+    }
+  });
+
+  test("image stays visible when watermark is added without a frame", async ({
+    loggedInPage: page,
+  }) => {
+    await page.goto("/beautify");
+    await uploadTestImage(page);
+    await page.waitForTimeout(1000);
+
+    // Switch to Flamingo (no frame)
+    await page.getByRole("button", { name: "Flamingo", exact: true }).click();
+    await page.waitForTimeout(300);
+
+    const img = page.locator("img.select-none").first();
+    const boxBefore = await img.boundingBox();
+    expect(boxBefore).not.toBeNull();
+    expect(boxBefore!.height).toBeGreaterThan(10);
+
+    // Open Watermark and enter text
+    await page.getByText("Watermark").first().click();
+    await page.waitForTimeout(200);
+    await page.locator("#beautify-watermark-text").fill("Test WM");
+    await page.waitForTimeout(400);
+
+    // Image must still be visible with non-zero dimensions
+    const boxAfter = await img.boundingBox();
+    expect(boxAfter, "Image disappeared after adding watermark").not.toBeNull();
+    expect(boxAfter!.height, "Image collapsed to 0 after watermark").toBeGreaterThan(10);
+    await expect(page.getByTestId("watermark-preview")).toBeVisible();
+  });
+
+  test("image stays visible when watermark is added with a frame", async ({
+    loggedInPage: page,
+  }) => {
+    await page.goto("/beautify");
+    await uploadTestImage(page);
+    await page.waitForTimeout(1000);
+
+    // Default Purple Haze has macOS frame
+    await expect(page.getByTestId("frame-preview-macos")).toBeVisible({ timeout: 5000 });
+
+    const img = page.locator("img.select-none").first();
+    const boxBefore = await img.boundingBox();
+    expect(boxBefore).not.toBeNull();
+    expect(boxBefore!.height).toBeGreaterThan(10);
+
+    // Open Watermark and enter text
+    await page.getByText("Watermark").first().click();
+    await page.waitForTimeout(200);
+    await page.locator("#beautify-watermark-text").fill("My Brand");
+    await page.waitForTimeout(400);
+
+    // Both frame and image must remain visible
+    await expect(page.getByTestId("frame-preview-macos")).toBeVisible();
+    const boxAfter = await img.boundingBox();
+    expect(boxAfter, "Image disappeared after adding watermark with frame").not.toBeNull();
+    expect(boxAfter!.height).toBeGreaterThan(10);
+    await expect(page.getByTestId("watermark-preview")).toBeVisible();
   });
 });

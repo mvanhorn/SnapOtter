@@ -285,7 +285,7 @@ export function ImageViewer({
                 imageWrapperChildren
                   ? {
                       display: "block",
-                      flex: "1 1 0",
+                      flex: "0 1 auto",
                       minHeight: 0,
                       maxWidth: "100%",
                       objectFit: "contain" as const,
