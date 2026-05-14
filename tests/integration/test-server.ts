@@ -184,9 +184,14 @@ export async function buildTestApp(): Promise<TestApp> {
 
   const cleanup = async () => {
     await app.close();
-    // Don't delete the temp DB directory here — other test files in the same
-    // vitest run share it.  The directory lives under /tmp with a random UUID
-    // and is cleaned up by the OS.
+    // Checkpoint WAL to prevent unbounded growth across sequential test files.
+    // Without this, the WAL/SHM files grow until SQLite hits SQLITE_IOERR_SHMSIZE.
+    try {
+      const { sqlite } = await import("../../apps/api/src/db/index.js");
+      sqlite.pragma("wal_checkpoint(TRUNCATE)");
+    } catch {
+      // best-effort
+    }
   };
 
   return { app, cleanup };

@@ -23,8 +23,6 @@ export default defineConfig({
     globals: true,
     testTimeout: 30_000,
     hookTimeout: 30_000,
-    // Run all test files in a single forked process so integration tests share
-    // the same SQLite connection and avoid SQLITE_BUSY races on WAL setup.
     pool: "forks",
     poolOptions: {
       forks: {
@@ -44,8 +42,6 @@ export default defineConfig({
       ".worktrees/**",
       ".claude/**",
     ],
-    // These env vars are injected into process.env BEFORE test files are
-    // imported, ensuring apps/api/src/config.ts picks them up correctly.
     env: {
       AUTH_ENABLED: "true",
       DEFAULT_USERNAME: "admin",
