@@ -136,7 +136,8 @@ describe("Auth endpoints", () => {
         url: "/api/auth/login",
         payload: { username: "a".repeat(10_000), password: "Adminpass1" },
       });
-      expect(res.statusCode).toBe(401);
+      // Zod rejects username > 255 chars before auth logic runs
+      expect(res.statusCode).toBe(400);
     });
 
     it("handles unicode in credentials", async () => {
