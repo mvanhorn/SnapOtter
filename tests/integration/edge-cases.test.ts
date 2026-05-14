@@ -774,7 +774,7 @@ describe("Settings with extreme values", () => {
       body,
     });
 
-    // Zod strips the unknown 'padding' key; should succeed with width: 100
-    expect(res.statusCode).toBe(200);
+    // Settings payload exceeds the 64KB security limit
+    expect(res.statusCode).toBe(400);
   });
 });
