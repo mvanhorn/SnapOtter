@@ -13,7 +13,7 @@ Self-hosted deployments should subscribe to [GitHub release notifications](https
 
 ## Reporting a Vulnerability
 
-**Do not open a public GitHub issue for security vulnerabilities.**
+**Do not open a public GitHub issue or pull request for security vulnerabilities.**
 
 To report a vulnerability, email **contact@snapotter.com** with:
 

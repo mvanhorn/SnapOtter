@@ -1,12 +1,29 @@
-<!--
-Thanks for your interest in SnapOtter.
+## What does this PR do?
 
-We don't accept pull requests. All development is handled internally to maintain architectural consistency and code quality.
+<!-- 1-2 sentences. Link to the related issue if applicable. -->
 
-If you've found a bug or have a feature idea, please open an issue instead:
-https://github.com/snapotter-hq/snapotter/issues
+Fixes #
 
-Your feedback is valuable and directly shapes the project.
--->
+## Type of change
 
-**This project does not accept pull requests.** Please close this PR and [open an issue](https://github.com/snapotter-hq/snapotter/issues/new/choose) instead. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+- [ ] Bug fix (non-breaking change that fixes an issue)
+- [ ] New feature (non-breaking change that adds functionality)
+- [ ] New translation or i18n update
+- [ ] Documentation update
+- [ ] Test improvement
+- [ ] Refactor (no functional change)
+
+## Checklist
+
+- [ ] I have read [CONTRIBUTING.md](../CONTRIBUTING.md)
+- [ ] I have signed the [CLA](../CLA.md) (the bot will prompt you if not)
+- [ ] My changes follow the project's code style (Biome passes)
+- [ ] I have added or updated tests for my changes
+- [ ] All existing tests pass locally (`pnpm test`)
+- [ ] TypeScript compiles without errors (`pnpm typecheck`)
+- [ ] My PR is focused on a single concern (under 400 lines of change)
+- [ ] I have not modified CI, release, or linter configuration files
+
+## Screenshots (if applicable)
+
+<!-- For UI changes, include before/after screenshots. -->

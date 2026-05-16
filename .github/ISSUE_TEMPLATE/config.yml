@@ -3,6 +3,9 @@ contact_links:
   - name: Documentation
     url: https://docs.snapotter.com/
     about: Check the docs for setup guides, configuration, and API reference.
+  - name: Discord
+    url: https://discord.gg/hr3s7HPUsr
+    about: Ask questions, get help, and chat with the community.
   - name: Security vulnerability
     url: https://github.com/snapotter-hq/snapotter/security/advisories/new
     about: Report security issues privately through GitHub Security Advisories.

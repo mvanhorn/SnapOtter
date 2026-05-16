@@ -1,0 +1,23 @@
+# Default owner for everything
+* @snapotter-hq/maintainers
+
+# CI/CD and release (restricted, no external PRs accepted)
+.github/workflows/ @snapotter-hq/maintainers
+.releaserc.json @snapotter-hq/maintainers
+scripts/ @snapotter-hq/maintainers
+
+# Config files (protected by hooks, no external changes)
+biome.json @snapotter-hq/maintainers
+tsconfig*.json @snapotter-hq/maintainers
+
+# AI sidecar (requires prior discussion)
+packages/ai/ @snapotter-hq/maintainers
+
+# Auth and permissions (security-sensitive)
+apps/api/src/routes/auth*.ts @snapotter-hq/maintainers
+apps/api/src/lib/auth*.ts @snapotter-hq/maintainers
+packages/shared/src/permissions.ts @snapotter-hq/maintainers
+
+# Database schema and migrations
+apps/api/src/db/schema.ts @snapotter-hq/maintainers
+apps/api/drizzle/ @snapotter-hq/maintainers

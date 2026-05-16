@@ -1,25 +1,130 @@
 # Contributing to SnapOtter
 
-Thanks for your interest in the project. Community feedback helps shape SnapOtter, and there are several ways to get involved.
+Thanks for your interest in contributing. This guide covers how to participate, what we accept, and how to set up your development environment.
 
-## How to contribute
+## Ways to Contribute
 
-The best way to contribute is through [GitHub Issues](https://github.com/snapotter-hq/snapotter/issues):
+### Issues (no setup required)
 
-- **Bug reports** - Found something broken? Open a bug report with steps to reproduce, your Docker setup, and what you expected to happen.
-- **Feature requests** - Have an idea for a new tool or improvement? Describe the problem you want solved and why it matters to you.
-- **Feedback** - Thoughts on the UI, workflow, documentation, or anything else? We want to hear it.
+- **Bug reports** - Something broken? Open a [bug report](https://github.com/snapotter-hq/snapotter/issues/new?template=bug_report.yml) with reproduction steps.
+- **Feature requests** - Have an idea? Open a [feature request](https://github.com/snapotter-hq/snapotter/issues/new?template=feature_request.yml) describing the problem it solves.
 
-## Pull requests
+### Code (requires CLA)
 
-We do not accept pull requests. All development is handled internally to maintain architectural consistency and code quality across the project.
+We accept pull requests for:
 
-If you've found a bug, please open an issue describing it rather than submitting a fix. If you have a suggestion for how something should work, describe it in a feature request. Your input is valuable even without a code contribution.
+| Type | Process |
+|------|---------|
+| Bug fixes | Open a PR directly (link the issue if one exists) |
+| New translations | Open a PR directly (see [Translation Guide](https://docs.snapotter.com/guide/translations)) |
+| Documentation improvements | Open a PR directly |
+| Test coverage improvements | Open a PR directly |
+| New tools or features | Open an issue first, wait for approval before writing code |
+| Refactors or architecture changes | Open an issue first, wait for approval before writing code |
 
-## Forking
+### What We Will Not Accept
 
-You're welcome to fork the project for your own use under the terms of the [AGPLv3 license](LICENSE). The [Developer Guide](https://docs.snapotter.com/guide/developer) covers setup, architecture, and how to add new tools.
+- Changes to CI/CD workflows, release config, or linter/compiler config
+- PRs without a signed [Contributor License Agreement](#contributor-license-agreement)
+- PRs over 400 lines of change (break large work into smaller PRs)
+- Features that were not discussed and approved in an issue first
+- Changes to `packages/ai/` without prior discussion
 
-## Security
+## Contributor License Agreement
 
-If you discover a security vulnerability, please report it privately through [GitHub Security Advisories](https://github.com/snapotter-hq/snapotter/security/advisories/new) rather than opening a public issue.
+Before we can merge your first PR, you must sign our [Individual CLA](CLA.md). This is a one-time requirement.
+
+**Why:** SnapOtter is dual-licensed (AGPLv3 + commercial). The CLA grants us the right to distribute your contributions under both licenses. You retain full copyright ownership of your work.
+
+**How:** When you open your first PR, the CLA Assistant bot will comment with a link. Click it, review the agreement, and sign with your GitHub account. Takes 30 seconds.
+
+If you are contributing on behalf of your employer, your employer must sign the Corporate CLA. Contact contact@snapotter.com for details.
+
+## Development Setup
+
+### Prerequisites
+
+- Node.js 22+
+- pnpm 9+
+- Python 3.11+ (only for AI tools)
+- Docker (optional, for full integration testing)
+
+### Getting Started
+
+```bash
+# Fork and clone
+git clone https://github.com/<your-username>/snapotter.git
+cd snapotter
+
+# Install dependencies
+pnpm install
+
+# Start dev servers (web on :1349, API on :13490)
+pnpm dev
+```
+
+### Running Checks
+
+Before submitting a PR, ensure all checks pass locally:
+
+```bash
+pnpm lint          # Biome lint + format check
+pnpm typecheck     # TypeScript across monorepo
+pnpm test          # Vitest unit + integration tests
+```
+
+To run a single test file:
+
+```bash
+pnpm vitest run tests/unit/my-test.test.ts
+pnpm vitest run tests/integration/my-test.test.ts
+```
+
+### Code Style
+
+- Biome handles formatting and linting (double quotes, semicolons, 2-space indent)
+- Pre-commit hook runs `biome check --write` on staged files automatically
+- If the linter complains, fix the code (do not modify Biome config)
+- ES modules everywhere (`import`/`export`, `.js` extensions on relative imports)
+- Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`
+
+### Architecture Quick Reference
+
+A tool lives in three places sharing a `toolId` string:
+
+1. **Shared metadata** - `packages/shared/src/constants.ts` (TOOLS array)
+2. **API route** - `apps/api/src/routes/tools/<toolId>.ts` (uses `createToolRoute` factory)
+3. **Frontend settings** - `apps/web/src/components/tools/<toolId>-settings.tsx`
+
+For full architecture details, see the [Developer Guide](https://docs.snapotter.com/guide/developer).
+
+## Pull Request Process
+
+1. Fork the repo and create a branch from `main` (`feat/my-feature` or `fix/issue-123`)
+2. Make your changes in focused, reviewable commits using [conventional commits](https://www.conventionalcommits.org/)
+3. Add or update tests for your changes
+4. Run `pnpm lint && pnpm typecheck && pnpm test` locally
+5. Open a PR against `main` and fill out the template
+6. Sign the CLA if prompted
+7. Wait for CI to pass and a maintainer to review
+
+### Review Expectations
+
+- We aim to respond to PRs within 7 days
+- Small, focused PRs get reviewed faster
+- If you have not heard back in 7 days, leave a comment pinging the thread
+- We may request changes, suggest a different approach, or close the PR if it does not align with project direction
+
+### After Your PR is Merged
+
+Your contribution will be included in the next release and credited in the changelog.
+
+## Security Vulnerabilities
+
+**Do not open a public PR or issue for security vulnerabilities.** Report them privately through [GitHub Security Advisories](https://github.com/snapotter-hq/snapotter/security/advisories/new) or email contact@snapotter.com. See [SECURITY.md](SECURITY.md) for full details.
+
+## Questions?
+
+- [Documentation](https://docs.snapotter.com/)
+- [Discord](https://discord.gg/hr3s7HPUsr) - for help and discussion
+- [GitHub Discussions](https://github.com/snapotter-hq/snapotter/discussions) - for longer-form questions

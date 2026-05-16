@@ -43,3 +43,12 @@ body:
     attributes:
       label: Additional context
       description: Screenshots, links, examples, or anything else that helps explain the request.
+
+  - type: dropdown
+    id: willing-to-implement
+    attributes:
+      label: Would you like to implement this?
+      description: Feature PRs require issue approval first. If approved, we can assign this to you.
+      options:
+        - "Yes, I'd like to submit a PR if approved"
+        - "No, just suggesting"

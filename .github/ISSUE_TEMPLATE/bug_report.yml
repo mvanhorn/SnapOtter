@@ -51,7 +51,7 @@ body:
     attributes:
       label: Image tag
       description: Which Docker image tag are you using?
-      placeholder: "e.g. latest, 1.11.0"
+      placeholder: "e.g. latest, 1.17.0"
     validations:
       required: true
 
@@ -83,3 +83,12 @@ body:
     attributes:
       label: Screenshots
       description: If applicable, add screenshots to help explain the problem.
+
+  - type: dropdown
+    id: willing-to-fix
+    attributes:
+      label: Would you like to contribute a fix?
+      description: If yes, we can assign this issue to you. See CONTRIBUTING.md for the PR process.
+      options:
+        - "Yes, I'd like to submit a PR"
+        - "No, just reporting"

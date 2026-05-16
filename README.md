@@ -74,11 +74,13 @@ For Docker Compose, persistent storage, and other setup options, see the [Gettin
 - [Contributing](https://docs.snapotter.com/guide/contributing)
 - [Translation Guide](https://docs.snapotter.com/guide/translations)
 
-## Feedback
+## Contributing
 
-Found a bug or have a feature idea? Open a [GitHub Issue](https://github.com/snapotter-hq/snapotter/issues). We don't accept pull requests, but your feedback directly shapes the project. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+We welcome bug reports, feature ideas, and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, or jump in:
 
-Join our [Discord](https://discord.gg/hr3s7HPUsr) for help, discussion, and community updates.
+- [Open an issue](https://github.com/snapotter-hq/snapotter/issues)
+- [Submit a PR](CONTRIBUTING.md#code-requires-cla) (requires signing our CLA)
+- [Join Discord](https://discord.gg/hr3s7HPUsr) for help and discussion
 
 ## License
 
