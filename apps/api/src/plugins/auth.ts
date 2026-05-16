@@ -297,9 +297,9 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
         user: {
           id: "anonymous",
           username: "anonymous",
-          role: "user",
+          role: "admin",
           mustChangePassword: false,
-          permissions: getPermissions("user"),
+          permissions: getPermissions("admin"),
           analyticsEnabled: null,
           analyticsConsentShownAt: null,
           analyticsConsentRemindAt: null,
