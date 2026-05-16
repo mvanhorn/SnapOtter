@@ -159,7 +159,8 @@ export function registerOptimizeForWeb(app: FastifyInstance) {
         reply.header("Content-Type", result.contentType);
         reply.header("X-Original-Size", String(fileBuffer.length));
         reply.header("X-Processed-Size", String(result.buffer.length));
-        reply.header("X-Output-Filename", encodeURIComponent(result.filename));
+        const safeFilename = encodeURIComponent(result.filename).replace(/[^ -~]/g, "");
+        reply.header("X-Output-Filename", safeFilename);
         return reply.send(result.buffer);
       } catch (err) {
         const message = err instanceof Error ? err.message : "Preview processing failed";

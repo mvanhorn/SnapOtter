@@ -39,6 +39,16 @@ export async function initAnalytics(): Promise<void> {
           }
           if (event.exception?.values) {
             for (const ex of event.exception.values) {
+              if (
+                ex.value &&
+                (ex.value.includes("Rate limit exceeded") ||
+                  ex.value.includes("Body cannot be empty") ||
+                  ex.value.includes("Unsupported Media Type") ||
+                  ex.value.includes("Request body size did not match") ||
+                  ex.value.includes("Premature close"))
+              ) {
+                return null;
+              }
               if (ex.value) {
                 ex.value = ex.value
                   .replace(FILE_EXT_PATTERN, ".[REDACTED]")

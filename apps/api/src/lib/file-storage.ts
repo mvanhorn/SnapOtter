@@ -56,7 +56,18 @@ let storageReady = false;
 
 export async function ensureStorageDir(): Promise<void> {
   if (storageReady) return;
-  await mkdir(env.FILES_STORAGE_PATH, { recursive: true });
+  try {
+    await mkdir(env.FILES_STORAGE_PATH, { recursive: true });
+  } catch (e) {
+    if (e instanceof Error && (e as NodeJS.ErrnoException).code === "EACCES") {
+      const err = new Error("Storage directory is not writable") as Error & {
+        statusCode: number;
+      };
+      err.statusCode = 503;
+      throw err;
+    }
+    throw e;
+  }
   storageReady = true;
 }
 
@@ -70,7 +81,18 @@ export async function saveFile(buffer: Buffer, originalName: string): Promise<st
     ext = ".bin";
   }
   const storedName = `${randomUUID()}${ext}`;
-  await writeFile(join(env.FILES_STORAGE_PATH, storedName), buffer);
+  try {
+    await writeFile(join(env.FILES_STORAGE_PATH, storedName), buffer);
+  } catch (e) {
+    if (e instanceof Error && (e as NodeJS.ErrnoException).code === "EACCES") {
+      const err = new Error("Storage directory is not writable") as Error & {
+        statusCode: number;
+      };
+      err.statusCode = 503;
+      throw err;
+    }
+    throw e;
+  }
   return storedName;
 }
 

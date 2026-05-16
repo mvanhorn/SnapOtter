@@ -153,6 +153,8 @@ function startDispatcher(): ChildProcess | null {
       env: buildMinimalEnv(),
     });
 
+    child.stdin?.on("error", () => {});
+
     let stderrBuffer = "";
 
     child.stderr?.on("data", (chunk: Buffer) => {
@@ -328,7 +330,13 @@ function dispatcherRun(
     });
 
     const request = JSON.stringify({ id, script: scriptName.replace(".py", ""), args });
-    proc.stdin!.write(request + "\n");
+    try {
+      proc.stdin!.write(request + "\n");
+    } catch {
+      pendingRequests.delete(id);
+      clearTimeout(timer);
+      rejectPromise(new Error("Python dispatcher stdin closed unexpectedly"));
+    }
   });
 }
 
@@ -537,7 +545,10 @@ export function runPythonWithProgress(
   const dispatcherPromise = dispatcherRun(scriptName, args, options);
   if (dispatcherPromise) {
     return dispatcherPromise.catch((err: Error) => {
-      if (err.message === "Python dispatcher exited unexpectedly") {
+      if (
+        err.message === "Python dispatcher exited unexpectedly" ||
+        err.message === "Python dispatcher stdin closed unexpectedly"
+      ) {
         console.warn(
           `[bridge] Dispatcher crashed during ${scriptName}, retrying with per-request process`,
         );
