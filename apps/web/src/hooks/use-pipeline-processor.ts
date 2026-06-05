@@ -37,10 +37,71 @@ export function usePipelineProcessor() {
   const xhrRef = useRef<XMLHttpRequest | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const activeJobIdRef = useRef<string | null>(null);
 
-  // Clean up on unmount
   useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== "visible") return;
+      if (!activeJobIdRef.current) return;
+      if (eventSourceRef.current && eventSourceRef.current.readyState === EventSource.OPEN) {
+        return;
+      }
+
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
+
+      const jobId = activeJobIdRef.current;
+      setTimeout(() => {
+        if (!activeJobIdRef.current || activeJobIdRef.current !== jobId) return;
+        try {
+          const es = new EventSource(`/api/v1/jobs/${jobId}/progress`);
+          eventSourceRef.current = es;
+
+          es.onmessage = (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              if (data.type === "single" && typeof data.percent === "number") {
+                const scaled = UPLOAD_WEIGHT + (data.percent / 100) * (100 - UPLOAD_WEIGHT);
+                setProgress((prev) => ({
+                  ...prev,
+                  phase: "processing",
+                  percent: Math.max(prev.percent, scaled),
+                  stage: data.stage,
+                }));
+              }
+              if (data.type === "batch") {
+                const pct =
+                  data.totalFiles > 0 ? 15 + (data.completedFiles / data.totalFiles) * 85 : 15;
+                setProgress((prev) => ({
+                  ...prev,
+                  phase: "processing",
+                  percent: pct,
+                  stage: data.currentFile
+                    ? `Processing ${data.currentFile} (${data.completedFiles}/${data.totalFiles})`
+                    : `Processing ${data.completedFiles}/${data.totalFiles}`,
+                }));
+              }
+            } catch {
+              // Ignore malformed SSE
+            }
+          };
+
+          es.onerror = () => {
+            es.close();
+            eventSourceRef.current = null;
+          };
+        } catch {
+          // EventSource creation failed
+        }
+      }, 500);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       if (elapsedRef.current) clearInterval(elapsedRef.current);
       if (eventSourceRef.current) eventSourceRef.current.close();
       if (xhrRef.current) xhrRef.current.abort();
@@ -72,6 +133,7 @@ export function usePipelineProcessor() {
       }, 1000);
 
       const clientJobId = generateId();
+      activeJobIdRef.current = clientJobId;
 
       // Open SSE for real-time progress from the server
       try {
@@ -178,6 +240,7 @@ export function usePipelineProcessor() {
 
         setProcessing(false);
         setProgress(IDLE_PROGRESS);
+        activeJobIdRef.current = null;
       };
 
       xhr.onerror = () => {
@@ -189,6 +252,7 @@ export function usePipelineProcessor() {
         setError("Network error - check your connection");
         setProcessing(false);
         setProgress(IDLE_PROGRESS);
+        activeJobIdRef.current = null;
       };
 
       xhr.ontimeout = () => {
@@ -200,6 +264,7 @@ export function usePipelineProcessor() {
         setError("Request timed out - the server may be overloaded. Try again.");
         setProcessing(false);
         setProgress(IDLE_PROGRESS);
+        activeJobIdRef.current = null;
       };
 
       xhr.open("POST", "/api/v1/pipeline/execute");
@@ -234,6 +299,7 @@ export function usePipelineProcessor() {
       }, 1000);
 
       const clientJobId = generateId();
+      activeJobIdRef.current = clientJobId;
 
       // Open SSE before upload for real-time progress
       try {
@@ -355,6 +421,7 @@ export function usePipelineProcessor() {
 
         setProcessing(false);
         setProgress(IDLE_PROGRESS);
+        activeJobIdRef.current = null;
       } catch (err) {
         if (elapsedRef.current) clearInterval(elapsedRef.current);
         if (eventSourceRef.current) {
@@ -364,6 +431,7 @@ export function usePipelineProcessor() {
         setError(err instanceof Error ? err.message : "Batch processing failed");
         setProcessing(false);
         setProgress(IDLE_PROGRESS);
+        activeJobIdRef.current = null;
       }
     },
     [processSingle, setProcessing, setError],
