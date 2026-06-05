@@ -66,12 +66,16 @@ export function ToolPalette({ onAddStep, className }: ToolPaletteProps) {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div className="px-3 pt-3 pb-2 shrink-0">
-        <SearchBar value={search} onChange={setSearch} placeholder="Search tools..." />
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          placeholder={t.automate.searchToolsPlaceholder}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 pb-3">
         {availableTools.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-8">No tools found</p>
+          <p className="text-sm text-muted-foreground text-center py-8">{t.common.noToolsFound}</p>
         ) : isSearching ? (
           <div className="space-y-1">
             {availableTools.map((tool) => (

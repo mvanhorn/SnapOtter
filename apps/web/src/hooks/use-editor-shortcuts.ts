@@ -41,6 +41,8 @@ const SHAPE_CYCLE: ToolType[] = [
   "shape-polygon",
   "shape-star",
 ];
+// Dodge/burn/sponge cycle
+const DODGE_CYCLE: ToolType[] = ["dodge", "burn", "sponge"];
 // Fill/gradient cycle
 const FILL_CYCLE: ToolType[] = ["fill", "gradient"];
 
@@ -199,12 +201,29 @@ export function useEditorShortcuts(callbacks?: {
     { preventDefault: true },
   );
 
-  // O - Dodge tool
+  // O - Dodge/Burn/Sponge (cycles)
   useHotkeys(
     "o",
     () => {
       if (isInputFocused()) return;
-      useEditorStore.getState().setTool("dodge");
+      const current = useEditorStore.getState().activeTool;
+      if (DODGE_CYCLE.includes(current)) {
+        useEditorStore.getState().setTool(cycleSubtool(current, DODGE_CYCLE));
+      } else {
+        useEditorStore.getState().setTool("dodge");
+      }
+    },
+    { preventDefault: true },
+  );
+
+  // Shift+O - Cycle dodge/burn/sponge subtypes
+  useHotkeys(
+    "shift+o",
+    () => {
+      if (isInputFocused()) return;
+      useEditorStore
+        .getState()
+        .setTool(cycleSubtool(useEditorStore.getState().activeTool, DODGE_CYCLE));
     },
     { preventDefault: true },
   );
@@ -354,6 +373,16 @@ export function useEditorShortcuts(callbacks?: {
   // Ctrl+Shift+Z / Cmd+Shift+Z - Redo
   useHotkeys(
     "mod+shift+z",
+    (e) => {
+      e.preventDefault();
+      useEditorStore.temporal.getState().redo();
+    },
+    { preventDefault: true },
+  );
+
+  // Ctrl+Y / Cmd+Y - Redo (alternative)
+  useHotkeys(
+    "mod+y",
     (e) => {
       e.preventDefault();
       useEditorStore.temporal.getState().redo();

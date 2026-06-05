@@ -21,10 +21,12 @@ export function CompressControls({ settings: initialSettings, onChange }: Compre
   const [targetSizeValue, setTargetSizeValue] = useState("");
   const [sizeUnit, setSizeUnit] = useState<SizeUnit>("KB");
 
-  const initializedRef = useRef(false);
+  const prevSettingsKeyRef = useRef<string | null>(null);
   useEffect(() => {
-    if (!initialSettings || initializedRef.current) return;
-    initializedRef.current = true;
+    if (!initialSettings) return;
+    const key = JSON.stringify(initialSettings);
+    if (prevSettingsKeyRef.current === key) return;
+    prevSettingsKeyRef.current = key;
     if (initialSettings.mode != null) setMode(initialSettings.mode as CompressMode);
     if (initialSettings.quality != null) setQuality(Number(initialSettings.quality));
     if (initialSettings.targetSizeKb != null)

@@ -264,7 +264,7 @@ export function Dropzone({
           <>
             <div className="flex items-center gap-2 w-full max-w-xs">
               <div className="h-px flex-1 bg-border" />
-              <span className="text-xs text-muted-foreground">or</span>
+              <span className="text-xs text-muted-foreground">{t.dropzone.orSeparator}</span>
               <div className="h-px flex-1 bg-border" />
             </div>
             <div className="flex gap-2 w-full max-w-sm">
@@ -295,7 +295,7 @@ export function Dropzone({
                 disabled={urlLoading || !urlInput.trim()}
                 className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
               >
-                {urlLoading ? "..." : "Add"}
+                {urlLoading ? t.dropzone.urlLoadingIndicator : t.dropzone.addUrlButton}
               </button>
             </div>
             {urlError && <p className="text-xs text-destructive">{urlError}</p>}

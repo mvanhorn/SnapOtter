@@ -74,6 +74,7 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
     lockAspect: true,
     transparent: true,
   });
+  const [filename, setFilename] = useState("export");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied">("idle");
 
@@ -200,7 +201,7 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
           if (json.downloadUrl) {
             const a = document.createElement("a");
             a.href = json.downloadUrl;
-            a.download = `export.${settings.format}`;
+            a.download = `${filename || "export"}.${settings.format}`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -265,7 +266,7 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
           if (json.downloadUrl) {
             const a = document.createElement("a");
             a.href = json.downloadUrl;
-            a.download = `export.${settings.format}`;
+            a.download = `${filename || "export"}.${settings.format}`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -282,7 +283,7 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;
-          a.download = `export.${settings.format}`;
+          a.download = `${filename || "export"}.${settings.format}`;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
@@ -456,6 +457,18 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
               />
             </div>
           )}
+
+          {/* Filename */}
+          <div>
+            <span className="block text-xs font-medium text-muted-foreground mb-1.5">Filename</span>
+            <input
+              type="text"
+              value={filename}
+              onChange={(e) => setFilename(e.target.value)}
+              placeholder="export"
+              className="w-full px-2 py-1 text-xs bg-muted rounded border border-border text-foreground outline-none focus:border-primary"
+            />
+          </div>
 
           {/* Format */}
           <div>

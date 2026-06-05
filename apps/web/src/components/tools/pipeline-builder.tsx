@@ -129,7 +129,7 @@ function SortableStep({
               e.stopPropagation();
               onRemove();
             }}
-            title="Remove"
+            title={t.automate.removeStep}
             className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
           >
             <X className="h-4 w-4" />
@@ -159,6 +159,7 @@ export function PipelineBuilder({
   onUpdateSettings,
   onToggleStep,
 }: PipelineBuilderProps) {
+  const { t } = useTranslation();
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -177,10 +178,8 @@ export function PipelineBuilder({
         <div className="p-4 rounded-full bg-muted/50 mb-4">
           <FileImage className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h3 className="text-sm font-medium text-foreground mb-1">No steps yet</h3>
-        <p className="text-sm text-muted-foreground max-w-[240px]">
-          Click tools from the palette to build your pipeline
-        </p>
+        <h3 className="text-sm font-medium text-foreground mb-1">{t.automate.noStepsHeading}</h3>
+        <p className="text-sm text-muted-foreground max-w-[240px]">{t.automate.addToolsPrompt}</p>
       </div>
     );
   }

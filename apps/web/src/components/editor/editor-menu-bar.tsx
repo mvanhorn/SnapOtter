@@ -57,6 +57,7 @@ function useMenuDefinitions(callbacks: MenuBarCallbacks): MenuDef[] {
   const setSelection = useEditorStore((s) => s.setSelection);
   const invertSelection = useEditorStore((s) => s.invertSelection);
   const canvasSize = useEditorStore((s) => s.canvasSize);
+  const setPanOffset = useEditorStore((s) => s.setPanOffset);
   const rotateCanvas = useEditorStore((s) => s.rotateCanvas);
   const flipCanvasHorizontal = useEditorStore((s) => s.flipCanvasHorizontal);
   const flipCanvasVertical = useEditorStore((s) => s.flipCanvasVertical);
@@ -327,11 +328,34 @@ function useMenuDefinitions(callbacks: MenuBarCallbacks): MenuDef[] {
       items: [
         { label: "Zoom In", shortcut: mod("Ctrl+="), action: () => setZoom(zoom * 1.25) },
         { label: "Zoom Out", shortcut: mod("Ctrl+-"), action: () => setZoom(zoom / 1.25) },
-        { label: "Fit on Screen", shortcut: mod("Ctrl+0"), action: () => setZoom(1) },
+        {
+          label: "Fit on Screen",
+          shortcut: mod("Ctrl+0"),
+          action: () => {
+            const editorCanvas = document.querySelector("[data-testid='editor-canvas']");
+            if (!editorCanvas) return;
+            const { width: vw, height: vh } = editorCanvas.getBoundingClientRect();
+            const scaleX = vw / canvasSize.width;
+            const scaleY = vh / canvasSize.height;
+            const fitZoom = Math.min(scaleX, scaleY) * 0.9;
+            const offsetX = (vw - canvasSize.width * fitZoom) / 2;
+            const offsetY = (vh - canvasSize.height * fitZoom) / 2;
+            setZoom(fitZoom);
+            setPanOffset({ x: offsetX, y: offsetY });
+          },
+        },
         {
           label: "Actual Pixels",
           shortcut: mod("Ctrl+1"),
-          action: () => setZoom(1),
+          action: () => {
+            const editorCanvas = document.querySelector("[data-testid='editor-canvas']");
+            if (!editorCanvas) return;
+            const { width: vw, height: vh } = editorCanvas.getBoundingClientRect();
+            const offsetX = (vw - canvasSize.width) / 2;
+            const offsetY = (vh - canvasSize.height) / 2;
+            setZoom(1);
+            setPanOffset({ x: offsetX, y: offsetY });
+          },
           dividerAfter: true,
         },
         { label: "Rulers", checked: rulersVisible, action: toggleRulers },

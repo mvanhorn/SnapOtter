@@ -2,6 +2,7 @@ import { TOOLS } from "@snapotter/shared";
 import { FileImage, ImageIcon, Workflow } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "@/contexts/i18n-context";
 import {
   apiGetFileDetails,
   formatHeaders,
@@ -74,6 +75,7 @@ interface FileDetailsProps {
 }
 
 export function FileDetails({ mobile = false }: FileDetailsProps) {
+  const { t } = useTranslation();
   const { selectedFileId } = useFilesPageStore();
   const setFiles = useFileStore((s) => s.setFiles);
   const navigate = useNavigate();
@@ -139,11 +141,11 @@ export function FileDetails({ mobile = false }: FileDetailsProps) {
           "flex flex-col items-center justify-center text-muted-foreground",
           mobile
             ? "flex flex-col gap-4"
-            : "w-60 border-l border-border p-4 shrink-0 hidden lg:flex flex-col",
+            : "w-60 border-s border-border p-4 shrink-0 hidden lg:flex flex-col",
         )}
       >
         <FileImage className="h-12 w-12 mb-3 opacity-30" />
-        <p className="text-sm">Select a file to view details</p>
+        <p className="text-sm">{t.files.selectFilePrompt}</p>
       </div>
     );
   }
@@ -155,7 +157,7 @@ export function FileDetails({ mobile = false }: FileDetailsProps) {
           "flex items-center justify-center",
           mobile
             ? "flex flex-col gap-4"
-            : "w-60 border-l border-border p-4 shrink-0 hidden lg:flex flex-col",
+            : "w-60 border-s border-border p-4 shrink-0 hidden lg:flex flex-col",
         )}
       >
         <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -171,7 +173,7 @@ export function FileDetails({ mobile = false }: FileDetailsProps) {
         "overflow-y-auto",
         mobile
           ? "flex flex-col gap-4"
-          : "w-60 border-l border-border p-4 shrink-0 hidden lg:flex flex-col",
+          : "w-60 border-s border-border p-4 shrink-0 hidden lg:flex flex-col",
       )}
     >
       {/* Thumbnail */}
@@ -187,24 +189,28 @@ export function FileDetails({ mobile = false }: FileDetailsProps) {
       <div className="flex-1">
         <div className="rounded-lg border border-border overflow-hidden">
           <div className="bg-blue-500/10 border-b border-border px-3 py-2">
-            <h4 className="text-sm font-semibold text-blue-600 dark:text-blue-400">File Details</h4>
+            <h4 className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+              {t.files.fileDetailsHeading}
+            </h4>
           </div>
           <div className="divide-y divide-border">
-            <DetailRow label="Name" value={details.originalName} />
+            <DetailRow label={t.files.name} value={details.originalName} />
             <DetailRow
-              label="Format"
+              label={t.files.format}
               value={details.mimeType.replace("image/", "").toUpperCase()}
             />
-            <DetailRow label="Size" value={formatSize(details.size)} />
+            <DetailRow label={t.files.size} value={formatSize(details.size)} />
             <DetailRow
-              label="Dimensions"
+              label={t.files.dimensions}
               value={details.width && details.height ? `${details.width} × ${details.height}` : "—"}
             />
-            <DetailRow label="Version" value={`V${details.version}`} />
+            <DetailRow label={t.files.version} value={`V${details.version}`} />
             <DetailRow
-              label="Tools Used"
+              label={t.files.toolsUsed}
               value={
-                details.toolChain.length > 0 ? details.toolChain.map(toolName).join(", ") : "None"
+                details.toolChain.length > 0
+                  ? details.toolChain.map(toolName).join(", ")
+                  : t.files.none
               }
             />
           </div>

@@ -1,17 +1,19 @@
 import { Clock, Upload } from "lucide-react";
+import { useTranslation } from "@/contexts/i18n-context";
 import { cn } from "@/lib/utils";
 import { useFilesPageStore } from "@/stores/files-page-store";
 
 export function FilesNav() {
+  const { t } = useTranslation();
   const { activeTab, setActiveTab } = useFilesPageStore();
   const items = [
-    { id: "recent" as const, label: "Recent", icon: Clock },
-    { id: "upload" as const, label: "Upload Files", icon: Upload },
+    { id: "recent" as const, label: t.files.recentTab, icon: Clock },
+    { id: "upload" as const, label: t.files.uploadTab, icon: Upload },
   ];
 
   return (
-    <div className="w-48 border-r border-border p-4 shrink-0 hidden md:block">
-      <h3 className="text-sm font-semibold text-foreground mb-3">My Files</h3>
+    <div className="w-48 border-e border-border p-4 shrink-0 hidden md:block">
+      <h3 className="text-sm font-semibold text-foreground mb-3">{t.files.myFiles}</h3>
       <div className="space-y-1">
         {items.map((item) => (
           <button

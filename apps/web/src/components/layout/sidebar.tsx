@@ -110,7 +110,7 @@ export function Sidebar({
   }
 
   return (
-    <aside className="flex flex-col items-center w-16 bg-sidebar border-r border-border py-3 gap-1 shrink-0">
+    <aside className="flex flex-col items-center w-16 bg-sidebar border-e border-border py-3 gap-1 shrink-0">
       <div className="mb-2 flex items-center justify-center">
         <OtterLogo className="h-7 w-7 text-primary" />
       </div>

@@ -1,6 +1,6 @@
 import { APP_VERSION, en, shouldShowConsent } from "@snapotter/shared";
 import { Component, type ErrorInfo, lazy, type ReactNode, Suspense, useEffect } from "react";
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { Toaster, toast } from "sonner";
 import { ConnectionMonitor } from "./components/common/connection-monitor";
 import { KeyboardShortcutProvider } from "./components/common/keyboard-shortcut-provider";
@@ -31,6 +31,9 @@ const AnalyticsConsentPage = lazy(() =>
 );
 const EditorPage = lazy(() =>
   import("./pages/editor-page").then((m) => ({ default: m.EditorPage })),
+);
+const NotFoundPage = lazy(() =>
+  import("./pages/not-found-page").then((m) => ({ default: m.NotFoundPage })),
 );
 const ToolPage = lazy(() => import("./pages/tool-page").then((m) => ({ default: m.ToolPage })));
 
@@ -167,6 +170,11 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function ToolRedirect() {
+  const { toolId } = useParams<{ toolId: string }>();
+  return <Navigate to={`/${toolId}`} replace />;
+}
+
 // Single page-level loading fallback — shown while JS for a route downloads.
 function PageLoader() {
   return (
@@ -242,8 +250,10 @@ export function App() {
                   <Route path="/color-effects" element={<Navigate to="/adjust-colors" replace />} />
                   <Route path="/analytics-consent" element={<AnalyticsConsentPage />} />
                   <Route path="/editor" element={<EditorPage />} />
+                  <Route path="/tools/:toolId" element={<ToolRedirect />} />
                   <Route path="/:toolId" element={<ToolPage />} />
                   <Route path="/" element={<HomePage />} />
+                  <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </Suspense>
             </AuthGuard>

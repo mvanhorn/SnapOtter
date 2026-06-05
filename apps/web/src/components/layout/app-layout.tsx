@@ -67,7 +67,7 @@ export function AppLayout({
             className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm cursor-default"
             onClick={() => setMobileSidebarOpen(false)}
           />
-          <div className="fixed inset-y-0 left-0 z-50 w-64 bg-background border-r border-border shadow-xl animate-in slide-in-from-left">
+          <div className="fixed inset-y-0 start-0 z-50 w-64 bg-background border-e border-border shadow-xl animate-in slide-in-from-left">
             <div className="flex items-center justify-between p-3 border-b border-border">
               <div className="flex items-center gap-2">
                 <OtterLogo className="h-5 w-5 text-primary" />
