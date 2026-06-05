@@ -1,11 +1,12 @@
 import { APP_VERSION, en, shouldShowConsent } from "@snapotter/shared";
 import { Component, type ErrorInfo, lazy, type ReactNode, Suspense, useEffect } from "react";
-import { BrowserRouter, Navigate, Route, Routes, useLocation, useParams } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster, toast } from "sonner";
 import { ConnectionMonitor } from "./components/common/connection-monitor";
 import { KeyboardShortcutProvider } from "./components/common/keyboard-shortcut-provider";
 import { I18nProvider } from "./contexts/i18n-context";
 import { useAuth } from "./hooks/use-auth";
+import { useMobile } from "./hooks/use-mobile";
 import { identify, initAnalytics, setAnalyticsConsent } from "./lib/analytics";
 import { useAnalyticsStore } from "./stores/analytics-store";
 
@@ -31,9 +32,6 @@ const AnalyticsConsentPage = lazy(() =>
 );
 const EditorPage = lazy(() =>
   import("./pages/editor-page").then((m) => ({ default: m.EditorPage })),
-);
-const NotFoundPage = lazy(() =>
-  import("./pages/not-found-page").then((m) => ({ default: m.NotFoundPage })),
 );
 const ToolPage = lazy(() => import("./pages/tool-page").then((m) => ({ default: m.ToolPage })));
 
@@ -170,11 +168,6 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-function ToolRedirect() {
-  const { toolId } = useParams<{ toolId: string }>();
-  return <Navigate to={`/${toolId}`} replace />;
-}
-
 // Single page-level loading fallback — shown while JS for a route downloads.
 function PageLoader() {
   return (
@@ -185,6 +178,7 @@ function PageLoader() {
 }
 
 export function App() {
+  const isMobile = useMobile();
   const analyticsConfig = useAnalyticsStore((s) => s.config);
   const analyticsConfigLoaded = useAnalyticsStore((s) => s.configLoaded);
   const fetchAnalyticsConfig = useAnalyticsStore((s) => s.fetchConfig);
@@ -225,7 +219,7 @@ export function App() {
     <ErrorBoundary>
       <I18nProvider>
         <ConnectionMonitor />
-        <Toaster position="bottom-right" />
+        <Toaster position={isMobile ? "top-center" : "bottom-right"} />
         <BrowserRouter>
           <KeyboardShortcutProvider>
             <AuthGuard>
@@ -250,10 +244,8 @@ export function App() {
                   <Route path="/color-effects" element={<Navigate to="/adjust-colors" replace />} />
                   <Route path="/analytics-consent" element={<AnalyticsConsentPage />} />
                   <Route path="/editor" element={<EditorPage />} />
-                  <Route path="/tools/:toolId" element={<ToolRedirect />} />
                   <Route path="/:toolId" element={<ToolPage />} />
                   <Route path="/" element={<HomePage />} />
-                  <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </Suspense>
             </AuthGuard>

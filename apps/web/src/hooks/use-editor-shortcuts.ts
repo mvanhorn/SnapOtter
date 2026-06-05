@@ -41,8 +41,6 @@ const SHAPE_CYCLE: ToolType[] = [
   "shape-polygon",
   "shape-star",
 ];
-// Dodge/burn/sponge cycle
-const DODGE_CYCLE: ToolType[] = ["dodge", "burn", "sponge"];
 // Fill/gradient cycle
 const FILL_CYCLE: ToolType[] = ["fill", "gradient"];
 
@@ -201,29 +199,12 @@ export function useEditorShortcuts(callbacks?: {
     { preventDefault: true },
   );
 
-  // O - Dodge/Burn/Sponge (cycles)
+  // O - Dodge tool
   useHotkeys(
     "o",
     () => {
       if (isInputFocused()) return;
-      const current = useEditorStore.getState().activeTool;
-      if (DODGE_CYCLE.includes(current)) {
-        useEditorStore.getState().setTool(cycleSubtool(current, DODGE_CYCLE));
-      } else {
-        useEditorStore.getState().setTool("dodge");
-      }
-    },
-    { preventDefault: true },
-  );
-
-  // Shift+O - Cycle dodge/burn/sponge subtypes
-  useHotkeys(
-    "shift+o",
-    () => {
-      if (isInputFocused()) return;
-      useEditorStore
-        .getState()
-        .setTool(cycleSubtool(useEditorStore.getState().activeTool, DODGE_CYCLE));
+      useEditorStore.getState().setTool("dodge");
     },
     { preventDefault: true },
   );
@@ -380,16 +361,6 @@ export function useEditorShortcuts(callbacks?: {
     { preventDefault: true },
   );
 
-  // Ctrl+Y / Cmd+Y - Redo (alternative)
-  useHotkeys(
-    "mod+y",
-    (e) => {
-      e.preventDefault();
-      useEditorStore.temporal.getState().redo();
-    },
-    { preventDefault: true },
-  );
-
   // Ctrl+S / Cmd+S - Save project
   useHotkeys(
     "mod+s",
@@ -423,6 +394,7 @@ export function useEditorShortcuts(callbacks?: {
   useHotkeys(
     "mod+a",
     (e) => {
+      if (isInputFocused()) return;
       e.preventDefault();
       const state = useEditorStore.getState();
       const allIds = state.objects.map((o) => o.id);
@@ -435,6 +407,7 @@ export function useEditorShortcuts(callbacks?: {
   useHotkeys(
     "mod+d",
     (e) => {
+      if (isInputFocused()) return;
       e.preventDefault();
       useEditorStore.getState().setSelectedObjects([]);
       useEditorStore.getState().setSelection(null);
@@ -525,6 +498,7 @@ export function useEditorShortcuts(callbacks?: {
   useHotkeys(
     "mod+t",
     (e) => {
+      if (isInputFocused()) return;
       e.preventDefault();
       useEditorStore.getState().setTool("transform");
     },
@@ -535,6 +509,7 @@ export function useEditorShortcuts(callbacks?: {
   useHotkeys(
     "mod+j",
     (e) => {
+      if (isInputFocused()) return;
       e.preventDefault();
       const state = useEditorStore.getState();
       state.duplicateLayer(state.activeLayerId);
@@ -546,6 +521,7 @@ export function useEditorShortcuts(callbacks?: {
   useHotkeys(
     "mod+shift+n",
     (e) => {
+      if (isInputFocused()) return;
       e.preventDefault();
       useEditorStore.getState().addLayer();
     },

@@ -1,25 +1,16 @@
-import {
-  FolderOpen,
-  Globe,
-  LayoutGrid,
-  Menu,
-  Settings as SettingsIcon,
-  Workflow,
-  X,
-} from "lucide-react";
+import { Globe, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useTranslation } from "@/contexts/i18n-context";
 import { useMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { useConnectionStore } from "@/stores/connection-store";
 import { Dropzone } from "../common/dropzone";
-import { ImageEditIcon } from "../common/image-edit-icon";
 import { OtterLogo } from "../common/otter-logo";
 import { HelpDialog } from "../help/help-dialog";
 import { SettingsDialog } from "../settings/settings-dialog";
 import { AiInstallIndicator } from "./ai-install-indicator";
 import { Footer } from "./footer";
+import { MobileBottomNav } from "./mobile-bottom-nav";
 import { Sidebar } from "./sidebar";
 import { ToolPanel } from "./tool-panel";
 
@@ -39,7 +30,7 @@ export function AppLayout({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const { t, locale, setLocale, supportedLocales } = useTranslation();
+  const { locale, setLocale, supportedLocales } = useTranslation();
   const isMobile = useMobile();
   const connectionStatus = useConnectionStore((s) => s.status);
   const bannerVisible = connectionStatus !== "connected";
@@ -67,7 +58,7 @@ export function AppLayout({
             className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm cursor-default"
             onClick={() => setMobileSidebarOpen(false)}
           />
-          <div className="fixed inset-y-0 start-0 z-50 w-64 bg-background border-e border-border shadow-xl animate-in slide-in-from-left">
+          <div className="fixed inset-y-0 left-0 z-50 w-64 bg-background border-r border-border shadow-xl animate-in slide-in-from-left">
             <div className="flex items-center justify-between p-3 border-b border-border">
               <div className="flex items-center gap-2">
                 <OtterLogo className="h-5 w-5 text-primary" />
@@ -78,9 +69,9 @@ export function AppLayout({
               <button
                 type="button"
                 onClick={() => setMobileSidebarOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-muted"
+                className="p-2.5 rounded-lg hover:bg-muted"
               >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </button>
             </div>
             <Sidebar
@@ -126,7 +117,7 @@ export function AppLayout({
           <button
             type="button"
             onClick={() => setMobileSidebarOpen(true)}
-            className="p-1.5 rounded-lg hover:bg-muted"
+            className="p-2.5 -ms-1 rounded-lg hover:bg-muted"
           >
             <Menu className="h-5 w-5" />
           </button>
@@ -141,7 +132,7 @@ export function AppLayout({
 
       {showToolPanel && !isMobile && <ToolPanel />}
 
-      <main className={cn("flex-1 flex flex-col overflow-hidden", isMobile && "pt-12 pb-16")}>
+      <main className={cn("flex-1 flex flex-col overflow-hidden", isMobile && "pt-12 pb-20")}>
         <div className="flex-1 overflow-y-auto p-6 flex items-center justify-center">
           {children || <Dropzone onFiles={onFiles} onUrlImport={onUrlImport} accept="image/*" />}
         </div>
@@ -150,22 +141,7 @@ export function AppLayout({
       {!isMobile && <Footer />}
 
       {/* Mobile bottom nav */}
-      {isMobile && (
-        <nav className="fixed bottom-0 left-0 right-0 z-30 bg-background/95 backdrop-blur-sm border-t border-border flex items-center justify-around px-2 py-1.5">
-          <MobileNavItem icon={LayoutGrid} label={t.appLayout.mobileNavTools} href="/" />
-          <MobileNavItem icon={Workflow} label={t.appLayout.mobileNavAutomate} href="/automate" />
-          <MobileNavItem icon={ImageEditIcon} label={t.appLayout.mobileNavEditor} href="/editor" />
-          <MobileNavItem icon={FolderOpen} label={t.appLayout.mobileNavFiles} href="/files" />
-          <button
-            type="button"
-            onClick={() => setSettingsOpen(true)}
-            className="flex flex-col items-center gap-0.5 px-3 py-1 text-muted-foreground"
-          >
-            <SettingsIcon className="h-5 w-5" />
-            <span className="text-[10px]">{t.appLayout.mobileNavSettings}</span>
-          </button>
-        </nav>
-      )}
+      {isMobile && <MobileBottomNav onSettingsClick={() => setSettingsOpen(true)} />}
 
       {/* Settings dialog */}
       <SettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
@@ -176,25 +152,5 @@ export function AppLayout({
       {/* Global AI install progress */}
       <AiInstallIndicator />
     </div>
-  );
-}
-
-function MobileNavItem({
-  icon: Icon,
-  label,
-  href,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  href: string;
-}) {
-  return (
-    <Link
-      to={href}
-      className="flex flex-col items-center gap-0.5 px-3 py-1 text-muted-foreground hover:text-foreground transition-colors"
-    >
-      <Icon className="h-5 w-5" />
-      <span className="text-[10px]">{label}</span>
-    </Link>
   );
 }

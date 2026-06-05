@@ -18,7 +18,7 @@ export function useEraserTool() {
     const stage = e.target.getStage();
     if (!stage) return;
 
-    const { activeTool, brushSize, brushOpacity, brushHardness, zoom, panOffset } =
+    const { activeTool, brushSize, brushOpacity, brushHardness, eraserMode, zoom, panOffset } =
       useEditorStore.getState();
 
     if (activeTool !== "eraser") return;
@@ -29,16 +29,31 @@ export function useEraserTool() {
     const x = (pointer.x - panOffset.x) / zoom;
     const y = (pointer.y - panOffset.y) / zoom;
 
+    const { selection } = useEditorStore.getState();
+    if (selection) {
+      const { bounds } = selection;
+      if (
+        x < bounds.x ||
+        x > bounds.x + bounds.width ||
+        y < bounds.y ||
+        y > bounds.y + bounds.height
+      ) {
+        return;
+      }
+    }
+
     const id = generateId();
     const shadowBlurValue = brushSize * 0.4 * (1 - brushHardness);
+
+    const isBlock = eraserMode === "block";
 
     const attrs: LineAttrs = {
       points: [x, y],
       stroke: "#000000",
       strokeWidth: brushSize,
-      tension: 0.5,
-      lineCap: "round",
-      lineJoin: "round",
+      tension: isBlock ? 0 : 0.5,
+      lineCap: isBlock ? "butt" : "round",
+      lineJoin: isBlock ? "miter" : "round",
       opacity: brushOpacity,
       globalCompositeOperation: "destination-out",
       ...(shadowBlurValue > 0 && {
@@ -72,6 +87,19 @@ export function useEraserTool() {
 
     const x = (pointer.x - panOffset.x) / zoom;
     const y = (pointer.y - panOffset.y) / zoom;
+
+    const { selection } = useEditorStore.getState();
+    if (selection) {
+      const { bounds } = selection;
+      if (
+        x < bounds.x ||
+        x > bounds.x + bounds.width ||
+        y < bounds.y ||
+        y > bounds.y + bounds.height
+      ) {
+        return;
+      }
+    }
 
     strokeRef.current.points = [...strokeRef.current.points, x, y];
 

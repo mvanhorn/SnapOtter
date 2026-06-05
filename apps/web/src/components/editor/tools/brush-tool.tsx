@@ -18,7 +18,7 @@ export function useBrushTool() {
     const stage = e.target.getStage();
     if (!stage) return;
 
-    const { activeTool, foregroundColor, brushSize, brushOpacity, brushHardness, zoom, panOffset } =
+    const { activeTool, foregroundColor, brushSize, brushOpacity, brushHardness, brushFlow, zoom, panOffset } =
       useEditorStore.getState();
 
     if (activeTool !== "brush" && activeTool !== "pencil") return;
@@ -28,6 +28,15 @@ export function useBrushTool() {
 
     const x = (pointer.x - panOffset.x) / zoom;
     const y = (pointer.y - panOffset.y) / zoom;
+
+    const { selection } = useEditorStore.getState();
+    if (selection) {
+      const { bounds } = selection;
+      if (x < bounds.x || x > bounds.x + bounds.width ||
+          y < bounds.y || y > bounds.y + bounds.height) {
+        return;
+      }
+    }
 
     const id = generateId();
     const shadowBlurValue = activeTool === "pencil" ? 0 : brushSize * 0.4 * (1 - brushHardness);
@@ -39,7 +48,7 @@ export function useBrushTool() {
       tension: activeTool === "pencil" ? 0 : 0.5,
       lineCap: "round",
       lineJoin: "round",
-      opacity: brushOpacity,
+      opacity: brushOpacity * brushFlow,
       globalCompositeOperation: "source-over",
       ...(shadowBlurValue > 0 && {
         shadowBlur: shadowBlurValue,
@@ -72,6 +81,15 @@ export function useBrushTool() {
 
     const x = (pointer.x - panOffset.x) / zoom;
     const y = (pointer.y - panOffset.y) / zoom;
+
+    const { selection } = useEditorStore.getState();
+    if (selection) {
+      const { bounds } = selection;
+      if (x < bounds.x || x > bounds.x + bounds.width ||
+          y < bounds.y || y > bounds.y + bounds.height) {
+        return;
+      }
+    }
 
     strokeRef.current.points = [...strokeRef.current.points, x, y];
 

@@ -1,4 +1,4 @@
-import { FlipHorizontal2, FlipVertical2, Lock, Unlock } from "lucide-react";
+import { Check, FlipHorizontal2, FlipVertical2, Lock, Unlock, X } from "lucide-react";
 import { useCallback } from "react";
 import type { TransformToolApi } from "@/components/editor/tools/transform-tool";
 import { cn } from "@/lib/utils";
@@ -55,7 +55,7 @@ function NumericInput({
 }
 
 export function TransformOptions({ api }: { api: TransformToolApi }) {
-  const { values, lockedAspect, setLockedAspect, setValues, flipHorizontal, flipVertical } = api;
+  const { values, lockedAspect, setLockedAspect, setValues, flipHorizontal, flipVertical, applyTransform, cancelTransform } = api;
 
   return (
     <div className="flex items-center gap-3">
@@ -136,6 +136,24 @@ export function TransformOptions({ api }: { api: TransformToolApi }) {
         className="flex h-7 w-7 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
       >
         <FlipVertical2 className="h-4 w-4" />
+      </button>
+
+      <div className="h-5 w-px bg-border mx-1" />
+      <button
+        type="button"
+        onClick={cancelTransform}
+        className="p-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+        title="Cancel"
+      >
+        <X className="h-4 w-4" />
+      </button>
+      <button
+        type="button"
+        onClick={applyTransform}
+        className="p-1.5 rounded bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+        title="Apply"
+      >
+        <Check className="h-4 w-4" />
       </button>
     </div>
   );

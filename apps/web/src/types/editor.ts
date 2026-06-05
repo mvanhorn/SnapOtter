@@ -1,5 +1,7 @@
 // apps/web/src/types/editor.ts
 
+export type EraserMode = "brush" | "block";
+
 export type SelectionMode = "new" | "add" | "subtract";
 
 export type StrokeDashStyle = "solid" | "dashed" | "dotted";
@@ -281,6 +283,8 @@ export interface EditorState {
   brushSize: number;
   brushOpacity: number;
   brushHardness: number;
+  brushFlow: number;
+  eraserMode: EraserMode;
 
   // Colors
   foregroundColor: string;
@@ -300,6 +304,7 @@ export interface EditorState {
   selectionMode: SelectionMode;
   magicWandTolerance: number;
   magicWandContiguous: boolean;
+  selectionFeather: number;
 
   // Crop
   cropState: CropState | null;
@@ -425,6 +430,7 @@ export interface EditorState {
   setSelectionMode: (mode: SelectionMode) => void;
   setMagicWandTolerance: (v: number) => void;
   setMagicWandContiguous: (v: boolean) => void;
+  setSelectionFeather: (v: number) => void;
   invertSelection: () => void;
 
   // Crop
@@ -435,6 +441,8 @@ export interface EditorState {
   setBrushSize: (size: number) => void;
   setBrushOpacity: (opacity: number) => void;
   setBrushHardness: (hardness: number) => void;
+  setBrushFlow: (flow: number) => void;
+  setEraserMode: (mode: EraserMode) => void;
 
   // Clipboard
   copyObjects: () => void;

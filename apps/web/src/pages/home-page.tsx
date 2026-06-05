@@ -6,6 +6,7 @@ import { ImageViewer } from "@/components/common/image-viewer";
 import { MultiImageViewer } from "@/components/common/multi-image-viewer";
 import { AppLayout } from "@/components/layout/app-layout";
 import { useTranslation } from "@/contexts/i18n-context";
+import { useMobile } from "@/hooks/use-mobile";
 import { ICON_MAP } from "@/lib/icon-map";
 import { getCategoryName, getToolName } from "@/lib/tool-i18n";
 import { useFeaturesStore } from "@/stores/features-store";
@@ -32,6 +33,7 @@ export function HomePage() {
   const location = useLocation();
   const { fetch: fetchSettings, defaultToolView, loaded: settingsLoaded } = useSettingsStore();
   const { fetch: fetchFeatures, bundles, installing, queued } = useFeaturesStore();
+  const isMobile = useMobile();
 
   useEffect(() => {
     if (location.state?.fromLibrary) {
@@ -93,12 +95,96 @@ export function HomePage() {
     return <AppLayout onFiles={handleFiles} onUrlImport={handleUrlImport} />;
   }
 
-  // File uploaded — show tool selector on left, image preview on right
+  // File uploaded — mobile: stacked layout
+  if (isMobile && hasFile) {
+    return (
+      <AppLayout showToolPanel={false} onFiles={handleFiles}>
+        <div className="flex flex-col h-full w-full">
+          {/* File info bar */}
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
+            <ICON_MAP.CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+            <span className="truncate text-sm font-medium text-foreground">
+              {selectedFileName ?? files[0].name}
+            </span>
+            <span className="text-xs text-muted-foreground shrink-0">
+              {selectedFileSize ? `${(selectedFileSize / 1024).toFixed(1)} KB` : ""}
+            </span>
+            <button
+              type="button"
+              onClick={reset}
+              className="text-xs text-muted-foreground hover:text-foreground ms-auto shrink-0"
+            >
+              {t.homePage.changeFile}
+            </button>
+          </div>
+
+          {/* Quick action buttons - horizontal scroll */}
+          <div className="flex overflow-x-auto gap-2 px-4 py-3 border-b border-border scrollbar-none">
+            {QUICK_ACTION_IDS.map((id) => {
+              const tool = TOOLS.find((t) => t.id === id);
+              if (!tool) return null;
+              const Icon =
+                (ICON_MAP[tool.icon] as React.ComponentType<{ className?: string }>) ??
+                ICON_MAP.FileImage;
+              const status = getToolStatus(id);
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => navigate(tool.route)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border hover:border-primary hover:bg-primary/5 transition-colors shrink-0"
+                >
+                  <div className="p-1 rounded-lg bg-primary/10 text-primary">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <span className="text-xs font-medium text-foreground whitespace-nowrap">
+                    {getToolName(t, tool.id, tool.name)}
+                  </span>
+                  {status === "not_installed" && (
+                    <Download className="h-3.5 w-3.5 text-muted-foreground" />
+                  )}
+                  {status === "queued" && <Clock className="h-3.5 w-3.5 text-muted-foreground" />}
+                  {status === "installing" && (
+                    <Loader2 className="h-3.5 w-3.5 text-muted-foreground animate-spin" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Full-width image preview */}
+          <div className="flex-1 flex items-center justify-center p-4 min-h-0">
+            {files.length > 1 ? (
+              <MultiImageViewer />
+            ) : currentEntry?.previewLoading ? (
+              <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
+                <Loader2 className="h-8 w-8 text-muted-foreground animate-spin" />
+                <p className="text-sm text-muted-foreground">{t.homePage.generatingPreview}</p>
+                <p className="text-xs text-muted-foreground/60">{selectedFileName}</p>
+              </div>
+            ) : originalBlobUrl ? (
+              <ImageViewer
+                src={originalBlobUrl}
+                filename={selectedFileName ?? files[0].name}
+                fileSize={selectedFileSize ?? files[0].size}
+              />
+            ) : (
+              <div className="text-center text-muted-foreground">
+                <p>{t.homePage.loadingPreview}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
+
+  // File uploaded — desktop: tool selector on left, image preview on right
   return (
     <AppLayout showToolPanel={false} onFiles={handleFiles}>
       <div className="flex h-full w-full">
         {/* Left panel: Tool selector */}
-        <div className="w-80 border-r border-border overflow-y-auto shrink-0">
+        <div className="w-64 lg:w-80 border-r border-border overflow-y-auto shrink-0">
           {/* File info */}
           <div className="p-4 border-b border-border">
             <div className="flex items-center gap-2 text-sm">

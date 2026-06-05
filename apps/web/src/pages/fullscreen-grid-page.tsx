@@ -4,7 +4,9 @@ import { Eye, EyeOff, FileImage, LayoutGrid, List, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { OtterLogo } from "@/components/common/otter-logo";
+import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { useTranslation } from "@/contexts/i18n-context";
+import { useMobile } from "@/hooks/use-mobile";
 import { track } from "@/lib/analytics";
 import { apiGet } from "@/lib/api";
 import { ICON_MAP } from "@/lib/icon-map";
@@ -14,6 +16,7 @@ import { useFeaturesStore } from "@/stores/features-store";
 
 export function FullscreenGridPage() {
   const { t } = useTranslation();
+  const isMobile = useMobile();
   const [search, setSearch] = useState("");
   const [showDetails, setShowDetails] = useState(true);
   const navigate = useNavigate();
@@ -79,7 +82,7 @@ export function FullscreenGridPage() {
   const activeCategories = CATEGORIES.filter((cat) => groupedTools.has(cat.id));
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className={cn("min-h-screen bg-background text-foreground", isMobile && "pb-20")}>
       {/* Top bar */}
       <header className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
@@ -154,6 +157,7 @@ export function FullscreenGridPage() {
           </div>
         )}
       </main>
+      {isMobile && <MobileBottomNav />}
     </div>
   );
 }

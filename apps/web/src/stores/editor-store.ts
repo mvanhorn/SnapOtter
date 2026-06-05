@@ -8,6 +8,7 @@ import type {
   CanvasObject,
   EditorLayer,
   EditorState,
+  EraserMode,
   FilterConfig,
   SelectionMode,
   StrokeDashStyle,
@@ -152,6 +153,8 @@ export const useEditorStore = create<EditorState & EditorStateExtensions>()(
       brushSize: 10,
       brushOpacity: 1,
       brushHardness: 1,
+      brushFlow: 1,
+      eraserMode: "brush" as EraserMode,
 
       // --- Colors ---
       foregroundColor: "#000000",
@@ -171,6 +174,7 @@ export const useEditorStore = create<EditorState & EditorStateExtensions>()(
       selectionMode: "new" as SelectionMode,
       magicWandTolerance: 32,
       magicWandContiguous: true,
+      selectionFeather: 0,
 
       // --- Crop ---
       cropState: null,
@@ -954,6 +958,7 @@ export const useEditorStore = create<EditorState & EditorStateExtensions>()(
       setSelectionMode: (mode) => set({ selectionMode: mode }),
       setMagicWandTolerance: (v) => set({ magicWandTolerance: v }),
       setMagicWandContiguous: (v: boolean) => set({ magicWandContiguous: v }),
+      setSelectionFeather: (v) => set({ selectionFeather: v }),
 
       invertSelection: () => {
         const { selection, canvasSize } = get();
@@ -1067,6 +1072,8 @@ export const useEditorStore = create<EditorState & EditorStateExtensions>()(
       setBrushSize: (size) => set({ brushSize: Math.max(1, Math.min(MAX_BRUSH_SIZE, size)) }),
       setBrushOpacity: (opacity) => set({ brushOpacity: Math.max(0, Math.min(1, opacity)) }),
       setBrushHardness: (hardness) => set({ brushHardness: Math.max(0, Math.min(1, hardness)) }),
+      setBrushFlow: (flow) => set({ brushFlow: Math.max(0, Math.min(1, flow)) }),
+      setEraserMode: (mode) => set({ eraserMode: mode }),
 
       // Clipboard
       copyObjects: () => {

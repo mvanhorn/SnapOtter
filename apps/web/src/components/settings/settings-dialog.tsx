@@ -29,6 +29,7 @@ import {
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "@/contexts/i18n-context";
 import { useAuth } from "@/hooks/use-auth";
+import { useMobile } from "@/hooks/use-mobile";
 import { apiDelete, apiGet, apiPost, apiPut, clearToken, formatHeaders } from "@/lib/api";
 import { format, plural } from "@/lib/format";
 import { getCategoryName, getToolDescription, getToolName } from "@/lib/tool-i18n";
@@ -124,6 +125,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
   const [section, setSection] = useState<Section>("general");
   const { hasPermission, authEnabled } = useAuth();
   const { t } = useTranslation();
+  const isMobile = useMobile();
   const NAV_ITEMS = useNavItems();
 
   const visibleNavItems = NAV_ITEMS.filter(
@@ -144,6 +146,60 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
 
   if (!open) return null;
 
+  if (isMobile) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col bg-background">
+        {/* Mobile header */}
+        <div className="flex items-center justify-between px-4 pt-4 pb-2 shrink-0">
+          <h2 className="text-sm font-semibold text-foreground">{t.settings.heading}</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-2.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Mobile pill strip nav */}
+        <div className="flex overflow-x-auto gap-1 px-3 pb-2 scrollbar-none shrink-0">
+          {visibleNavItems.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => setSection(item.id)}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap shrink-0",
+                section === item.id
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground",
+              )}
+            >
+              <item.icon className="h-3.5 w-3.5" />
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Mobile content */}
+        <div className="flex-1 overflow-y-auto p-4">
+          {section === "general" && <GeneralSection />}
+          {section === "system" && <SystemSection />}
+          {section === "security" && <SecuritySection />}
+          {section === "people" && <PeopleSection />}
+          {section === "teams" && <TeamsSection />}
+          {section === "roles" && <RolesSection />}
+          {section === "audit-log" && <AuditLogSection />}
+          {section === "api-keys" && <ApiKeysSection />}
+          {section === "ai-features" && <AiFeaturesSection />}
+          {section === "tools" && <ToolsSection />}
+          {section === "analytics" && <AnalyticsSection />}
+          {section === "about" && <AboutSection />}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
@@ -157,7 +213,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
       <div
         role="dialog"
         aria-modal="true"
-        className="relative bg-background border border-border rounded-xl shadow-2xl w-full max-w-3xl h-[85vh] flex overflow-hidden"
+        className="relative bg-background border border-border rounded-xl shadow-2xl w-full max-w-3xl h-[85dvh] flex overflow-hidden"
       >
         {/* Sidebar nav */}
         <div className="w-48 border-r border-border bg-muted/30 p-3 space-y-1 shrink-0">
@@ -249,7 +305,7 @@ interface UserEntry {
 }
 
 interface TeamEntry {
-  id: number;
+  id: string;
   name: string;
   memberCount: number;
   createdAt: string;
@@ -624,6 +680,7 @@ function SecuritySection() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -634,7 +691,7 @@ function SecuritySection() {
         setMessage({ type: "error", text: t.settings.security.passwordsMismatch });
         return;
       }
-      if (newPassword.length < 4) {
+      if (newPassword.length < 8) {
         setMessage({ type: "error", text: t.settings.security.passwordTooShort });
         return;
       }
@@ -709,14 +766,24 @@ function SecuritySection() {
             </button>
           </div>
 
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder={t.settings.security.confirmPasswordPlaceholder}
-            className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground"
-            required
-          />
+          <div className="relative">
+            <input
+              type={showConfirm ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder={t.settings.security.confirmPasswordPlaceholder}
+              className="w-full px-3 py-2 pe-10 rounded-lg border border-border bg-background text-sm text-foreground"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute end-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
+              tabIndex={-1}
+            >
+              {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
 
           {message && (
             <p
@@ -778,6 +845,7 @@ function generatePassword(): string {
 
 function PeopleSection() {
   const { t } = useTranslation();
+  const isMobile = useMobile();
   const [users, setUsers] = useState<UserEntry[]>([]);
   const [maxUsers, setMaxUsers] = useState(5);
   const [loading, setLoading] = useState(true);
@@ -1029,7 +1097,7 @@ function PeopleSection() {
           <h4 className="text-sm font-medium text-foreground">
             {t.settings.people.newMemberHeading}
           </h4>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input
               type="text"
               value={newUsername}
@@ -1260,13 +1328,15 @@ function PeopleSection() {
 
       {/* Users table */}
       <div className="border border-border rounded-lg">
-        {/* Table header */}
-        <div className="grid grid-cols-[1fr_100px_120px_60px] gap-2 px-4 py-2.5 bg-muted/40 rounded-t-lg border-b border-border text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          <span>{t.settings.people.tableHeaderUser}</span>
-          <span>{t.settings.people.tableHeaderRole}</span>
-          <span>{t.settings.people.tableHeaderTeam}</span>
-          <span />
-        </div>
+        {/* Table header (desktop only) */}
+        {!isMobile && (
+          <div className="grid grid-cols-[1fr_100px_120px_60px] gap-2 px-4 py-2.5 bg-muted/40 rounded-t-lg border-b border-border text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            <span>{t.settings.people.tableHeaderUser}</span>
+            <span>{t.settings.people.tableHeaderRole}</span>
+            <span>{t.settings.people.tableHeaderTeam}</span>
+            <span />
+          </div>
+        )}
 
         {/* Table rows */}
         {filteredUsers.length === 0 ? (
@@ -1277,45 +1347,91 @@ function PeopleSection() {
           filteredUsers.map((u) => (
             <div
               key={u.id}
-              className="grid grid-cols-[1fr_100px_120px_60px] gap-2 items-center px-4 py-3 border-b border-border last:border-0 last:rounded-b-lg hover:bg-muted/20 transition-colors"
+              className={cn(
+                "items-center px-4 py-3 border-b border-border last:border-0 last:rounded-b-lg hover:bg-muted/20 transition-colors",
+                isMobile ? "flex gap-3" : "grid grid-cols-[1fr_100px_120px_60px] gap-2",
+              )}
             >
-              {/* User cell */}
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
-                  {u.username.charAt(0).toUpperCase()}
-                </div>
-                <span className="text-sm font-medium text-foreground truncate">{u.username}</span>
-                {u.hasOidcLink && u.hasLocalPassword !== false && (
-                  <span className="ms-1.5 text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-                    {t.auth.methodBoth}
-                  </span>
-                )}
-                {u.hasOidcLink && u.hasLocalPassword === false && (
-                  <span className="ms-1.5 text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-                    {t.auth.methodOidc}
-                  </span>
-                )}
-              </div>
+              {isMobile ? (
+                <>
+                  {/* Mobile card layout */}
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
+                    {u.username.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm font-medium text-foreground truncate">
+                        {u.username}
+                      </span>
+                      {u.hasOidcLink && u.hasLocalPassword !== false && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                          {t.auth.methodBoth}
+                        </span>
+                      )}
+                      {u.hasOidcLink && u.hasLocalPassword === false && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                          {t.auth.methodOidc}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span
+                        className={cn(
+                          "inline-block px-2 py-0.5 rounded text-xs font-semibold uppercase tracking-wide",
+                          u.role === "admin"
+                            ? "bg-primary/15 text-primary"
+                            : "bg-muted text-muted-foreground",
+                        )}
+                      >
+                        {u.role}
+                      </span>
+                      <span className="text-xs text-muted-foreground truncate">{u.team}</span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Desktop row layout */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
+                      {u.username.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-sm font-medium text-foreground truncate">
+                      {u.username}
+                    </span>
+                    {u.hasOidcLink && u.hasLocalPassword !== false && (
+                      <span className="ms-1.5 text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                        {t.auth.methodBoth}
+                      </span>
+                    )}
+                    {u.hasOidcLink && u.hasLocalPassword === false && (
+                      <span className="ms-1.5 text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                        {t.auth.methodOidc}
+                      </span>
+                    )}
+                  </div>
 
-              {/* Role badge */}
-              <div>
-                <span
-                  className={cn(
-                    "inline-block px-2 py-0.5 rounded text-xs font-semibold uppercase tracking-wide",
-                    u.role === "admin"
-                      ? "bg-primary/15 text-primary"
-                      : "bg-muted text-muted-foreground",
-                  )}
-                >
-                  {u.role}
-                </span>
-              </div>
+                  {/* Role badge */}
+                  <div>
+                    <span
+                      className={cn(
+                        "inline-block px-2 py-0.5 rounded text-xs font-semibold uppercase tracking-wide",
+                        u.role === "admin"
+                          ? "bg-primary/15 text-primary"
+                          : "bg-muted text-muted-foreground",
+                      )}
+                    >
+                      {u.role}
+                    </span>
+                  </div>
 
-              {/* Team */}
-              <span className="text-sm text-foreground truncate">{u.team}</span>
+                  {/* Team */}
+                  <span className="text-sm text-foreground truncate">{u.team}</span>
+                </>
+              )}
 
               {/* Actions */}
-              <div className="flex items-center gap-1 justify-end relative">
+              <div className="flex items-center gap-1 justify-end relative shrink-0">
                 <button
                   type="button"
                   onClick={(e) => {
@@ -1621,14 +1737,15 @@ function ApiKeysSection() {
 
 function TeamsSection() {
   const { t } = useTranslation();
+  const isMobile = useMobile();
   const [teams, setTeams] = useState<TeamEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newTeamName, setNewTeamName] = useState("");
   const [creating, setCreating] = useState(false);
-  const [editingTeamId, setEditingTeamId] = useState<number | null>(null);
+  const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
   const [editingTeamName, setEditingTeamName] = useState("");
-  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [actionMsg, setActionMsg] = useState<{ type: "success" | "error"; text: string } | null>(
     null,
   );
@@ -1682,7 +1799,7 @@ function TeamsSection() {
   );
 
   const handleRename = useCallback(
-    async (id: number) => {
+    async (id: string) => {
       if (!editingTeamName.trim()) return;
       try {
         await apiPut(`/v1/teams/${id}`, { name: editingTeamName.trim() });
@@ -1700,7 +1817,7 @@ function TeamsSection() {
   );
 
   const handleDelete = useCallback(
-    async (id: number, name: string) => {
+    async (id: string, name: string) => {
       if (!confirm(format(t.settings.teams.deleteConfirm, { name }))) return;
       try {
         await apiDelete(`/v1/teams/${id}`);
@@ -1793,11 +1910,14 @@ function TeamsSection() {
       )}
 
       <div className="border border-border rounded-lg">
-        <div className="grid grid-cols-[1fr_100px_60px] gap-2 px-4 py-2.5 bg-muted/40 rounded-t-lg border-b border-border text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          <span>{t.settings.teams.tableHeaderTeamName}</span>
-          <span>{t.settings.teams.totalMembers}</span>
-          <span />
-        </div>
+        {/* Table header (desktop only) */}
+        {!isMobile && (
+          <div className="grid grid-cols-[1fr_100px_60px] gap-2 px-4 py-2.5 bg-muted/40 rounded-t-lg border-b border-border text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            <span>{t.settings.teams.tableHeaderTeamName}</span>
+            <span>{t.settings.teams.totalMembers}</span>
+            <span />
+          </div>
+        )}
 
         {teams.length === 0 ? (
           <div className="px-4 py-8 text-center text-sm text-muted-foreground rounded-b-lg">
@@ -1807,9 +1927,12 @@ function TeamsSection() {
           teams.map((tm) => (
             <div
               key={tm.id}
-              className="grid grid-cols-[1fr_100px_60px] gap-2 items-center px-4 py-3 border-b border-border last:border-0 last:rounded-b-lg hover:bg-muted/20 transition-colors"
+              className={cn(
+                "items-center px-4 py-3 border-b border-border last:border-0 last:rounded-b-lg hover:bg-muted/20 transition-colors",
+                isMobile ? "flex gap-3" : "grid grid-cols-[1fr_100px_60px] gap-2",
+              )}
             >
-              <div className="min-w-0">
+              <div className="flex-1 min-w-0">
                 {editingTeamId === tm.id ? (
                   <div className="flex items-center gap-2">
                     <input
@@ -1839,11 +1962,20 @@ function TeamsSection() {
                     </button>
                   </div>
                 ) : (
-                  <span className="text-sm font-medium text-foreground truncate">{tm.name}</span>
+                  <div>
+                    <span className="text-sm font-medium text-foreground truncate block">
+                      {tm.name}
+                    </span>
+                    {isMobile && (
+                      <span className="text-xs text-muted-foreground">
+                        {tm.memberCount} {plural(tm.memberCount, "member", "members")}
+                      </span>
+                    )}
+                  </div>
                 )}
               </div>
-              <span className="text-sm text-muted-foreground">{tm.memberCount}</span>
-              <div className="flex items-center gap-1 justify-end relative">
+              {!isMobile && <span className="text-sm text-muted-foreground">{tm.memberCount}</span>}
+              <div className="flex items-center gap-1 justify-end relative shrink-0">
                 <button
                   type="button"
                   onClick={(e) => {
@@ -2304,6 +2436,7 @@ function formatRelativeTime(iso: string): string {
 
 function AuditLogSection() {
   const { t } = useTranslation();
+  const isMobile = useMobile();
   const [entries, setEntries] = useState<AuditEntry[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -2369,58 +2502,96 @@ function AuditLogSection() {
         </p>
       ) : (
         <div className="border border-border rounded-lg overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/30">
-                <th className="text-start px-3 py-2 font-medium text-muted-foreground">
-                  {t.settings.auditLog.tableHeaderTime}
-                </th>
-                <th className="text-start px-3 py-2 font-medium text-muted-foreground">
-                  {t.settings.auditLog.tableHeaderUser}
-                </th>
-                <th className="text-start px-3 py-2 font-medium text-muted-foreground">
-                  {t.settings.auditLog.tableHeaderAction}
-                </th>
-                <th className="text-start px-3 py-2 font-medium text-muted-foreground">
-                  {t.settings.auditLog.tableHeaderTarget}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+          {isMobile ? (
+            <div className="divide-y divide-border">
               {entries.map((entry) => (
                 <Fragment key={entry.id}>
-                  <tr
-                    className="border-b border-border last:border-0 hover:bg-muted/20 cursor-pointer transition-colors"
+                  <div
+                    className="px-3 py-2.5 hover:bg-muted/20 cursor-pointer transition-colors"
                     onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
                   >
-                    <td className="px-3 py-2 text-muted-foreground whitespace-nowrap">
-                      {formatRelativeTime(entry.createdAt)}
-                    </td>
-                    <td className="px-3 py-2 text-foreground">{entry.actorUsername}</td>
-                    <td className="px-3 py-2">
+                    <div className="flex items-center justify-between gap-2">
                       <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded">
                         {entry.action}
                       </span>
-                    </td>
-                    <td className="px-3 py-2 text-muted-foreground">
-                      {entry.targetType
-                        ? `${entry.targetType}${entry.targetId ? ` #${entry.targetId}` : ""}`
-                        : "—"}
-                    </td>
-                  </tr>
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                        {formatRelativeTime(entry.createdAt)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-sm text-foreground">{entry.actorUsername}</span>
+                      {entry.targetType && (
+                        <span className="text-xs text-muted-foreground">
+                          {entry.targetType}
+                          {entry.targetId ? ` #${entry.targetId}` : ""}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                   {expandedId === entry.id && entry.details && (
-                    <tr className="border-b border-border last:border-0">
-                      <td colSpan={4} className="px-3 py-2 bg-muted/10">
-                        <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono overflow-x-auto">
-                          {JSON.stringify(entry.details, null, 2)}
-                        </pre>
-                      </td>
-                    </tr>
+                    <div className="px-3 py-2 bg-muted/10">
+                      <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono overflow-x-auto">
+                        {JSON.stringify(entry.details, null, 2)}
+                      </pre>
+                    </div>
                   )}
                 </Fragment>
               ))}
-            </tbody>
-          </table>
+            </div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-muted/30">
+                  <th className="text-start px-3 py-2 font-medium text-muted-foreground">
+                    {t.settings.auditLog.tableHeaderTime}
+                  </th>
+                  <th className="text-start px-3 py-2 font-medium text-muted-foreground">
+                    {t.settings.auditLog.tableHeaderUser}
+                  </th>
+                  <th className="text-start px-3 py-2 font-medium text-muted-foreground">
+                    {t.settings.auditLog.tableHeaderAction}
+                  </th>
+                  <th className="text-start px-3 py-2 font-medium text-muted-foreground">
+                    {t.settings.auditLog.tableHeaderTarget}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {entries.map((entry) => (
+                  <Fragment key={entry.id}>
+                    <tr
+                      className="border-b border-border last:border-0 hover:bg-muted/20 cursor-pointer transition-colors"
+                      onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
+                    >
+                      <td className="px-3 py-2 text-muted-foreground whitespace-nowrap">
+                        {formatRelativeTime(entry.createdAt)}
+                      </td>
+                      <td className="px-3 py-2 text-foreground">{entry.actorUsername}</td>
+                      <td className="px-3 py-2">
+                        <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded">
+                          {entry.action}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2 text-muted-foreground">
+                        {entry.targetType
+                          ? `${entry.targetType}${entry.targetId ? ` #${entry.targetId}` : ""}`
+                          : "---"}
+                      </td>
+                    </tr>
+                    {expandedId === entry.id && entry.details && (
+                      <tr className="border-b border-border last:border-0">
+                        <td colSpan={4} className="px-3 py-2 bg-muted/10">
+                          <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono overflow-x-auto">
+                            {JSON.stringify(entry.details, null, 2)}
+                          </pre>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       )}
 
@@ -2545,7 +2716,7 @@ function ToolsSection() {
         />
       </div>
 
-      <div className="space-y-4 max-h-[50vh] overflow-y-auto">
+      <div className="space-y-4 max-h-[50dvh] overflow-y-auto">
         {CATEGORIES.filter((cat) => groupedTools.has(cat.id)).map((category) => (
           <div key={category.id}>
             <h4 className="text-xs font-semibold uppercase text-muted-foreground tracking-wider mb-2">
@@ -2706,6 +2877,14 @@ function AboutSection() {
         </div>
       </div>
 
+      <div className="flex items-center gap-4 text-sm">
+        <span className="text-muted-foreground">{t.settings.about.licenseLabel}</span>
+        <div>
+          <span className="font-mono text-foreground">AGPLv3</span>
+          <p className="text-xs text-muted-foreground">{t.settings.about.licenseDescription}</p>
+        </div>
+      </div>
+
       <div className="space-y-2">
         <h4 className="text-sm font-medium text-foreground">{t.settings.about.linksHeading}</h4>
         <div className="flex flex-col gap-1.5">
@@ -2750,13 +2929,19 @@ function SettingRow({
   description: string;
   children: React.ReactNode;
 }) {
+  const isMobile = useMobile();
   return (
-    <div className="flex items-center justify-between py-3 border-b border-border last:border-0">
+    <div
+      className={cn(
+        "py-3 border-b border-border last:border-0",
+        isMobile ? "flex flex-col gap-2" : "flex items-center justify-between",
+      )}
+    >
       <div>
         <p className="text-sm font-medium text-foreground">{label}</p>
         <p className="text-xs text-muted-foreground">{description}</p>
       </div>
-      <div className="shrink-0 ms-4">{children}</div>
+      <div className={cn(!isMobile && "shrink-0 ms-4")}>{children}</div>
     </div>
   );
 }

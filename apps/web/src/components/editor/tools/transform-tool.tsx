@@ -53,7 +53,20 @@ export function useTransformTool(): TransformToolApi {
 
   // Read values from selected object(s)
   useEffect(() => {
-    if (!isTransforming || selectedObjectIds.length === 0) return;
+    if (!isTransforming) return;
+    if (selectedObjectIds.length === 0) {
+      const sel = useEditorStore.getState().selection;
+      if (sel && sel.bounds.width > 0) {
+        setValuesState({
+          x: sel.bounds.x,
+          y: sel.bounds.y,
+          width: sel.bounds.width,
+          height: sel.bounds.height,
+          rotation: 0,
+        });
+      }
+      return;
+    }
     const obj = objects.find((o) => o.id === selectedObjectIds[0]);
     if (!obj) return;
     const a = obj.attrs as unknown as Record<string, unknown>;
@@ -82,7 +95,26 @@ export function useTransformTool(): TransformToolApi {
   }, [isTransforming, selectedObjectIds]);
 
   const activate = useCallback(() => {
-    if (selectedObjectIds.length === 0) return;
+    if (selectedObjectIds.length === 0) {
+      const sel = useEditorStore.getState().selection;
+      if (!sel || sel.bounds.width === 0) return;
+      preTransformRef.current = {
+        x: sel.bounds.x,
+        y: sel.bounds.y,
+        width: sel.bounds.width,
+        height: sel.bounds.height,
+        rotation: 0,
+      };
+      setValuesState({
+        x: sel.bounds.x,
+        y: sel.bounds.y,
+        width: sel.bounds.width,
+        height: sel.bounds.height,
+        rotation: 0,
+      });
+      setIsTransforming(true);
+      return;
+    }
     setIsTransforming(true);
     // Store pre-transform state for cancel
     const obj = objects.find((o) => o.id === selectedObjectIds[0]);
