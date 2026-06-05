@@ -546,7 +546,7 @@ export function AutomatePage() {
                 className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
                 onClick={() => setMobileToolPaletteOpen(false)}
               />
-              <div className="fixed inset-x-0 bottom-0 z-50 bg-background border-t border-border rounded-t-2xl shadow-xl max-h-[70vh] flex flex-col animate-in slide-in-from-bottom">
+              <div className="fixed inset-x-0 bottom-0 z-50 bg-background border-t border-border rounded-t-2xl shadow-xl max-h-[70dvh] flex flex-col animate-in slide-in-from-bottom">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
                   <h2 className="text-sm font-semibold text-foreground">{t.automate.addTool}</h2>
                   <button

@@ -44,7 +44,7 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
         onClick={onClose}
       />
 
-      <div className="relative bg-background border border-border rounded-xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden">
+      <div className="relative bg-background border border-border rounded-xl shadow-2xl w-full max-w-lg max-h-[85dvh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border shrink-0">
           <h2 className="text-lg font-semibold text-foreground">{t.help.heading}</h2>

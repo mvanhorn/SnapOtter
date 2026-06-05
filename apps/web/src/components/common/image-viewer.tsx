@@ -1,6 +1,8 @@
+import { useGesture } from "@use-gesture/react";
 import { FileImage, Maximize, Minimize2, ZoomIn, ZoomOut } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { formatFileSize } from "@/lib/download";
+import { cn } from "@/lib/utils";
 
 export interface BgPreviewState {
   /** URL of the original image (for blur background) */
@@ -52,8 +54,19 @@ export function ImageViewer({
   const [naturalHeight, setNaturalHeight] = useState<number | null>(null);
   const [fitMode, setFitMode] = useState<"fit" | "actual">("fit");
   const [loadError, setLoadError] = useState(false);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const zoomRef = useRef(zoom);
+  const fitModeRef = useRef(fitMode);
+
+  // Keep refs in sync for gesture callbacks
+  useEffect(() => {
+    zoomRef.current = zoom;
+  }, [zoom]);
+  useEffect(() => {
+    fitModeRef.current = fitMode;
+  }, [fitMode]);
 
   const isSvg = filename.toLowerCase().endsWith(".svg");
 
@@ -88,6 +101,7 @@ export function ImageViewer({
   const fitToContainer = useCallback(() => {
     setFitMode("fit");
     setZoom(DEFAULT_ZOOM);
+    setPanOffset({ x: 0, y: 0 });
   }, []);
 
   const actualSize = useCallback(() => {
@@ -103,7 +117,48 @@ export function ImageViewer({
     setNaturalWidth(null);
     setNaturalHeight(null);
     setLoadError(false);
+    setPanOffset({ x: 0, y: 0 });
   }, [src]);
+
+  // Gesture handlers for pinch-to-zoom, ctrl+wheel zoom, and drag-to-pan
+  const initialZoomRef = useRef<number | null>(null);
+  const bind = useGesture(
+    {
+      onPinch: ({ first, offset: [scale], memo }) => {
+        if (first) {
+          initialZoomRef.current = zoomRef.current;
+        }
+        const base = initialZoomRef.current ?? zoomRef.current;
+        const newZoom = Math.max(10, Math.min(1000, base * scale));
+        setZoom(newZoom);
+        setFitMode("actual");
+        return memo;
+      },
+      onWheel: ({ event, delta: [, dy] }) => {
+        if (!(event.ctrlKey || event.metaKey)) return;
+        event.preventDefault();
+        const direction = dy < 0 ? 1 : -1;
+        setZoom((prev) => {
+          const factor = direction > 0 ? 1.1 : 1 / 1.1;
+          return Math.max(10, Math.min(1000, prev * factor));
+        });
+        setFitMode("actual");
+      },
+      onDrag: ({ movement: [mx, my], first, memo }) => {
+        if (fitModeRef.current !== "actual") return;
+        if (first) {
+          memo = { ...panOffset };
+        }
+        const start = memo as { x: number; y: number };
+        setPanOffset({ x: start.x + mx, y: start.y + my });
+        return memo;
+      },
+    },
+    {
+      wheel: { eventOptions: { passive: false } },
+      drag: { filterTaps: true },
+    },
+  );
 
   const previewTransform = [
     cssRotate ? `rotate(${cssRotate}deg)` : "",
@@ -131,7 +186,7 @@ export function ImageViewer({
           ...(cssFilter && { filter: cssFilter, transition: "filter 0.15s ease" }),
         }
       : {
-          transform: `scale(${zoom / 100})${previewTransform ? ` ${previewTransform}` : ""}`,
+          transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoom / 100})${previewTransform ? ` ${previewTransform}` : ""}`,
           transformOrigin: "center center",
           ...checkerBg,
           ...(previewTransform && { transition: "transform 0.25s ease, filter 0.15s ease" }),
@@ -185,7 +240,11 @@ export function ImageViewer({
       {/* Image area */}
       <div
         ref={containerRef}
-        className="flex-1 flex items-center justify-center overflow-auto p-4"
+        {...bind()}
+        className={cn(
+          "flex-1 flex items-center justify-center overflow-auto p-4",
+          fitMode === "actual" && "touch-none",
+        )}
         style={{ backgroundColor: "hsl(var(--muted) / 0.2)" }}
       >
         {loadError ? (

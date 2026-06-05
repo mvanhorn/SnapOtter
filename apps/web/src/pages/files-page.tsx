@@ -77,7 +77,7 @@ export function FilesPage() {
                 if (e.key === "Escape") setShowDetails(false);
               }}
             >
-              <div className="absolute bottom-0 left-0 right-0 bg-background rounded-t-xl p-4 max-h-[70vh] overflow-y-auto">
+              <div className="absolute bottom-0 left-0 right-0 bg-background rounded-t-xl p-4 max-h-[70dvh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-3">
                   <span className="text-sm font-semibold">{t.files.fileDetailsHeading}</span>
                   <button type="button" onClick={() => setShowDetails(false)}>

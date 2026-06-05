@@ -111,7 +111,7 @@ export function CropCanvas({
             src={imageSrc}
             alt="Crop preview"
             onLoad={handleImageLoad}
-            className="max-w-full max-h-[calc(100vh-12rem)] select-none"
+            className="max-w-full max-h-[calc(100dvh-12rem)] select-none"
             draggable={false}
           />
         </ReactCrop>

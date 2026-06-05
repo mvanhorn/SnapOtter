@@ -14,6 +14,8 @@ export function useCanvasZoom() {
   const zoom = useEditorStore((s) => s.zoom);
   const panOffset = useEditorStore((s) => s.panOffset);
   const tweenRef = useRef<Konva.Tween | null>(null);
+  const lastDistRef = useRef<number | null>(null);
+  const lastCenterRef = useRef<{ x: number; y: number } | null>(null);
 
   const animateZoom = useCallback(
     (targetZoom: number, targetPos: { x: number; y: number }) => {
@@ -114,5 +116,58 @@ export function useCanvasZoom() {
     [animateZoom],
   );
 
-  return { stageRef, handleWheel, fitToScreen, zoomTo };
+  const handleTouchMove = useCallback(
+    (e: Konva.KonvaEventObject<TouchEvent>) => {
+      const touches = e.evt.touches;
+      if (touches.length < 2) return;
+
+      const t1 = touches[0];
+      const t2 = touches[1];
+      const newDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      const newCenter = {
+        x: (t1.clientX + t2.clientX) / 2,
+        y: (t1.clientY + t2.clientY) / 2,
+      };
+
+      if (lastDistRef.current !== null && lastCenterRef.current !== null) {
+        const scaleDelta = newDist / lastDistRef.current;
+        const currentZoom = useEditorStore.getState().zoom;
+        const currentPan = useEditorStore.getState().panOffset;
+        const newZoom = Math.max(0.01, Math.min(64, currentZoom * scaleDelta));
+
+        // Keep pinch center stable
+        const mousePointTo = {
+          x: (newCenter.x - currentPan.x) / currentZoom,
+          y: (newCenter.y - currentPan.y) / currentZoom,
+        };
+        const newPos = {
+          x: newCenter.x - mousePointTo.x * newZoom,
+          y: newCenter.y - mousePointTo.y * newZoom,
+        };
+
+        const stage = stageRef.current;
+        if (stage) {
+          stage.scaleX(newZoom);
+          stage.scaleY(newZoom);
+          stage.x(newPos.x);
+          stage.y(newPos.y);
+          stage.batchDraw();
+        }
+        setZoom(newZoom);
+        setPanOffset(newPos);
+      }
+
+      lastDistRef.current = newDist;
+      lastCenterRef.current = newCenter;
+      e.evt.preventDefault();
+    },
+    [setZoom, setPanOffset],
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    lastDistRef.current = null;
+    lastCenterRef.current = null;
+  }, []);
+
+  return { stageRef, handleWheel, fitToScreen, zoomTo, handleTouchMove, handleTouchEnd };
 }

@@ -39,11 +39,11 @@ export function SideBySideComparison({
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             {t.comparison.original}
           </span>
-          <div className="w-full rounded-lg border border-border overflow-hidden flex items-center justify-center bg-muted/30 p-2 min-h-[200px] max-h-[60vh]">
+          <div className="w-full rounded-lg border border-border overflow-hidden flex items-center justify-center bg-muted/30 p-2 min-h-[200px] max-h-[60dvh]">
             <img
               src={beforeSrc}
               alt="Original"
-              className="max-w-full max-h-[56vh] object-contain rounded-sm"
+              className="max-w-full max-h-[56dvh] object-contain rounded-sm"
               draggable={false}
               onLoad={(e) => {
                 const img = e.currentTarget;
@@ -66,11 +66,11 @@ export function SideBySideComparison({
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             {t.comparison.processed}
           </span>
-          <div className="w-full rounded-lg border border-border overflow-hidden flex items-center justify-center bg-muted/30 p-2 min-h-[200px] max-h-[60vh]">
+          <div className="w-full rounded-lg border border-border overflow-hidden flex items-center justify-center bg-muted/30 p-2 min-h-[200px] max-h-[60dvh]">
             <img
               src={afterSrc}
               alt="Processed"
-              className="max-w-full max-h-[56vh] object-contain rounded-sm"
+              className="max-w-full max-h-[56dvh] object-contain rounded-sm"
               draggable={false}
               onLoad={(e) => {
                 const img = e.currentTarget;

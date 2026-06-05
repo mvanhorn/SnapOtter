@@ -147,7 +147,7 @@ export function FileLibraryModal({ open, onClose, onImport }: FileLibraryModalPr
         className="absolute inset-0 bg-black/50 backdrop-blur-sm cursor-default"
         onClick={onClose}
       />
-      <div className="relative z-10 w-full max-w-lg max-h-[80vh] bg-background border border-border rounded-xl shadow-xl flex flex-col mx-4">
+      <div className="relative z-10 w-full max-w-lg max-h-[80dvh] bg-background border border-border rounded-xl shadow-xl flex flex-col mx-4">
         {/* Header */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-border shrink-0">
           <FolderOpen className="h-5 w-5 text-primary" />

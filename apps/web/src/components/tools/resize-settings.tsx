@@ -202,7 +202,7 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
 
       {/* Presets tab */}
       {tab === "presets" && (
-        <div className="space-y-3 max-h-[50vh] overflow-y-auto pe-1">
+        <div className="space-y-3 max-h-[50dvh] overflow-y-auto pe-1">
           {platforms.map((platform) => (
             <div key={platform}>
               <p className="text-xs font-medium text-muted-foreground mb-1.5">{platform}</p>

@@ -1,6 +1,8 @@
 import { type PointerEvent, useCallback, useEffect, useRef, useState } from "react";
 import type { BgPreviewState } from "@/components/common/image-viewer";
 import { useTranslation } from "@/contexts/i18n-context";
+import { useMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface BeforeAfterSliderProps {
   /** URL or data URL of original image. */
@@ -40,25 +42,35 @@ export function BeforeAfterSlider({
   bgPreview,
 }: BeforeAfterSliderProps) {
   const { t } = useTranslation();
+  const isMobile = useMobile();
   const containerRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState(initialPosition); // percentage 0-100
   const [isDragging, setIsDragging] = useState(false);
 
-  const updatePosition = useCallback((clientX: number) => {
-    const container = containerRef.current;
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const pct = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setPosition(pct);
-  }, []);
+  const updatePosition = useCallback(
+    (clientX: number, clientY: number) => {
+      const container = containerRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      if (isMobile) {
+        const y = clientY - rect.top;
+        const pct = Math.max(0, Math.min(100, (y / rect.height) * 100));
+        setPosition(pct);
+      } else {
+        const x = clientX - rect.left;
+        const pct = Math.max(0, Math.min(100, (x / rect.width) * 100));
+        setPosition(pct);
+      }
+    },
+    [isMobile],
+  );
 
   const handlePointerDown = useCallback(
     (e: PointerEvent) => {
       e.preventDefault();
       setIsDragging(true);
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
-      updatePosition(e.clientX);
+      updatePosition(e.clientX, e.clientY);
     },
     [updatePosition],
   );
@@ -66,7 +78,7 @@ export function BeforeAfterSlider({
   const handlePointerMove = useCallback(
     (e: PointerEvent) => {
       if (!isDragging) return;
-      updatePosition(e.clientX);
+      updatePosition(e.clientX, e.clientY);
     },
     [isDragging, updatePosition],
   );
@@ -128,26 +140,36 @@ export function BeforeAfterSlider({
         aria-valuemax={100}
         tabIndex={0}
         className="relative w-full overflow-hidden rounded-lg border border-border select-none touch-none"
-        style={{ cursor: isDragging ? "ew-resize" : "default" }}
+        style={{ cursor: isDragging ? (isMobile ? "ns-resize" : "ew-resize") : "default" }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         onKeyDown={(e) => {
-          if (e.key === "ArrowLeft") setPosition((p) => Math.max(0, p - 1));
-          else if (e.key === "ArrowRight") setPosition((p) => Math.min(100, p + 1));
+          if (isMobile) {
+            if (e.key === "ArrowUp") setPosition((p) => Math.max(0, p - 1));
+            else if (e.key === "ArrowDown") setPosition((p) => Math.min(100, p + 1));
+          } else {
+            if (e.key === "ArrowLeft") setPosition((p) => Math.max(0, p - 1));
+            else if (e.key === "ArrowRight") setPosition((p) => Math.min(100, p + 1));
+          }
         }}
       >
         {/* Before image (full width, bottom layer) */}
         <img
           src={beforeSrc}
           alt="Original"
-          className="block w-full max-h-[70vh] object-contain"
+          className="block w-full max-h-[70dvh] object-contain"
           draggable={false}
         />
 
         {/* After panel (clipped, top layer) */}
-        <div className="absolute inset-0" style={{ clipPath: `inset(0 0 0 ${position}%)` }}>
+        <div
+          className="absolute inset-0"
+          style={{
+            clipPath: isMobile ? `inset(${position}% 0 0 0)` : `inset(0 0 0 ${position}%)`,
+          }}
+        >
           {/* Background layers constrained to the image content area */}
           {contentBox && (
             <div
@@ -189,43 +211,87 @@ export function BeforeAfterSlider({
         </div>
 
         {/* Divider line */}
-        <div
-          className="absolute top-0 bottom-0 w-0.5 bg-white/80 pointer-events-none"
-          style={{ left: `${position}%`, transform: "translateX(-50%)" }}
-        >
-          {/* Handle grip */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white border-2 border-primary shadow-lg flex items-center justify-center pointer-events-none">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              className="text-primary"
-              aria-hidden="true"
-            >
-              <path
-                d="M4 3L1 7L4 11"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M10 3L13 7L10 11"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+        {isMobile ? (
+          <div
+            className="absolute inset-x-0 h-0.5 bg-white/80 pointer-events-none"
+            style={{ top: `${position}%`, transform: "translateY(-50%)" }}
+          >
+            {/* Handle grip */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white border-2 border-primary shadow-lg flex items-center justify-center pointer-events-none">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                className="text-primary rotate-90"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4 3L1 7L4 11"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M10 3L13 7L10 11"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div
+            className="absolute top-0 bottom-0 w-0.5 bg-white/80 pointer-events-none"
+            style={{ left: `${position}%`, transform: "translateX(-50%)" }}
+          >
+            {/* Handle grip */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white border-2 border-primary shadow-lg flex items-center justify-center pointer-events-none">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                className="text-primary"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4 3L1 7L4 11"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M10 3L13 7L10 11"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          </div>
+        )}
 
         {/* Labels */}
-        <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/50 text-white text-xs font-medium pointer-events-none">
+        <div
+          className={cn(
+            "absolute px-2 py-0.5 rounded bg-black/50 text-white text-xs font-medium pointer-events-none",
+            isMobile ? "top-2 start-2" : "top-2 left-2",
+          )}
+        >
           {t.comparison.original}
         </div>
-        <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/50 text-white text-xs font-medium pointer-events-none">
+        <div
+          className={cn(
+            "absolute px-2 py-0.5 rounded bg-black/50 text-white text-xs font-medium pointer-events-none",
+            isMobile ? "bottom-2 end-2" : "top-2 right-2",
+          )}
+        >
           {t.comparison.processed}
         </div>
       </div>

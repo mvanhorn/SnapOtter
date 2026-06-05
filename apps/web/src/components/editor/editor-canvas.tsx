@@ -766,7 +766,7 @@ export function EditorCanvas({
 } = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const selectionLayerRef = useRef<Konva.Layer>(null);
-  const { stageRef, handleWheel, fitToScreen } = useCanvasZoom();
+  const { stageRef, handleWheel, fitToScreen, handleTouchMove, handleTouchEnd } = useCanvasZoom();
 
   const zoom = useEditorStore((s) => s.zoom);
   const panOffset = useEditorStore((s) => s.panOffset);
@@ -919,6 +919,8 @@ export function EditorCanvas({
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         onDragEnd={(e) => {
           if (activeTool === "hand") {
             const stage = e.target.getStage();

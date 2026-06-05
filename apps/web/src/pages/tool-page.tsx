@@ -11,6 +11,7 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import type { Crop } from "react-image-crop";
 import { useParams } from "react-router-dom";
 import { BeforeAfterSlider } from "@/components/common/before-after-slider";
+import { BottomSheet } from "@/components/common/bottom-sheet";
 import { Dropzone } from "@/components/common/dropzone";
 import { type BgPreviewState, ImageViewer } from "@/components/common/image-viewer";
 import { ReviewPanel } from "@/components/common/review-panel";
@@ -213,7 +214,7 @@ export function ToolPage() {
     },
     [navigateNext, navigatePrev],
   );
-  const [mobileSettingsOpen, setMobileSettingsOpen] = useState(true);
+  const [mobileSettingsOpen, setMobileSettingsOpen] = useState(false);
   const [previewTransform, setPreviewTransform] = useState<PreviewTransform | null>(null);
   const [previewFilter, setPreviewFilter] = useState<string>("");
   const [imageWrapperStyle, setImageWrapperStyle] = useState<React.CSSProperties | null>(null);
@@ -274,7 +275,7 @@ export function ToolPage() {
     setEraserMaskedCount(0);
     setEraserBrushSize(30);
     setEraserSliderInitPos(null);
-    setMobileSettingsOpen(true);
+    setMobileSettingsOpen(false);
   }, [toolId]);
 
   const toolAccept = registryEntry?.accept;
@@ -777,7 +778,7 @@ export function ToolPage() {
     );
   }
 
-  // Mobile layout: settings above dropzone (stacked)
+  // Mobile layout: full-height image area with BottomSheet for settings
   if (isMobile) {
     return (
       <AppLayout showToolPanel={false}>
@@ -795,18 +796,11 @@ export function ToolPage() {
               onClick={() => setMobileSettingsOpen(!mobileSettingsOpen)}
               className="px-3 py-1.5 rounded-lg border border-border text-xs text-muted-foreground hover:bg-muted"
             >
-              {mobileSettingsOpen ? t.toolPage.hideSettings : t.common.settings}
+              {t.common.settings}
             </button>
           </div>
 
-          {/* Collapsible settings */}
-          {mobileSettingsOpen && (
-            <div className="p-4 border-b border-border space-y-3 shrink-0 max-h-[40vh] overflow-y-auto">
-              {renderSettingsContent()}
-            </div>
-          )}
-
-          {/* Main area: image viewer */}
+          {/* Main area: image viewer (full height) */}
           <section
             aria-label="Image area"
             className="flex-1 flex flex-col min-h-0 min-w-0"
@@ -825,6 +819,15 @@ export function ToolPage() {
               />
             )}
           </section>
+
+          {/* Settings BottomSheet */}
+          <BottomSheet
+            open={mobileSettingsOpen}
+            onClose={() => setMobileSettingsOpen(false)}
+            title={t.common.settings}
+          >
+            <div className="settings-container space-y-3">{renderSettingsContent()}</div>
+          </BottomSheet>
         </div>
       </AppLayout>
     );
@@ -835,7 +838,7 @@ export function ToolPage() {
     <AppLayout showToolPanel={false}>
       <div className="flex h-full w-full">
         {/* Tool Settings Panel */}
-        <div className="w-72 border-r border-border p-4 space-y-4 overflow-y-auto shrink-0">
+        <div className="settings-container w-72 border-r border-border p-4 space-y-4 overflow-y-auto shrink-0">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-primary text-primary-foreground">
               <IconComponent className="h-5 w-5" />

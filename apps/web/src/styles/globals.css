@@ -105,3 +105,24 @@ input[type="range"]::-moz-range-track {
   direction: ltr;
   text-align: left;
 }
+
+/* Container queries for responsive settings panels */
+.settings-container {
+  container-type: inline-size;
+}
+
+@container (min-width: 400px) {
+  .settings-container .settings-grid-auto {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Touch-friendly targets for coarse pointer devices */
+@media (pointer: coarse) {
+  input[type="range"] { height: 8px; padding: 8px 0; }
+  input[type="range"]::-webkit-slider-thumb { width: 24px; height: 24px; border-width: 3px; }
+  input[type="range"]::-moz-range-thumb { width: 24px; height: 24px; border-width: 3px; }
+  input[type="range"]::-moz-range-track { height: 8px; }
+  input[type="checkbox"] { width: 20px; height: 20px; }
+  button, [role="button"], a { touch-action: manipulation; }
+}

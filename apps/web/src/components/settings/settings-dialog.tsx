@@ -157,7 +157,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
       <div
         role="dialog"
         aria-modal="true"
-        className="relative bg-background border border-border rounded-xl shadow-2xl w-full max-w-3xl h-[85vh] flex overflow-hidden"
+        className="relative bg-background border border-border rounded-xl shadow-2xl w-full max-w-3xl h-[85dvh] flex overflow-hidden"
       >
         {/* Sidebar nav */}
         <div className="w-48 border-r border-border bg-muted/30 p-3 space-y-1 shrink-0">
@@ -634,7 +634,7 @@ function SecuritySection() {
         setMessage({ type: "error", text: t.settings.security.passwordsMismatch });
         return;
       }
-      if (newPassword.length < 4) {
+      if (newPassword.length < 8) {
         setMessage({ type: "error", text: t.settings.security.passwordTooShort });
         return;
       }
@@ -2545,7 +2545,7 @@ function ToolsSection() {
         />
       </div>
 
-      <div className="space-y-4 max-h-[50vh] overflow-y-auto">
+      <div className="space-y-4 max-h-[50dvh] overflow-y-auto">
         {CATEGORIES.filter((cat) => groupedTools.has(cat.id)).map((category) => (
           <div key={category.id}>
             <h4 className="text-xs font-semibold uppercase text-muted-foreground tracking-wider mb-2">
@@ -2703,6 +2703,14 @@ function AboutSection() {
         <div className="flex items-center gap-4 text-sm">
           <span className="text-muted-foreground">Version:</span>
           <span className="font-mono text-foreground">{APP_VERSION}</span>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4 text-sm">
+        <span className="text-muted-foreground">{t.settings.about.licenseLabel}</span>
+        <div>
+          <span className="font-mono text-foreground">AGPLv3</span>
+          <p className="text-xs text-muted-foreground">{t.settings.about.licenseDescription}</p>
         </div>
       </div>
 
