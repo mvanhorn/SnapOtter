@@ -60,6 +60,32 @@ describe("validateFetchUrl", () => {
     await expect(validateFetchUrl("http://255.255.255.255/image.jpg")).rejects.toThrow("private");
   });
 
+  it("rejects hex IPv4-mapped IPv6 loopback (::ffff:7f00:1)", async () => {
+    await expect(validateFetchUrl("http://[::ffff:7f00:1]/")).rejects.toThrow("private");
+  });
+
+  it("rejects hex IPv4-mapped IPv6 metadata (::ffff:a9fe:a9fe)", async () => {
+    await expect(validateFetchUrl("http://[::ffff:a9fe:a9fe]/")).rejects.toThrow("private");
+  });
+
+  it("rejects hex IPv4-mapped IPv6 RFC1918 10.x (::ffff:a00:5)", async () => {
+    await expect(validateFetchUrl("http://[::ffff:a00:5]/")).rejects.toThrow("private");
+  });
+
+  it("rejects hex IPv4-mapped IPv6 RFC1918 192.168.x (::ffff:c0a8:1)", async () => {
+    await expect(validateFetchUrl("http://[::ffff:c0a8:1]/")).rejects.toThrow("private");
+  });
+
+  it("rejects hex IPv4-mapped IPv6 RFC1918 172.16.x (::ffff:ac10:1)", async () => {
+    await expect(validateFetchUrl("http://[::ffff:ac10:1]/")).rejects.toThrow("private");
+  });
+
+  it("rejects dotted IPv4-mapped IPv6 that URL parser canonicalizes to hex", async () => {
+    await expect(validateFetchUrl("http://[::ffff:127.0.0.1]/")).rejects.toThrow("private");
+    await expect(validateFetchUrl("http://[::ffff:169.254.169.254]/")).rejects.toThrow("private");
+    await expect(validateFetchUrl("http://[::ffff:10.0.0.5]/")).rejects.toThrow("private");
+  });
+
   it("rejects IPv6 unspecified address", async () => {
     await expect(validateFetchUrl("http://[::]/image.jpg")).rejects.toThrow("private");
   });

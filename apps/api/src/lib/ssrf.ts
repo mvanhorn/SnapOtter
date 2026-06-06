@@ -33,7 +33,19 @@ function isPrivateIPv6(ip: string): boolean {
   if (normalized.startsWith("64:ff9b:")) return true;
   if (normalized.includes("::ffff:")) {
     const v4 = normalized.split("::ffff:")[1];
-    if (v4 && isPrivateIPv4(v4)) return true;
+    if (v4) {
+      if (v4.includes(".")) {
+        if (isPrivateIPv4(v4)) return true;
+      } else {
+        const m = v4.match(/^([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
+        if (m) {
+          const hi = parseInt(m[1], 16);
+          const lo = parseInt(m[2], 16);
+          const dotted = `${(hi >> 8) & 0xff}.${hi & 0xff}.${(lo >> 8) & 0xff}.${lo & 0xff}`;
+          if (isPrivateIPv4(dotted)) return true;
+        }
+      }
+    }
   }
   return false;
 }
