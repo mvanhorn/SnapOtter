@@ -1017,7 +1017,7 @@ export const nl: TranslationKeys = {
     },
     "html-to-image": {
       url: "URL",
-      urlPlaceholder: "https://example.com",
+      urlPlaceholder: "https://snapotter.com",
       format: "Output Format",
       quality: "Quality",
       devicePreset: "Device",

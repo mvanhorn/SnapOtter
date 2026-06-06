@@ -14,14 +14,14 @@ test.describe("HTML to Image", () => {
 
   test("enables capture button when URL is entered", async ({ page }) => {
     await page.goto("/html-to-image");
-    await page.locator("input[type='url']").fill("https://example.com");
+    await page.locator("input[type='url']").fill("https://snapotter.com");
     const button = page.locator("button[type='submit']");
     await expect(button).toBeEnabled();
   });
 
   test("captures a webpage and shows the result", async ({ page }) => {
     await page.goto("/html-to-image");
-    await page.locator("input[type='url']").fill("https://example.com");
+    await page.locator("input[type='url']").fill("https://snapotter.com");
     await page.locator("button[type='submit']").click();
 
     const resultImg = page.locator("img[alt='Captured screenshot']");
@@ -30,7 +30,7 @@ test.describe("HTML to Image", () => {
 
   test("shows download button after capture", async ({ page }) => {
     await page.goto("/html-to-image");
-    await page.locator("input[type='url']").fill("https://example.com");
+    await page.locator("input[type='url']").fill("https://snapotter.com");
     await page.locator("button[type='submit']").click();
 
     const downloadBtn = page.getByRole("button", { name: /download/i });

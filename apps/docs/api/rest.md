@@ -225,7 +225,7 @@ Capture a webpage as an image. Unlike other tools, this endpoint accepts `applic
 curl -X POST http://localhost:1349/api/v1/tools/html-to-image \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"url": "https://example.com", "format": "png", "devicePreset": "desktop"}'
+  -d '{"url": "https://snapotter.com", "format": "png", "devicePreset": "desktop"}'
 ```
 
 **Response:**
