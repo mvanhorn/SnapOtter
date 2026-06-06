@@ -49,7 +49,9 @@ if (command === "keygen") {
   }
 
   if (!existsSync(PRIVATE_KEY_PATH)) {
-    console.error(`Private key not found at ${PRIVATE_KEY_PATH}. Run 'generate-license.mjs keygen' first.`);
+    console.error(
+      `Private key not found at ${PRIVATE_KEY_PATH}. Run 'generate-license.mjs keygen' first.`,
+    );
     process.exit(1);
   }
 

@@ -36,12 +36,12 @@ describe("BentoGrid", () => {
   it("shows all tools by default", () => {
     render(<BentoGrid />);
     const text = getCountText();
-    expect(text).toMatch(/Showing 52 of 52 tools/);
+    expect(text).toMatch(/Showing 53 of 53 tools/);
   });
 
   it("renders category filter pills including All", () => {
     render(<BentoGrid />);
-    expect(screen.getByText((_, el) => el?.textContent === "All (52)")).toBeDefined();
+    expect(screen.getByText((_, el) => el?.textContent === "All (53)")).toBeDefined();
     expect(screen.getByText(/Essentials/)).toBeDefined();
     expect(screen.getByText(/AI Tools/)).toBeDefined();
     expect(screen.getByText(/Optimization/)).toBeDefined();
@@ -53,7 +53,7 @@ describe("BentoGrid", () => {
     fireEvent.change(input, { target: { value: "resize" } });
     expect(screen.getByText("Resize")).toBeDefined();
     const text = getCountText();
-    expect(text).toMatch(/Showing \d+ of 52 tools/);
+    expect(text).toMatch(/Showing \d+ of 53 tools/);
     expect(screen.queryByText("OCR / Text Extraction")).toBeNull();
   });
 
@@ -62,7 +62,7 @@ describe("BentoGrid", () => {
     const aiButton = screen.getByText(/AI Tools/);
     fireEvent.click(aiButton);
     const text = getCountText();
-    expect(text).toMatch(/Showing 16 of 52 tools/);
+    expect(text).toMatch(/Showing 16 of 53 tools/);
     expect(screen.getByText("Remove Background")).toBeDefined();
     expect(screen.queryByText("Resize")).toBeNull();
   });
@@ -73,7 +73,7 @@ describe("BentoGrid", () => {
     fireEvent.change(input, { target: { value: "xyznonexistent" } });
     expect(screen.getByText("No tools found. Try a different search.")).toBeDefined();
     const text = getCountText();
-    expect(text).toMatch(/Showing 0 of 52 tools/);
+    expect(text).toMatch(/Showing 0 of 53 tools/);
   });
 
   it("combines search and category filter", () => {
@@ -89,9 +89,9 @@ describe("BentoGrid", () => {
   it("clicking All resets category filter", () => {
     render(<BentoGrid />);
     fireEvent.click(screen.getByText(/AI Tools/));
-    expect(getCountText()).toMatch(/Showing 16 of 52 tools/);
-    fireEvent.click(screen.getByText((_, el) => el?.textContent === "All (52)"));
-    expect(getCountText()).toMatch(/Showing 52 of 52 tools/);
+    expect(getCountText()).toMatch(/Showing 16 of 53 tools/);
+    fireEvent.click(screen.getByText((_, el) => el?.textContent === "All (53)"));
+    expect(getCountText()).toMatch(/Showing 53 of 53 tools/);
   });
 
   it("renders each tool with name and description", () => {

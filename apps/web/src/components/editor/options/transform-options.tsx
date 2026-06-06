@@ -55,7 +55,16 @@ function NumericInput({
 }
 
 export function TransformOptions({ api }: { api: TransformToolApi }) {
-  const { values, lockedAspect, setLockedAspect, setValues, flipHorizontal, flipVertical, applyTransform, cancelTransform } = api;
+  const {
+    values,
+    lockedAspect,
+    setLockedAspect,
+    setValues,
+    flipHorizontal,
+    flipVertical,
+    applyTransform,
+    cancelTransform,
+  } = api;
 
   return (
     <div className="flex items-center gap-3">

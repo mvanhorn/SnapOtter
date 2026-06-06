@@ -1029,6 +1029,9 @@ describe("loadEnv", () => {
     process.env.DEFAULT_USERNAME = "root";
     process.env.DEFAULT_PASSWORD = "s3cret!";
     process.env.STORAGE_MODE = "s3";
+    process.env.S3_BUCKET = "my-bucket";
+    process.env.S3_ACCESS_KEY_ID = "AKIAIOSFODNN7EXAMPLE";
+    process.env.S3_SECRET_ACCESS_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY";
     process.env.DEFAULT_THEME = "dark";
     process.env.MAX_BATCH_SIZE = "500";
     const { loadEnv } = await import("../../../apps/api/src/lib/env.js");
@@ -1038,6 +1041,9 @@ describe("loadEnv", () => {
     expect(env.DEFAULT_USERNAME).toBe("root");
     expect(env.DEFAULT_PASSWORD).toBe("s3cret!");
     expect(env.STORAGE_MODE).toBe("s3");
+    expect(env.S3_BUCKET).toBe("my-bucket");
+    expect(env.S3_ACCESS_KEY_ID).toBe("AKIAIOSFODNN7EXAMPLE");
+    expect(env.S3_SECRET_ACCESS_KEY).toBe("wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY");
     expect(env.DEFAULT_THEME).toBe("dark");
     expect(env.MAX_BATCH_SIZE).toBe(500);
   });

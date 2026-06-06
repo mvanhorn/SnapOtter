@@ -153,7 +153,9 @@ export function FileLibraryModal({ open, onClose, onImport }: FileLibraryModalPr
         {/* Header */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-border shrink-0">
           <FolderOpen className="h-5 w-5 text-primary" />
-          <h2 className="text-sm font-semibold text-foreground flex-1">{t.automate.importFromLibrary}</h2>
+          <h2 className="text-sm font-semibold text-foreground flex-1">
+            {t.automate.importFromLibrary}
+          </h2>
           <button
             type="button"
             onClick={onClose}

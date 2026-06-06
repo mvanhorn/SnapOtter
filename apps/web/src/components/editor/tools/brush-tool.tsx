@@ -18,8 +18,16 @@ export function useBrushTool() {
     const stage = e.target.getStage();
     if (!stage) return;
 
-    const { activeTool, foregroundColor, brushSize, brushOpacity, brushHardness, brushFlow, zoom, panOffset } =
-      useEditorStore.getState();
+    const {
+      activeTool,
+      foregroundColor,
+      brushSize,
+      brushOpacity,
+      brushHardness,
+      brushFlow,
+      zoom,
+      panOffset,
+    } = useEditorStore.getState();
 
     if (activeTool !== "brush" && activeTool !== "pencil") return;
 
@@ -32,8 +40,12 @@ export function useBrushTool() {
     const { selection } = useEditorStore.getState();
     if (selection) {
       const { bounds } = selection;
-      if (x < bounds.x || x > bounds.x + bounds.width ||
-          y < bounds.y || y > bounds.y + bounds.height) {
+      if (
+        x < bounds.x ||
+        x > bounds.x + bounds.width ||
+        y < bounds.y ||
+        y > bounds.y + bounds.height
+      ) {
         return;
       }
     }
@@ -85,8 +97,12 @@ export function useBrushTool() {
     const { selection } = useEditorStore.getState();
     if (selection) {
       const { bounds } = selection;
-      if (x < bounds.x || x > bounds.x + bounds.width ||
-          y < bounds.y || y > bounds.y + bounds.height) {
+      if (
+        x < bounds.x ||
+        x > bounds.x + bounds.width ||
+        y < bounds.y ||
+        y > bounds.y + bounds.height
+      ) {
         return;
       }
     }
