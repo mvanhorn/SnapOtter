@@ -1105,3 +1105,377 @@ test.describe("Memory Stability - Heap Measurement", () => {
     await expect(page.locator("aside")).toBeVisible();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Login Page Load Budget
+// ---------------------------------------------------------------------------
+test.describe("Login Page Load Budget", () => {
+  test("login page DOMContentLoaded < 2000ms", async ({ loggedInPage: page }) => {
+    await page.goto("about:blank");
+
+    const start = Date.now();
+    await page.goto("/login");
+    await page.waitForLoadState("domcontentloaded");
+    const loadTime = Date.now() - start;
+
+    expect(loadTime).toBeLessThan(2000);
+  });
+
+  test("login page renders form within 2000ms", async ({ loggedInPage: page }) => {
+    await page.goto("about:blank");
+
+    const start = Date.now();
+    await page.goto("/login");
+    await page.getByLabel("Username").waitFor({ state: "visible" });
+    const renderTime = Date.now() - start;
+
+    expect(renderTime).toBeLessThan(2000);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Change Password Page Load Budget
+// ---------------------------------------------------------------------------
+test.describe("Change Password Page Load Budget", () => {
+  test("change password page DOMContentLoaded < 2000ms", async ({ loggedInPage: page }) => {
+    await page.goto("about:blank");
+
+    const start = Date.now();
+    await page.goto("/change-password");
+    await page.waitForLoadState("domcontentloaded");
+    const loadTime = Date.now() - start;
+
+    expect(loadTime).toBeLessThan(2000);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// QR Generate Page Load Budget
+// ---------------------------------------------------------------------------
+test.describe("QR Generate Page Load Budget", () => {
+  test("QR generate page DOMContentLoaded < 2000ms", async ({ loggedInPage: page }) => {
+    await page.goto("about:blank");
+
+    const start = Date.now();
+    await page.goto("/qr-generate");
+    await page.waitForLoadState("domcontentloaded");
+    const loadTime = Date.now() - start;
+
+    expect(loadTime).toBeLessThan(2000);
+  });
+
+  test("QR generate page renders input within 2000ms", async ({ loggedInPage: page }) => {
+    await page.goto("about:blank");
+
+    const start = Date.now();
+    await page.goto("/qr-generate");
+    await page.locator("[data-testid='qr-input-url']").waitFor({ state: "visible" });
+    const renderTime = Date.now() - start;
+
+    expect(renderTime).toBeLessThan(2000);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// End-to-End Processing Throughput
+// ---------------------------------------------------------------------------
+test.describe("Processing Throughput", () => {
+  test("resize end-to-end processing completes within 5s", async ({ loggedInPage: page }) => {
+    await page.goto("/resize");
+    await page.waitForLoadState("networkidle");
+
+    await uploadTestImage(page);
+
+    await page.locator("input[placeholder='Auto']").first().fill("50");
+
+    const start = Date.now();
+    await page.getByRole("button", { name: "Resize" }).click();
+    await waitForProcessing(page);
+    await expect(page.getByRole("link", { name: /download/i }).first()).toBeVisible({
+      timeout: 15_000,
+    });
+    const processTime = Date.now() - start;
+
+    // End-to-end (click to download available) should be under 5s
+    expect(processTime).toBeLessThan(5000);
+  });
+
+  test("two sequential processes do not degrade in speed", async ({ loggedInPage: page }) => {
+    await page.goto("/resize");
+    await page.waitForLoadState("networkidle");
+
+    await uploadTestImage(page);
+
+    // First process
+    await page.locator("input[placeholder='Auto']").first().fill("50");
+    const start1 = Date.now();
+    await page.getByRole("button", { name: "Resize" }).click();
+    await waitForProcessing(page);
+    await expect(page.getByRole("link", { name: /download/i }).first()).toBeVisible({
+      timeout: 15_000,
+    });
+    const time1 = Date.now() - start1;
+
+    // Second process with different settings
+    await page.locator("input[placeholder='Auto']").first().fill("75");
+    const start2 = Date.now();
+    await page.getByRole("button", { name: "Resize" }).click();
+    await waitForProcessing(page);
+    await expect(page.getByRole("link", { name: /download/i }).first()).toBeVisible({
+      timeout: 15_000,
+    });
+    const time2 = Date.now() - start2;
+
+    // Second process should not be more than 3x slower than first
+    expect(time2).toBeLessThan(Math.max(time1 * 3, 5000));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Sidebar Scroll Performance
+// ---------------------------------------------------------------------------
+test.describe("Sidebar Scroll Performance", () => {
+  test("sidebar scrolls smoothly without jank", async ({ loggedInPage: page }) => {
+    await page.waitForLoadState("networkidle");
+
+    const sidebar = page.locator("aside");
+    await expect(sidebar).toBeVisible();
+
+    // Measure scroll performance by scrolling the sidebar
+    const scrollable = sidebar.locator("[class*='overflow']").first();
+    if (await scrollable.isVisible({ timeout: 2000 }).catch(() => false)) {
+      const start = Date.now();
+
+      // Scroll down
+      await scrollable.evaluate((el) => {
+        el.scrollTop = el.scrollHeight;
+      });
+      await page.waitForTimeout(100);
+
+      // Scroll back up
+      await scrollable.evaluate((el) => {
+        el.scrollTop = 0;
+      });
+      await page.waitForTimeout(100);
+
+      const scrollTime = Date.now() - start;
+
+      // Scrolling should be near-instant (under 500ms for both directions)
+      expect(scrollTime).toBeLessThan(500);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Theme Toggle Does Not Cause Re-render Cascade
+// ---------------------------------------------------------------------------
+test.describe("Theme Toggle Performance", () => {
+  test("theme toggle completes within 200ms", async ({ loggedInPage: page }) => {
+    await page.waitForLoadState("networkidle");
+
+    const themeBtn = page.locator("button[title='Toggle Theme']");
+    if (!(await themeBtn.isVisible({ timeout: 3000 }).catch(() => false))) return;
+
+    const isDark = await page.evaluate(() => document.documentElement.classList.contains("dark"));
+
+    const start = Date.now();
+    await themeBtn.click();
+    await page.waitForFunction(
+      (hadDark: boolean) => document.documentElement.classList.contains("dark") !== hadDark,
+      isDark,
+      { timeout: 500 },
+    );
+    const toggleTime = Date.now() - start;
+
+    expect(toggleTime).toBeLessThan(200);
+
+    // Restore
+    await themeBtn.click();
+  });
+
+  test("theme toggle does not cause visible layout reflow", async ({ loggedInPage: page }) => {
+    await page.waitForLoadState("networkidle");
+
+    const themeBtn = page.locator("button[title='Toggle Theme']");
+    if (!(await themeBtn.isVisible({ timeout: 3000 }).catch(() => false))) return;
+
+    // Measure main content position before toggle
+    const mainBefore = await page.locator("main").boundingBox();
+
+    await themeBtn.click();
+    await page.waitForTimeout(200);
+
+    // Measure main content position after toggle
+    const mainAfter = await page.locator("main").boundingBox();
+
+    if (mainBefore && mainAfter) {
+      // Layout should not shift
+      expect(mainAfter.x).toBe(mainBefore.x);
+      expect(mainAfter.y).toBe(mainBefore.y);
+      expect(mainAfter.width).toBe(mainBefore.width);
+    }
+
+    // Restore
+    await themeBtn.click();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Settings Tab Switch Performance
+// ---------------------------------------------------------------------------
+test.describe("Settings Tab Switch Performance", () => {
+  test("switching between all settings tabs stays under 300ms each", async ({
+    loggedInPage: page,
+  }) => {
+    await openSettings(page);
+
+    // Try switching to different tabs
+    const tabNames = [/general/i, /people/i, /about/i];
+    const timings: number[] = [];
+
+    for (const tabPattern of tabNames) {
+      const tab = page.getByRole("button", { name: tabPattern });
+      if (await tab.isVisible({ timeout: 2000 }).catch(() => false)) {
+        const start = Date.now();
+        await tab.click();
+        await page.waitForTimeout(100);
+        timings.push(Date.now() - start);
+      }
+    }
+
+    // Each tab switch should be under 300ms
+    for (const t of timings) {
+      expect(t).toBeLessThan(300);
+    }
+
+    await page.keyboard.press("Escape");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Help Dialog Open/Close Performance
+// ---------------------------------------------------------------------------
+test.describe("Help Dialog Performance", () => {
+  test("help dialog opens within 300ms", async ({ loggedInPage: page }) => {
+    await page.waitForLoadState("networkidle");
+
+    const start = Date.now();
+    await page.locator("aside").getByText("Help").click();
+    await expect(page.getByRole("heading", { name: "Help" })).toBeVisible();
+    const openTime = Date.now() - start;
+
+    expect(openTime).toBeLessThan(300);
+
+    await page.keyboard.press("Escape");
+  });
+
+  test("help dialog closes within 300ms", async ({ loggedInPage: page }) => {
+    await page.locator("aside").getByText("Help").click();
+    await expect(page.getByRole("heading", { name: "Help" })).toBeVisible();
+
+    const start = Date.now();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("heading", { name: "Help" })).not.toBeVisible();
+    const closeTime = Date.now() - start;
+
+    expect(closeTime).toBeLessThan(300);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// No Console Errors During Normal Usage
+// ---------------------------------------------------------------------------
+test.describe("Console Error Monitoring", () => {
+  test("no console errors during home page load", async ({ loggedInPage: page }) => {
+    const consoleErrors: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error") {
+        consoleErrors.push(msg.text());
+      }
+    });
+
+    await page.goto("about:blank");
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+
+    // Filter out known benign errors (e.g., favicon 404 in dev)
+    const realErrors = consoleErrors.filter(
+      (e) => !e.includes("favicon") && !e.includes("404") && !e.includes("ERR_CONNECTION"),
+    );
+
+    expect(realErrors, `Console errors during home load: ${realErrors.join("; ")}`).toHaveLength(0);
+  });
+
+  test("no console errors during tool page load", async ({ loggedInPage: page }) => {
+    const consoleErrors: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error") {
+        consoleErrors.push(msg.text());
+      }
+    });
+
+    await page.goto("about:blank");
+    await page.goto("/resize");
+    await page.waitForLoadState("networkidle");
+
+    const realErrors = consoleErrors.filter(
+      (e) => !e.includes("favicon") && !e.includes("404") && !e.includes("ERR_CONNECTION"),
+    );
+
+    expect(realErrors, `Console errors during tool load: ${realErrors.join("; ")}`).toHaveLength(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Network Request Count Budget
+// ---------------------------------------------------------------------------
+test.describe("Network Request Budget", () => {
+  test("tool page API calls are minimal on initial load", async ({ loggedInPage: page }) => {
+    await page.goto("about:blank");
+
+    const apiRequests: string[] = [];
+    page.on("request", (req) => {
+      if (req.url().includes("/api/v1/")) {
+        apiRequests.push(req.url());
+      }
+    });
+
+    await page.goto("/resize");
+    await page.waitForLoadState("networkidle");
+
+    // Tool page should not make excessive API calls on load
+    // (health check, settings, auth session -- no more than 10 API calls)
+    expect(apiRequests.length).toBeLessThan(10);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Batch Navigation Timing Consistency
+// ---------------------------------------------------------------------------
+test.describe("Navigation Timing Consistency", () => {
+  test("sequential navigation to same page is consistent", async ({ loggedInPage: page }) => {
+    // Warm up
+    await page.goto("/resize");
+    await page.waitForLoadState("networkidle");
+
+    const timings: number[] = [];
+
+    for (let i = 0; i < 5; i++) {
+      await page.goto("/");
+      await page.waitForLoadState("networkidle");
+
+      const start = Date.now();
+      await page.goto("/resize");
+      await page.waitForLoadState("domcontentloaded");
+      timings.push(Date.now() - start);
+    }
+
+    // No individual navigation should be more than 3x the average
+    const avg = timings.reduce((a, b) => a + b, 0) / timings.length;
+    for (const t of timings) {
+      expect(t, `Navigation time ${t}ms is more than 3x average ${avg.toFixed(0)}ms`).toBeLessThan(
+        Math.max(avg * 3, 2000),
+      );
+    }
+  });
+});

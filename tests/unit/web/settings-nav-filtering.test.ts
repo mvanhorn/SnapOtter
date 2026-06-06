@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 interface NavItem {
   id: string;
@@ -36,7 +36,7 @@ function filterNavItems(
 }
 
 describe("settings nav filtering", () => {
-  const allPerms = (p: string) => true;
+  const _allPerms = (_p: string) => true;
   const userPerms = (p: string) =>
     ["tools:use", "files:own", "apikeys:own", "pipelines:own", "settings:read"].includes(p);
   const adminPerms = (p: string) =>

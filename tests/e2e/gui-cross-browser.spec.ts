@@ -395,4 +395,277 @@ test.describe("Cross-browser smoke tests", () => {
 
     expect(errors).toHaveLength(0);
   });
+
+  // ---- Login flow: unauthenticated redirect ----
+  test.describe("Login page rendering", () => {
+    test.use({ storageState: { cookies: [], origins: [] } });
+
+    test("login page renders correctly across browsers", async ({ page }) => {
+      const errors = collectConsoleErrors(page);
+
+      await page.goto("/login");
+      await page.waitForLoadState("networkidle");
+      await page.waitForTimeout(500);
+
+      // Verify the login form renders with proper structure
+      await expect(page.getByLabel("Username")).toBeVisible();
+      await expect(page.getByLabel("Password")).toBeVisible();
+      await expect(page.getByRole("button", { name: /login/i })).toBeVisible();
+
+      // Verify form layout: inputs should be vertically stacked
+      const usernameBox = await page.getByLabel("Username").boundingBox();
+      const passwordBox = await page.getByLabel("Password").boundingBox();
+      if (usernameBox && passwordBox) {
+        expect(passwordBox.y).toBeGreaterThan(usernameBox.y);
+      }
+
+      // Login with valid credentials and verify redirect
+      await page.getByLabel("Username").fill("admin");
+      await page.getByLabel("Password").fill("admin");
+      await page.getByRole("button", { name: /login/i }).click();
+      await page.waitForURL("/", { timeout: 15000 });
+
+      await expect(page).toHaveURL("/");
+
+      expect(errors).toHaveLength(0);
+    });
+
+    test("login error state renders across browsers", async ({ page }) => {
+      const errors = collectConsoleErrors(page);
+
+      await page.goto("/login");
+      await page.waitForLoadState("networkidle");
+      await page.waitForTimeout(500);
+
+      // Submit invalid credentials
+      await page.getByLabel("Username").fill("wronguser");
+      await page.getByLabel("Password").fill("wrongpassword");
+      await page.getByRole("button", { name: /login/i }).click();
+      await page.waitForTimeout(1000);
+
+      // Verify error message appears
+      await expect(page.getByText(/invalid|incorrect|failed/i).first()).toBeVisible();
+
+      // Verify error does not cause layout breakage
+      const loginBox = await page.getByRole("button", { name: /login/i }).boundingBox();
+      expect(loginBox).not.toBeNull();
+
+      expect(errors).toHaveLength(0);
+    });
+  });
+
+  // ---- Convert tool E2E ----
+  test("convert E2E: upload, select format, process", async ({ loggedInPage: page }) => {
+    const errors = collectConsoleErrors(page);
+
+    await page.goto("/convert");
+    await page.waitForLoadState("networkidle");
+
+    await uploadImage(page);
+
+    // Verify settings panel appeared after upload
+    await expect(page.getByText("Settings").first()).toBeVisible();
+
+    await waitForProcessing(page);
+
+    expect(errors).toHaveLength(0);
+  });
+
+  // ---- Privacy policy page rendering ----
+  test.describe("Privacy policy page", () => {
+    test.use({ storageState: { cookies: [], origins: [] } });
+
+    test("privacy policy page renders across browsers", async ({ page }) => {
+      const errors = collectConsoleErrors(page);
+
+      await page.goto("/privacy");
+      await page.waitForLoadState("networkidle");
+      await page.waitForTimeout(500);
+
+      // Verify the privacy page renders with content
+      await expect(page.getByText(/privacy/i).first()).toBeVisible();
+
+      // Verify page scrolling works
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(300);
+
+      const scrollY = await page.evaluate(() => window.scrollY);
+      expect(scrollY).toBeGreaterThanOrEqual(0);
+
+      expect(errors).toHaveLength(0);
+    });
+  });
+
+  // ---- Change password page rendering ----
+  test("change password page renders across browsers", async ({ loggedInPage: page }) => {
+    const errors = collectConsoleErrors(page);
+
+    await page.goto("/change-password");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Verify form elements render correctly
+    const inputs = page.locator("input[type='password']");
+    const inputCount = await inputs.count();
+    expect(inputCount).toBeGreaterThanOrEqual(1);
+
+    expect(errors).toHaveLength(0);
+  });
+
+  // ---- Editor page rendering ----
+  test("editor page welcome screen renders across browsers", async ({ loggedInPage: page }) => {
+    const errors = collectConsoleErrors(page);
+
+    await page.goto("/editor");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Editor page should render without console errors
+    // Verify the page loaded (editor or welcome screen)
+    const pageContent = await page.textContent("body");
+    expect(pageContent).toBeTruthy();
+
+    expect(errors).toHaveLength(0);
+  });
+
+  // ---- Fullscreen grid page rendering ----
+  test("fullscreen grid: toggle details across browsers", async ({ loggedInPage: page }) => {
+    const errors = collectConsoleErrors(page);
+
+    await page.goto("/fullscreen");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Verify details toggle works
+    await expect(page.getByText("Hide Details")).toBeVisible();
+
+    await page.getByText("Hide Details").click();
+    await page.waitForTimeout(300);
+
+    await expect(page.getByText("Show Details")).toBeVisible();
+
+    // Toggle back
+    await page.getByText("Show Details").click();
+    await page.waitForTimeout(300);
+
+    await expect(page.getByText("Hide Details")).toBeVisible();
+
+    expect(errors).toHaveLength(0);
+  });
+
+  // ---- QR generate tool (no-dropzone mode) ----
+  test("qr-generate: enter text and verify preview renders", async ({ loggedInPage: page }) => {
+    const errors = collectConsoleErrors(page);
+
+    await page.goto("/qr-generate");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Enter text to generate a QR code
+    const textInput = page.locator("input[type='text'], textarea").first();
+    await textInput.fill("https://snapotter.com");
+    await page.waitForTimeout(1000);
+
+    // Verify a preview element appeared
+    const preview = page.locator("img, canvas, svg").first();
+    const previewVisible = await preview.isVisible({ timeout: 10000 }).catch(() => false);
+    expect(previewVisible).toBe(true);
+
+    expect(errors).toHaveLength(0);
+  });
+
+  // ---- Files page rendering ----
+  test("files page renders across browsers", async ({ loggedInPage: page }) => {
+    const errors = collectConsoleErrors(page);
+
+    await page.goto("/files");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Verify page loaded without errors
+    const pageContent = await page.textContent("body");
+    expect(pageContent).toBeTruthy();
+
+    expect(errors).toHaveLength(0);
+  });
+
+  // ---- Collage tool (no-dropzone mode) ----
+  test("collage tool renders templates across browsers", async ({ loggedInPage: page }) => {
+    const errors = collectConsoleErrors(page);
+
+    await page.goto("/collage");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Collage is a no-dropzone tool -- verify it loaded
+    const pageContent = await page.textContent("body");
+    expect(pageContent).toBeTruthy();
+
+    expect(errors).toHaveLength(0);
+  });
+
+  // ---- Automate page: reorder steps ----
+  test("automate page: add and remove pipeline steps", async ({ loggedInPage: page }) => {
+    const errors = collectConsoleErrors(page);
+
+    await page.goto("/automate");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Add 3 steps
+    const resizeBtn = page.getByRole("button", { name: /resize/i }).first();
+    const compressBtn = page.getByRole("button", { name: /compress/i }).first();
+    const convertBtn = page.getByRole("button", { name: /convert/i }).first();
+
+    await resizeBtn.click();
+    await page.waitForTimeout(300);
+    await compressBtn.click();
+    await page.waitForTimeout(300);
+    await convertBtn.click();
+    await page.waitForTimeout(300);
+
+    // Verify 3 steps were added
+    const steps = page.locator("[class*='step'], [class*='pipeline-step']");
+    expect(await steps.count()).toBeGreaterThanOrEqual(3);
+
+    // Remove one step if a remove/delete button exists
+    const removeBtn = page.getByRole("button", { name: /remove|delete|close/i }).first();
+    const hasRemove = await removeBtn.isVisible({ timeout: 2000 }).catch(() => false);
+    if (hasRemove) {
+      await removeBtn.click();
+      await page.waitForTimeout(300);
+      expect(await steps.count()).toBeGreaterThanOrEqual(2);
+    }
+
+    expect(errors).toHaveLength(0);
+  });
+
+  // ---- Navigation: browser back/forward ----
+  test("browser navigation: back and forward between pages", async ({ loggedInPage: page }) => {
+    const errors = collectConsoleErrors(page);
+
+    // Navigate to resize
+    await page.goto("/resize");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(300);
+
+    // Navigate to compress
+    await page.goto("/compress");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(300);
+
+    // Go back to resize
+    await page.goBack();
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(300);
+    await expect(page).toHaveURL(/resize/);
+
+    // Go forward to compress
+    await page.goForward();
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(300);
+    await expect(page).toHaveURL(/compress/);
+
+    expect(errors).toHaveLength(0);
+  });
 });

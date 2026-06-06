@@ -962,4 +962,136 @@ describe("Compare", () => {
     expect(meta.height).toBe(result.dimensions.height);
     expect(meta.format).toBe("png");
   });
+
+  // ── AVIF format input ─────────────────────────────────────────────
+
+  it("compares two AVIF images", async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.avif", contentType: "image/avif", content: AVIF },
+      { name: "file", filename: "b.avif", contentType: "image/avif", content: AVIF },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compare",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.similarity).toBe(100);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  // ── AVIF vs PNG cross-format comparison ──────────────────────────
+
+  it("compares AVIF with PNG (cross-format)", async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.avif", contentType: "image/avif", content: AVIF },
+      { name: "file", filename: "b.png", contentType: "image/png", content: PNG },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compare",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.similarity).toBeGreaterThanOrEqual(0);
+    expect(result.similarity).toBeLessThanOrEqual(100);
+    expect(result.dimensions.width).toBeGreaterThan(0);
+    expect(result.dimensions.height).toBeGreaterThan(0);
+  });
+
+  // ── SVGZ input (compare validates with validateImageBuffer first) ─
+
+  it("handles SVGZ input: rejects as invalid or processes successfully", async () => {
+    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.svgz", contentType: "image/svg+xml", content: SVGZ },
+      { name: "file", filename: "b.png", contentType: "image/png", content: PNG },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compare",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    // SVGZ (gzip-compressed SVG) may not pass validateImageBuffer
+    // since magic bytes are gzip, not SVG; returns 400 or succeeds
+    expect([200, 400]).toContain(res.statusCode);
+    if (res.statusCode === 200) {
+      const result = JSON.parse(res.body);
+      expect(result.similarity).toBeGreaterThanOrEqual(0);
+      expect(result.downloadUrl).toBeDefined();
+    }
+  });
+
+  // ── HEIF vs AVIF cross-format ────────────────────────────────────
+
+  it("compares HEIF with AVIF (cross-format)", { timeout: 120_000 }, async () => {
+    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.heif", contentType: "image/heif", content: HEIF },
+      { name: "file", filename: "b.avif", contentType: "image/avif", content: AVIF },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compare",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.similarity).toBeGreaterThanOrEqual(0);
+    expect(result.similarity).toBeLessThanOrEqual(100);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  // ── Blank image vs blank image (100% similarity) ─────────────────
+
+  it("compares two blank images (100% similarity)", async () => {
+    const BLANK = readFileSync(join(FIXTURES, "test-blank.png"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.png", contentType: "image/png", content: BLANK },
+      { name: "file", filename: "b.png", contentType: "image/png", content: BLANK },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compare",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.similarity).toBe(100);
+  });
 });

@@ -810,3 +810,144 @@ describe("Grayscale dimension preservation", () => {
     expect(meta.height).toBe(150);
   });
 });
+
+// ── Exposure with effects ─────────────────────────────────────
+describe("Exposure with effects", () => {
+  it("applies positive exposure with grayscale effect", async () => {
+    const res = await postTool("adjust-colors", {
+      exposure: 50,
+      effect: "grayscale",
+    });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  it("applies negative exposure with invert effect", async () => {
+    const res = await postTool("adjust-colors", {
+      exposure: -50,
+      effect: "invert",
+    });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+});
+
+// ── Saturation at exact boundaries ────────────────────────────
+describe("Saturation exact boundaries", () => {
+  it("applies saturation at exactly -100 (full desaturation)", async () => {
+    const res = await postTool("adjust-colors", { saturation: -100 });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  it("applies saturation at exactly +100 (full saturation boost)", async () => {
+    const res = await postTool("adjust-colors", { saturation: 100 });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+});
+
+// ── Temperature and tint exact boundaries ─────────────────────
+describe("Temperature/tint exact boundaries", () => {
+  it("applies temperature at -100 (coldest)", async () => {
+    const res = await postTool("adjust-colors", { temperature: -100 });
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("applies tint at -100", async () => {
+    const res = await postTool("adjust-colors", { tint: -100 });
+    expect(res.statusCode).toBe(200);
+  });
+});
+
+// ── AVIF input ─────────────────────────────────────────────────
+describe("AVIF input", () => {
+  it("processes AVIF input with saturation adjustment", async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const res = await postTool(
+      "adjust-colors",
+      { saturation: 50 },
+      AVIF,
+      "test.avif",
+      "image/avif",
+    );
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+});
+
+// ── All adjustment combinations on JPEG ───────────────────────
+describe("Full adjustment pipeline on JPEG", () => {
+  it("applies all non-zero settings on JPEG input", async () => {
+    const res = await postTool(
+      "adjust-colors",
+      {
+        brightness: -20,
+        contrast: 30,
+        exposure: -15,
+        saturation: 40,
+        temperature: -25,
+        tint: 15,
+        hue: -90,
+        sharpness: 60,
+        red: 80,
+        green: 120,
+        blue: 90,
+        effect: "sepia",
+      },
+      JPG,
+      "test.jpg",
+      "image/jpeg",
+    );
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.format).toBe("jpeg");
+    expect(meta.width).toBe(100);
+    expect(meta.height).toBe(100);
+  });
+});
+
+// ── Hue at exact boundaries ───────────────────────────────────
+describe("Hue exact boundaries", () => {
+  it("rejects hue at +181 (just above max)", async () => {
+    const res = await postTool("adjust-colors", { hue: 181 });
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("rejects hue at -181 (just below min)", async () => {
+    const res = await postTool("adjust-colors", { hue: -181 });
+    expect(res.statusCode).toBe(400);
+  });
+});
+
+// ── Brightness at exact boundaries ────────────────────────────
+describe("Brightness exact boundaries", () => {
+  it("rejects brightness at +101", async () => {
+    const res = await postTool("adjust-colors", { brightness: 101 });
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("rejects brightness at -101", async () => {
+    const res = await postTool("adjust-colors", { brightness: -101 });
+    expect(res.statusCode).toBe(400);
+  });
+});
+
+// ── Sharpness at exact boundaries ─────────────────────────────
+describe("Sharpness exact boundaries", () => {
+  it("rejects negative sharpness", async () => {
+    const res = await postTool("adjust-colors", { sharpness: -1 });
+    expect(res.statusCode).toBe(400);
+  });
+});

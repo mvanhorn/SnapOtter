@@ -2327,7 +2327,7 @@ describe("bridge - dispatcher shutdown behavior", () => {
 
 describe("bridge - initDispatcher edge cases", () => {
   let initDispatcher: typeof import("../../../packages/ai/src/bridge.js").initDispatcher;
-  let runPythonWithProgress: typeof import("../../../packages/ai/src/bridge.js").runPythonWithProgress;
+  let _runPythonWithProgress: typeof import("../../../packages/ai/src/bridge.js").runPythonWithProgress;
   let shutdownDispatcher: typeof import("../../../packages/ai/src/bridge.js").shutdownDispatcher;
 
   beforeEach(async () => {
@@ -2336,7 +2336,7 @@ describe("bridge - initDispatcher edge cases", () => {
 
     const mod = await import("../../../packages/ai/src/bridge.js");
     initDispatcher = mod.initDispatcher;
-    runPythonWithProgress = mod.runPythonWithProgress;
+    _runPythonWithProgress = mod.runPythonWithProgress;
     shutdownDispatcher = mod.shutdownDispatcher;
   });
 

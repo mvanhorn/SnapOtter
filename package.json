@@ -84,7 +84,7 @@
       "picomatch": ">=4.0.4",
       "lodash": ">=4.18.0",
       "lodash-es": ">=4.18.0",
-      "brace-expansion": ">=5.0.5",
+      "brace-expansion>minimatch": "^2.0.2",
       "phin": ">=3.7.1",
       "follow-redirects": ">=1.16.0",
       "protobufjs": ">=7.5.6",

@@ -757,3 +757,162 @@ describe("Adaptive with denoise on JPEG", () => {
     expect(meta.height).toBe(100);
   });
 });
+
+// ── AVIF input ──────────────────────────────────────────────────
+describe("AVIF input", () => {
+  it("processes AVIF image with adaptive sharpening", async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const res = await postTool({ method: "adaptive", sigma: 2.0 }, AVIF, "test.avif", "image/avif");
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+});
+
+// ── Adaptive params at minimum values ───────────────────────────
+describe("Adaptive minimum parameters", () => {
+  it("uses all minimum adaptive parameter values", async () => {
+    const res = await postTool({
+      method: "adaptive",
+      sigma: 0.5,
+      m1: 0,
+      m2: 0,
+      x1: 0,
+      y2: 0,
+      y3: 0,
+    });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+});
+
+// ── High-pass kernelSize 3 vs 5 both produce valid output ──────
+describe("High-pass kernel size comparison", () => {
+  it("kernelSize 3 and 5 both produce valid sharpened output", async () => {
+    const res3 = await postTool({ method: "high-pass", strength: 50, kernelSize: 3 });
+    const res5 = await postTool({ method: "high-pass", strength: 50, kernelSize: 5 });
+    expect(res3.statusCode).toBe(200);
+    expect(res5.statusCode).toBe(200);
+
+    const result3 = JSON.parse(res3.body);
+    const result5 = JSON.parse(res5.body);
+
+    expect(result3.processedSize).toBeGreaterThan(0);
+    expect(result5.processedSize).toBeGreaterThan(0);
+
+    // Both kernel sizes should produce valid images with same dimensions
+    const dl3 = await app.inject({
+      method: "GET",
+      url: result3.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const dl5 = await app.inject({
+      method: "GET",
+      url: result5.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+
+    const meta3 = await sharp(dl3.rawPayload).metadata();
+    const meta5 = await sharp(dl5.rawPayload).metadata();
+    expect(meta3.width).toBe(200);
+    expect(meta3.height).toBe(150);
+    expect(meta5.width).toBe(200);
+    expect(meta5.height).toBe(150);
+  });
+});
+
+// ── Denoise with all methods produce valid output ─────────────
+describe("Denoise completeness", () => {
+  it("applies adaptive with off denoise (explicit)", async () => {
+    const res = await postTool({
+      method: "adaptive",
+      sigma: 1.5,
+      denoise: "off",
+    });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  it("applies high-pass with strong denoise on JPEG", async () => {
+    const res = await postTool(
+      { method: "high-pass", strength: 60, kernelSize: 3, denoise: "strong" },
+      JPG,
+      "test.jpg",
+      "image/jpeg",
+    );
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.format).toBe("jpeg");
+  });
+});
+
+// ── Unsharp-mask minimum amount (0) is a no-op ─────────────────
+describe("Unsharp-mask no-op amount", () => {
+  it("amount=0 produces minimal change", async () => {
+    const res = await postTool({
+      method: "unsharp-mask",
+      amount: 0,
+      radius: 1.0,
+      threshold: 0,
+    });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+});
+
+// ── All three methods on same JPEG, verify format preserved ────
+describe("Format preservation across methods", () => {
+  it("adaptive preserves JPEG format", async () => {
+    const res = await postTool({ method: "adaptive", sigma: 2.0 }, JPG, "test.jpg", "image/jpeg");
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.format).toBe("jpeg");
+  });
+
+  it("high-pass preserves JPEG format", async () => {
+    const res = await postTool(
+      { method: "high-pass", strength: 50, kernelSize: 3 },
+      JPG,
+      "test.jpg",
+      "image/jpeg",
+    );
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.format).toBe("jpeg");
+  });
+});
+
+// ── Rejects invalid kernelSize (4) ────────────────────────────
+describe("Invalid kernelSize", () => {
+  it("rejects kernelSize 4 (only 3 and 5 valid)", async () => {
+    const res = await postTool({ method: "high-pass", kernelSize: 4 });
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("rejects kernelSize 1", async () => {
+    const res = await postTool({ method: "high-pass", kernelSize: 1 });
+    expect(res.statusCode).toBe(400);
+  });
+});

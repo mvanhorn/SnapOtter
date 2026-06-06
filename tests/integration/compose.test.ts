@@ -1194,4 +1194,148 @@ describe("Compose", () => {
     // Sharp composite will fail if overlay extends beyond canvas
     expect([200, 422]).toContain(res.statusCode);
   });
+
+  // ── AVIF format input ─────────────────────────────────────────────
+
+  it("handles AVIF base image", async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "base.avif", contentType: "image/avif", content: AVIF },
+      { name: "overlay", filename: "overlay.png", contentType: "image/png", content: TINY },
+      { name: "settings", content: JSON.stringify({ x: 0, y: 0 }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compose",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── SVGZ overlay (compose uses decodeBuffer which validates first) ──
+
+  it("handles SVGZ overlay: succeeds or returns 422 for unsupported format", async () => {
+    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
+      { name: "overlay", filename: "overlay.svgz", contentType: "image/svg+xml", content: SVGZ },
+      { name: "settings", content: JSON.stringify({ x: 10, y: 10 }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compose",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    // SVGZ (gzip-compressed SVG) may not be recognized by validateImageBuffer
+    // depending on the validation pipeline; either succeeds or fails gracefully
+    expect([200, 422]).toContain(res.statusCode);
+    if (res.statusCode === 200) {
+      const result = JSON.parse(res.body);
+      expect(result.downloadUrl).toBeDefined();
+    }
+  });
+
+  // ── Opacity at exactly 50% with multiple blend modes ────────────
+
+  it("combines hard-light blend mode with 50% opacity at position", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
+      { name: "overlay", filename: "overlay.jpg", contentType: "image/jpeg", content: JPG },
+      {
+        name: "settings",
+        content: JSON.stringify({ x: 25, y: 25, opacity: 50, blendMode: "hard-light" }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compose",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Exclusion blend with low opacity at edge position ───────────
+
+  it("combines exclusion blend mode with 10% opacity at edge", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
+      { name: "overlay", filename: "overlay.jpg", contentType: "image/jpeg", content: JPG },
+      {
+        name: "settings",
+        content: JSON.stringify({ x: 99, y: 0, opacity: 10, blendMode: "exclusion" }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compose",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Overlay exactly matches base dimensions at (0,0) ────────────
+
+  it("overlays same-dimension images at origin with multiply blend", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
+      { name: "overlay", filename: "overlay.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ x: 0, y: 0, opacity: 80, blendMode: "multiply" }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compose",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.width).toBe(200);
+    expect(meta.height).toBe(150);
+  });
 });

@@ -1116,8 +1116,8 @@ describe("Bulk Rename", () => {
   // ── Content verification for batch of 5+ files ──────────────
 
   it("batch of 6 files preserves all content and extensions", async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const _HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const _LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -1160,7 +1160,7 @@ describe("Bulk Rename", () => {
   // ── Very long pattern ───────────────────────────────────────
 
   it("handles a long pattern name", async () => {
-    const longPattern = "a".repeat(100) + "-{{index}}";
+    const longPattern = `${"a".repeat(100)}-{{index}}`;
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
       { name: "settings", content: JSON.stringify({ pattern: longPattern }) },

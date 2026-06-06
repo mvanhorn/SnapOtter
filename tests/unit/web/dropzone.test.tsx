@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Dropzone, isImageFile } from "@/components/common/dropzone";
 
 afterEach(() => {
@@ -205,7 +205,7 @@ describe("Dropzone", () => {
       render(<Dropzone />);
 
       fireEvent.click(screen.getByLabelText("File drop zone"));
-      expect(getInput()!.multiple).toBe(true);
+      expect(getInput()?.multiple).toBe(true);
     });
 
     it("disables multiple when multiple=false", () => {
@@ -213,7 +213,7 @@ describe("Dropzone", () => {
       render(<Dropzone multiple={false} />);
 
       fireEvent.click(screen.getByLabelText("File drop zone"));
-      expect(getInput()!.multiple).toBe(false);
+      expect(getInput()?.multiple).toBe(false);
     });
 
     it("sets accept attribute when accept prop is provided", () => {
@@ -237,7 +237,7 @@ describe("Dropzone", () => {
 
       const file = makeFile("photo.png");
       Object.defineProperty(input, "files", { value: [file], configurable: true });
-      input.onchange!({ target: input } as unknown as Event);
+      input.onchange?.({ target: input } as unknown as Event);
 
       expect(onFiles).toHaveBeenCalledWith([file]);
     });
@@ -252,7 +252,7 @@ describe("Dropzone", () => {
 
       const files = [makeFile("a.png"), makeFile("b.jpg", "image/jpeg")];
       Object.defineProperty(input, "files", { value: files, configurable: true });
-      input.onchange!({ target: input } as unknown as Event);
+      input.onchange?.({ target: input } as unknown as Event);
 
       expect(onFiles).toHaveBeenCalledWith(files);
     });
@@ -266,7 +266,7 @@ describe("Dropzone", () => {
       const input = getInput()!;
 
       Object.defineProperty(input, "files", { value: [], configurable: true });
-      input.onchange!({ target: input } as unknown as Event);
+      input.onchange?.({ target: input } as unknown as Event);
 
       expect(onFiles).not.toHaveBeenCalled();
     });

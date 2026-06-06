@@ -24,7 +24,7 @@ describe("ExifTool security: tag value validation", () => {
 
   it("strips null bytes then checks length", () => {
     // 9999 real chars + 2 null bytes = 10001 input chars, but after stripping nulls = 9999 (ok)
-    const value = "x".repeat(9_999) + "\0\0";
+    const value = `${"x".repeat(9_999)}\0\0`;
     expect(sanitizeTagValue(value, "Description")).toBe("x".repeat(9_999));
   });
 

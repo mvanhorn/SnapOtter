@@ -52,7 +52,7 @@ const PNG_1x1 = fixture("test-1x1.png");
 const JPG_SAMPLE_LARGE = contentFixture("stress-large.jpg");
 
 /** Sample photo JPEG. */
-const JPG_SAMPLE = fixture("sample-photo.jpg");
+const _JPG_SAMPLE = fixture("sample-photo.jpg");
 
 /** JPEG with EXIF data. */
 const JPG_WITH_EXIF = fixture("test-with-exif.jpg");

@@ -91,7 +91,7 @@ describe("buildMinimalEnv - env passthrough", () => {
 
     const env = getSpawnEnv();
     expect(env).toBeDefined();
-    expect(env!.SNAPOTTER_GPU).toBe("1");
+    expect(env?.SNAPOTTER_GPU).toBe("1");
   });
 
   it("passes MODELS_PATH to Python subprocess", async () => {
@@ -107,7 +107,7 @@ describe("buildMinimalEnv - env passthrough", () => {
 
     const env = getSpawnEnv();
     expect(env).toBeDefined();
-    expect(env!.MODELS_PATH).toBe("/data/ai/models");
+    expect(env?.MODELS_PATH).toBe("/data/ai/models");
   });
 
   it("does not pass MODELS_DIR (removed dead entry)", async () => {
@@ -123,7 +123,7 @@ describe("buildMinimalEnv - env passthrough", () => {
 
     const env = getSpawnEnv();
     expect(env).toBeDefined();
-    expect(env!.MODELS_DIR).toBeUndefined();
+    expect(env?.MODELS_DIR).toBeUndefined();
   });
 
   it("does not include SNAPOTTER_GPU when not set in parent env", async () => {
@@ -139,7 +139,7 @@ describe("buildMinimalEnv - env passthrough", () => {
 
     const env = getSpawnEnv();
     expect(env).toBeDefined();
-    expect(env!.SNAPOTTER_GPU).toBeUndefined();
+    expect(env?.SNAPOTTER_GPU).toBeUndefined();
   });
 
   it("always includes PYTHONUNBUFFERED=1", async () => {
@@ -153,7 +153,7 @@ describe("buildMinimalEnv - env passthrough", () => {
 
     const env = getSpawnEnv();
     expect(env).toBeDefined();
-    expect(env!.PYTHONUNBUFFERED).toBe("1");
+    expect(env?.PYTHONUNBUFFERED).toBe("1");
   });
 
   it("passes LD_LIBRARY_PATH when set", async () => {
@@ -168,7 +168,7 @@ describe("buildMinimalEnv - env passthrough", () => {
     await promise;
 
     const env = getSpawnEnv();
-    expect(env!.LD_LIBRARY_PATH).toBe("/usr/local/nvidia/lib64");
+    expect(env?.LD_LIBRARY_PATH).toBe("/usr/local/nvidia/lib64");
 
     delete process.env.LD_LIBRARY_PATH;
   });
@@ -185,7 +185,7 @@ describe("buildMinimalEnv - env passthrough", () => {
     await promise;
 
     const env = getSpawnEnv();
-    expect(env!.CUDA_VISIBLE_DEVICES).toBe("0,1");
+    expect(env?.CUDA_VISIBLE_DEVICES).toBe("0,1");
 
     delete process.env.CUDA_VISIBLE_DEVICES;
   });
@@ -203,8 +203,8 @@ describe("buildMinimalEnv - env passthrough", () => {
     await promise;
 
     const env = getSpawnEnv();
-    expect(env!.SECRET_API_KEY).toBeUndefined();
-    expect(env!.DATABASE_URL).toBeUndefined();
+    expect(env?.SECRET_API_KEY).toBeUndefined();
+    expect(env?.DATABASE_URL).toBeUndefined();
 
     delete process.env.SECRET_API_KEY;
     delete process.env.DATABASE_URL;

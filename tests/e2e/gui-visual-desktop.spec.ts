@@ -339,4 +339,153 @@ test.describe("Visual Desktop (1280x720)", () => {
       });
     });
   });
+
+  // ---- Change password page ----
+  test("change password page - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/change-password");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "change-password");
+  });
+
+  // ---- Privacy policy page ----
+  test.describe("Privacy policy page", () => {
+    test.use({ storageState: { cookies: [], origins: [] } });
+
+    test("privacy policy page - light and dark", async ({ page }) => {
+      await page.goto("/privacy");
+      await page.waitForLoadState("networkidle");
+      await page.waitForTimeout(500);
+
+      // Light screenshot
+      await expect(page).toHaveScreenshot("desktop-privacy-policy-light.png", {
+        fullPage: false,
+      });
+
+      // Toggle to dark
+      await page.keyboard.press(`${MOD}+Shift+d`);
+      await page.waitForTimeout(300);
+
+      await expect(page).toHaveScreenshot("desktop-privacy-policy-dark.png", {
+        fullPage: false,
+      });
+    });
+  });
+
+  // ---- 404 Not Found page ----
+  test("not found page - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/this-route-does-not-exist-404");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "not-found");
+  });
+
+  // ---- Editor page (welcome/empty state) ----
+  test("editor page welcome state - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/editor");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "editor-welcome");
+  });
+
+  // ---- Tool page - convert (empty state) ----
+  test("convert tool empty - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/convert");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "tool-convert-empty");
+  });
+
+  // ---- Tool page - convert (file uploaded, format selection visible) ----
+  test("convert tool with file - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/convert");
+    await uploadTestImage(page);
+    await page.waitForTimeout(500);
+
+    await expect(page.getByText("Settings").first()).toBeVisible();
+
+    await takeThemedScreenshots(page, "tool-convert-settings");
+  });
+
+  // ---- Tool page - watermark-text (before-after mode) ----
+  test("watermark-text tool empty - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/watermark-text");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "tool-watermark-text-empty");
+  });
+
+  // ---- Tool page - border (live-preview mode) ----
+  test("border tool empty - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/border");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "tool-border-empty");
+  });
+
+  // ---- Settings dialog - Security tab ----
+  test("settings dialog security tab - light and dark", async ({ loggedInPage: page }) => {
+    await openSettings(page);
+
+    // Navigate to Security tab
+    await page.getByRole("button", { name: "Security" }).click();
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "settings-security");
+  });
+
+  // ---- Sidebar expanded state ----
+  test("sidebar expanded state - light and dark", async ({ loggedInPage: page }) => {
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Verify sidebar is visible at desktop width
+    const sidebar = page.locator("aside");
+    await expect(sidebar).toBeVisible();
+
+    // Take screenshot focused on sidebar region
+    await setTheme(page, "light");
+    await expect(sidebar).toHaveScreenshot("desktop-sidebar-expanded-light.png");
+
+    await setTheme(page, "dark");
+    await expect(sidebar).toHaveScreenshot("desktop-sidebar-expanded-dark.png");
+
+    await setTheme(page, "light");
+  });
+
+  // ---- Home page with search focused ----
+  test("home page search focused - light and dark", async ({ loggedInPage: page }) => {
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Focus search bar via keyboard shortcut
+    await page.keyboard.press(`${MOD}+k`);
+    await page.waitForTimeout(300);
+
+    await takeThemedScreenshots(page, "home-search-focused");
+  });
+
+  // ---- Tool page - strip-metadata (no-comparison mode) ----
+  test("strip-metadata tool empty - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/strip-metadata");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "tool-strip-metadata-empty");
+  });
+
+  // ---- Tool page - info (before-after mode) ----
+  test("info tool empty - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/info");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "tool-info-empty");
+  });
 });

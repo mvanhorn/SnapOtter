@@ -986,4 +986,120 @@ describe("Barcode Read", () => {
     expect(result.barcodes.length).toBeGreaterThanOrEqual(1);
     expect(result.barcodes[0].text).toBe(testText);
   });
+
+  // ── AVIF format input with QR ─────────────────────────────────────
+
+  it("reads barcodes from AVIF-converted QR code", async () => {
+    const avifQr = await sharp(qrCodePng).avif({ quality: 90 }).toBuffer();
+
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "qr.avif", contentType: "image/avif", content: avifQr },
+      { name: "settings", content: JSON.stringify({ tryHarder: true }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/barcode-read",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.filename).toBe("qr.avif");
+    expect(Array.isArray(result.barcodes)).toBe(true);
+    // AVIF compression may affect readability but should not error
+  });
+
+  // ── SVGZ format input ────────────────────────────────────────────
+
+  it("reads barcodes from a SVGZ input image", async () => {
+    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "icon.svgz", contentType: "image/svg+xml", content: SVGZ },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/barcode-read",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.filename).toBe("icon.svgz");
+    expect(Array.isArray(result.barcodes)).toBe(true);
+  });
+
+  // ── QR code with tryHarder and annotated image position check ────
+
+  it("annotated image has barcodes with valid position coordinates", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "qr.png", contentType: "image/png", content: qrCodePng },
+      { name: "settings", content: JSON.stringify({ tryHarder: true }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/barcode-read",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.barcodes.length).toBeGreaterThanOrEqual(1);
+
+    const pos = result.barcodes[0].position;
+    // All position coordinates should be non-negative
+    expect(pos.topLeft.x).toBeGreaterThanOrEqual(0);
+    expect(pos.topLeft.y).toBeGreaterThanOrEqual(0);
+    expect(pos.topRight.x).toBeGreaterThanOrEqual(0);
+    expect(pos.topRight.y).toBeGreaterThanOrEqual(0);
+    expect(pos.bottomLeft.x).toBeGreaterThanOrEqual(0);
+    expect(pos.bottomLeft.y).toBeGreaterThanOrEqual(0);
+    expect(pos.bottomRight.x).toBeGreaterThanOrEqual(0);
+    expect(pos.bottomRight.y).toBeGreaterThanOrEqual(0);
+    // topRight.x should be > topLeft.x (barcode has width)
+    expect(pos.topRight.x).toBeGreaterThan(pos.topLeft.x);
+    // bottomLeft.y should be > topLeft.y (barcode has height)
+    expect(pos.bottomLeft.y).toBeGreaterThan(pos.topLeft.y);
+  });
+
+  // ── Large QR code (high resolution) ──────────────────────────────
+
+  it("reads QR code from high-resolution image", async () => {
+    const largeQr = await sharp(qrCodePng).resize(1000, 1000).png().toBuffer();
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "large-qr.png", contentType: "image/png", content: largeQr },
+      { name: "settings", content: JSON.stringify({ tryHarder: true }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/barcode-read",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.barcodes.length).toBeGreaterThanOrEqual(1);
+    expect(result.barcodes[0].text).toBe(QR_TEXT);
+    expect(result.annotatedUrl).toBeDefined();
+    expect(result.annotatedUrl).not.toBeNull();
+  });
 });

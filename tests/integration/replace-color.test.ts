@@ -666,3 +666,147 @@ describe("Pixel accuracy verification", () => {
     expect(whiteCount / totalPixels).toBeGreaterThan(0.9);
   });
 });
+
+// ── makeTransparent ignores targetColor ──────────────────────
+describe("makeTransparent ignores targetColor", () => {
+  it("makeTransparent ignores the targetColor parameter", async () => {
+    const res = await postTool(
+      { sourceColor: "#FF0000", targetColor: "#00FF00", makeTransparent: true, tolerance: 30 },
+      solidRedBuffer,
+    );
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    // Result should have alpha channel (transparent), not green
+    expect(meta.channels).toBe(4);
+  });
+});
+
+// ── AVIF input ─────────────────────────────────────────────────
+describe("AVIF input", () => {
+  it("processes AVIF image with color replacement", async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const res = await postTool(
+      { sourceColor: "#808080", targetColor: "#FF0000", tolerance: 50 },
+      AVIF,
+      "test.avif",
+      "image/avif",
+    );
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+});
+
+// ── Tolerance boundary values ──────────────────────────────────
+describe("Tolerance boundary values", () => {
+  it("accepts exact tolerance boundary (255)", async () => {
+    const res = await postTool({
+      sourceColor: "#000000",
+      targetColor: "#FFFFFF",
+      tolerance: 255,
+    });
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("accepts exact tolerance boundary (0)", async () => {
+    const res = await postTool({
+      sourceColor: "#000000",
+      targetColor: "#FFFFFF",
+      tolerance: 0,
+    });
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("rejects tolerance at 256 (one above max)", async () => {
+    const res = await postTool({
+      sourceColor: "#000000",
+      targetColor: "#FFFFFF",
+      tolerance: 256,
+    });
+    expect(res.statusCode).toBe(400);
+  });
+});
+
+// ── White to black replacement ────────────────────────────────
+describe("White to black replacement", () => {
+  it("replaces white with black in a solid white image", async () => {
+    const solidWhite = await sharp({
+      create: { width: 50, height: 50, channels: 3, background: { r: 255, g: 255, b: 255 } },
+    })
+      .png()
+      .toBuffer();
+
+    const res = await postTool(
+      { sourceColor: "#FFFFFF", targetColor: "#000000", tolerance: 0 },
+      solidWhite,
+    );
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+
+    const { data } = await sharp(dlRes.rawPayload)
+      .removeAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    // First pixel should be near-black
+    expect(data[0]).toBeLessThan(10);
+    expect(data[1]).toBeLessThan(10);
+    expect(data[2]).toBeLessThan(10);
+  });
+});
+
+// ── makeTransparent preserves non-matching pixels ─────────────
+describe("makeTransparent preserves non-matching pixels", () => {
+  it("non-matching pixels retain full opacity", async () => {
+    // Create half red, half blue image
+    const w = 100;
+    const h = 50;
+    const raw = Buffer.alloc(w * h * 3);
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const idx = (y * w + x) * 3;
+        if (x < 50) {
+          raw[idx] = 255;
+          raw[idx + 1] = 0;
+          raw[idx + 2] = 0;
+        } else {
+          raw[idx] = 0;
+          raw[idx + 1] = 0;
+          raw[idx + 2] = 255;
+        }
+      }
+    }
+    const bicolor = await sharp(raw, { raw: { width: w, height: h, channels: 3 } })
+      .png()
+      .toBuffer();
+
+    const res = await postTool(
+      { sourceColor: "#FF0000", makeTransparent: true, tolerance: 10 },
+      bicolor,
+    );
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.channels).toBe(4);
+    expect(meta.width).toBe(100);
+    expect(meta.height).toBe(50);
+  });
+});

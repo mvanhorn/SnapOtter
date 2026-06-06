@@ -1045,4 +1045,126 @@ describe("image-to-base64", () => {
     // encodedSize should be the length of the base64 string (characters)
     expect(r.encodedSize).toBe(r.base64.length);
   });
+
+  // ── AVIF input format ────────────────────────────────────────
+  it("converts AVIF to base64 in original mode", async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.avif", contentType: "image/avif", content: AVIF },
+      { name: "settings", content: JSON.stringify({}) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/image-to-base64",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.results).toHaveLength(1);
+    expect(json.results[0].base64.length).toBeGreaterThan(0);
+  });
+
+  // ── GIF with resize ──────────────────────────────────────────
+  it("resizes animated GIF and converts to JPEG", async () => {
+    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
+      { name: "settings", content: JSON.stringify({ outputFormat: "jpeg", maxWidth: 30 }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/image-to-base64",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.results[0].mimeType).toBe("image/jpeg");
+    expect(json.results[0].width).toBeLessThanOrEqual(30);
+  });
+
+  // ── TIFF with explicit format conversion ─────────────────────
+  it("converts TIFF to WebP format", async () => {
+    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.tiff", contentType: "image/tiff", content: TIFF },
+      { name: "settings", content: JSON.stringify({ outputFormat: "webp", quality: 50 }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/image-to-base64",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.results[0].mimeType).toBe("image/webp");
+    expect(json.results[0].base64.length).toBeGreaterThan(0);
+  });
+
+  // ── maxWidth and maxHeight both at 1 (extreme resize) ────────
+  it("handles extreme resize to 1x1", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      { name: "settings", content: JSON.stringify({ maxWidth: 1, maxHeight: 1 }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/image-to-base64",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.results[0].width).toBe(1);
+    expect(json.results[0].height).toBe(1);
+  });
+
+  // ── Quality mid-range with different formats ──────────────────
+  it("applies mid-range quality (50) to AVIF output", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      { name: "settings", content: JSON.stringify({ outputFormat: "avif", quality: 50 }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/image-to-base64",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.results[0].mimeType).toBe("image/avif");
+  });
+
+  // ── SVG with explicit format conversion ──────────────────────
+  it("converts SVG to JPEG when outputFormat is jpeg", async () => {
+    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "icon.svg", contentType: "image/svg+xml", content: SVG },
+      { name: "settings", content: JSON.stringify({ outputFormat: "jpeg" }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/image-to-base64",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.results[0].mimeType).toBe("image/jpeg");
+  });
 });

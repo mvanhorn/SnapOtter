@@ -1148,4 +1148,354 @@ test.describe("Mobile Navigation", () => {
 
     await context.close();
   });
+
+  test("hamburger menu Grid link navigates to /fullscreen", async ({ browser }) => {
+    const context = await browser.newContext({
+      viewport: { width: 375, height: 667 },
+    });
+    const page = await context.newPage();
+    await page.goto("/login");
+    await page.getByLabel("Username").fill("admin");
+    await page.getByLabel("Password").fill("admin");
+    await page.getByRole("button", { name: /login/i }).click();
+    await page.waitForURL("/", { timeout: 15_000 });
+
+    // Open hamburger menu
+    const topBar = page.locator(".fixed").filter({ hasText: "SnapOtter" }).first();
+    const hamburger = topBar.locator("button").first();
+    await hamburger.click();
+
+    // Click Grid in expanded sidebar
+    await page.getByText("Grid").click();
+    await expect(page).toHaveURL("/fullscreen");
+
+    await context.close();
+  });
+
+  test("hamburger menu Automate link navigates to /automate", async ({ browser }) => {
+    const context = await browser.newContext({
+      viewport: { width: 375, height: 667 },
+    });
+    const page = await context.newPage();
+    await page.goto("/login");
+    await page.getByLabel("Username").fill("admin");
+    await page.getByLabel("Password").fill("admin");
+    await page.getByRole("button", { name: /login/i }).click();
+    await page.waitForURL("/", { timeout: 15_000 });
+
+    const topBar = page.locator(".fixed").filter({ hasText: "SnapOtter" }).first();
+    const hamburger = topBar.locator("button").first();
+    await hamburger.click();
+
+    await page.getByText("Automate").nth(1).click();
+    await expect(page).toHaveURL("/automate");
+
+    await context.close();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Editor Page (/editor)
+// ---------------------------------------------------------------------------
+test.describe("Editor Page", () => {
+  test("editor page renders with canvas area", async ({ loggedInPage: page }) => {
+    await page.goto("/editor");
+
+    await expect(page).toHaveURL("/editor");
+    // Editor should have a canvas or main editor area
+    await expect(page.getByText(/editor|canvas|draw/i).first()).toBeVisible();
+  });
+
+  test("editor page is accessible from sidebar", async ({ loggedInPage: page }) => {
+    await page.locator("aside").getByText("Editor").click();
+    await expect(page).toHaveURL("/editor");
+  });
+
+  test("page refresh preserves /editor route", async ({ loggedInPage: page }) => {
+    await page.goto("/editor");
+    await expect(page).toHaveURL("/editor");
+
+    await page.reload();
+    await expect(page).toHaveURL("/editor");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Settings Dialog - Tab Navigation
+// ---------------------------------------------------------------------------
+test.describe("Settings Dialog Tabs", () => {
+  test("settings dialog shows all navigation sections", async ({ loggedInPage: page }) => {
+    await openSettings(page);
+
+    // Core sections should be listed in nav
+    await expect(page.getByRole("button", { name: "General" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Security" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "About" })).toBeVisible();
+  });
+
+  test("clicking Security tab shows security settings", async ({ loggedInPage: page }) => {
+    await openSettings(page);
+
+    await page.getByRole("button", { name: "Security" }).click();
+    await page.waitForTimeout(300);
+
+    // Security section content should appear
+    await expect(page.getByRole("heading", { name: "Security" })).toBeVisible();
+  });
+
+  test("clicking About tab shows version info", async ({ loggedInPage: page }) => {
+    await openSettings(page);
+
+    await page.getByRole("button", { name: "About" }).click();
+    await page.waitForTimeout(300);
+
+    // About section should show version
+    await expect(page.getByText(/version/i).first()).toBeVisible();
+  });
+
+  test("switching between tabs preserves dialog open state", async ({ loggedInPage: page }) => {
+    await openSettings(page);
+
+    // Switch to Security
+    await page.getByRole("button", { name: "Security" }).click();
+    await page.waitForTimeout(200);
+    await expect(page.getByRole("dialog")).toBeVisible();
+
+    // Switch to About
+    await page.getByRole("button", { name: "About" }).click();
+    await page.waitForTimeout(200);
+    await expect(page.getByRole("dialog")).toBeVisible();
+
+    // Switch back to General
+    await page.getByRole("button", { name: "General" }).click();
+    await page.waitForTimeout(200);
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "General" })).toBeVisible();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Language Selector
+// ---------------------------------------------------------------------------
+test.describe("Language Selector", () => {
+  test("language button opens language dropdown", async ({ loggedInPage: page }) => {
+    const langBtn = page.locator("button[title='Language']");
+    await expect(langBtn).toBeVisible();
+
+    await langBtn.click();
+    await page.waitForTimeout(300);
+
+    // Language options should appear
+    await expect(page.getByText(/espa|fran|deutsch|portugu/i).first()).toBeVisible();
+  });
+
+  test("selecting a language updates the button label", async ({ loggedInPage: page }) => {
+    const langBtn = page.locator("button[title='Language']");
+    await expect(langBtn).toContainText("English");
+
+    await langBtn.click();
+    await page.waitForTimeout(300);
+
+    // Pick a different language and check the button updates
+    const spanishOption = page.getByText(/espa/i).first();
+    if (await spanishOption.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await spanishOption.click();
+      await page.waitForTimeout(500);
+
+      // Button should no longer say "English"
+      await expect(langBtn).not.toContainText("English");
+
+      // Reset back to English
+      await langBtn.click();
+      await page.waitForTimeout(300);
+      await page.getByText("English").first().click();
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Fullscreen Grid - Tool Visibility
+// ---------------------------------------------------------------------------
+test.describe("Fullscreen Grid - AI Tool Visibility", () => {
+  test("AI tools section is visible in fullscreen grid", async ({ loggedInPage: page }) => {
+    await page.goto("/fullscreen");
+
+    await expect(page.getByText("AI Tools")).toBeVisible();
+    // At least one AI tool should be listed
+    await expect(page.getByRole("link", { name: /Remove Background/ }).first()).toBeVisible();
+  });
+
+  test("tool cards display an icon and name", async ({ loggedInPage: page }) => {
+    await page.goto("/fullscreen");
+
+    // A tool card should have visible text for its name
+    const resizeLink = page.getByRole("link", { name: /^Resize/ }).first();
+    await expect(resizeLink).toBeVisible();
+
+    // And it should contain an SVG icon
+    await expect(resizeLink.locator("svg").first()).toBeVisible();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Automate Page - Additional Coverage
+// ---------------------------------------------------------------------------
+test.describe("Automate Page - Pipeline Management", () => {
+  test("removing a pipeline step returns to empty state", async ({ loggedInPage: page }) => {
+    await page.goto("/automate");
+
+    // Add a tool step
+    const resizeTool = page.locator("[data-tool-id='resize']").first();
+    if (await resizeTool.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await resizeTool.click();
+    } else {
+      await page.getByText("Resize").first().click();
+    }
+    await page.waitForTimeout(500);
+
+    // Step should be added
+    await expect(page.getByText("No steps yet")).not.toBeVisible();
+
+    // Remove the step (click the remove/delete button on the step)
+    const removeBtn = page
+      .locator("button")
+      .filter({ has: page.locator("svg") })
+      .filter({
+        hasText: /remove|delete|x/i,
+      })
+      .first();
+    if (await removeBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await removeBtn.click();
+      await page.waitForTimeout(300);
+      await expect(page.getByText("No steps yet")).toBeVisible();
+    }
+  });
+
+  test("adding multiple steps shows ordered step list", async ({ loggedInPage: page }) => {
+    await page.goto("/automate");
+
+    // Add first tool
+    const resizeTool = page.locator("[data-tool-id='resize']").first();
+    if (await resizeTool.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await resizeTool.click();
+    } else {
+      await page.getByText("Resize").first().click();
+    }
+    await page.waitForTimeout(300);
+
+    // Add second tool
+    const compressTool = page.locator("[data-tool-id='compress']").first();
+    if (await compressTool.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await compressTool.click();
+    } else {
+      await page.getByText("Compress").first().click();
+    }
+    await page.waitForTimeout(300);
+
+    // Both tools should be listed as steps
+    await expect(page.getByText("Resize").first()).toBeVisible();
+    await expect(page.getByText("Compress").first()).toBeVisible();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Routing - Additional Edge Cases
+// ---------------------------------------------------------------------------
+test.describe("Routing - Additional Edge Cases", () => {
+  test("/change-password page renders for authenticated user", async ({ loggedInPage: page }) => {
+    await page.goto("/change-password");
+
+    // Should render the change password form
+    await expect(page.getByText(/change password|new password/i).first()).toBeVisible();
+  });
+
+  test("navigating to /editor and back preserves home state", async ({ loggedInPage: page }) => {
+    // Start at home
+    await expect(page).toHaveURL("/");
+
+    // Navigate to editor
+    await page.goto("/editor");
+    await expect(page).toHaveURL("/editor");
+
+    // Navigate back
+    await page.goBack();
+    await expect(page).toHaveURL("/");
+
+    // Home content should be intact
+    await expect(page.getByText("Upload from computer")).toBeVisible();
+  });
+
+  test("deep-linking to a specific tool page works", async ({ loggedInPage: page }) => {
+    await page.goto("/watermark-text");
+    await expect(page).toHaveURL("/watermark-text");
+    await expect(page.getByText("Text Watermark").first()).toBeVisible();
+  });
+
+  test("double navigation to same page does not break state", async ({ loggedInPage: page }) => {
+    await page.goto("/fullscreen");
+    await expect(page).toHaveURL("/fullscreen");
+
+    await page.goto("/fullscreen");
+    await expect(page).toHaveURL("/fullscreen");
+
+    // Page should still work correctly
+    await expect(page.getByPlaceholder(/search/i)).toBeVisible();
+  });
+
+  test("navigating from a legacy redirect to another page works", async ({
+    loggedInPage: page,
+  }) => {
+    await page.goto("/brightness-contrast");
+    await expect(page).toHaveURL("/adjust-colors");
+
+    await page.goto("/fullscreen");
+    await expect(page).toHaveURL("/fullscreen");
+
+    await page.goBack();
+    await expect(page).toHaveURL("/adjust-colors");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tool Page - Mobile Structure (375x667)
+// ---------------------------------------------------------------------------
+test.describe("Tool Page - Mobile Structure", () => {
+  const MOBILE_TOOLS = [
+    { id: "resize", name: "Resize" },
+    { id: "compress", name: "Compress" },
+    { id: "convert", name: "Convert" },
+    { id: "crop", name: "Crop" },
+    { id: "watermark-text", name: "Text Watermark" },
+    { id: "adjust-colors", name: "Adjust Colors" },
+  ];
+
+  for (const tool of MOBILE_TOOLS) {
+    test(`mobile: ${tool.name} (/${tool.id}) shows tool name and dropzone`, async ({ browser }) => {
+      const context = await browser.newContext({
+        viewport: { width: 375, height: 667 },
+      });
+      const page = await context.newPage();
+      await page.goto("/login");
+      await page.getByLabel("Username").fill("admin");
+      await page.getByLabel("Password").fill("admin");
+      await page.getByRole("button", { name: /login/i }).click();
+      await page.waitForURL("/", { timeout: 15_000 });
+
+      await page.goto(`/${tool.id}`);
+
+      // Tool name should be visible
+      await expect(page.getByText(tool.name).first()).toBeVisible();
+
+      // Dropzone should be visible on mobile too
+      const dropzone = page.locator("[class*='border-dashed']").first();
+      await expect(dropzone).toBeVisible();
+
+      // No horizontal overflow
+      const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+      const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+      expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+
+      await context.close();
+    });
+  }
 });

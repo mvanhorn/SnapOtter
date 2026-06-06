@@ -753,4 +753,116 @@ describe("watermark-image", () => {
     expect(json.downloadUrl).toBeDefined();
     expect(json.processedSize).toBeGreaterThan(0);
   });
+
+  // ── AVIF watermark image ──────────────────────────────────────
+
+  it("processes AVIF watermark image", async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "main.png", contentType: "image/png", content: PNG },
+      { name: "watermark", filename: "wm.avif", contentType: "image/avif", content: AVIF },
+      { name: "settings", content: JSON.stringify({ scale: 20 }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/watermark-image",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    // AVIF may or may not decode depending on platform support
+    expect([200, 422]).toContain(res.statusCode);
+    if (res.statusCode === 200) {
+      const json = JSON.parse(res.body);
+      expect(json.downloadUrl).toBeDefined();
+    }
+  });
+
+  // ── JPG watermark on JPG main ──────────────────────────────────
+
+  it("processes JPG main with JPG watermark", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "main.jpg", contentType: "image/jpeg", content: JPG },
+      { name: "watermark", filename: "wm.jpg", contentType: "image/jpeg", content: JPG },
+      { name: "settings", content: JSON.stringify({ scale: 30, opacity: 70, position: "center" }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/watermark-image",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.downloadUrl).toBeDefined();
+    expect(json.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Default position is bottom-right ──────────────────────────
+
+  it("uses default position (bottom-right) when not specified", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "main.png", contentType: "image/png", content: PNG },
+      { name: "watermark", filename: "wm.png", contentType: "image/png", content: SMALL_PNG },
+      { name: "settings", content: JSON.stringify({ scale: 15, opacity: 40 }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/watermark-image",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.downloadUrl).toBeDefined();
+  });
+
+  // ── Response includes originalSize and processedSize ──────────
+
+  it("response includes originalSize and processedSize fields", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "main.png", contentType: "image/png", content: PNG },
+      { name: "watermark", filename: "wm.png", contentType: "image/png", content: SMALL_PNG },
+      { name: "settings", content: JSON.stringify({}) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/watermark-image",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.originalSize).toBe(PNG.length);
+    expect(json.processedSize).toBeGreaterThan(0);
+    expect(json.downloadUrl).toContain("/api/v1/download/");
+  });
+
+  // ── Scale=50 mid-range at center ──────────────────────────────
+
+  it("handles scale=50 with center position and mid opacity", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "main.png", contentType: "image/png", content: PNG },
+      { name: "watermark", filename: "wm.png", contentType: "image/png", content: SMALL_PNG },
+      { name: "settings", content: JSON.stringify({ scale: 50, opacity: 60, position: "center" }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/watermark-image",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.downloadUrl).toBeDefined();
+  });
 });

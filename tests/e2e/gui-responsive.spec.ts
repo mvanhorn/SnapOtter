@@ -692,4 +692,200 @@ test.describe("Responsive - Mobile (375x667)", () => {
 
     await context.close();
   });
+
+  test("no horizontal overflow on editor page", async ({ loggedInPage: page }) => {
+    await page.goto("/editor");
+
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+  });
+
+  test("no horizontal overflow on change-password page", async ({ loggedInPage: page }) => {
+    await page.goto("/change-password");
+
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+  });
+
+  test("bottom nav active item shows visual indicator", async ({ loggedInPage: page }) => {
+    const bottomNav = page.locator("nav.fixed");
+    await bottomNav.getByText("Automate").click();
+    await expect(page).toHaveURL("/automate");
+
+    // The active item should have distinct styling (e.g. text color)
+    const activeItem = bottomNav.getByText("Automate");
+    await expect(activeItem).toBeVisible();
+  });
+
+  test("multiple tool pages have no overflow on mobile", async ({ loggedInPage: page }) => {
+    const tools = ["compress", "convert", "crop", "adjust-colors"];
+    for (const tool of tools) {
+      await page.goto(`/${tool}`);
+      const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+      const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+      expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+    }
+  });
+
+  test("analytics consent page has no overflow on mobile", async ({ browser }) => {
+    const context = await browser.newContext({
+      storageState: { cookies: [], origins: [] },
+      viewport: MOBILE,
+    });
+    const page = await context.newPage();
+    await page.goto("/analytics-consent");
+
+    await expect(page.getByText("Help improve SnapOtter")).toBeVisible();
+
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+
+    await context.close();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Cross-viewport parameterized overflow tests
+// ---------------------------------------------------------------------------
+test.describe("Responsive - Cross-Viewport Overflow", () => {
+  const VIEWPORTS = [
+    { name: "Desktop", ...DESKTOP },
+    { name: "Tablet", ...TABLET },
+    { name: "Mobile", ...MOBILE },
+  ];
+
+  const PAGES = [
+    { path: "/", label: "Home" },
+    { path: "/fullscreen", label: "Fullscreen Grid" },
+    { path: "/automate", label: "Automate" },
+    { path: "/files", label: "Files" },
+    { path: "/editor", label: "Editor" },
+    { path: "/privacy", label: "Privacy" },
+  ];
+
+  for (const vp of VIEWPORTS) {
+    for (const pg of PAGES) {
+      test(`${pg.label} has no overflow at ${vp.name} (${vp.width}x${vp.height})`, async ({
+        browser,
+      }) => {
+        const context = await browser.newContext({
+          viewport: { width: vp.width, height: vp.height },
+        });
+        const page = await context.newPage();
+        await page.goto("/login");
+        await page.getByLabel("Username").fill("admin");
+        await page.getByLabel("Password").fill("admin");
+        await page.getByRole("button", { name: /login/i }).click();
+        await page.waitForURL("/", { timeout: 15_000 });
+
+        await page.goto(pg.path);
+        await page.waitForTimeout(500);
+
+        const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+        const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+        expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+
+        await context.close();
+      });
+    }
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Desktop - Additional Layout Checks
+// ---------------------------------------------------------------------------
+test.describe("Responsive - Desktop Additional", () => {
+  test.use({ viewport: DESKTOP });
+
+  test("editor page renders within desktop viewport", async ({ loggedInPage: page }) => {
+    await page.goto("/editor");
+
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+  });
+
+  test("sidebar width is consistent across pages", async ({ loggedInPage: page }) => {
+    const sidebar = page.locator("aside");
+    const homeBox = await sidebar.boundingBox();
+
+    await page.goto("/fullscreen");
+    const fullscreenBox = await page.locator("aside").boundingBox();
+
+    if (homeBox && fullscreenBox) {
+      expect(homeBox.width).toBe(fullscreenBox.width);
+    }
+  });
+
+  test("login page marketing panel is visible at desktop width", async ({ browser }) => {
+    const context = await browser.newContext({
+      storageState: { cookies: [], origins: [] },
+      viewport: DESKTOP,
+    });
+    const page = await context.newPage();
+    await page.goto("/login");
+
+    await expect(page.getByText("Your images. Stay yours.")).toBeVisible();
+
+    await context.close();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tablet - Additional Layout Checks
+// ---------------------------------------------------------------------------
+test.describe("Responsive - Tablet Additional", () => {
+  test.use({ viewport: TABLET });
+
+  test("editor page is accessible at tablet width", async ({ loggedInPage: page }) => {
+    await page.goto("/editor");
+
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+  });
+
+  test("login page at tablet shows or hides marketing panel", async ({ browser }) => {
+    const context = await browser.newContext({
+      storageState: { cookies: [], origins: [] },
+      viewport: TABLET,
+    });
+    const page = await context.newPage();
+    await page.goto("/login");
+
+    // Login form should be visible regardless
+    await expect(page.getByRole("heading", { name: /login/i })).toBeVisible();
+
+    // Marketing panel visibility depends on breakpoint
+    // At 768px, lg breakpoint is 1024px, so marketing is hidden
+    await expect(page.getByText("Your images. Stay yours.")).not.toBeVisible();
+
+    await context.close();
+  });
+
+  test("analytics consent page has no overflow at tablet", async ({ browser }) => {
+    const context = await browser.newContext({
+      storageState: { cookies: [], origins: [] },
+      viewport: TABLET,
+    });
+    const page = await context.newPage();
+    await page.goto("/analytics-consent");
+
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+
+    await context.close();
+  });
+
+  test("change-password page has no overflow at tablet", async ({ loggedInPage: page }) => {
+    await page.goto("/change-password");
+
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+  });
 });

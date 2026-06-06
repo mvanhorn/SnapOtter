@@ -721,7 +721,7 @@ test.describe("GUI Watermark & Overlay Tools", () => {
       // The image wrapper should have styling applied (border, padding, etc.)
       // Check that some wrapper element has a non-default style
       const wrapper = previewImg.locator("..");
-      const bgColor = await wrapper.evaluate((el) => window.getComputedStyle(el).backgroundColor);
+      const _bgColor = await wrapper.evaluate((el) => window.getComputedStyle(el).backgroundColor);
       // Polaroid preset uses white background -- just verify the preview didn't error
       await expect(previewImg).toBeVisible();
     });

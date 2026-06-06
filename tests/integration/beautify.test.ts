@@ -1095,4 +1095,204 @@ describe("Beautify", () => {
     expect(meta.width).toBe(200);
     expect(meta.height).toBe(150);
   });
+
+  // ── HEIC input ─────────────────────────────────────────────────────
+  it("HEIC input with solid background", { timeout: 120_000 }, async () => {
+    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const payload = createMultipartPayload([
+      { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          backgroundType: "solid",
+          backgroundColor: "#336699",
+          padding: 20,
+          shadowPreset: "none",
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect([200, 422]).toContain(res.statusCode);
+    if (res.statusCode === 200) {
+      const result = JSON.parse(res.body);
+      expect(result.downloadUrl).toBeDefined();
+      expect(result.processedSize).toBeGreaterThan(0);
+    }
+  });
+
+  // ── Large file handling ────────────────────────────────────────────
+  it("beautifies stress-large.jpg with shadow", async () => {
+    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const payload = createMultipartPayload([
+      { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          shadowPreset: "subtle",
+          padding: 30,
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Tiny file handling ─────────────────────────────────────────────
+  it("beautifies 1x1 pixel image", async () => {
+    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const payload = createMultipartPayload([
+      { name: "file", filename: "tiny.png", contentType: "image/png", content: TINY },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          padding: 20,
+          backgroundType: "solid",
+          backgroundColor: "#ff0000",
+          shadowPreset: "none",
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Empty file handling ────────────────────────────────────────────
+  it("returns 400 for empty file upload", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "empty.png", contentType: "image/png", content: Buffer.alloc(0) },
+      { name: "settings", content: JSON.stringify({}) },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(400);
+  });
+
+  // ── Authentication ─────────────────────────────────────────────────
+  it("returns 401 for unauthenticated request", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      { name: "settings", content: JSON.stringify({}) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/beautify",
+      headers: { "content-type": payload.contentType },
+      body: payload.body,
+    });
+
+    expect(res.statusCode).toBe(401);
+  });
+
+  // ── Response structure ─────────────────────────────────────────────
+  it("returns all expected fields in 200 response", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      { name: "settings", content: JSON.stringify({}) },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result).toHaveProperty("jobId");
+    expect(result).toHaveProperty("downloadUrl");
+    expect(result).toHaveProperty("originalSize");
+    expect(result).toHaveProperty("processedSize");
+    expect(typeof result.jobId).toBe("string");
+    expect(typeof result.downloadUrl).toBe("string");
+    expect(typeof result.originalSize).toBe("number");
+    expect(typeof result.processedSize).toBe("number");
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── WebP input ─────────────────────────────────────────────────────
+  it("beautifies WebP input with frame", async () => {
+    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const payload = createMultipartPayload([
+      { name: "file", filename: "photo.webp", contentType: "image/webp", content: WEBP },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          frame: "browser-dark",
+          shadowPreset: "none",
+          padding: 20,
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  // ── Invalid social preset ──────────────────────────────────────────
+  it("rejects invalid social preset", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ socialPreset: "tiktok" }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(400);
+  });
+
+  // ── Invalid shadow preset ─────────────────────────────────────────
+  it("rejects invalid shadow preset", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ shadowPreset: "extreme" }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(400);
+  });
+
+  // ── Watermark opacity boundaries ───────────────────────────────────
+  it("accepts watermark opacity 0", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          watermarkText: "SnapOtter",
+          watermarkPosition: "center",
+          watermarkOpacity: 0,
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("accepts watermark opacity 100", async () => {
+    const payload = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          watermarkText: "SnapOtter",
+          watermarkPosition: "center",
+          watermarkOpacity: 100,
+        }),
+      },
+    ]);
+
+    const res = await post("/api/v1/tools/beautify", payload);
+    expect(res.statusCode).toBe(200);
+  });
 });

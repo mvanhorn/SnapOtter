@@ -287,4 +287,386 @@ describe("Meme Generator", () => {
 
     expect(res.statusCode).toBe(401);
   });
+
+  // ── Response structure ──────────────────────────────────────────
+  it("returns all expected fields in template mode response", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        textBoxes: firstTemplateTextBoxIds.map((id) => ({
+          id,
+          text: `Test ${id}`,
+        })),
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result).toHaveProperty("jobId");
+    expect(result).toHaveProperty("downloadUrl");
+    expect(result).toHaveProperty("originalSize");
+    expect(result).toHaveProperty("processedSize");
+    expect(typeof result.jobId).toBe("string");
+    expect(typeof result.downloadUrl).toBe("string");
+    expect(typeof result.processedSize).toBe("number");
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Custom image with JPEG input ────────────────────────────────
+  it("custom image mode with JPEG input", async () => {
+    const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+    const settings = {
+      textLayout: "top-bottom",
+      textBoxes: [
+        { id: "top", text: "JPEG TOP" },
+        { id: "bottom", text: "JPEG BOTTOM" },
+      ],
+    };
+
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "meme.jpg", contentType: "image/jpeg", content: JPG },
+      { name: "settings", content: JSON.stringify(settings) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Font size parameter ─────────────────────────────────────────
+  it("accepts custom fontSize parameter", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        fontSize: 48,
+        textBoxes: firstTemplateTextBoxIds.map((id) => ({
+          id,
+          text: "Big text",
+        })),
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+
+  // ── Text color and stroke color ─────────────────────────────────
+  it("accepts custom textColor and strokeColor", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        textColor: "#ff0000",
+        strokeColor: "#00ff00",
+        textBoxes: firstTemplateTextBoxIds.map((id) => ({
+          id,
+          text: "Colored text",
+        })),
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  // ── Text alignment ──────────────────────────────────────────────
+  it("accepts text alignment left", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        textAlign: "left",
+        textBoxes: firstTemplateTextBoxIds.map((id) => ({
+          id,
+          text: "Left aligned",
+        })),
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("accepts text alignment right", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        textAlign: "right",
+        textBoxes: firstTemplateTextBoxIds.map((id) => ({
+          id,
+          text: "Right aligned",
+        })),
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+
+  // ── allCaps toggle ──────────────────────────────────────────────
+  it("accepts allCaps=false (lowercase text)", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        allCaps: false,
+        textBoxes: firstTemplateTextBoxIds.map((id) => ({
+          id,
+          text: "lowercase text test",
+        })),
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+
+  // ── roboto font family ──────────────────────────────────────────
+  it("accepts roboto font family", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        fontFamily: "roboto",
+        textBoxes: firstTemplateTextBoxIds.map((id) => ({
+          id,
+          text: "Roboto font",
+        })),
+      },
+    });
+
+    // Roboto may not be installed in test env, accept 422 (rendering failure)
+    expect([200, 422]).toContain(res.statusCode);
+    if (res.statusCode === 200) {
+      const result = JSON.parse(res.body);
+      expect(result.downloadUrl).toBeDefined();
+    }
+  });
+
+  // ── Invalid font family ─────────────────────────────────────────
+  it("rejects invalid font family", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        fontFamily: "comic-neue",
+        textBoxes: [],
+      },
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  // ── Corrupt image in custom mode ────────────────────────────────
+  it("rejects corrupt image in custom mode", async () => {
+    const settings = {
+      textLayout: "top-bottom",
+      textBoxes: [{ id: "top", text: "FAIL" }],
+    };
+
+    const { body, contentType } = createMultipartPayload([
+      {
+        name: "file",
+        filename: "bad.png",
+        contentType: "image/png",
+        content: Buffer.from("not image data"),
+      },
+      { name: "settings", content: JSON.stringify(settings) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  // ── Template mode with special characters in text ───────────────
+  it("handles special characters in meme text", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        textBoxes: firstTemplateTextBoxIds.map((id) => ({
+          id,
+          text: "<script>\"Hello\" & 'World'</script>",
+        })),
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  // ── Custom image with HEIC input ────────────────────────────────
+  it("custom image mode with HEIC input", { timeout: 120_000 }, async () => {
+    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const settings = {
+      textLayout: "center",
+      textBoxes: [{ id: "center", text: "HEIC MEME" }],
+    };
+
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "meme.heic", contentType: "image/heic", content: HEIC },
+      { name: "settings", content: JSON.stringify(settings) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect([200, 422]).toContain(res.statusCode);
+    if (res.statusCode === 200) {
+      const result = JSON.parse(res.body);
+      expect(result.downloadUrl).toBeDefined();
+    }
+  });
+
+  // ── Font size boundaries ────────────────────────────────────────
+  it("accepts minimum fontSize (8)", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        fontSize: 8,
+        textBoxes: firstTemplateTextBoxIds.map((id) => ({
+          id,
+          text: "Tiny text",
+        })),
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("accepts maximum fontSize (200)", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        fontSize: 200,
+        textBoxes: firstTemplateTextBoxIds.map((id) => ({
+          id,
+          text: "Huge text",
+        })),
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("rejects fontSize below minimum (7)", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        fontSize: 7,
+        textBoxes: [],
+      },
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("rejects fontSize above maximum (201)", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/meme-generator",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": "application/json",
+      },
+      payload: {
+        templateId: firstTemplateId,
+        fontSize: 201,
+        textBoxes: [],
+      },
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
 });

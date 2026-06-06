@@ -1066,4 +1066,170 @@ describe("image-to-pdf", () => {
     expect(json.compression).toBeDefined();
     expect(json.compression.targetMet).toBe(true);
   });
+
+  // ── collate=false produces individual PDFs in ZIP ───────────────
+
+  it("creates individual PDFs in ZIP when collate is false", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "page1.png", contentType: "image/png", content: PNG },
+      { name: "file", filename: "page2.jpg", contentType: "image/jpeg", content: JPG },
+      {
+        name: "settings",
+        content: JSON.stringify({ collate: false }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/image-to-pdf",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.pages).toBe(2);
+    expect(json.collated).toBe(false);
+    expect(json.downloadUrl).toContain("images.zip");
+    expect(json.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── collate=false with single image returns single PDF in ZIP ────
+
+  it("creates single PDF in ZIP when collate is false with one image", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "solo.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ collate: false }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/image-to-pdf",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.pages).toBe(1);
+    expect(json.collated).toBe(false);
+  });
+
+  // ── collate=false with target size ──────────────────────────────
+
+  it("creates individual compressed PDFs when collate=false with targetSize", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "p1.png", contentType: "image/png", content: PNG },
+      { name: "file", filename: "p2.jpg", contentType: "image/jpeg", content: JPG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          collate: false,
+          targetSize: { value: 5, unit: "MB" },
+        }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/image-to-pdf",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.pages).toBe(2);
+    expect(json.collated).toBe(false);
+    expect(json.compression).toBeDefined();
+  });
+
+  // ── collate=false with all settings ─────────────────────────────
+
+  it("creates individual PDFs with all settings combined when collate=false", async () => {
+    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.png", contentType: "image/png", content: PNG },
+      { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
+      { name: "file", filename: "c.webp", contentType: "image/webp", content: WEBP },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          pageSize: "A5",
+          orientation: "landscape",
+          margin: 30,
+          collate: false,
+        }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/image-to-pdf",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.pages).toBe(3);
+    expect(json.collated).toBe(false);
+    expect(json.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── collate=true explicitly (same as default) ──────────────────
+
+  it("collate=true produces collated PDF (same as default)", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "p1.png", contentType: "image/png", content: PNG },
+      { name: "file", filename: "p2.jpg", contentType: "image/jpeg", content: JPG },
+      {
+        name: "settings",
+        content: JSON.stringify({ collate: true }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/image-to-pdf",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.pages).toBe(2);
+    expect(json.downloadUrl).toContain("images.pdf");
+    expect(json.collated).toBeUndefined();
+  });
+
+  // ── A3 landscape with max margin ───────────────────────────────
+
+  it("handles A3 landscape with max margin (500)", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          pageSize: "A3",
+          orientation: "landscape",
+          margin: 500,
+        }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/image-to-pdf",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const json = JSON.parse(res.body);
+    expect(json.pages).toBe(1);
+  });
 });

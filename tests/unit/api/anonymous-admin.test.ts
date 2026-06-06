@@ -63,8 +63,8 @@ describe("anonymous user when AUTH_ENABLED=false", () => {
     await app.close();
 
     expect(capturedUser).not.toBeNull();
-    expect(capturedUser!.role).toBe("admin");
-    expect(capturedUser!.username).toBe("anonymous");
+    expect(capturedUser?.role).toBe("admin");
+    expect(capturedUser?.username).toBe("anonymous");
   });
 
   it("anonymous admin has settings:write permission", () => {

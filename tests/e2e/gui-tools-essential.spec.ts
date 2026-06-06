@@ -906,8 +906,8 @@ test.describe("GUI Essential Tools", () => {
       if (!box) return;
 
       // Get initial crop X/Y values
-      const initialX = await page.locator("#crop-x").inputValue();
-      const initialY = await page.locator("#crop-y").inputValue();
+      const _initialX = await page.locator("#crop-x").inputValue();
+      const _initialY = await page.locator("#crop-y").inputValue();
 
       // Perform a drag on the crop canvas to create/modify crop region
       await page.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.2);
@@ -917,8 +917,8 @@ test.describe("GUI Essential Tools", () => {
       await page.waitForTimeout(500);
 
       // After dragging, the numeric inputs should have updated
-      const newX = await page.locator("#crop-x").inputValue();
-      const newY = await page.locator("#crop-y").inputValue();
+      const _newX = await page.locator("#crop-x").inputValue();
+      const _newY = await page.locator("#crop-y").inputValue();
       const newWidth = await page.locator("#crop-width").inputValue();
       const newHeight = await page.locator("#crop-height").inputValue();
 

@@ -7,6 +7,7 @@ import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from
 const FIXTURES = join(__dirname, "..", "fixtures");
 const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
 const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+const _WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
 
 const ALL_TYPES = [
   "protanopia",
@@ -212,5 +213,183 @@ describe("Authentication", () => {
       headers: { "content-type": contentType },
     });
     expect(res.statusCode).toBe(401);
+  });
+});
+
+describe("Format preservation", () => {
+  it("preserves JPEG format for JPEG input", async () => {
+    const res = await postTool({ simulationType: "protanopia" }, JPG, "test.jpg", "image/jpeg");
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.format).toBe("jpeg");
+  });
+
+  it("preserves PNG format for PNG input", async () => {
+    const res = await postTool({ simulationType: "deuteranopia" }, PNG, "test.png", "image/png");
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.format).toBe("png");
+  });
+});
+
+describe("Response structure", () => {
+  it("returns all expected fields in 200 response", async () => {
+    const res = await postTool({ simulationType: "tritanopia" });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result).toHaveProperty("jobId");
+    expect(result).toHaveProperty("downloadUrl");
+    expect(result).toHaveProperty("originalSize");
+    expect(result).toHaveProperty("processedSize");
+    expect(typeof result.jobId).toBe("string");
+    expect(typeof result.downloadUrl).toBe("string");
+    expect(typeof result.originalSize).toBe("number");
+    expect(typeof result.processedSize).toBe("number");
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+});
+
+describe("Empty and corrupt file handling", () => {
+  it("returns 400 for empty file upload", async () => {
+    const res = await postTool(
+      { simulationType: "protanopia" },
+      Buffer.alloc(0),
+      "empty.png",
+      "image/png",
+    );
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("returns 400 for corrupt image data", async () => {
+    const res = await postTool(
+      { simulationType: "deuteranopia" },
+      Buffer.from("this is not an image file"),
+      "corrupt.png",
+      "image/png",
+    );
+    expect(res.statusCode).toBe(400);
+  });
+});
+
+describe("Invalid settings JSON", () => {
+  it("returns 400 for malformed settings JSON", async () => {
+    const { body: payload, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      { name: "settings", content: "not-valid-json{{{" },
+    ]);
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/color-blindness",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+    expect(res.statusCode).toBe(400);
+  });
+});
+
+describe("Cross-format inputs from fixtures/formats", () => {
+  it("processes AVIF input", async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const res = await postTool(
+      { simulationType: "protanomaly" },
+      AVIF,
+      "sample.avif",
+      "image/avif",
+    );
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  it("processes TIFF input", async () => {
+    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const res = await postTool(
+      { simulationType: "tritanomaly" },
+      TIFF,
+      "sample.tiff",
+      "image/tiff",
+    );
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  it("processes GIF input from formats", async () => {
+    const GIF = readFileSync(join(FIXTURES, "formats", "sample.gif"));
+    const res = await postTool({ simulationType: "achromatopsia" }, GIF, "sample.gif", "image/gif");
+    expect(res.statusCode).toBe(200);
+  });
+});
+
+describe("HEIF input", () => {
+  it("processes HEIF (sample.heif) input", { timeout: 120_000 }, async () => {
+    const HEIF = readFileSync(join(FIXTURES, "formats", "sample.heif"));
+    const res = await postTool(
+      { simulationType: "blueConeMonochromacy" },
+      HEIF,
+      "sample.heif",
+      "image/heif",
+    );
+    expect([200, 422]).toContain(res.statusCode);
+    if (res.statusCode === 200) {
+      const result = JSON.parse(res.body);
+      expect(result.processedSize).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe("Achromatopsia output verification", () => {
+  it("achromatopsia produces grayscale-like output", async () => {
+    // Create a colorful image
+    const colorful = await sharp({
+      create: {
+        width: 50,
+        height: 50,
+        channels: 3,
+        background: { r: 255, g: 0, b: 0 },
+      },
+    })
+      .png()
+      .toBuffer();
+
+    const res = await postTool(
+      { simulationType: "achromatopsia" },
+      colorful,
+      "red.png",
+      "image/png",
+    );
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const { data } = await sharp(dlRes.rawPayload)
+      .removeAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    // Achromatopsia should make R, G, B channels similar (grayscale)
+    const r = data[0];
+    const g = data[1];
+    const b = data[2];
+    expect(Math.abs(r - g)).toBeLessThan(30);
+    expect(Math.abs(g - b)).toBeLessThan(30);
   });
 });

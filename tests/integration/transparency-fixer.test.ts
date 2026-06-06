@@ -300,3 +300,103 @@ describe("PNG Transparency Fixer - Watermark removal settings", () => {
     }
   }, 120_000);
 });
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Large file handling
+// ═══════════════════════════════════════════════════════════════════════════
+describe("PNG Transparency Fixer - Large file", () => {
+  it("handles stress-large.jpg input", async () => {
+    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const res = await postTransparencyFixer(LARGE, "stress-large.jpg", {});
+    expect([200, 202, 501]).toContain(res.statusCode);
+  }, 120_000);
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Empty file handling
+// ═══════════════════════════════════════════════════════════════════════════
+describe("PNG Transparency Fixer - Empty file", () => {
+  it("rejects empty file buffer", async () => {
+    const res = await postTransparencyFixer(Buffer.alloc(0), "empty.png", {});
+    expect([400, 501]).toContain(res.statusCode);
+  });
+
+  it("rejects corrupt image data", async () => {
+    const res = await postTransparencyFixer(Buffer.from("not an image at all"), "corrupt.png", {});
+    expect([400, 501]).toContain(res.statusCode);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Authentication
+// ═══════════════════════════════════════════════════════════════════════════
+describe("PNG Transparency Fixer - Authentication", () => {
+  it("rejects unauthenticated requests", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      { name: "settings", content: JSON.stringify({}) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: TOOL_URL,
+      headers: { "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(401);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HEIF input from fixtures/formats
+// ═══════════════════════════════════════════════════════════════════════════
+describe("PNG Transparency Fixer - HEIF input", () => {
+  it("accepts HEIF (sample.heif) input", { timeout: 120_000 }, async () => {
+    const HEIF = readFileSync(join(FIXTURES, "formats", "sample.heif"));
+    const res = await postTransparencyFixer(HEIF, "sample.heif", {});
+    expect([200, 202, 422, 501]).toContain(res.statusCode);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Combined settings
+// ═══════════════════════════════════════════════════════════════════════════
+describe("PNG Transparency Fixer - Combined settings", () => {
+  it("accepts defringe + outputFormat + removeWatermark together", async () => {
+    const res = await postTransparencyFixer(PNG, "test.png", {
+      defringe: 50,
+      outputFormat: "webp",
+      removeWatermark: true,
+    });
+    expect([200, 202, 501]).toContain(res.statusCode);
+  }, 120_000);
+
+  it("accepts all settings at minimum values", async () => {
+    const res = await postTransparencyFixer(PNG, "test.png", {
+      defringe: 0,
+      outputFormat: "png",
+      removeWatermark: false,
+    });
+    expect([200, 202, 501]).toContain(res.statusCode);
+  }, 120_000);
+
+  it("accepts all settings at maximum values", async () => {
+    const res = await postTransparencyFixer(PNG, "test.png", {
+      defringe: 100,
+      outputFormat: "webp",
+      removeWatermark: true,
+    });
+    expect([200, 202, 501]).toContain(res.statusCode);
+  }, 120_000);
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Default settings (no settings field)
+// ═══════════════════════════════════════════════════════════════════════════
+describe("PNG Transparency Fixer - Default settings", () => {
+  it("processes with omitted settings field", async () => {
+    const res = await postTransparencyFixer(PNG, "test.png");
+    expect([200, 202, 501]).toContain(res.statusCode);
+  }, 120_000);
+});

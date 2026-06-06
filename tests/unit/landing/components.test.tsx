@@ -36,12 +36,13 @@ afterEach(cleanup);
 describe("Hero", () => {
   it("renders the headline", () => {
     render(<Hero />);
-    expect(screen.getByText("Your images. Stay yours.")).toBeDefined();
+    expect(screen.getByText(/50\+ image tools\./)).toBeDefined();
+    expect(screen.getByText(/One Docker container\./)).toBeDefined();
   });
 
   it("renders the subheadline", () => {
     render(<Hero />);
-    expect(screen.getByText(/free, open-source image toolkit/)).toBeDefined();
+    expect(screen.getByText(/Resize, compress, convert, remove backgrounds/)).toBeDefined();
   });
 
   it("renders the CTA button linking to GitHub", () => {

@@ -377,4 +377,167 @@ test.describe("Visual Mobile (375x667)", () => {
       await takeThemedScreenshots(page, "analytics-consent");
     });
   });
+
+  // ---- Change password page ----
+  test("change password page - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/change-password");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Verify form stacks vertically on mobile
+    await takeThemedScreenshots(page, "change-password");
+  });
+
+  // ---- Privacy policy page ----
+  test.describe("Privacy policy page", () => {
+    test.use({ storageState: { cookies: [], origins: [] } });
+
+    test("privacy policy page - light and dark", async ({ page }) => {
+      await page.goto("/privacy");
+      await page.waitForLoadState("networkidle");
+      await page.waitForTimeout(500);
+
+      await takeThemedScreenshots(page, "privacy-policy");
+    });
+  });
+
+  // ---- 404 Not Found page ----
+  test("not found page - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/this-route-does-not-exist-404");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Verify no sidebar on mobile
+    await expect(page.locator("aside")).not.toBeVisible();
+
+    await takeThemedScreenshots(page, "not-found");
+  });
+
+  // ---- Editor page (welcome/empty state) ----
+  test("editor page welcome state - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/editor");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "editor-welcome");
+  });
+
+  // ---- Tool page - convert (empty state) ----
+  test("convert tool empty - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/convert");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Verify mobile layout: no sidebar, dropzone fills viewport width
+    await expect(page.locator("aside")).not.toBeVisible();
+
+    await takeThemedScreenshots(page, "tool-convert-empty");
+  });
+
+  // ---- Tool page - convert (file uploaded, format selection visible) ----
+  test("convert tool with file - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/convert");
+    await uploadTestImage(page);
+    await page.waitForTimeout(500);
+
+    // On mobile, tool settings may be collapsed by default -- expand if needed
+    const settingsToggle = page.getByRole("button", { name: /settings/i }).first();
+    const settingsPanel = page.locator("[class*='settings'], [class*='Settings']").first();
+    const isPanelVisible = await settingsPanel.isVisible({ timeout: 2000 }).catch(() => false);
+    if (!isPanelVisible && (await settingsToggle.isVisible({ timeout: 1000 }).catch(() => false))) {
+      await settingsToggle.click();
+      await page.waitForTimeout(300);
+    }
+
+    await takeThemedScreenshots(page, "tool-convert-settings");
+  });
+
+  // ---- Tool page - watermark-text (before-after mode) ----
+  test("watermark-text tool empty - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/watermark-text");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "tool-watermark-text-empty");
+  });
+
+  // ---- Tool page - border (live-preview mode) ----
+  test("border tool empty - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/border");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "tool-border-empty");
+  });
+
+  // ---- Settings dialog - Security tab ----
+  test("settings dialog security tab - light and dark", async ({ loggedInPage: page }) => {
+    // On mobile, open settings from the bottom nav bar
+    const bottomNav = page.locator("nav.fixed");
+    await bottomNav.getByText("Settings").click();
+    await expect(page.getByRole("heading", { name: "General" })).toBeVisible();
+
+    // Navigate to Security tab
+    await page.getByRole("button", { name: "Security" }).click();
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "settings-security");
+  });
+
+  // ---- Mobile hamburger menu open state ----
+  test("hamburger menu open state - light and dark", async ({ loggedInPage: page }) => {
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Open hamburger menu on mobile
+    const hamburger = page
+      .locator(
+        "button[aria-label*='menu' i], button[aria-label*='Menu' i], button[class*='hamburger' i]",
+      )
+      .first();
+    const hasHamburger = await hamburger.isVisible({ timeout: 2000 }).catch(() => false);
+    if (hasHamburger) {
+      await hamburger.click();
+      await page.waitForTimeout(300);
+    }
+
+    await takeThemedScreenshots(page, "hamburger-menu-open");
+  });
+
+  // ---- Bottom navigation bar ----
+  test("bottom nav bar - light and dark", async ({ loggedInPage: page }) => {
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    // Bottom navigation bar visible
+    const bottomNav = page.locator("nav.fixed");
+    await expect(bottomNav).toBeVisible();
+
+    // Take element screenshot of the bottom nav
+    await setTheme(page, "light");
+    await expect(bottomNav).toHaveScreenshot("mobile-bottom-nav-light.png");
+
+    await setTheme(page, "dark");
+    await expect(bottomNav).toHaveScreenshot("mobile-bottom-nav-dark.png");
+
+    await setTheme(page, "light");
+  });
+
+  // ---- Tool page - strip-metadata (no-comparison mode) ----
+  test("strip-metadata tool empty - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/strip-metadata");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "tool-strip-metadata-empty");
+  });
+
+  // ---- Tool page - info (before-after mode) ----
+  test("info tool empty - light and dark", async ({ loggedInPage: page }) => {
+    await page.goto("/info");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    await takeThemedScreenshots(page, "tool-info-empty");
+  });
 });

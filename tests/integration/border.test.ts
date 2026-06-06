@@ -1286,4 +1286,275 @@ describe("Border", () => {
     expect(meta.width).toBe(200 + 15 * 2 + 5 * 2);
     expect(meta.height).toBe(150 + 15 * 2 + 5 * 2);
   });
+
+  // ── AVIF input format ────────────────────────────────────────────
+
+  it("handles AVIF input format", async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.avif", contentType: "image/avif", content: AVIF },
+      {
+        name: "settings",
+        content: JSON.stringify({ borderWidth: 10, borderColor: "#FF0000" }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/border",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Shadow with max blur (200) ───────────────────────────────────
+
+  it("applies shadow with maximum blur (200)", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          borderWidth: 5,
+          borderColor: "#000000",
+          shadow: true,
+          shadowBlur: 200,
+          shadowOffsetX: 0,
+          shadowOffsetY: 0,
+          shadowColor: "#000000",
+          shadowOpacity: 50,
+        }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/border",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Shadow with full opacity (100) ───────────────────────────────
+
+  it("applies shadow with max opacity (100)", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          borderWidth: 5,
+          borderColor: "#000000",
+          shadow: true,
+          shadowBlur: 10,
+          shadowOffsetX: 5,
+          shadowOffsetY: 5,
+          shadowColor: "#FF0000",
+          shadowOpacity: 100,
+        }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/border",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Shadow with max offsets (+50, +50) ───────────────────────────
+
+  it("applies shadow with max positive offsets (+50)", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          borderWidth: 5,
+          borderColor: "#000000",
+          shadow: true,
+          shadowBlur: 10,
+          shadowOffsetX: 50,
+          shadowOffsetY: 50,
+          shadowColor: "#000000",
+          shadowOpacity: 50,
+        }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/border",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Shadow with min offsets (-50, -50) ───────────────────────────
+
+  it("applies shadow with max negative offsets (-50)", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          borderWidth: 5,
+          borderColor: "#000000",
+          shadow: true,
+          shadowBlur: 10,
+          shadowOffsetX: -50,
+          shadowOffsetY: -50,
+          shadowColor: "#000000",
+          shadowOpacity: 50,
+        }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/border",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Rejects negative padding ─────────────────────────────────────
+
+  it("rejects negative padding", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ borderWidth: 5, padding: -5 }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/border",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  // ── Rejects negative corner radius ───────────────────────────────
+
+  it("rejects negative corner radius", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ borderWidth: 5, cornerRadius: -10 }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/border",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  // ── Shadow disabled but shadow params provided (ignored) ─────────
+
+  it("ignores shadow params when shadow is false", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          borderWidth: 10,
+          borderColor: "#000000",
+          shadow: false,
+          shadowBlur: 100,
+          shadowOffsetX: 30,
+          shadowOffsetY: 30,
+        }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/border",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    // No shadow means exact border dimensions only
+    expect(meta.width).toBe(200 + 10 * 2);
+    expect(meta.height).toBe(150 + 10 * 2);
+  });
+
+  // ── Border + padding + cornerRadius (no shadow) dimensions ──────
+
+  it("border + padding + cornerRadius produces correct format with alpha", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.jpg", contentType: "image/jpeg", content: JPG },
+      {
+        name: "settings",
+        content: JSON.stringify({
+          borderWidth: 8,
+          borderColor: "#333333",
+          padding: 12,
+          paddingColor: "#EEEEEE",
+          cornerRadius: 20,
+        }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/border",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+      headers: { authorization: `Bearer ${adminToken}` },
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    // Corner radius forces PNG
+    expect(meta.format).toBe("png");
+    expect(meta.channels).toBe(4);
+    expect(meta.width).toBe(100 + 12 * 2 + 8 * 2);
+    expect(meta.height).toBe(100 + 12 * 2 + 8 * 2);
+  });
 });

@@ -742,4 +742,339 @@ describe("Validation", () => {
 
     expect(res.statusCode).toBe(400);
   });
+
+  it("returns 400 for empty file upload", async () => {
+    const { body: payload, contentType } = makePayload(
+      { mode: "resize", width: 50 },
+      Buffer.alloc(0),
+      "empty.gif",
+    );
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("returns 401 for unauthenticated request", async () => {
+    const { body: payload, contentType } = makePayload({ mode: "resize", width: 50 });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: { "content-type": contentType },
+    });
+
+    expect(res.statusCode).toBe(401);
+  });
+});
+
+// ── Response structure ─────────────────────────────────────────
+describe("Response structure", () => {
+  it("returns all expected fields in 200 response", async () => {
+    const { body: payload, contentType } = makePayload({
+      mode: "resize",
+      width: 50,
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result).toHaveProperty("jobId");
+    expect(result).toHaveProperty("downloadUrl");
+    expect(result).toHaveProperty("originalSize");
+    expect(result).toHaveProperty("processedSize");
+    expect(typeof result.jobId).toBe("string");
+    expect(typeof result.downloadUrl).toBe("string");
+    expect(typeof result.originalSize).toBe("number");
+    expect(typeof result.processedSize).toBe("number");
+  });
+});
+
+// ── Optimize mode parameter variations ──────────────────────────
+describe("Optimize mode parameter variations", () => {
+  it("optimizes with minimum colors (2)", async () => {
+    const { body: payload, contentType } = makePayload({
+      mode: "optimize",
+      colors: 2,
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("optimizes with maximum colors (256)", async () => {
+    const { body: payload, contentType } = makePayload({
+      mode: "optimize",
+      colors: 256,
+      effort: 1,
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("optimizes with dither 0 (no dithering)", async () => {
+    const { body: payload, contentType } = makePayload({
+      mode: "optimize",
+      dither: 0,
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+});
+
+// ── Speed mode boundary values ──────────────────────────────────
+describe("Speed mode boundary values", () => {
+  it("accepts minimum speed factor (0.1)", async () => {
+    const { body: payload, contentType } = makePayload({
+      mode: "speed",
+      speedFactor: 0.1,
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("accepts maximum speed factor (10)", async () => {
+    const { body: payload, contentType } = makePayload({
+      mode: "speed",
+      speedFactor: 10,
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+});
+
+// ── Extract mode JPEG format (only png/webp allowed) ────────────
+describe("Extract format edge cases", () => {
+  it("extracts single frame as JPEG returns 400 (only png/webp)", async () => {
+    const { body: payload, contentType } = makePayload({
+      mode: "extract",
+      extractMode: "single",
+      frameNumber: 0,
+      extractFormat: "jpeg",
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("extract all frames as WebP produces a ZIP", async () => {
+    const { body: payload, contentType } = makePayload({
+      mode: "extract",
+      extractMode: "all",
+      extractFormat: "webp",
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toContain("_frames.zip");
+  });
+});
+
+// ── Content animated GIF ────────────────────────────────────────
+describe("Content animated GIF (animated-simpsons.gif)", () => {
+  it("resizes a larger animated GIF", async () => {
+    const contentGif = readFileSync(join(FIXTURES, "content", "animated-simpsons.gif"));
+    const { body: payload, contentType } = makePayload(
+      { mode: "resize", width: 50 },
+      contentGif,
+      "simpsons.gif",
+    );
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  it("metadata endpoint returns correct info for content GIF", async () => {
+    const contentGif = readFileSync(join(FIXTURES, "content", "animated-simpsons.gif"));
+    const { body: payload, contentType } = createMultipartPayload([
+      { name: "file", filename: "simpsons.gif", contentType: "image/gif", content: contentGif },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools/info",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const data = JSON.parse(res.body);
+    expect(data.pages).toBeGreaterThan(1);
+    expect(data.width).toBeGreaterThan(0);
+    expect(data.height).toBeGreaterThan(0);
+    expect(data.fileSize).toBeGreaterThan(0);
+    // duration may be 0 if delay metadata is absent/zero in the GIF
+    expect(typeof data.duration).toBe("number");
+  });
+});
+
+// ── Rotate angle validation ─────────────────────────────────────
+describe("Rotate angle validation", () => {
+  it("rejects invalid rotation angle (45)", async () => {
+    const { body: payload, contentType } = makePayload({
+      mode: "rotate",
+      angle: 45,
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("accepts no angle with flip only", async () => {
+    const { body: payload, contentType } = makePayload({
+      mode: "rotate",
+      flipH: true,
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+});
+
+// ── Resize output dimension verification ────────────────────────
+describe("Resize output dimension verification", () => {
+  it("resize by width produces correct output width", async () => {
+    const { body: payload, contentType } = makePayload({
+      mode: "resize",
+      width: 40,
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/gif-tools",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+
+    const dlRes = await app.inject({
+      method: "GET",
+      url: result.downloadUrl,
+    });
+    const meta = await sharp(dlRes.rawPayload).metadata();
+    expect(meta.width).toBe(40);
+  });
 });

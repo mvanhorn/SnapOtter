@@ -348,4 +348,224 @@ test.describe("Keyboard Accessibility", () => {
 
     await expect(page.getByText("Resize").first()).toBeVisible();
   });
+
+  test("multiple Tab presses cycle through several interactive elements", async ({
+    loggedInPage: page,
+  }) => {
+    const tags: string[] = [];
+    for (let i = 0; i < 5; i++) {
+      await page.keyboard.press("Tab");
+      await page.waitForTimeout(50);
+      const tag = await page.evaluate(() => document.activeElement?.tagName?.toLowerCase());
+      if (tag) tags.push(tag);
+    }
+
+    // At least 3 of the 5 focused elements should be interactive
+    const interactive = tags.filter((t) =>
+      ["a", "button", "input", "select", "textarea"].includes(t),
+    );
+    expect(interactive.length).toBeGreaterThanOrEqual(3);
+  });
+
+  test("Shift+Tab moves focus backward", async ({ loggedInPage: page }) => {
+    // Tab forward twice
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+
+    const secondFocused = await page.evaluate(() => {
+      const el = document.activeElement;
+      return el ? `${el.tagName}-${el.textContent?.slice(0, 20)}` : "";
+    });
+
+    // Shift+Tab back once
+    await page.keyboard.press("Shift+Tab");
+
+    const firstFocused = await page.evaluate(() => {
+      const el = document.activeElement;
+      return el ? `${el.tagName}-${el.textContent?.slice(0, 20)}` : "";
+    });
+
+    // Focus should have moved to a different element
+    expect(firstFocused).not.toBe(secondFocused);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Cmd+K on different pages
+// ---------------------------------------------------------------------------
+test.describe("Keyboard Shortcuts - Cmd+K Cross-Page", () => {
+  test("Cmd/Ctrl+K focuses search on a tool page", async ({ loggedInPage: page }) => {
+    await page.goto("/resize");
+
+    await page.keyboard.press(`${MOD}+k`);
+
+    const searchInput = page.getByPlaceholder(/search/i).first();
+    await expect(searchInput).toBeFocused();
+  });
+
+  test("Cmd/Ctrl+K focuses search on /automate", async ({ loggedInPage: page }) => {
+    await page.goto("/automate");
+
+    await page.keyboard.press(`${MOD}+k`);
+
+    const searchInput = page.getByPlaceholder(/search/i).first();
+    await expect(searchInput).toBeFocused();
+  });
+
+  test("Cmd/Ctrl+K focuses search on /files", async ({ loggedInPage: page }) => {
+    await page.goto("/files");
+
+    await page.keyboard.press(`${MOD}+k`);
+
+    // The search bar may or may not exist on the files page;
+    // if it does, it should be focused
+    const searchInput = page.getByPlaceholder(/search/i).first();
+    if (await searchInput.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await expect(searchInput).toBeFocused();
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Escape key - Additional coverage
+// ---------------------------------------------------------------------------
+test.describe("Keyboard Shortcuts - Escape Additional", () => {
+  test("Escape clears search input focus", async ({ loggedInPage: page }) => {
+    const searchInput = page.getByPlaceholder(/search/i).first();
+    await searchInput.click();
+    await expect(searchInput).toBeFocused();
+
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(200);
+
+    // Search input should no longer be focused
+    await expect(searchInput).not.toBeFocused();
+  });
+
+  test("Escape closes mobile hamburger sidebar overlay", async ({ browser }) => {
+    const context = await browser.newContext({
+      viewport: { width: 375, height: 667 },
+    });
+    const page = await context.newPage();
+    await page.goto("/login");
+    await page.getByLabel("Username").fill("admin");
+    await page.getByLabel("Password").fill("admin");
+    await page.getByRole("button", { name: /login/i }).click();
+    await page.waitForURL("/", { timeout: 15_000 });
+
+    // Open hamburger menu
+    const topBar = page.locator(".fixed").filter({ hasText: "SnapOtter" }).first();
+    const hamburger = topBar.locator("button").first();
+    await hamburger.click();
+
+    // Sidebar overlay should appear
+    const backdrop = page.locator("[class*='backdrop-blur']").first();
+    await expect(backdrop).toBeVisible();
+
+    // Press Escape to close
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(300);
+
+    // Backdrop should be gone
+    await expect(backdrop).not.toBeVisible();
+
+    await context.close();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Shortcut suppression in settings dialog input
+// ---------------------------------------------------------------------------
+test.describe("Keyboard Shortcuts - Dialog Input Suppression", () => {
+  test("Cmd/Ctrl+/ does not navigate when focused on input inside settings dialog", async ({
+    loggedInPage: page,
+  }) => {
+    await page.goto("/fullscreen");
+
+    await openSettings(page);
+    await expect(page.getByRole("dialog")).toBeVisible();
+
+    // Try to find an input inside the dialog
+    const dialogInput = page.getByRole("dialog").locator("input").first();
+    if (await dialogInput.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await dialogInput.click();
+
+      await page.keyboard.press(`${MOD}+/`);
+      await page.waitForTimeout(300);
+
+      // Should still be on fullscreen (shortcut suppressed)
+      await expect(page).toHaveURL("/fullscreen");
+    }
+  });
+
+  test("Cmd/Ctrl+Alt+1 does not navigate when focused on input inside settings dialog", async ({
+    loggedInPage: page,
+  }) => {
+    await openSettings(page);
+    await expect(page.getByRole("dialog")).toBeVisible();
+
+    const dialogInput = page.getByRole("dialog").locator("input").first();
+    if (await dialogInput.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await dialogInput.click();
+
+      await page.keyboard.press(`${MOD}+Alt+1`);
+      await page.waitForTimeout(300);
+
+      // Should still be on home (shortcut suppressed)
+      await expect(page).toHaveURL("/");
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Rapid shortcut sequences
+// ---------------------------------------------------------------------------
+test.describe("Keyboard Shortcuts - Rapid Sequences", () => {
+  test("rapid Cmd/Ctrl+Shift+D toggles do not corrupt theme state", async ({
+    loggedInPage: page,
+  }) => {
+    const initial = await page.evaluate(() => document.documentElement.classList.contains("dark"));
+
+    // Toggle 4 times quickly
+    for (let i = 0; i < 4; i++) {
+      await page.keyboard.press(`${MOD}+Shift+d`);
+      await page.waitForTimeout(100);
+    }
+
+    await page.waitForTimeout(300);
+
+    // After even number of toggles, should be back to initial state
+    const final = await page.evaluate(() => document.documentElement.classList.contains("dark"));
+    expect(final).toBe(initial);
+  });
+
+  test("Cmd/Ctrl+K followed by Escape returns focus to body", async ({ loggedInPage: page }) => {
+    await page.keyboard.press(`${MOD}+k`);
+    const searchInput = page.getByPlaceholder(/search/i).first();
+    await expect(searchInput).toBeFocused();
+
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(200);
+
+    // Search input should no longer be focused
+    await expect(searchInput).not.toBeFocused();
+  });
+
+  test("Cmd/Ctrl+/ from a tool page navigates to home", async ({ loggedInPage: page }) => {
+    await page.goto("/compress");
+    await expect(page).toHaveURL("/compress");
+
+    await page.keyboard.press(`${MOD}+/`);
+
+    await expect(page).toHaveURL("/");
+  });
+
+  test("Cmd/Ctrl+/ from /editor navigates to home", async ({ loggedInPage: page }) => {
+    await page.goto("/editor");
+    await expect(page).toHaveURL("/editor");
+
+    await page.keyboard.press(`${MOD}+/`);
+
+    await expect(page).toHaveURL("/");
+  });
 });

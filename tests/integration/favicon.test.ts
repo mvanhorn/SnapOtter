@@ -881,4 +881,101 @@ describe("favicon", () => {
     expect(meta.width).toBe(512);
     expect(meta.height).toBe(512);
   });
+
+  // ── GIF with settings combination ───────────────────────────────
+
+  it("generates favicons from GIF with empty settings", async () => {
+    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
+      { name: "settings", content: JSON.stringify({}) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/favicon",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zip = new AdmZip(Buffer.from(res.rawPayload));
+    const entries = zip.getEntries().map((e) => e.entryName);
+    expect(entries).toContain("favicon-16x16.png");
+    expect(entries).toContain("favicon-32x32.png");
+    expect(entries).toContain("manifest.json");
+    expect(entries).toContain("favicon-snippet.html");
+  });
+
+  // ── Manifest icons array has correct structure ────────────────
+
+  it("manifest icons have correct src, sizes, and type fields", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "logo.png", contentType: "image/png", content: PNG },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/favicon",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zip = new AdmZip(Buffer.from(res.rawPayload));
+    const manifest = JSON.parse(zip.getEntry("manifest.json")?.getData().toString("utf-8"));
+    expect(manifest.icons).toHaveLength(2);
+    for (const icon of manifest.icons) {
+      expect(icon.src).toBeDefined();
+      expect(icon.sizes).toBeDefined();
+      expect(icon.type).toBe("image/png");
+    }
+    expect(manifest.background_color).toBe("#ffffff");
+  });
+
+  // ── HTML snippet contains all expected link tags ──────────────
+
+  it("HTML snippet contains 16, 32, 48, apple-touch, and manifest links", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "logo.png", contentType: "image/png", content: PNG },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/favicon",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zip = new AdmZip(Buffer.from(res.rawPayload));
+    const html = zip.getEntry("favicon-snippet.html")?.getData().toString("utf-8");
+    expect(html).toContain("favicon-16x16.png");
+    expect(html).toContain("favicon-32x32.png");
+    expect(html).toContain("favicon-48x48.png");
+    expect(html).toContain("apple-touch-icon.png");
+    expect(html).toContain("manifest.json");
+  });
+
+  // ── Total ZIP size is positive ────────────────────────────────
+
+  it("generated ZIP has positive total size", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "logo.png", contentType: "image/png", content: PNG },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/favicon",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zipBuffer = Buffer.from(res.rawPayload);
+    expect(zipBuffer.length).toBeGreaterThan(0);
+    const zip = new AdmZip(zipBuffer);
+    const totalSize = zip.getEntries().reduce((s, e) => s + (e.header.size || 0), 0);
+    expect(totalSize).toBeGreaterThan(0);
+  });
 });

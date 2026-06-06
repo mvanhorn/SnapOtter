@@ -1235,3 +1235,339 @@ test.describe("Toast Notifications", () => {
     }
   });
 });
+
+// ---------------------------------------------------------------------------
+// Server Error Handling: 503 Service Unavailable
+// ---------------------------------------------------------------------------
+test.describe("Server Error Handling - Service Unavailable", () => {
+  test("server 503 response shows maintenance/retry message, not crash", async ({
+    loggedInPage: page,
+  }) => {
+    await page.goto("/resize");
+    await uploadTestImage(page);
+
+    await page.route("**/api/v1/tools/resize", (route) =>
+      route.fulfill({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "Service temporarily unavailable" }),
+      }),
+    );
+
+    await page.locator("input[placeholder='Auto']").first().fill("50");
+    await page.getByRole("button", { name: "Resize" }).click();
+
+    await page.waitForTimeout(3000);
+
+    await expect(page.locator("main")).toBeVisible();
+    await expect(page.locator("aside")).toBeVisible();
+
+    const bodyText = await page.textContent("body");
+    expect(bodyText).toBeDefined();
+    expect(bodyText?.length).toBeGreaterThan(0);
+
+    await page.unroute("**/api/v1/tools/resize");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Form Validation: Resize with Extremely Large Dimensions
+// ---------------------------------------------------------------------------
+test.describe("Resize Extreme Dimensions", () => {
+  test("resize with extremely large width does not crash browser", async ({
+    loggedInPage: page,
+  }) => {
+    await page.goto("/resize");
+    await uploadTestImage(page);
+
+    await page.locator("input[placeholder='Auto']").first().fill("999999");
+
+    const resizeBtn = page.getByRole("button", { name: "Resize" });
+    if (await resizeBtn.isDisabled().catch(() => false)) {
+      await expect(resizeBtn).toBeDisabled();
+    } else {
+      await resizeBtn.click();
+      await page.waitForTimeout(3000);
+      await expect(page.locator("main")).toBeVisible();
+    }
+  });
+
+  test("resize with fractional width does not crash", async ({ loggedInPage: page }) => {
+    await page.goto("/resize");
+    await uploadTestImage(page);
+
+    await page.locator("input[placeholder='Auto']").first().fill("50.5");
+
+    const resizeBtn = page.getByRole("button", { name: "Resize" });
+    await resizeBtn.click();
+    await page.waitForTimeout(3000);
+
+    await expect(page.locator("main")).toBeVisible();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Double-Click Prevention on Process Button
+// ---------------------------------------------------------------------------
+test.describe("Double-Click Prevention", () => {
+  test("rapid double-click on process button does not cause duplicate requests", async ({
+    loggedInPage: page,
+  }) => {
+    await page.goto("/resize");
+    await uploadTestImage(page);
+
+    await page.locator("input[placeholder='Auto']").first().fill("50");
+
+    const requestCount: string[] = [];
+    page.on("request", (req) => {
+      if (req.url().includes("/api/v1/tools/resize") && req.method() === "POST") {
+        requestCount.push(req.url());
+      }
+    });
+
+    const resizeBtn = page.getByRole("button", { name: "Resize" });
+    await resizeBtn.dblclick();
+    await waitForProcessing(page);
+
+    // After processing, page should still be functional
+    await expect(page.locator("main")).toBeVisible();
+
+    // At most 2 requests (one may have been cancelled by the second)
+    expect(requestCount.length).toBeLessThanOrEqual(2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Browser Back/Forward Navigation Stability
+// ---------------------------------------------------------------------------
+test.describe("Browser History Navigation", () => {
+  test("browser back button from tool page does not crash", async ({ loggedInPage: page }) => {
+    await page.goto("/resize");
+    await page.waitForLoadState("domcontentloaded");
+
+    await page.goto("/compress");
+    await page.waitForLoadState("domcontentloaded");
+
+    await page.goBack();
+    await page.waitForLoadState("domcontentloaded");
+
+    await expect(page.locator("main")).toBeVisible();
+    await expect(page.locator("aside")).toBeVisible();
+
+    const content = await page.textContent("body");
+    expect(content).toBeDefined();
+    expect(content?.length).toBeGreaterThan(0);
+  });
+
+  test("browser forward button after back does not crash", async ({ loggedInPage: page }) => {
+    await page.goto("/resize");
+    await page.waitForLoadState("domcontentloaded");
+
+    await page.goto("/compress");
+    await page.waitForLoadState("domcontentloaded");
+
+    await page.goBack();
+    await page.waitForLoadState("domcontentloaded");
+
+    await page.goForward();
+    await page.waitForLoadState("domcontentloaded");
+
+    await expect(page.locator("main")).toBeVisible();
+    await expect(page.locator("aside")).toBeVisible();
+  });
+
+  test("rapid back/forward navigation through 5 pages does not crash", async ({
+    loggedInPage: page,
+  }) => {
+    const routes = ["/resize", "/compress", "/rotate", "/convert", "/crop"];
+    for (const route of routes) {
+      await page.goto(route);
+      await page.waitForLoadState("domcontentloaded");
+    }
+
+    // Go back through all pages
+    for (let i = 0; i < 4; i++) {
+      await page.goBack();
+      await page.waitForLoadState("domcontentloaded");
+    }
+
+    // Go forward through all pages
+    for (let i = 0; i < 4; i++) {
+      await page.goForward();
+      await page.waitForLoadState("domcontentloaded");
+    }
+
+    await expect(page.locator("main")).toBeVisible();
+    const content = await page.textContent("body");
+    expect(content).toBeDefined();
+    expect(content?.length).toBeGreaterThan(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Concurrent Error States
+// ---------------------------------------------------------------------------
+test.describe("Concurrent Error Recovery", () => {
+  test("multiple tool endpoints failing simultaneously does not crash", async ({
+    loggedInPage: page,
+  }) => {
+    await page.goto("/resize");
+    await uploadTestImage(page);
+
+    // Block multiple endpoints
+    await page.route("**/api/v1/tools/**", (route) =>
+      route.fulfill({
+        status: 500,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "Simulated failure" }),
+      }),
+    );
+
+    // Also block health to simulate full outage
+    await page.route("**/api/v1/health", (route) => route.abort());
+
+    await page.locator("input[placeholder='Auto']").first().fill("50");
+    await page.getByRole("button", { name: "Resize" }).click();
+
+    await page.waitForTimeout(3000);
+
+    // App should still be alive
+    await expect(page.locator("main")).toBeVisible();
+    await expect(page.locator("aside")).toBeVisible();
+
+    await page.unroute("**/api/v1/tools/**");
+    await page.unroute("**/api/v1/health");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// File Processing State Cleanup
+// ---------------------------------------------------------------------------
+test.describe("Processing State Cleanup", () => {
+  test("failed processing does not leave orphaned loading state", async ({
+    loggedInPage: page,
+  }) => {
+    await page.goto("/resize");
+    await uploadTestImage(page);
+
+    await page.route("**/api/v1/tools/resize", (route) =>
+      route.fulfill({
+        status: 500,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "Processing failed" }),
+      }),
+    );
+
+    await page.locator("input[placeholder='Auto']").first().fill("50");
+    await page.getByRole("button", { name: "Resize" }).click();
+
+    await page.waitForTimeout(3000);
+
+    // After failure, the process button should be clickable again
+    // (not stuck in a loading/disabled state)
+    const resizeBtn = page.getByRole("button", { name: "Resize" });
+    await expect(resizeBtn).toBeVisible();
+    await expect(resizeBtn).toBeEnabled({ timeout: 5_000 });
+
+    await page.unroute("**/api/v1/tools/resize");
+  });
+
+  test("successful processing followed by clear resets fully", async ({ loggedInPage: page }) => {
+    await page.goto("/resize");
+    await uploadTestImage(page);
+
+    await page.locator("input[placeholder='Auto']").first().fill("50");
+    await page.getByRole("button", { name: "Resize" }).click();
+    await waitForProcessing(page);
+
+    await expect(page.getByRole("link", { name: /download/i }).first()).toBeVisible({
+      timeout: 15_000,
+    });
+
+    // Clear files
+    const clearBtn = page.getByText("Clear all");
+    if (await clearBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await clearBtn.click();
+      await page.waitForTimeout(500);
+    }
+
+    // Verify full reset: dropzone visible, no download, no spinner
+    await expect(page.getByText("Upload from computer")).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByRole("link", { name: /download/i })).not.toBeVisible();
+    const spinners = page.locator("[class*='animate-spin']");
+    await expect(spinners).toHaveCount(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Form Validation: Resize Lock Aspect Ratio
+// ---------------------------------------------------------------------------
+test.describe("Resize Aspect Ratio Lock", () => {
+  test("setting only width with lock enabled does not crash", async ({ loggedInPage: page }) => {
+    await page.goto("/resize");
+    await uploadTestImage(page);
+
+    // Fill only width, leave height as Auto
+    await page.locator("input[placeholder='Auto']").first().fill("200");
+
+    const resizeBtn = page.getByRole("button", { name: "Resize" });
+    await resizeBtn.click();
+    await waitForProcessing(page);
+
+    // Should succeed or show error, but not crash
+    await expect(page.locator("main")).toBeVisible();
+  });
+
+  test("setting only height with lock enabled does not crash", async ({ loggedInPage: page }) => {
+    await page.goto("/resize");
+    await uploadTestImage(page);
+
+    // Fill only height (second Auto input)
+    const heightInput = page.locator("input[placeholder='Auto']").nth(1);
+    if (await heightInput.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await heightInput.fill("200");
+    }
+
+    const resizeBtn = page.getByRole("button", { name: "Resize" });
+    await resizeBtn.click();
+    await waitForProcessing(page);
+
+    await expect(page.locator("main")).toBeVisible();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Settings Persistence
+// ---------------------------------------------------------------------------
+test.describe("Settings Persistence", () => {
+  test("theme selection persists across page navigations", async ({ loggedInPage: page }) => {
+    const themeBtn = page.locator("button[title='Toggle Theme']");
+    const isDarkBefore = await page.evaluate(() =>
+      document.documentElement.classList.contains("dark"),
+    );
+
+    if (await themeBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await themeBtn.click();
+      await page.waitForTimeout(300);
+    }
+
+    const isDarkAfterToggle = await page.evaluate(() =>
+      document.documentElement.classList.contains("dark"),
+    );
+    expect(isDarkAfterToggle).not.toBe(isDarkBefore);
+
+    // Navigate away and back
+    await page.goto("/resize");
+    await page.waitForLoadState("domcontentloaded");
+
+    const isDarkAfterNav = await page.evaluate(() =>
+      document.documentElement.classList.contains("dark"),
+    );
+    expect(isDarkAfterNav).toBe(isDarkAfterToggle);
+
+    // Toggle back to original
+    if (await themeBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await themeBtn.click();
+    }
+  });
+});

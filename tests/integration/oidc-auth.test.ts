@@ -93,7 +93,7 @@ function createOidcSession(
 /**
  * Insert a "hybrid" user -- has both a local password AND an OIDC link.
  */
-function createHybridUser(
+function _createHybridUser(
   passwordHash: string,
   opts: { username?: string; email?: string } = {},
 ): { userId: string; username: string; sessionToken: string } {
@@ -448,7 +448,7 @@ describe("OIDC login redirect", () => {
     (env as any).OIDC_CLIENT_SECRET = "test-client-secret";
 
     // Clear the cached OIDC config so discovery hits our mock
-    const oidcModule = await import("../../apps/api/src/plugins/oidc.js");
+    const _oidcModule = await import("../../apps/api/src/plugins/oidc.js");
     // The module caches config in a module-level variable; rebuild app to get fresh routes
     oidcApp = await buildTestApp();
   }, 30_000);
@@ -618,7 +618,7 @@ describe("OIDC callback edge cases", () => {
     const cookieMatch = cookieStr.match(/oidc-state=([^;]+)/);
     expect(cookieMatch).toBeTruthy();
     // The cookie value may be URL-encoded; decode for inject()
-    const cookieValue = decodeURIComponent(cookieMatch![1]);
+    const cookieValue = decodeURIComponent(cookieMatch?.[1]);
 
     const redirectUrl = new URL(loginRes.headers.location as string);
     const state = redirectUrl.searchParams.get("state");
@@ -795,7 +795,7 @@ describe("API keys for OIDC users", () => {
     const { key: rawKey } = JSON.parse(createRes.body);
 
     // Use the raw API key as Bearer token
-    const sessionRes = await testApp.app.inject({
+    const _sessionRes = await testApp.app.inject({
       method: "GET",
       url: "/api/auth/session",
       headers: { authorization: `Bearer ${rawKey}` },

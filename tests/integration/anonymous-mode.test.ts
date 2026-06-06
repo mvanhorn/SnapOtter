@@ -24,9 +24,9 @@ describe("ensureAnonymousUser", () => {
   it("creates anonymous row in the users table", () => {
     const row = db.select().from(schema.users).where(eq(schema.users.id, "anonymous")).get();
     expect(row).toBeDefined();
-    expect(row!.username).toBe("anonymous");
-    expect(row!.role).toBe("admin");
-    expect(row!.mustChangePassword).toBe(false);
+    expect(row?.username).toBe("anonymous");
+    expect(row?.role).toBe("admin");
+    expect(row?.mustChangePassword).toBe(false);
   });
 
   it("is idempotent", () => {

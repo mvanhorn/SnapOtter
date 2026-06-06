@@ -234,7 +234,7 @@ test.describe("Beautify Screenshot", () => {
 
       const box = await img.boundingBox();
       expect(box, `Image collapsed for preset "${name}"`).not.toBeNull();
-      expect(box!.height, `Image height is 0 for preset "${name}"`).toBeGreaterThan(10);
+      expect(box?.height, `Image height is 0 for preset "${name}"`).toBeGreaterThan(10);
     }
   });
 
@@ -252,7 +252,7 @@ test.describe("Beautify Screenshot", () => {
     const img = page.locator("img.select-none").first();
     const boxBefore = await img.boundingBox();
     expect(boxBefore).not.toBeNull();
-    expect(boxBefore!.height).toBeGreaterThan(10);
+    expect(boxBefore?.height).toBeGreaterThan(10);
 
     // Open Watermark and enter text
     await page.getByText("Watermark").first().click();
@@ -263,7 +263,7 @@ test.describe("Beautify Screenshot", () => {
     // Image must still be visible with non-zero dimensions
     const boxAfter = await img.boundingBox();
     expect(boxAfter, "Image disappeared after adding watermark").not.toBeNull();
-    expect(boxAfter!.height, "Image collapsed to 0 after watermark").toBeGreaterThan(10);
+    expect(boxAfter?.height, "Image collapsed to 0 after watermark").toBeGreaterThan(10);
     await expect(page.getByTestId("watermark-preview")).toBeVisible();
   });
 
@@ -280,7 +280,7 @@ test.describe("Beautify Screenshot", () => {
     const img = page.locator("img.select-none").first();
     const boxBefore = await img.boundingBox();
     expect(boxBefore).not.toBeNull();
-    expect(boxBefore!.height).toBeGreaterThan(10);
+    expect(boxBefore?.height).toBeGreaterThan(10);
 
     // Open Watermark and enter text
     await page.getByText("Watermark").first().click();
@@ -292,7 +292,7 @@ test.describe("Beautify Screenshot", () => {
     await expect(page.getByTestId("frame-preview-macos")).toBeVisible();
     const boxAfter = await img.boundingBox();
     expect(boxAfter, "Image disappeared after adding watermark with frame").not.toBeNull();
-    expect(boxAfter!.height).toBeGreaterThan(10);
+    expect(boxAfter?.height).toBeGreaterThan(10);
     await expect(page.getByTestId("watermark-preview")).toBeVisible();
   });
 });

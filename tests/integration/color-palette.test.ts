@@ -658,3 +658,88 @@ describe("Three-color image", () => {
     expect(result.colors.length).toBeGreaterThanOrEqual(3);
   });
 });
+
+// ── No settings field ─────────────────────────────────────────
+describe("No settings field", () => {
+  it("works when no settings field is provided at all", async () => {
+    const { body: payload, contentType } = makeFilePayload(PNG, "test.png", "image/png");
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/color-palette",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.colors.length).toBeGreaterThan(0);
+    expect(result.filename).toBe("test.png");
+  });
+});
+
+// ── BMP input ─────────────────────────────────────────────────
+describe("BMP input", () => {
+  it("extracts palette from BMP image", async () => {
+    const BMP = readFileSync(join(FIXTURES, "formats", "sample.bmp"));
+    const { body: payload, contentType } = makeFilePayload(BMP, "test.bmp", "image/bmp");
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/color-palette",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+    // BMP might be handled by CLI decode or Sharp directly
+    expect([200, 400, 422]).toContain(res.statusCode);
+    if (res.statusCode === 200) {
+      const result = JSON.parse(res.body);
+      expect(result.colors.length).toBeGreaterThan(0);
+    }
+  });
+});
+
+// ── Portrait image palette ───────────────────────────────────
+describe("Portrait image palette", () => {
+  it("extracts palette from portrait-bw.jpeg (mostly black/white)", async () => {
+    const BW = readFileSync(join(FIXTURES, "content", "portrait-bw.jpeg"));
+    const { body: payload, contentType } = makeFilePayload(BW, "bw.jpg", "image/jpeg");
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/color-palette",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.colors.length).toBeGreaterThan(0);
+    expect(result.colors.length).toBeLessThanOrEqual(8);
+  });
+});
+
+// ── Cross-format chat WebP ──────────────────────────────────
+describe("Cross-format WebP input", () => {
+  it("extracts palette from cross-format-chat.webp", async () => {
+    const CHAT = readFileSync(join(FIXTURES, "content", "cross-format-chat.webp"));
+    const { body: payload, contentType } = makeFilePayload(CHAT, "chat.webp", "image/webp");
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/color-palette",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.colors.length).toBeGreaterThan(0);
+    expect(result.filename).toBe("chat.webp");
+  });
+});

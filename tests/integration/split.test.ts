@@ -1653,4 +1653,124 @@ describe("Split", () => {
 
     expect(res.statusCode).toBe(400);
   });
+
+  // ── AVIF format input ─────────────────────────────────────────────
+
+  it("splits an AVIF input image", async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "photo.avif", contentType: "image/avif", content: AVIF },
+      {
+        name: "settings",
+        content: JSON.stringify({ columns: 2, rows: 2, outputFormat: "png" }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/split",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zip = new AdmZip(res.rawPayload);
+    const entries = zip.getEntries();
+    expect(entries.length).toBe(4);
+    for (const entry of entries) {
+      expect(entry.entryName).toMatch(/\.png$/);
+      const meta = await sharp(entry.getData()).metadata();
+      expect(meta.format).toBe("png");
+      expect(meta.width).toBeGreaterThan(0);
+      expect(meta.height).toBeGreaterThan(0);
+    }
+  });
+
+  // ── SVGZ input ───────────────────────────────────────────────────
+
+  it("splits a SVGZ (compressed SVG) input image", async () => {
+    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "icon.svgz", contentType: "image/svg+xml", content: SVGZ },
+      {
+        name: "settings",
+        content: JSON.stringify({ columns: 2, rows: 2, outputFormat: "png" }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/split",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zip = new AdmZip(res.rawPayload);
+    const entries = zip.getEntries();
+    expect(entries.length).toBe(4);
+  });
+
+  // ── Rows at boundary minimum (1) with columns at max (100) ──────
+
+  it("splits into 100 columns x 1 row (max columns)", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ columns: 100, rows: 1 }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/split",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zip = new AdmZip(res.rawPayload);
+    const entries = zip.getEntries();
+    expect(entries.length).toBe(100);
+  });
+
+  // ── Quality at max boundary (100) ────────────────────────────────
+
+  it("accepts quality at maximum (100)", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
+      {
+        name: "settings",
+        content: JSON.stringify({ columns: 2, rows: 1, outputFormat: "webp", quality: 100 }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/split",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zip = new AdmZip(res.rawPayload);
+    const entries = zip.getEntries();
+    expect(entries.length).toBe(2);
+    for (const entry of entries) {
+      expect(entry.entryName).toMatch(/\.webp$/);
+    }
+  });
 });

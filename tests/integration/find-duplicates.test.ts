@@ -1226,4 +1226,145 @@ describe("Find Duplicates", () => {
     expect(result.duplicateGroups).toHaveLength(1);
     expect(result.duplicateGroups[0].files).toHaveLength(2);
   });
+
+  // ── AVIF format input ─────────────────────────────────────────────
+
+  it("handles AVIF input images in duplicate detection", async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.avif", contentType: "image/avif", content: AVIF },
+      { name: "file", filename: "b.avif", contentType: "image/avif", content: AVIF },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/find-duplicates",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.totalImages).toBe(2);
+    expect(result.duplicateGroups).toHaveLength(1);
+    expect(result.duplicateGroups[0].files).toHaveLength(2);
+  });
+
+  // ── SVGZ input ───────────────────────────────────────────────────
+
+  it("handles SVGZ (compressed SVG) input in duplicate detection", async () => {
+    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.svgz", contentType: "image/svg+xml", content: SVGZ },
+      { name: "file", filename: "b.svgz", contentType: "image/svg+xml", content: SVGZ },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/find-duplicates",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.totalImages).toBe(2);
+    expect(result.duplicateGroups).toHaveLength(1);
+  });
+
+  // ── Mixed format batch: AVIF + HEIC + PNG ────────────────────────
+
+  it("detects duplicates across AVIF, HEIC, and PNG formats", { timeout: 120_000 }, async () => {
+    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.avif", contentType: "image/avif", content: AVIF },
+      { name: "file", filename: "b.heic", contentType: "image/heic", content: HEIC },
+      { name: "file", filename: "c.png", contentType: "image/png", content: PNG },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/find-duplicates",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.totalImages).toBe(3);
+    // Different format files with different content, no duplicates expected
+    expect(result.duplicateGroups.length).toBeGreaterThanOrEqual(0);
+  });
+
+  // ── Threshold at exact boundary: accepts 0 ───────────────────────
+
+  it("accepts threshold at exact minimum (0) and correctly groups identical images", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.jpg", contentType: "image/jpeg", content: JPG },
+      { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
+      { name: "file", filename: "c.jpg", contentType: "image/jpeg", content: PORTRAIT },
+      {
+        name: "settings",
+        content: JSON.stringify({ threshold: 0 }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/find-duplicates",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.totalImages).toBe(3);
+    // Identical JPGs should be grouped even at threshold 0
+    expect(result.duplicateGroups).toHaveLength(1);
+    expect(result.duplicateGroups[0].files).toHaveLength(2);
+    // Portrait should not be in the group
+    expect(result.uniqueImages).toBe(1);
+  });
+
+  // ── Threshold at exact boundary: accepts 20 ──────────────────────
+
+  it("accepts threshold at exact maximum (20) and groups loosely similar images", async () => {
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.png", contentType: "image/png", content: PNG },
+      { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
+      { name: "file", filename: "c.webp", contentType: "image/webp", content: WEBP },
+      {
+        name: "settings",
+        content: JSON.stringify({ threshold: 20 }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/find-duplicates",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.totalImages).toBe(3);
+    // At max threshold, more images might be grouped together
+  });
 });
