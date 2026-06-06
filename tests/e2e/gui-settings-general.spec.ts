@@ -12,7 +12,7 @@ test.describe("GUI Settings - Dialog Navigation", () => {
     await expect(page.locator("h2").filter({ hasText: "Settings" })).toBeVisible();
   });
 
-  test("dialog has correct dimensions (85vh, max-w-3xl)", async ({ loggedInPage: page }) => {
+  test("dialog has correct dimensions (85dvh, max-w-3xl)", async ({ loggedInPage: page }) => {
     await openSettings(page);
 
     const dialog = page.locator(".relative.bg-background.border.border-border.rounded-xl");
@@ -20,7 +20,7 @@ test.describe("GUI Settings - Dialog Navigation", () => {
 
     // Verify the dialog uses the expected sizing classes
     await expect(dialog).toHaveClass(/max-w-3xl/);
-    await expect(dialog).toHaveClass(/h-\[85vh\]/);
+    await expect(dialog).toHaveClass(/h-\[85dvh\]/);
   });
 
   test("dialog sidebar lists navigable section tabs", async ({ loggedInPage: page }) => {
