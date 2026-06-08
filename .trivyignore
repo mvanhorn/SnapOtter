@@ -1,6 +1,28 @@
-# pnpm 9.x CVEs -- requires major version bump to pnpm 10.x
-# These are build-time tool vulnerabilities, not runtime application code.
-# pnpm is only used for dependency installation, not user-facing functionality.
-# Tracked for upgrade: https://github.com/pnpm/pnpm/releases/tag/v10.0.0
+# pnpm 9.x and its bundled dependencies
+# These are build-time tool internals, not runtime application code.
+# pnpm is only used for dependency installation and process management.
+# All require upgrading to pnpm 10.x (major breaking change).
+# Tracked: https://github.com/pnpm/pnpm/releases/tag/v10.0.0
+
+# pnpm core
 CVE-2025-69262
 CVE-2025-69263
+
+# glob (bundled in pnpm 9.x, not our dependency)
+CVE-2025-64756
+
+# minimatch (bundled in pnpm 9.x)
+CVE-2026-26996
+CVE-2026-27903
+CVE-2026-27904
+
+# picomatch (bundled in pnpm 9.x)
+CVE-2026-33671
+
+# tar (bundled in pnpm 9.x)
+CVE-2026-23745
+CVE-2026-23950
+CVE-2026-24842
+CVE-2026-26960
+CVE-2026-29786
+CVE-2026-31802
