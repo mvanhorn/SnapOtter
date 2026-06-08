@@ -2,6 +2,7 @@
 .VPHome {
   display: flex;
   flex-direction: column;
+  margin-bottom: 0 !important;
 }
 
 .VPHome > .VPHomeHero {
@@ -18,8 +19,8 @@
 
 /* Compact hero: reduce padding so entire page fits in one viewport */
 .VPHero {
-  padding-top: calc(var(--vp-nav-height) + 24px) !important;
-  padding-bottom: 12px !important;
+  padding-top: calc(var(--vp-nav-height) + 16px) !important;
+  padding-bottom: 8px !important;
 }
 
 .VPHero .main {
@@ -30,13 +31,10 @@
   max-width: 100%;
 }
 
-.VPHero .main .name {
-  max-width: none;
-}
-
-.VPHero .main .name .clip {
+.VPHero .main .name.clip {
   font-size: 32px;
   line-height: 1.15;
+  max-width: none;
 }
 
 .VPHero .main .text {
@@ -48,19 +46,19 @@
 .VPHero .main .tagline {
   font-size: 15px;
   line-height: 1.45;
-  padding-top: 6px;
+  padding-top: 4px;
   max-width: 520px;
 }
 
 .VPHero .main .actions {
-  padding-top: 14px;
+  padding-top: 12px;
   justify-content: center;
 }
 
 /* Quick start command banner on homepage */
 .quick-start-banner {
   max-width: 960px;
-  margin: 0 auto 14px;
+  margin: 0 auto 10px;
   padding: 0 24px;
   text-align: center;
 }
@@ -107,7 +105,7 @@
 }
 
 .VPFooter {
-  padding: 14px 24px;
+  padding: 10px 24px !important;
 }
 
 .VPFooter .message,
@@ -120,7 +118,7 @@
     grid-template-columns: 1fr !important;
   }
 
-  .VPHero .main .name .clip {
+  .VPHero .main .name.clip {
     font-size: 24px;
   }
 
