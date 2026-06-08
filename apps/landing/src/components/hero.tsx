@@ -1,7 +1,11 @@
 "use client";
 
+import { Check, Copy, Terminal } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TypingCursor } from "./typing-cursor";
+
+const dockerCommand =
+  "docker run -d --name SnapOtter -p 1349:1349 -v SnapOtter-data:/data snapotter/snapotter:latest";
 
 const wordCloud = [
   { text: "Resize", x: 5, y: 14, size: 16, opacity: 0.15 },
@@ -84,6 +88,13 @@ function useMouseParallax(strength = 30) {
 
 export function Hero() {
   const mouse = useMouseParallax(25);
+  const [copied, setCopied] = useState(false);
+
+  function copyCommand() {
+    navigator.clipboard.writeText(dockerCommand);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
 
   return (
     <section className="relative overflow-hidden px-6 pt-40 pb-32 md:pt-52 md:pb-44">
@@ -152,6 +163,53 @@ export function Hero() {
           </a>
           <p className="mt-4 text-sm text-muted">No sign-ups. No credit card.</p>
         </div>
+
+        <div className="relative mx-auto mt-12 max-w-2xl animate-[fadeUp_0.6s_ease-out_0.4s_both]">
+          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-amber-500/20 blur-lg" />
+          <button
+            type="button"
+            onClick={copyCommand}
+            className="group relative w-full cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-[#151515] text-left shadow-2xl transition-all hover:border-amber-500/30"
+          >
+            <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-3">
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+                <div className="h-3 w-3 rounded-full bg-[#febc2e]" />
+                <div className="h-3 w-3 rounded-full bg-[#28c840]" />
+              </div>
+              <div className="flex items-center gap-2 text-white/30">
+                <Terminal size={13} />
+                <span className="text-xs">Quick Start</span>
+              </div>
+              <span>
+                {copied ? (
+                  <span className="flex items-center gap-1.5 text-emerald-400">
+                    <Check size={13} />
+                    <span className="text-xs font-medium">Copied!</span>
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1.5 text-white/30 transition-colors group-hover:text-white/60">
+                    <Copy size={13} />
+                    <span className="text-xs">Copy</span>
+                  </span>
+                )}
+              </span>
+            </div>
+
+            <div className="overflow-x-auto px-6 py-5">
+              <p className="whitespace-nowrap font-mono text-[13px]">
+                <span className="text-emerald-400">$</span>{" "}
+                <span className="text-white/90">{dockerCommand}</span>
+              </p>
+            </div>
+          </button>
+        </div>
+        <p className="mt-4 animate-[fadeUp_0.6s_ease-out_0.45s_both] text-sm text-muted">
+          Works on Linux, macOS, and Windows. ARM and x86 supported.{" "}
+          <a href="https://docs.snapotter.com" className="font-medium text-accent hover:underline">
+            Read the docs
+          </a>
+        </p>
       </div>
     </section>
   );

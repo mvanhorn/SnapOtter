@@ -4,7 +4,7 @@ import { BentoGrid } from "@/components/bento-grid";
 import { Enterprise } from "@/components/enterprise";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
-import { HowItWorks } from "@/components/how-it-works";
+
 import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
 import { OpenSource } from "@/components/open-source";
@@ -113,7 +113,6 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
-        <HowItWorks />
         <WhyChoose />
         <BentoGrid />
         <Enterprise />
