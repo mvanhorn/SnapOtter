@@ -1,6 +1,6 @@
 import { defineConfig } from "vitepress";
 import llmstxt from "vitepress-plugin-llms";
-import pkg from "../package.json";
+import pkg from "../../../package.json";
 
 export default defineConfig({
   title: "SnapOtter",
