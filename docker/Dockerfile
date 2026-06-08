@@ -126,7 +126,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libde265-dev libx265-dev libjpeg-dev libpng-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL "https://github.com/strukturag/libheif/releases/download/v${LIBHEIF_VERSION}/libheif-${LIBHEIF_VERSION}.tar.gz" \
+RUN curl -fsSL --retry 3 --retry-delay 5 "https://github.com/strukturag/libheif/releases/download/v${LIBHEIF_VERSION}/libheif-${LIBHEIF_VERSION}.tar.gz" \
       | tar xz \
     && cmake -B build -S "libheif-${LIBHEIF_VERSION}" \
       -DCMAKE_INSTALL_PREFIX=/opt/libheif \
