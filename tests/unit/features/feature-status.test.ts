@@ -524,3 +524,45 @@ describe("Composite state - getFeatureStates", () => {
     }
   });
 });
+
+describe("verifyBundleModels", () => {
+  it("returns null when all models exist and meet minSize", () => {
+    writeTestManifest({
+      "background-removal": {
+        models: [{ id: "u2net", path: "u2net.onnx", minSize: 10 }],
+      },
+    });
+    writeFileSync(join(modelsDir, "u2net.onnx"), Buffer.alloc(1024));
+    expect(mod.verifyBundleModels("background-removal")).toBeNull();
+  });
+
+  it("returns error string when model file is missing", () => {
+    writeTestManifest({
+      "background-removal": {
+        models: [{ id: "u2net", path: "u2net.onnx" }],
+      },
+    });
+    const result = mod.verifyBundleModels("background-removal");
+    expect(result).toBe("Missing model file: u2net.onnx");
+  });
+
+  it("returns error string when model file is undersized", () => {
+    writeTestManifest({
+      "background-removal": {
+        models: [{ id: "u2net", path: "u2net.onnx", minSize: 1000 }],
+      },
+    });
+    writeFileSync(join(modelsDir, "u2net.onnx"), Buffer.alloc(10));
+    const result = mod.verifyBundleModels("background-removal");
+    expect(result).toContain("undersized");
+  });
+
+  it("returns null when manifest is missing", () => {
+    expect(mod.verifyBundleModels("background-removal")).toBeNull();
+  });
+
+  it("returns null when bundle not in manifest", () => {
+    writeTestManifest({ "some-other-bundle": { models: [] } });
+    expect(mod.verifyBundleModels("background-removal")).toBeNull();
+  });
+});

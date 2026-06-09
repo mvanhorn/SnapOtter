@@ -370,7 +370,7 @@ export function recoverInterruptedInstalls(): void {
 
 // ── Feature states (composite view) ─────────────────────────────────────
 
-function verifyBundleModels(bundleId: string): string | null {
+export function verifyBundleModels(bundleId: string): string | null {
   const manifest = readManifest();
   if (!manifest) return null;
 
