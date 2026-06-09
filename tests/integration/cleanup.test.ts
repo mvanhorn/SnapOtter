@@ -4,14 +4,14 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { eq } from "drizzle-orm";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { env } from "../../../apps/api/src/config.js";
-import { db, schema } from "../../../apps/api/src/db/index.js";
-import { runMigrations } from "../../../apps/api/src/db/migrate.js";
+import { env } from "../../apps/api/src/config.js";
+import { db, schema } from "../../apps/api/src/db/index.js";
+import { runMigrations } from "../../apps/api/src/db/migrate.js";
 import {
   getMaxAgeMs,
   shouldRunStartupCleanup,
   startCleanupCron,
-} from "../../../apps/api/src/lib/cleanup.js";
+} from "../../apps/api/src/lib/cleanup.js";
 
 beforeAll(() => {
   runMigrations();
