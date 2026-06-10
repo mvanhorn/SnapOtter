@@ -290,12 +290,14 @@ def main():
                 )
             )
 
-        except ImportError:
+        except ImportError as e:
+            msg = str(e)
+            hint = "Fix with: apt-get install -y libgl1" if "libGL" in msg else "Install with: pip install mediapipe numpy opencv-python"
             print(
                 json.dumps(
                     {
                         "success": False,
-                        "error": "Red-eye removal requires MediaPipe, NumPy, and OpenCV. Install with: pip install mediapipe numpy opencv-python",
+                        "error": f"Missing dependency: {msg}. {hint}",
                     }
                 )
             )

@@ -13,7 +13,9 @@ try:
     import cv2
     from PIL import Image
 except ImportError as _e:
-    print(json.dumps({"error": f"Missing dependency: {_e}. Install opencv-python-headless, numpy, and Pillow."}))
+    _msg = str(_e)
+    _hint = "Fix with: apt-get install -y libgl1" if "libGL" in _msg else "Install opencv-python-headless, numpy, and Pillow."
+    print(json.dumps({"error": f"Missing dependency: {_msg}. {_hint}"}))
     sys.exit(1)
 
 

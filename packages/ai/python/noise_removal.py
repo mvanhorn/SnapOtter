@@ -444,10 +444,12 @@ def main():
 
         try:
             import cv2
-        except ImportError:
+        except ImportError as e:
+            msg = str(e)
+            hint = "Fix with: apt-get install -y libgl1" if "libGL" in msg else "Install with: pip install opencv-python-headless"
             print(json.dumps({
                 "success": False,
-                "error": "OpenCV is not installed. Install with: pip install opencv-python-headless",
+                "error": f"Missing dependency: {msg}. {hint}",
             }))
             sys.exit(1)
 

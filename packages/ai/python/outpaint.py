@@ -160,9 +160,11 @@ def main():
             import cv2
             import onnxruntime
         except ImportError as e:
+            msg = str(e)
+            hint = "Fix with: apt-get install -y libgl1" if "libGL" in msg else "Requires opencv-python-headless and onnxruntime."
             print(json.dumps({
                 "success": False,
-                "error": f"Missing dependency: {e}. Requires opencv-python-headless and onnxruntime.",
+                "error": f"Missing dependency: {msg}. {hint}",
             }))
             sys.exit(1)
 
