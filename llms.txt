@@ -88,12 +88,13 @@ Multi-arch: AMD64 and ARM64 (Intel, Apple Silicon, Raspberry Pi).
 Base URL: http://localhost:1349/api/v1
 Interactive docs: http://localhost:1349/api/docs (Swagger UI)
 Machine-readable spec: http://localhost:1349/api/docs/json (OpenAPI 3.1)
+OpenAPI YAML: http://localhost:1349/api/v1/openapi.yaml
 LLM-optimized spec: http://localhost:1349/llms.txt (generated from OpenAPI at runtime)
+Full plain-text API docs: http://localhost:1349/llms-full.txt
 
 Authentication methods:
 - Session cookie (browser login)
-- API key header: X-API-Key: si_<key>
-- Bearer token: Authorization: Bearer si_<key>
+- Bearer token: Authorization: Bearer si_<key> (API keys are prefixed si_)
 
 API keys support scoped permissions that intersect with user role permissions.
 
@@ -107,11 +108,13 @@ AI tools return 202 Accepted and stream progress via SSE:
   GET /api/v1/jobs/:jobId/progress (EventSource)
 
 Pipelines (chained tool workflows):
-  GET /api/v1/pipelines
-  POST /api/v1/pipelines
-  POST /api/v1/pipelines/:id/run
+  POST /api/v1/pipeline/execute (run a pipeline on uploaded files)
+  POST /api/v1/pipeline/save
+  GET /api/v1/pipeline/list
+  DELETE /api/v1/pipeline/:id
+  POST /api/v1/pipeline/batch
 
-Batch processing: submit multiple files, receive a ZIP archive.
+Batch processing: POST /api/v1/tools/:toolId/batch (multiple files in, ZIP archive out).
 
 ## Tech Stack
 
