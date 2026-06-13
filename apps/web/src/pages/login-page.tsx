@@ -127,7 +127,7 @@ function LanguageSelector() {
 
 export function LoginPage() {
   const { t } = useTranslation();
-  const { oidcEnabled, oidcProviderName, samlEnabled, samlProviderName } = useAuth();
+  const { oidcEnabled, oidcProviderName, samlEnabled, samlProviderName, ssoEnforced } = useAuth();
   const [searchParams] = useSearchParams();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -191,7 +191,35 @@ export function LoginPage() {
             </h1>
             <h2 className="text-2xl font-bold mt-4 text-foreground">{t.auth.login}</h2>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {ssoEnforced && (oidcEnabled || samlEnabled) && (
+            <div className="space-y-3">
+              {oidcEnabled && (
+                <a
+                  href="/api/auth/oidc/login"
+                  className="w-full py-3 rounded-lg bg-primary/80 text-primary-foreground font-medium hover:bg-primary transition-colors flex items-center justify-center gap-2"
+                >
+                  {format(t.auth.signInWith, { provider: oidcProviderName || "SSO" })}
+                </a>
+              )}
+              {samlEnabled && (
+                <a
+                  href="/api/auth/saml/login"
+                  className="w-full py-3 rounded-lg bg-primary/80 text-primary-foreground font-medium hover:bg-primary transition-colors flex items-center justify-center gap-2"
+                >
+                  {format(t.auth.signInWith, { provider: samlProviderName || "SSO" })}
+                </a>
+              )}
+              <div className="flex items-center gap-3 my-4">
+                <div className="flex-1 border-t border-border" />
+                <span className="text-sm text-muted-foreground">{t.auth.or}</span>
+                <div className="flex-1 border-t border-border" />
+              </div>
+              <p className="text-sm text-muted-foreground text-center">
+                {t.auth.ssoEnforcedLocalRestricted}
+              </p>
+            </div>
+          )}
+          <form onSubmit={handleSubmit} className={`space-y-4${ssoEnforced ? " opacity-60" : ""}`}>
             <div>
               <label htmlFor="username" className="block text-sm font-medium mb-1 text-foreground">
                 {t.auth.username}
@@ -233,7 +261,7 @@ export function LoginPage() {
               {loading ? t.auth.loggingIn : t.auth.loginButton}
             </button>
           </form>
-          {(oidcEnabled || samlEnabled) && (
+          {!ssoEnforced && (oidcEnabled || samlEnabled) && (
             <>
               <div className="flex items-center gap-3 my-4">
                 <div className="flex-1 border-t border-border" />

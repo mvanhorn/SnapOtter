@@ -2998,6 +2998,7 @@ export const hi: TranslationKeys = {
     samlUserNotAuthorized:
       "Your account is not authorized to access this application. Contact your administrator.",
     samlUserLimitReached: "User limit reached. Contact your administrator.",
+    ssoEnforcedLocalRestricted: "Local login is restricted to authorized administrators.",
     methodSaml: "SAML",
     passwordManagedByProvider: "पासवर्ड बदलाव आपके आइडेंटिटी प्रोवाइडर द्वारा प्रबंधित किए जाते हैं।",
     enterUsername: "यूज़रनेम दर्ज करें",

@@ -283,6 +283,28 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
         return reply.status(403).send({ error: "Authentication is disabled" });
       }
 
+      // SSO enforcement check
+      const ssoEnforced = await getSettingString("ssoEnforcement", "false");
+      if (ssoEnforced === "true") {
+        let isEnabled = false;
+        try {
+          const { isFeatureEnabled } = await import("@snapotter/enterprise");
+          isEnabled = isFeatureEnabled("sso_enforcement");
+        } catch {}
+
+        if (isEnabled) {
+          const breakGlassUsername = await getSettingString("ssoBreakGlassUsername", "");
+          const { username } = loginSchema.parse(request.body);
+
+          if (username !== breakGlassUsername) {
+            return reply.status(403).send({
+              error: "Local password login is disabled. Please use SSO.",
+              code: "SSO_ENFORCED",
+            });
+          }
+        }
+      }
+
       const parsed = loginSchema.safeParse(request.body);
       if (!parsed.success) {
         return reply.status(400).send({ error: "Username and password are required" });

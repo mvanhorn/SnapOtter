@@ -21,6 +21,7 @@ import { shouldRunStartupCleanup } from "./lib/cleanup.js";
 import { buildCsp } from "./lib/csp.js";
 import { ensureAiDirs, recoverInterruptedInstalls } from "./lib/feature-status.js";
 
+import { getSettingString } from "./lib/settings-helpers.js";
 import { requirePermission } from "./permissions.js";
 import {
   authMiddleware,
@@ -437,6 +438,8 @@ app.get("/api/v1/config/auth", async () => {
     config.samlProviderName = env.SAML_PROVIDER_NAME || "SSO";
     config.samlLoginUrl = "/api/auth/saml/login";
   }
+
+  config.ssoEnforced = (await getSettingString("ssoEnforcement", "false")) === "true";
 
   return config;
 });

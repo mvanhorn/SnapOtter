@@ -2967,6 +2967,7 @@ export const en = {
     samlUserNotAuthorized:
       "Your account is not authorized to access this application. Contact your administrator.",
     samlUserLimitReached: "User limit reached. Contact your administrator.",
+    ssoEnforcedLocalRestricted: "Local login is restricted to authorized administrators.",
     methodSaml: "SAML",
     passwordManagedByProvider: "Password changes are managed by your identity provider.",
     enterUsername: "Enter username",

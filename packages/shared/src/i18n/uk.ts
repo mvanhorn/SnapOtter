@@ -3017,6 +3017,7 @@ export const uk: TranslationKeys = {
     samlUserNotAuthorized:
       "Your account is not authorized to access this application. Contact your administrator.",
     samlUserLimitReached: "User limit reached. Contact your administrator.",
+    ssoEnforcedLocalRestricted: "Local login is restricted to authorized administrators.",
     methodSaml: "SAML",
     passwordManagedByProvider: "Керування паролем здійснюється Вашим постачальником ідентифікації.",
     enterUsername: "Введіть ім'я користувача",

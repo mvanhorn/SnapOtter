@@ -2939,6 +2939,7 @@ export const zhTW: TranslationKeys = {
     samlUserNotAuthorized:
       "Your account is not authorized to access this application. Contact your administrator.",
     samlUserLimitReached: "User limit reached. Contact your administrator.",
+    ssoEnforcedLocalRestricted: "Local login is restricted to authorized administrators.",
     methodSaml: "SAML",
     passwordManagedByProvider: "密碼由您的身分提供者管理。",
     enterUsername: "輸入使用者名稱",

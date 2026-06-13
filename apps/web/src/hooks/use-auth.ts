@@ -16,6 +16,7 @@ interface AuthState {
   oidcProviderName: string | null;
   samlEnabled: boolean;
   samlProviderName: string | null;
+  ssoEnforced: boolean;
   loginMethod: string | null;
   hasLocalPassword: boolean;
 }
@@ -52,6 +53,7 @@ export function useAuth() {
     oidcProviderName: null,
     samlEnabled: false,
     samlProviderName: null,
+    ssoEnforced: false,
     loginMethod: null,
     hasLocalPassword: false,
   });
@@ -80,6 +82,7 @@ export function useAuth() {
               oidcProviderName: null,
               samlEnabled: false,
               samlProviderName: null,
+              ssoEnforced: false,
               loginMethod: null,
               hasLocalPassword: false,
             });
@@ -110,6 +113,7 @@ export function useAuth() {
               oidcProviderName: config.oidcProviderName ?? null,
               samlEnabled: config.samlEnabled ?? false,
               samlProviderName: config.samlProviderName ?? null,
+              ssoEnforced: config.ssoEnforced ?? false,
               loginMethod: session.user?.loginMethod ?? null,
               hasLocalPassword: session.user?.hasLocalPassword ?? false,
             });
@@ -130,6 +134,7 @@ export function useAuth() {
               oidcProviderName: config.oidcProviderName ?? null,
               samlEnabled: config.samlEnabled ?? false,
               samlProviderName: config.samlProviderName ?? null,
+              ssoEnforced: config.ssoEnforced ?? false,
               loginMethod: null,
               hasLocalPassword: false,
             });

@@ -3017,6 +3017,7 @@ export const nl: TranslationKeys = {
     samlUserNotAuthorized:
       "Your account is not authorized to access this application. Contact your administrator.",
     samlUserLimitReached: "User limit reached. Contact your administrator.",
+    ssoEnforcedLocalRestricted: "Local login is restricted to authorized administrators.",
     methodSaml: "SAML",
     passwordManagedByProvider: "Wachtwoordwijzigingen worden beheerd door je identiteitsprovider.",
     enterUsername: "Voer gebruikersnaam in",

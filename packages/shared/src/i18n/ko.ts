@@ -2956,6 +2956,7 @@ export const ko: TranslationKeys = {
     samlUserNotAuthorized:
       "Your account is not authorized to access this application. Contact your administrator.",
     samlUserLimitReached: "User limit reached. Contact your administrator.",
+    ssoEnforcedLocalRestricted: "Local login is restricted to authorized administrators.",
     methodSaml: "SAML",
     passwordManagedByProvider: "비밀번호는 ID 제공자에서 관리됩니다.",
     enterUsername: "사용자명 입력",

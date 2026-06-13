@@ -3012,6 +3012,7 @@ export const vi: TranslationKeys = {
     samlUserNotAuthorized:
       "Your account is not authorized to access this application. Contact your administrator.",
     samlUserLimitReached: "User limit reached. Contact your administrator.",
+    ssoEnforcedLocalRestricted: "Local login is restricted to authorized administrators.",
     methodSaml: "SAML",
     passwordManagedByProvider: "Việc đổi mật khẩu được quản lý bởi nhà cung cấp danh tính của bạn.",
     enterUsername: "Nhập tên đăng nhập",
