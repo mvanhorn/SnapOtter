@@ -281,6 +281,11 @@ RUN --mount=type=cache,target=/root/.cache/pip \
         pdf2docx==0.5.13 \
         markdown==3.10.2
 
+# Stamp the venv so the entrypoint can detect base-package upgrades.
+# If the frozen package list changes, the hash changes, and containers
+# with a stale /data/ai/venv will get a fresh copy on next start.
+RUN /opt/venv/bin/pip freeze | sha256sum | cut -d' ' -f1 > /opt/venv/.venv-version
+
 # On-demand AI feature installer and manifest
 COPY docker/feature-manifest.json /app/docker/feature-manifest.json
 COPY packages/ai/python/install_feature.py /app/packages/ai/python/install_feature.py

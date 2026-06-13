@@ -54,13 +54,42 @@ if [ -d "$AI_VENV_TMP" ]; then
   rm -rf "$AI_VENV_TMP"
 fi
 
-# Bootstrap AI venv from base image on first run
-if [ ! -d "$AI_VENV" ] && [ -d "/opt/venv" ]; then
-  echo "Bootstrapping AI venv from base image..."
-  mkdir -p /data/ai/models /data/ai/pip-cache
-  cp -r /opt/venv "$AI_VENV_TMP"
-  mv "$AI_VENV_TMP" "$AI_VENV"
-  echo "AI venv ready at $AI_VENV"
+# Bootstrap AI venv from base image (first run or upgrade).
+# The image stamps /opt/venv/.venv-version with a hash of `pip freeze`.
+# When the stamp in /data/ai/venv doesn't match, the base packages changed
+# and we need a fresh copy so 2.0 Python tools don't fail with ImportError.
+if [ -d "/opt/venv" ]; then
+  NEED_BOOTSTRAP=false
+
+  if [ ! -d "$AI_VENV" ]; then
+    NEED_BOOTSTRAP=true
+    echo "First run: bootstrapping AI venv from base image..."
+  elif [ -f "/opt/venv/.venv-version" ]; then
+    IMAGE_STAMP=$(cat /opt/venv/.venv-version)
+    CURRENT_STAMP=""
+    if [ -f "$AI_VENV/.venv-version" ]; then
+      CURRENT_STAMP=$(cat "$AI_VENV/.venv-version")
+    fi
+    if [ "$CURRENT_STAMP" != "$IMAGE_STAMP" ]; then
+      NEED_BOOTSTRAP=true
+      echo "Base venv updated (stamp mismatch): refreshing AI venv..."
+    fi
+  fi
+
+  if [ "$NEED_BOOTSTRAP" = true ]; then
+    mkdir -p /data/ai/models /data/ai/pip-cache
+    rm -rf "$AI_VENV"
+    cp -r /opt/venv "$AI_VENV_TMP"
+    mv "$AI_VENV_TMP" "$AI_VENV"
+    # Reset installed-bundle state: their packages lived in the old venv.
+    # Models in /data/ai/models survive, so reinstalling a bundle only
+    # reruns pip (model downloads are idempotent and skip existing files).
+    if [ -f "/data/ai/installed.json" ]; then
+      echo '{"bundles":{}}' > /data/ai/installed.json
+      echo "WARNING: Installed AI feature bundles were reset after base venv upgrade. Reinstall them from the Settings page."
+    fi
+    echo "AI venv ready at $AI_VENV"
+  fi
 fi
 
 # Wait for Postgres to be reachable before starting the app
