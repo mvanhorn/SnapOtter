@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import {
   constants,
@@ -630,6 +631,44 @@ export async function importBundleArchive(
     if (existsSync(stagingModels)) {
       mkdirSync(MODELS_DIR, { recursive: true });
       moveTreeRecursive(stagingModels, MODELS_DIR);
+    }
+
+    // Move site-packages/* into venv site-packages
+    const stagingSitePackages = join(stagingDir, "site-packages");
+    if (existsSync(stagingSitePackages)) {
+      const venvPath = process.env.PYTHON_VENV_PATH || join(AI_DIR, "venv");
+      let sitePackagesDir = "";
+      const libDir = join(venvPath, "lib");
+      if (existsSync(libDir)) {
+        const pyDirs = readdirSync(libDir).filter((d) => d.startsWith("python"));
+        if (pyDirs.length > 0) {
+          sitePackagesDir = join(libDir, pyDirs[0], "site-packages");
+        }
+      }
+      if (sitePackagesDir && existsSync(sitePackagesDir)) {
+        moveTreeRecursive(stagingSitePackages, sitePackagesDir);
+      }
+    }
+
+    // Apply fixups (NCCL wheel) if present
+    const stagingFixups = join(stagingDir, "fixups");
+    if (existsSync(stagingFixups)) {
+      const wheels = readdirSync(stagingFixups).filter((f) => f.endsWith(".whl"));
+      if (wheels.length > 0) {
+        const venvPython =
+          (process.env.PYTHON_VENV_PATH || join(AI_DIR, "venv")) + "/bin/python3";
+        for (const wheel of wheels) {
+          try {
+            execFileSync(venvPython, [
+              "-m", "pip", "install", "--no-index",
+              `--find-links=${stagingFixups}`,
+              wheel.split("-")[0],
+            ], { stdio: "ignore", timeout: 30_000 });
+          } catch {
+            // Non-fatal
+          }
+        }
+      }
     }
 
     markInstalled(descriptor.bundleId, descriptor.version, descriptor.models);

@@ -143,6 +143,41 @@ async function buildSymlinkArchive(): Promise<string> {
   return archivePath;
 }
 
+async function createBundleTarWithSitePackages(
+  bundleId: string,
+  version: string,
+  modelFiles: Record<string, string>,
+  sitePackageFiles: Record<string, string>,
+): Promise<string> {
+  const tarDir = join(testRoot, `tar-src-${randomUUID()}`);
+  mkdirSync(tarDir, { recursive: true });
+
+  writeFileSync(
+    join(tarDir, "bundle.json"),
+    JSON.stringify({ bundleId, version, models: Object.keys(modelFiles) }),
+  );
+
+  const modelsSubdir = join(tarDir, "models");
+  mkdirSync(modelsSubdir, { recursive: true });
+  for (const [name, content] of Object.entries(modelFiles)) {
+    const modelPath = join(modelsSubdir, name);
+    mkdirSync(join(modelPath, ".."), { recursive: true });
+    writeFileSync(modelPath, content);
+  }
+
+  const spSubdir = join(tarDir, "site-packages");
+  mkdirSync(spSubdir, { recursive: true });
+  for (const [name, content] of Object.entries(sitePackageFiles)) {
+    const spPath = join(spSubdir, name);
+    mkdirSync(join(spPath, ".."), { recursive: true });
+    writeFileSync(spPath, content);
+  }
+
+  const tarPath = join(testRoot, `bundle-${randomUUID()}.tar.gz`);
+  await tar.create({ gzip: true, file: tarPath, cwd: tarDir }, ["."]);
+  return tarPath;
+}
+
 function resetState(): void {
   writeFileSync(installedPath, JSON.stringify({ bundles: {} }), "utf-8");
   invalidateCache();
@@ -262,6 +297,30 @@ describe("importBundleArchive", () => {
     await expect(importBundleArchive(createReadStream(archivePath))).rejects.toThrow(
       /invalid model path/,
     );
+  });
+});
+
+describe("site-packages import", () => {
+  beforeEach(resetState);
+
+  it("extracts site-packages into venv site-packages directory", async () => {
+    const venvSitePackages = join(aiDir, "venv", "lib", "python3.12", "site-packages");
+    mkdirSync(venvSitePackages, { recursive: true });
+    process.env.PYTHON_VENV_PATH = join(aiDir, "venv");
+
+    const tarPath = await createBundleTarWithSitePackages(
+      testBundleId,
+      testVersion,
+      { "mediapipe/face.tflite": "model-data" },
+      { "fakepkg/__init__.py": "# fake package" },
+    );
+
+    invalidateCache();
+    const result = await importBundleArchive(createReadStream(tarPath));
+    expect(result.bundleId).toBe(testBundleId);
+    expect(existsSync(join(venvSitePackages, "fakepkg", "__init__.py"))).toBe(true);
+
+    delete process.env.PYTHON_VENV_PATH;
   });
 });
 
