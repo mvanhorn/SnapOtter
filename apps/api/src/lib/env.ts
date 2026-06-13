@@ -97,6 +97,8 @@ const envSchema = z
     POSTHOG_API_KEY: z.string().default(""),
     POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
     SENTRY_DSN: z.string().default(""),
+    DATA_ENCRYPTION_KEY: z.string().default(""),
+    DATA_ENCRYPTION_KEY_PREVIOUS: z.string().default(""),
   })
   .superRefine((data, ctx) => {
     if (data.STORAGE_MODE === "s3") {
