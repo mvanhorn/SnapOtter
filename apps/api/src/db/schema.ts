@@ -38,6 +38,9 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .notNull()
     .$defaultFn(() => new Date()),
+  totpSecret: text("totp_secret"),
+  totpEnabled: boolean("totp_enabled").notNull().default(false),
+  recoveryCodesHash: text("recovery_codes_hash"),
   analyticsEnabled: boolean("analytics_enabled"),
   analyticsConsentShownAt: timestamp("analytics_consent_shown_at", { withTimezone: true }),
   analyticsConsentRemindAt: timestamp("analytics_consent_remind_at", { withTimezone: true }),
@@ -61,6 +64,7 @@ export const sessions = pgTable("sessions", {
     .references(() => users.id, { onDelete: "cascade" }),
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   idToken: text("id_token"),
+  lastActivity: timestamp("last_activity", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .$defaultFn(() => new Date()),
@@ -161,6 +165,7 @@ export const roles = pgTable("roles", {
   name: text("name").notNull().unique(),
   description: text("description").notNull().default(""),
   permissions: jsonb("permissions").$type<string[]>().notNull(),
+  toolPermissions: jsonb("tool_permissions").$type<{ mode: string; allowed: string[] } | null>(),
   isBuiltin: boolean("is_builtin").notNull().default(false),
   createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at", { withTimezone: true })
