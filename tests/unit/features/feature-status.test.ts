@@ -438,6 +438,48 @@ describe("Crash recovery - recoverInterruptedInstalls", () => {
     mod.recoverInterruptedInstalls();
     expect(mod.isFeatureInstalled("ocr")).toBe(false);
   });
+
+  it("deletes staging-{bundleId}/ directories", () => {
+    const staging = join(aiDir, "staging-ocr");
+    mkdirSync(staging, { recursive: true });
+    writeFileSync(join(staging, "somefile"), "data");
+    mod.recoverInterruptedInstalls();
+    expect(existsSync(staging)).toBe(false);
+  });
+
+  it("deletes multiple staging directories", () => {
+    mkdirSync(join(aiDir, "staging-ocr"), { recursive: true });
+    mkdirSync(join(aiDir, "staging-upscale-enhance"), { recursive: true });
+    mod.recoverInterruptedInstalls();
+    expect(existsSync(join(aiDir, "staging-ocr"))).toBe(false);
+    expect(existsSync(join(aiDir, "staging-upscale-enhance"))).toBe(false);
+  });
+
+  it("does NOT delete non-staging directories", () => {
+    const venvDir = join(aiDir, "venv");
+    mkdirSync(venvDir, { recursive: true });
+    writeFileSync(join(venvDir, "file"), "data");
+    mod.recoverInterruptedInstalls();
+    expect(existsSync(venvDir)).toBe(true);
+  });
+
+  it("deletes stale download files in staging/", () => {
+    const staging = join(aiDir, "staging");
+    mkdirSync(staging, { recursive: true });
+    writeFileSync(join(staging, "bundle.tar.gz.partial"), "partial");
+    writeFileSync(join(staging, "bundle.tar.gz.meta"), '{"bytesDownloaded":0}');
+    mod.recoverInterruptedInstalls();
+    expect(existsSync(join(staging, "bundle.tar.gz.partial"))).toBe(false);
+    expect(existsSync(join(staging, "bundle.tar.gz.meta"))).toBe(false);
+  });
+
+  it("deletes orphaned .tar.gz in staging when bundle not installed", () => {
+    const staging = join(aiDir, "staging");
+    mkdirSync(staging, { recursive: true });
+    writeFileSync(join(staging, "background-removal-amd64-gpu.tar.gz"), "tar-data");
+    mod.recoverInterruptedInstalls();
+    expect(existsSync(join(staging, "background-removal-amd64-gpu.tar.gz"))).toBe(false);
+  });
 });
 
 describe("Composite state - getFeatureStates", () => {

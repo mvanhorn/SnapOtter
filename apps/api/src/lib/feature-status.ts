@@ -378,6 +378,40 @@ export function recoverInterruptedInstalls(): void {
     }
   }
 
+  // 6. Delete staging-{bundleId}/ directories (incomplete extraction)
+  try {
+    const aiEntries = readdirSync(AI_DIR, { withFileTypes: true });
+    for (const entry of aiEntries) {
+      if (entry.isDirectory() && entry.name.startsWith("staging-")) {
+        const stagingPath = join(AI_DIR, entry.name);
+        rmSync(stagingPath, { recursive: true, force: true });
+        console.info(`[feature-status] Deleted orphaned ${entry.name}/`);
+      }
+    }
+  } catch {
+    // AI_DIR may not exist yet
+  }
+
+  // 7. Clean up staging/ download directory (partial downloads, orphaned tars)
+  const downloadStaging = join(AI_DIR, "staging");
+  if (existsSync(downloadStaging)) {
+    try {
+      const files = readdirSync(downloadStaging);
+      for (const file of files) {
+        const filePath = join(downloadStaging, file);
+        if (file.endsWith(".partial") || file.endsWith(".meta")) {
+          unlinkSync(filePath);
+          console.info(`[feature-status] Deleted stale download file: ${file}`);
+        } else if (file.endsWith(".tar.gz")) {
+          unlinkSync(filePath);
+          console.info(`[feature-status] Deleted orphaned archive: ${file}`);
+        }
+      }
+    } catch {
+      // best-effort
+    }
+  }
+
   invalidateCache();
 }
 
