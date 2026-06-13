@@ -32,4 +32,4 @@ export type S3StorageModule = typeof import("./storage-s3.js");
 export async function loadS3Storage(): Promise<S3StorageModule> {
   return import("./storage-s3.js");
 }
-export { ENTERPRISE_FEATURES, PLAN_FEATURES, type EnterpriseFeature, type LicensePayload };
+export { ENTERPRISE_FEATURES, type EnterpriseFeature, type LicensePayload, PLAN_FEATURES };
