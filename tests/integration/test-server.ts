@@ -26,18 +26,29 @@ import { eq } from "drizzle-orm";
 // 2. Import app modules. config.ts already captured our env vars.
 // ---------------------------------------------------------------------------
 import Fastify from "fastify";
+import { afterAll } from "vitest";
 import { env } from "../../apps/api/src/config.js";
 import { db, schema } from "../../apps/api/src/db/index.js";
 import { runMigrations } from "../../apps/api/src/db/migrate.js";
+import {
+  requestCancel,
+  startCancelListener,
+  stopCancelListener,
+} from "../../apps/api/src/jobs/cancel.js";
+import { pingRedis } from "../../apps/api/src/jobs/connection.js";
+import { closeQueueEvents } from "../../apps/api/src/jobs/enqueue.js";
+import { closeWorkers, startWorkers } from "../../apps/api/src/jobs/worker.js";
 import { requirePermission } from "../../apps/api/src/permissions.js";
 import {
   authMiddleware,
   authRoutes,
   ensureBuiltinRoles,
   ensureDefaultAdmin,
+  requireAuth,
 } from "../../apps/api/src/plugins/auth.js";
 import { oidcRoutes } from "../../apps/api/src/plugins/oidc.js";
 import { registerUpload } from "../../apps/api/src/plugins/upload.js";
+import { adminOpsRoutes } from "../../apps/api/src/routes/admin-ops.js";
 import { analyticsRoutes } from "../../apps/api/src/routes/analytics.js";
 import { apiKeyRoutes } from "../../apps/api/src/routes/api-keys.js";
 import { auditLogRoutes } from "../../apps/api/src/routes/audit-log.js";
@@ -58,6 +69,27 @@ import { userFileRoutes } from "../../apps/api/src/routes/user-files.js";
 // ensures the __drizzle_migrations journal is consistent in each fork).
 await runMigrations();
 
+// ── Job spine lifecycle (once per fork) ────────────────────────────
+// Workers idle when unused; starting them for every integration file is cheap.
+let spineStarted = false;
+
+async function ensureSpine(): Promise<void> {
+  if (spineStarted) return;
+  spineStarted = true;
+  await startCancelListener();
+  startWorkers();
+}
+
+// Module-scope afterAll: vitest registers this into any importing file's
+// suite, so every fork cleans up workers and cancel listener on exit.
+afterAll(async () => {
+  if (spineStarted) {
+    await closeWorkers();
+    await stopCancelListener();
+    await closeQueueEvents();
+  }
+}, 10_000);
+
 // ---------------------------------------------------------------------------
 // 3. Public API
 // ---------------------------------------------------------------------------
@@ -67,6 +99,9 @@ export interface TestApp {
 }
 
 export async function buildTestApp(): Promise<TestApp> {
+  // Start the BullMQ job spine (idempotent, once per fork)
+  await ensureSpine();
+
   // Seed built-in roles and default admin user (both idempotent)
   await ensureBuiltinRoles();
   await ensureDefaultAdmin();
@@ -139,6 +174,9 @@ export async function buildTestApp(): Promise<TestApp> {
   // Roles management routes
   await rolesRoutes(app);
 
+  // Admin ops routes (runtime log level, Prometheus metrics)
+  await adminOpsRoutes(app);
+
   // Analytics routes
   await analyticsRoutes(app);
 
@@ -184,6 +222,41 @@ export async function buildTestApp(): Promise<TestApp> {
     }
     return config;
   });
+
+  // Readiness probe (no auth)
+  app.get("/api/v1/readyz", async (_request, reply) => {
+    let postgres = false;
+    let redis = false;
+    try {
+      await db.select().from(schema.settings).limit(1);
+      postgres = true;
+    } catch {
+      /* db unreachable */
+    }
+    try {
+      redis = await pingRedis();
+    } catch {
+      /* redis unreachable */
+    }
+    const ok = postgres && redis;
+    return reply.code(ok ? 200 : 503).send({ ok, postgres, redis });
+  });
+
+  // Cancel a job (authenticated)
+  app.post(
+    "/api/v1/jobs/:jobId/cancel",
+    async (
+      request: import("fastify").FastifyRequest<{ Params: { jobId: string } }>,
+      reply: import("fastify").FastifyReply,
+    ) => {
+      const user = requireAuth(request, reply);
+      if (!user) return;
+
+      const { jobId } = request.params;
+      const canceled = await requestCancel(jobId);
+      return reply.send({ canceled });
+    },
+  );
 
   // Ensure Fastify is ready (all plugins loaded)
   await app.ready();

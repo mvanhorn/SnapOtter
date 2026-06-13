@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { FastifyInstance } from "fastify";
 import sharp from "sharp";
 import { z } from "zod";
@@ -7,6 +8,7 @@ import { validateImageBuffer } from "../../lib/file-validation.js";
 import { sanitizeFilename } from "../../lib/filename.js";
 import { decodeToSharpCompat, needsCliDecode } from "../../lib/format-decoders.js";
 import { decodeHeic } from "../../lib/heic-converter.js";
+import { putObject } from "../../lib/object-storage.js";
 import { decompressSvgz, sanitizeSvg } from "../../lib/svg-sanitize.js";
 
 const settingsSchema = z.object({
@@ -226,16 +228,8 @@ export function registerWatermarkImage(app: FastifyInstance) {
         .composite([{ input: wmBuffer, top, left }])
         .toBuffer();
 
-      // Use tool-factory's workspace pattern
-      const { randomUUID } = await import("node:crypto");
-      const { writeFile } = await import("node:fs/promises");
-      const { join } = await import("node:path");
-      const { createWorkspace } = await import("../../lib/workspace.js");
-
       const jobId = randomUUID();
-      const workspacePath = await createWorkspace(jobId);
-      const outputPath = join(workspacePath, "output", filename);
-      await writeFile(outputPath, result);
+      await putObject(`outputs/${jobId}/${filename}`, result);
 
       return reply.send({
         jobId,

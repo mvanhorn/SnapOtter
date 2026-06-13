@@ -1,10 +1,11 @@
 /**
  * Feature bundle management routes.
  *
- * GET  /api/v1/features                           — List feature bundles and their statuses
- * POST /api/v1/admin/features/:bundleId/install    — Install a feature bundle (async)
- * POST /api/v1/admin/features/:bundleId/uninstall  — Uninstall a feature bundle
- * GET  /api/v1/admin/features/disk-usage           — Get AI model disk usage
+ * GET  /api/v1/features                           - List feature bundles and their statuses
+ * POST /api/v1/admin/features/:bundleId/install    - Install a feature bundle (async)
+ * POST /api/v1/admin/features/:bundleId/uninstall  - Uninstall a feature bundle
+ * GET  /api/v1/admin/features/disk-usage           - Get AI model disk usage
+ * POST /api/v1/admin/features/import               - Import an offline bundle archive
  */
 
 import { spawn } from "node:child_process";
@@ -30,6 +31,9 @@ import {
   getInstallScriptPath,
   getManifestPath,
   getModelsDir,
+  ImportLockError,
+  ImportValidationError,
+  importBundleArchive,
   invalidateCache,
   isDockerEnvironment,
   isFeatureInstalled,
@@ -101,7 +105,7 @@ function getDirSize(dirPath: string): number {
 }
 
 export async function registerFeatureRoutes(app: FastifyInstance): Promise<void> {
-  // GET /api/v1/features — List feature bundles and their statuses
+  // GET /api/v1/features - List feature bundles and their statuses
   app.get("/api/v1/features", async (request: FastifyRequest, reply: FastifyReply) => {
     const user = requireAuth(request, reply);
     if (!user) return;
@@ -125,7 +129,7 @@ export async function registerFeatureRoutes(app: FastifyInstance): Promise<void>
     return reply.send({ bundles: getFeatureStates() });
   });
 
-  // POST /api/v1/admin/features/:bundleId/install — Install a feature bundle
+  // POST /api/v1/admin/features/:bundleId/install - Install a feature bundle
   app.post(
     "/api/v1/admin/features/:bundleId/install",
     async (request: FastifyRequest<{ Params: BundleIdParams }>, reply: FastifyReply) => {
@@ -204,7 +208,7 @@ export async function registerFeatureRoutes(app: FastifyInstance): Promise<void>
               });
             }
           } catch {
-            // Not JSON progress — rembg/pip output noise, keep in lastStderrLines for error reporting
+            // Not JSON progress - rembg/pip output noise, keep in lastStderrLines for error reporting
           }
         }
       });
@@ -224,7 +228,7 @@ export async function registerFeatureRoutes(app: FastifyInstance): Promise<void>
           });
         } else {
           // Extract the structured error from Python's fail() function first.
-          // fail() writes {"error": "..."} to stderr — prefer this over raw lines.
+          // fail() writes {"error": "..."} to stderr - prefer this over raw lines.
           let errorMsg: string | undefined;
           for (let i = lastStderrLines.length - 1; i >= 0; i--) {
             const line = lastStderrLines[i];
@@ -276,7 +280,7 @@ export async function registerFeatureRoutes(app: FastifyInstance): Promise<void>
     },
   );
 
-  // POST /api/v1/admin/features/:bundleId/uninstall — Uninstall a feature bundle
+  // POST /api/v1/admin/features/:bundleId/uninstall - Uninstall a feature bundle
   app.post(
     "/api/v1/admin/features/:bundleId/uninstall",
     async (request: FastifyRequest<{ Params: BundleIdParams }>, reply: FastifyReply) => {
@@ -351,7 +355,7 @@ export async function registerFeatureRoutes(app: FastifyInstance): Promise<void>
     },
   );
 
-  // GET /api/v1/admin/features/disk-usage — Get AI model disk usage
+  // GET /api/v1/admin/features/disk-usage - Get AI model disk usage
   app.get(
     "/api/v1/admin/features/disk-usage",
     async (request: FastifyRequest, reply: FastifyReply) => {
@@ -360,6 +364,49 @@ export async function registerFeatureRoutes(app: FastifyInstance): Promise<void>
 
       const totalBytes = getDirSize(getAiDir());
       return reply.send({ totalBytes });
+    },
+  );
+
+  // POST /api/v1/admin/features/import - Import an offline bundle archive
+  app.post(
+    "/api/v1/admin/features/import",
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const admin = await requirePermission("features:manage")(request, reply);
+      if (!admin) return;
+
+      let part: Awaited<ReturnType<FastifyRequest["file"]>>;
+      try {
+        part = await request.file();
+      } catch {
+        return reply.status(400).send({ error: "Expected a multipart file upload" });
+      }
+
+      if (!part?.file) {
+        return reply.status(400).send({ error: "No file provided" });
+      }
+
+      try {
+        const result = await importBundleArchive(part.file);
+        invalidateCache();
+        shutdownDispatcher();
+        trackEvent(request, ANALYTICS_EVENTS.AI_BUNDLE_ACTION, {
+          bundle_id: result.bundleId,
+          action: "imported",
+          duration_ms: 0,
+        });
+        return reply.send({
+          bundleId: result.bundleId,
+          version: result.version,
+        });
+      } catch (err) {
+        if (err instanceof ImportLockError) {
+          return reply.status(409).send({ error: err.message });
+        }
+        if (err instanceof ImportValidationError) {
+          return reply.status(400).send({ error: err.message });
+        }
+        throw err;
+      }
     },
   );
 }

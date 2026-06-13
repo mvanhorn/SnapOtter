@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { join } from "node:path";
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
@@ -9,8 +10,14 @@ import Fastify from "fastify";
 import { env } from "./config.js";
 import { closeDb, db, schema } from "./db/index.js";
 import { runMigrations } from "./db/migrate.js";
+import { startCancelListener, stopCancelListener } from "./jobs/cancel.js";
+import { closeRedis, pingRedis } from "./jobs/connection.js";
+import { closeFlowProducer, closeQueueEvents } from "./jobs/enqueue.js";
+import { closeQueues, queueCounts } from "./jobs/queues.js";
+import { enqueueSystemJob, SYSTEM_JOBS, scheduleSystemJobs } from "./jobs/system-jobs.js";
+import { closeWorkers, startWorkers } from "./jobs/worker.js";
 import { captureException, initAnalytics, shutdownAnalytics } from "./lib/analytics.js";
-import { startCleanupCron } from "./lib/cleanup.js";
+import { shouldRunStartupCleanup } from "./lib/cleanup.js";
 import { buildCsp } from "./lib/csp.js";
 import { ensureAiDirs, recoverInterruptedInstalls } from "./lib/feature-status.js";
 import { shutdownWorkerPool } from "./lib/worker-pool.js";
@@ -25,6 +32,7 @@ import {
 import { oidcRoutes } from "./plugins/oidc.js";
 import { registerStatic } from "./plugins/static.js";
 import { registerUpload } from "./plugins/upload.js";
+import { adminOpsRoutes } from "./routes/admin-ops.js";
 import { analyticsRoutes } from "./routes/analytics.js";
 import { apiKeyRoutes } from "./routes/api-keys.js";
 import { auditLogRoutes } from "./routes/audit-log.js";
@@ -36,7 +44,7 @@ import { registerFetchUrlsRoute } from "./routes/fetch-urls.js";
 import { fileRoutes } from "./routes/files.js";
 import { registerMemeTemplates } from "./routes/meme-templates.js";
 import { registerPipelineRoutes } from "./routes/pipeline.js";
-import { recoverStaleJobs, registerProgressRoutes } from "./routes/progress.js";
+import { registerProgressRoutes } from "./routes/progress.js";
 import { rolesRoutes } from "./routes/roles.js";
 import { settingsRoutes } from "./routes/settings.js";
 import { teamsRoutes } from "./routes/teams.js";
@@ -55,6 +63,19 @@ try {
   process.exit(1);
 }
 console.log("Database initialized");
+
+// Verify Redis is reachable (required for BullMQ job queues)
+try {
+  await pingRedis();
+} catch (err) {
+  const safeUrl = env.REDIS_URL.replace(/:\/\/[^@]*@/, "://***@");
+  console.error(
+    `FATAL: Cannot connect to Redis at ${safeUrl}. Is Redis running? (docker compose up, or set REDIS_URL)`,
+  );
+  console.error(err);
+  process.exit(1);
+}
+console.log("Redis connected");
 
 // Auto-import 1.x SQLite database on first boot (before default user creation)
 if (env.SQLITE_MIGRATE_PATH) {
@@ -144,15 +165,34 @@ try {
   // Enterprise package not available
 }
 
-// Mark any jobs left in processing/queued from a previous unclean shutdown
-await recoverStaleJobs();
+// Start the cooperative cancellation listener (Redis pub/sub)
+await startCancelListener();
 
 // Set up AI feature directories and recover from interrupted installs
 ensureAiDirs();
 recoverInterruptedInstalls();
 
 const app = Fastify({
-  logger: { level: env.LOG_LEVEL },
+  logger: {
+    level: env.LOG_LEVEL,
+    transport: {
+      targets: [
+        { target: "pino/file", options: { destination: 1 } },
+        {
+          // Rotate at 10 MB, keep 5 files
+          target: "pino-roll",
+          options: {
+            file: join(env.LOG_DIR, "snapotter"),
+            extension: ".log",
+            size: "10m",
+            limit: { count: 5 },
+            mkdir: true,
+          },
+        },
+      ],
+    },
+    redact: ["req.headers.authorization", "req.headers.cookie"],
+  },
   bodyLimit: env.MAX_UPLOAD_SIZE_MB > 0 ? env.MAX_UPLOAD_SIZE_MB * 1024 * 1024 : 1073741824,
   trustProxy: env.TRUST_PROXY,
   routerOptions: { maxParamLength: 500 },
@@ -296,6 +336,9 @@ await auditLogRoutes(app);
 // Roles management routes
 await rolesRoutes(app);
 
+// Admin ops routes (runtime log level, Prometheus metrics)
+await adminOpsRoutes(app);
+
 // API docs (Scalar)
 await docsRoutes(app);
 
@@ -329,13 +372,20 @@ app.get("/api/v1/admin/health", async (request, reply) => {
   } catch {
     /* db unreachable */
   }
+  let queueStats = { active: 0, pending: 0 };
+  try {
+    const counts = await queueCounts();
+    queueStats = { active: counts.active, pending: counts.waiting };
+  } catch {
+    /* redis unreachable */
+  }
   return {
     status: dbOk ? "healthy" : "degraded",
     version: APP_VERSION,
     uptime: `${process.uptime().toFixed(0)}s`,
     storage: { mode: env.STORAGE_MODE, available: "N/A" },
     database: dbOk ? "ok" : "error",
-    queue: { active: 0, pending: 0 },
+    queue: queueStats,
     ai: { gpu: isGpuAvailable(), dispatcher: getDispatcherStatus() },
     enterprise: enterpriseLicense
       ? { active: true, org: enterpriseLicense.org, plan: enterpriseLicense.plan }
@@ -356,13 +406,56 @@ app.get("/api/v1/config/auth", async () => {
   return config;
 });
 
+// Readiness probe (no auth -- used by load balancers / k8s)
+app.get("/api/v1/readyz", async (_request, reply) => {
+  let postgres = false;
+  let redis = false;
+  try {
+    await db.select().from(schema.settings).limit(1);
+    postgres = true;
+  } catch {
+    /* db unreachable */
+  }
+  try {
+    redis = await pingRedis();
+  } catch {
+    /* redis unreachable */
+  }
+  const ok = postgres && redis;
+  return reply.code(ok ? 200 : 503).send({ ok, postgres, redis });
+});
+
+// Cancel a job (authenticated)
+app.post(
+  "/api/v1/jobs/:jobId/cancel",
+  async (
+    request: import("fastify").FastifyRequest<{ Params: { jobId: string } }>,
+    reply: import("fastify").FastifyReply,
+  ) => {
+    const { requireAuth } = await import("./plugins/auth.js");
+    const user = requireAuth(request, reply);
+    if (!user) return;
+
+    const { requestCancel } = await import("./jobs/cancel.js");
+    const { jobId } = request.params;
+    const canceled = await requestCancel(jobId);
+    return reply.send({ canceled });
+  },
+);
+
 // Serve SPA in production
 if (process.env.NODE_ENV === "production") {
   await registerStatic(app);
 }
 
-// Start workspace cleanup cron
-const cleanupCron = await startCleanupCron();
+// Schedule repeatable system jobs (storage TTL, session purge, retention)
+await scheduleSystemJobs();
+if (await shouldRunStartupCleanup()) {
+  await enqueueSystemJob(SYSTEM_JOBS.storageTtl);
+}
+
+// Start BullMQ worker pools (after route registration so the tool registry is full)
+startWorkers();
 
 // Start
 try {
@@ -406,8 +499,6 @@ async function shutdown(signal: string) {
   }, SHUTDOWN_TIMEOUT_MS);
   forceExit.unref();
 
-  cleanupCron.stop();
-
   try {
     await app.close();
     console.log("HTTP server closed");
@@ -443,6 +534,19 @@ async function shutdown(signal: string) {
     console.log("Analytics flushed");
   } catch {
     // analytics shutdown is best-effort
+  }
+
+  // Close BullMQ resources before database (workers first so no new jobs start)
+  try {
+    await closeWorkers();
+    await closeFlowProducer();
+    await closeQueueEvents();
+    await closeQueues();
+    await stopCancelListener();
+    await closeRedis();
+    console.log("Redis connections closed");
+  } catch (err) {
+    console.error("Error closing Redis connections:", err);
   }
 
   try {

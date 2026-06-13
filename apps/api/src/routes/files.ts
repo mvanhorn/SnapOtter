@@ -1,6 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { readFile, stat, writeFile } from "node:fs/promises";
-import { extname, join } from "node:path";
+import { extname } from "node:path";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import sharp from "sharp";
 import { readImageDimensions } from "../lib/exiftool.js";
@@ -8,8 +7,8 @@ import { validateImageBuffer } from "../lib/file-validation.js";
 import { sanitizeFilename } from "../lib/filename.js";
 import { decodeToSharpCompat, needsCliDecode } from "../lib/format-decoders.js";
 import { decodeHeic } from "../lib/heic-converter.js";
+import { getObjectSize, getObjectStream, putObject } from "../lib/object-storage.js";
 import { isSvgBuffer, sanitizeSvg } from "../lib/svg-sanitize.js";
-import { createWorkspace, getWorkspacePath } from "../lib/workspace.js";
 
 /**
  * Guard against path traversal in URL params.
@@ -30,8 +29,6 @@ export async function fileRoutes(app: FastifyInstance): Promise<void> {
     { config: { rateLimit: { max: 60, timeWindow: "1 minute" } } },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const jobId = randomUUID();
-      const workspacePath = await createWorkspace(jobId);
-      const inputDir = join(workspacePath, "input");
 
       const uploadedFiles: Array<{
         name: string;
@@ -66,12 +63,11 @@ export async function fileRoutes(app: FastifyInstance): Promise<void> {
         // Sanitize SVG uploads to prevent XXE, SSRF, and script injection
         const safeBuffer = isSvgBuffer(buffer) ? sanitizeSvg(buffer) : buffer;
 
-        // Sanitize filename
+        // Sanitize filename (canonical; do NOT re-sanitize downstream)
         const safeName = sanitizeFilename(part.filename ?? "upload");
 
-        // Write to workspace input directory
-        const filePath = join(inputDir, safeName);
-        await writeFile(filePath, safeBuffer);
+        // Write to object storage uploads prefix
+        await putObject(`uploads/${jobId}/${safeName}`, safeBuffer);
 
         uploadedFiles.push({
           name: safeName,
@@ -107,32 +103,59 @@ export async function fileRoutes(app: FastifyInstance): Promise<void> {
         return reply.status(400).send({ error: "Invalid path" });
       }
 
-      const workspacePath = getWorkspacePath(jobId);
-
-      // Try output directory first, then input
-      let filePath = join(workspacePath, "output", filename);
+      // Resolve from object storage: outputs/ first, then uploads/
+      let key = `outputs/${jobId}/${filename}`;
+      let size: number;
       try {
-        await stat(filePath);
+        size = await getObjectSize(key);
       } catch {
-        filePath = join(workspacePath, "input", filename);
+        key = `uploads/${jobId}/${filename}`;
         try {
-          await stat(filePath);
+          size = await getObjectSize(key);
         } catch {
           return reply.status(404).send({ error: "File not found" });
         }
       }
 
-      const buffer = await readFile(filePath);
       const ext = extname(filename).toLowerCase().replace(/^\./, "");
       const contentType = getContentType(ext);
 
-      return reply
+      // Check Range header before setting content headers (a 416 must not
+      // carry the attachment Content-Type that would confuse serialization).
+      reply.header("Accept-Ranges", "bytes");
+
+      const range = request.headers.range;
+      if (range) {
+        const m = range.match(/^bytes=(\d+)-(\d*)$/);
+        const start = m ? Number.parseInt(m[1], 10) : Number.NaN;
+        const end = m?.[2] ? Number.parseInt(m[2], 10) : size - 1;
+        if (!m || Number.isNaN(start) || start >= size || end < start) {
+          return reply
+            .code(416)
+            .header("Content-Range", `bytes */${size}`)
+            .send({ error: "Range not satisfiable" });
+        }
+        const clampedEnd = Math.min(end, size - 1);
+        return reply
+          .code(206)
+          .header("Content-Type", contentType)
+          .header(
+            "Content-Disposition",
+            `attachment; filename="${encodeURIComponent(filename)}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
+          )
+          .header("Content-Range", `bytes ${start}-${clampedEnd}/${size}`)
+          .header("Content-Length", String(clampedEnd - start + 1))
+          .send(await getObjectStream(key, { start, end: clampedEnd }));
+      }
+
+      reply
         .header("Content-Type", contentType)
         .header(
           "Content-Disposition",
           `attachment; filename="${encodeURIComponent(filename)}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
         )
-        .send(buffer);
+        .header("Content-Length", String(size));
+      return reply.send(await getObjectStream(key));
     },
   );
 

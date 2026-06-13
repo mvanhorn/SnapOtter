@@ -15,6 +15,17 @@ const baseUrl = process.env.TEST_PG_BASE_URL;
 if (!baseUrl) {
   throw new Error("TEST_PG_BASE_URL missing; tests/global-setup.ts did not run");
 }
+
+const redisBaseUrl = process.env.TEST_REDIS_BASE_URL;
+if (!redisBaseUrl) {
+  throw new Error("TEST_REDIS_BASE_URL missing; tests/global-setup.ts did not run");
+}
+process.env.REDIS_URL = redisBaseUrl;
+process.env.BULLMQ_PREFIX = `snapotter_test_${suffix}`;
+
+// Heavy format conversions can exceed the 8s production default under parallel
+// test forks; 30s keeps tool routes synchronous (200) in tests while production stays at 8s.
+process.env.SYNC_WAIT_MS = "30000";
 const dbName = `snapotter_test_${suffix}`; // pid digits + uuid hex: identifier-safe
 const admin = new pg.Client({ connectionString: baseUrl });
 await admin.connect();
