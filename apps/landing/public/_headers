@@ -1,0 +1,5 @@
+/_next/static/*
+  X-Robots-Tag: noindex, nofollow
+
+/_next/data/*
+  X-Robots-Tag: noindex, nofollow
