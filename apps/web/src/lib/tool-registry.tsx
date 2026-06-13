@@ -429,6 +429,111 @@ const SplitCsvSettings = lazy(() =>
     default: m.SplitCsvSettings,
   })),
 );
+const ExtractPagesSettings = lazy(() =>
+  import("@/components/tools/extract-pages-settings").then((m) => ({
+    default: m.ExtractPagesSettings,
+  })),
+);
+const RemovePagesSettings = lazy(() =>
+  import("@/components/tools/remove-pages-settings").then((m) => ({
+    default: m.RemovePagesSettings,
+  })),
+);
+const OrganizePdfSettings = lazy(() =>
+  import("@/components/tools/organize-pdf-settings").then((m) => ({
+    default: m.OrganizePdfSettings,
+  })),
+);
+const ProtectPdfSettings = lazy(() =>
+  import("@/components/tools/protect-pdf-settings").then((m) => ({
+    default: m.ProtectPdfSettings,
+  })),
+);
+const UnlockPdfSettings = lazy(() =>
+  import("@/components/tools/unlock-pdf-settings").then((m) => ({
+    default: m.UnlockPdfSettings,
+  })),
+);
+const RepairPdfSettings = lazy(() =>
+  import("@/components/tools/repair-pdf-settings").then((m) => ({
+    default: m.RepairPdfSettings,
+  })),
+);
+const CropPdfSettings = lazy(() =>
+  import("@/components/tools/crop-pdf-settings").then((m) => ({
+    default: m.CropPdfSettings,
+  })),
+);
+const NupPdfSettings = lazy(() =>
+  import("@/components/tools/nup-pdf-settings").then((m) => ({
+    default: m.NupPdfSettings,
+  })),
+);
+const BookletPdfSettings = lazy(() =>
+  import("@/components/tools/booklet-pdf-settings").then((m) => ({
+    default: m.BookletPdfSettings,
+  })),
+);
+const WatermarkPdfSettings = lazy(() =>
+  import("@/components/tools/watermark-pdf-settings").then((m) => ({
+    default: m.WatermarkPdfSettings,
+  })),
+);
+const PdfPageNumbersSettings = lazy(() =>
+  import("@/components/tools/pdf-page-numbers-settings").then((m) => ({
+    default: m.PdfPageNumbersSettings,
+  })),
+);
+const LinearizePdfSettings = lazy(() =>
+  import("@/components/tools/linearize-pdf-settings").then((m) => ({
+    default: m.LinearizePdfSettings,
+  })),
+);
+const GrayscalePdfSettings = lazy(() =>
+  import("@/components/tools/grayscale-pdf-settings").then((m) => ({
+    default: m.GrayscalePdfSettings,
+  })),
+);
+const PdfaConvertSettings = lazy(() =>
+  import("@/components/tools/pdfa-convert-settings").then((m) => ({
+    default: m.PdfaConvertSettings,
+  })),
+);
+const FlattenPdfSettings = lazy(() =>
+  import("@/components/tools/flatten-pdf-settings").then((m) => ({
+    default: m.FlattenPdfSettings,
+  })),
+);
+const RedactPdfSettings = lazy(() =>
+  import("@/components/tools/redact-pdf-settings").then((m) => ({
+    default: m.RedactPdfSettings,
+  })),
+);
+const PdfToTextSettings = lazy(() =>
+  import("@/components/tools/pdf-to-text-settings").then((m) => ({
+    default: m.PdfToTextSettings,
+  })),
+);
+const PdfToWordSettings = lazy(() =>
+  import("@/components/tools/pdf-to-word-settings").then((m) => ({
+    default: m.PdfToWordSettings,
+  })),
+);
+const PdfMetadataSettings = lazy(() =>
+  import("@/components/tools/pdf-metadata-settings").then((m) => ({
+    default: m.PdfMetadataSettings,
+  })),
+);
+const HtmlToPdfSettings = lazy(() =>
+  import("@/components/tools/html-to-pdf-settings").then((m) => ({
+    default: m.HtmlToPdfSettings,
+  })),
+);
+const MarkdownToPdfSettings = lazy(() =>
+  import("@/components/tools/markdown-to-pdf-settings").then((m) => ({
+    default: m.MarkdownToPdfSettings,
+  })),
+);
 
 // ── Color tool wrapper ─────────────────────────────────────────────
 // Color tools share a single component but differ by toolId.
@@ -560,6 +665,31 @@ const ENTRY_CONFIG: ReadonlyArray<[string, RegistryEntryConfig]> = [
   ["compress-pdf", { accept: ".pdf", Settings: CompressPdfSettings }],
   ["rotate-pdf", { accept: ".pdf", Settings: RotatePdfSettings }],
   ["word-to-pdf", { accept: ".docx,.doc,.odt,.rtf,.txt", Settings: WordToPdfSettings }],
+
+  // PDF depth tools (organize, secure, pdfcpu, layout)
+  ["extract-pages", { accept: ".pdf", Settings: ExtractPagesSettings }],
+  ["remove-pages", { accept: ".pdf", Settings: RemovePagesSettings }],
+  ["organize-pdf", { accept: ".pdf", Settings: OrganizePdfSettings }],
+  ["protect-pdf", { accept: ".pdf", Settings: ProtectPdfSettings }],
+  ["unlock-pdf", { accept: ".pdf", Settings: UnlockPdfSettings }],
+  ["repair-pdf", { accept: ".pdf", Settings: RepairPdfSettings }],
+  ["crop-pdf", { accept: ".pdf", Settings: CropPdfSettings }],
+  ["nup-pdf", { accept: ".pdf", Settings: NupPdfSettings }],
+  ["booklet-pdf", { accept: ".pdf", Settings: BookletPdfSettings }],
+  ["watermark-pdf", { accept: ".pdf", Settings: WatermarkPdfSettings }],
+  ["pdf-page-numbers", { accept: ".pdf", Settings: PdfPageNumbersSettings }],
+
+  // PDF convert and optimize tools
+  ["linearize-pdf", { accept: ".pdf", Settings: LinearizePdfSettings }],
+  ["grayscale-pdf", { accept: ".pdf", Settings: GrayscalePdfSettings }],
+  ["pdfa-convert", { accept: ".pdf", Settings: PdfaConvertSettings }],
+  ["flatten-pdf", { accept: ".pdf", Settings: FlattenPdfSettings }],
+  ["redact-pdf", { accept: ".pdf", Settings: RedactPdfSettings }],
+  ["pdf-to-text", { accept: ".pdf", Settings: PdfToTextSettings }],
+  ["pdf-to-word", { accept: ".pdf", Settings: PdfToWordSettings }],
+  ["pdf-metadata", { accept: ".pdf", Settings: PdfMetadataSettings }],
+  ["html-to-pdf", { accept: ".html,.htm", Settings: HtmlToPdfSettings }],
+  ["markdown-to-pdf", { accept: ".md,.markdown", Settings: MarkdownToPdfSettings }],
 
   // Data tools
   ["csv-excel", { accept: ".csv,.xlsx", Settings: CsvExcelSettings }],

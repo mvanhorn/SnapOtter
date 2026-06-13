@@ -77,6 +77,31 @@ describe("DocumentInputHandler", () => {
     }
   });
 
+  it.skipIf(!qpdfAvailable())("accepts a password-protected pdf (unlock-pdf's input)", async () => {
+    const buf = await readFile(join(process.cwd(), "tests/fixtures/documents/encrypted.pdf"));
+    const out = await new DocumentInputHandler().prepare(buf, "encrypted.pdf", { scratchDir });
+    expect(out.filename).toBe("encrypted.pdf");
+  });
+
+  it.skipIf(!qpdfAvailable())("rejects a truncated PDF under strict mode", async () => {
+    const full = await readFile(join(process.cwd(), "tests/fixtures/test-3page.pdf"));
+    const truncated = full.subarray(0, Math.floor(full.length * 0.6));
+    await expect(
+      new DocumentInputHandler().prepare(truncated, "broken.pdf", { scratchDir }),
+    ).rejects.toThrow(/Damaged PDF/);
+  });
+
+  it.skipIf(!qpdfAvailable())("accepts a truncated PDF under lenient mode", async () => {
+    const full = await readFile(join(process.cwd(), "tests/fixtures/test-3page.pdf"));
+    const truncated = full.subarray(0, Math.floor(full.length * 0.6));
+    const out = await new DocumentInputHandler().prepare(truncated, "broken.pdf", {
+      scratchDir,
+      lenient: true,
+    });
+    // Lenient skips qpdfCheck, keeps %PDF- header check only
+    expect(out.filename).toBe("broken.pdf");
+  });
+
   it("accepts the docx fixture container", async () => {
     const buf = await readFile(join(process.cwd(), "tests/fixtures/documents/tiny.docx"));
     const out = await new DocumentInputHandler().prepare(buf, "tiny.docx", { scratchDir });

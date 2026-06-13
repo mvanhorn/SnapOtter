@@ -334,6 +334,91 @@ export const fr: TranslationKeys = {
       name: "Word to PDF",
       description: "Convert Word documents to PDF",
     },
+    "extract-pages": {
+      name: "Extract Pages",
+      description: "Pull selected pages into a new PDF",
+    },
+    "remove-pages": {
+      name: "Remove Pages",
+      description: "Delete specific pages from a PDF",
+    },
+    "organize-pdf": {
+      name: "Organize PDF",
+      description: "Reorder pages with an explicit page order",
+    },
+    "protect-pdf": {
+      name: "Protect PDF",
+      description: "Add password protection (AES-256 encryption)",
+    },
+    "unlock-pdf": {
+      name: "Unlock PDF",
+      description: "Remove password protection from a PDF",
+    },
+    "repair-pdf": {
+      name: "Repair PDF",
+      description: "Attempt to repair a damaged or corrupted PDF",
+    },
+    "linearize-pdf": {
+      name: "Web-Optimize PDF",
+      description: "Linearize a PDF for fast web viewing",
+    },
+    "grayscale-pdf": {
+      name: "Grayscale PDF",
+      description: "Convert all colors to grayscale",
+    },
+    "pdfa-convert": {
+      name: "PDF/A Convert",
+      description: "Convert to archival PDF/A-2",
+    },
+    "crop-pdf": {
+      name: "Crop PDF",
+      description: "Crop all pages with a uniform margin",
+    },
+    "nup-pdf": {
+      name: "N-up PDF",
+      description: "Arrange multiple pages per sheet",
+    },
+    "booklet-pdf": {
+      name: "Booklet PDF",
+      description: "Arrange pages for folding into a booklet",
+    },
+    "watermark-pdf": {
+      name: "Watermark PDF",
+      description: "Add a text watermark to every page",
+    },
+    "pdf-page-numbers": {
+      name: "PDF Page Numbers",
+      description: "Add page numbers to every page",
+    },
+    "flatten-pdf": {
+      name: "Flatten PDF",
+      description: "Bake forms and annotations into page content",
+    },
+    "redact-pdf": {
+      name: "Redact PDF",
+      description: "Permanently remove text occurrences (verified true redaction)",
+    },
+    "pdf-to-text": {
+      name: "PDF to Text",
+      description: "Extract plain text from a PDF",
+    },
+    "pdf-to-word": {
+      name: "PDF to Word",
+      description: "Best for text-based PDFs; scanned pages need OCR",
+    },
+    "pdf-metadata": {
+      name: "PDF Metadata",
+      description: "Read and write PDF document metadata",
+    },
+    "html-to-pdf": {
+      name: "HTML to PDF",
+      description: "Convert an HTML file to PDF. Remote resources are disabled for privacy.",
+    },
+    "markdown-to-pdf": {
+      name: "Markdown to PDF",
+      description:
+        "Convert a Markdown file to a styled PDF. Remote resources are disabled for privacy.",
+    },
     "csv-excel": {
       name: "CSV to Excel",
       description: "Convert between CSV and Excel (XLSX), both directions",
@@ -1417,6 +1502,141 @@ export const fr: TranslationKeys = {
     "word-to-pdf": {
       submit: "Convert to PDF",
       submitBatch: "Convert ({count} files)",
+      progressLabel: "Converting",
+    },
+    "extract-pages": {
+      range: "Page range",
+      rangeHint: "e.g. 1-3, 5, 7-z",
+      submit: "Extract",
+      submitBatch: "Extract ({count} files)",
+      progressLabel: "Extracting",
+    },
+    "remove-pages": {
+      pages: "Pages to remove",
+      pagesHint: "e.g. 2, 4-6, z (last page)",
+      submit: "Remove",
+      submitBatch: "Remove ({count} files)",
+      progressLabel: "Removing",
+    },
+    "organize-pdf": {
+      order: "Page order",
+      orderHint: "e.g. 3,1,2 or 1-z (identity)",
+      submit: "Reorder",
+      submitBatch: "Reorder ({count} files)",
+      progressLabel: "Reordering",
+    },
+    "protect-pdf": {
+      userPassword: "User password",
+      ownerPassword: "Owner password (optional)",
+      ownerPasswordHint: "Defaults to user password if empty",
+      submit: "Protect",
+      submitBatch: "Protect ({count} files)",
+      progressLabel: "Encrypting",
+    },
+    "unlock-pdf": {
+      password: "Password",
+      submit: "Unlock",
+      submitBatch: "Unlock ({count} files)",
+      progressLabel: "Decrypting",
+    },
+    "repair-pdf": {
+      submit: "Repair",
+      submitBatch: "Repair ({count} files)",
+      progressLabel: "Repairing",
+    },
+    "linearize-pdf": {
+      submit: "Optimize",
+      submitBatch: "Optimize ({count} files)",
+      progressLabel: "Linearizing",
+    },
+    "grayscale-pdf": {
+      submit: "Convert",
+      submitBatch: "Convert ({count} files)",
+      progressLabel: "Converting",
+    },
+    "pdfa-convert": {
+      submit: "Convert",
+      submitBatch: "Convert ({count} files)",
+      progressLabel: "Converting",
+    },
+    "crop-pdf": {
+      margin: "Margin (points)",
+      submit: "Crop",
+      submitBatch: "Crop ({count} files)",
+      progressLabel: "Cropping",
+    },
+    "nup-pdf": {
+      perSheet: "Pages per sheet",
+      submit: "Arrange",
+      submitBatch: "Arrange ({count} files)",
+      progressLabel: "Arranging",
+    },
+    "booklet-pdf": {
+      perSheet: "Pages per sheet",
+      submit: "Create Booklet",
+      submitBatch: "Create Booklet ({count} files)",
+      progressLabel: "Creating booklet",
+    },
+    "watermark-pdf": {
+      text: "Watermark text",
+      position: "Position",
+      fontSize: "Font size",
+      opacity: "Opacity",
+      rotation: "Rotation",
+      submit: "Watermark",
+      submitBatch: "Watermark ({count} files)",
+      progressLabel: "Watermarking",
+    },
+    "pdf-page-numbers": {
+      position: "Position",
+      fontSize: "Font size",
+      submit: "Add Numbers",
+      submitBatch: "Add Numbers ({count} files)",
+      progressLabel: "Numbering",
+    },
+    "flatten-pdf": {
+      submit: "Flatten",
+      submitBatch: "Flatten ({count} files)",
+      progressLabel: "Flattening",
+    },
+    "redact-pdf": {
+      terms: "Terms to redact",
+      termsHint: "One term per line (max 50)",
+      caseSensitive: "Case sensitive",
+      submit: "Redact",
+      submitBatch: "Redact ({count} files)",
+      progressLabel: "Redacting",
+    },
+    "pdf-to-text": {
+      submit: "Extract Text",
+      submitBatch: "Extract Text ({count} files)",
+      progressLabel: "Extracting",
+    },
+    "pdf-to-word": {
+      hint: "Best for text-based PDFs; scanned pages need OCR",
+      submit: "Convert to Word",
+      submitBatch: "Convert to Word ({count} files)",
+      progressLabel: "Converting",
+    },
+    "pdf-metadata": {
+      title: "Title",
+      author: "Author",
+      subject: "Subject",
+      keywords: "Keywords",
+      submit: "Set Metadata",
+      submitBatch: "Set Metadata ({count} files)",
+      progressLabel: "Setting metadata",
+    },
+    "html-to-pdf": {
+      hint: "Remote resources are disabled for privacy.",
+      submit: "Convert to PDF",
+      submitBatch: "Convert to PDF ({count} files)",
+      progressLabel: "Converting",
+    },
+    "markdown-to-pdf": {
+      hint: "Remote resources are disabled for privacy.",
+      submit: "Convert to PDF",
+      submitBatch: "Convert to PDF ({count} files)",
       progressLabel: "Converting",
     },
     "csv-excel": {

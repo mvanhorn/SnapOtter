@@ -1,7 +1,12 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { qpdfAvailable, qpdfCheck, qpdfPageCount } from "@snapotter/doc-engine";
+import {
+  qpdfAvailable,
+  qpdfCheck,
+  qpdfPageCount,
+  qpdfRequiresPassword,
+} from "@snapotter/doc-engine";
 import { env } from "../config.js";
 import { type InputHandler, InputValidationError, type PreparedInput } from "./contract.js";
 
@@ -17,7 +22,7 @@ export class DocumentInputHandler implements InputHandler {
   async prepare(
     raw: Buffer,
     filename: string,
-    opts: { scratchDir: string },
+    opts: { scratchDir: string; lenient?: boolean },
   ): Promise<PreparedInput> {
     if (raw.length === 0) throw new InputValidationError("Empty file");
     const lower = filename.toLowerCase();
@@ -25,25 +30,33 @@ export class DocumentInputHandler implements InputHandler {
       if (raw.subarray(0, 5).toString() !== "%PDF-") {
         throw new InputValidationError("File does not start with a PDF header");
       }
-      if (qpdfAvailable()) {
+      // When lenient, skip qpdfCheck + page-cap (repair-pdf's input is
+      // intentionally damaged). The %PDF- header check above still runs.
+      if (!opts.lenient && qpdfAvailable()) {
         const dir = join(opts.scratchDir, `qpdf-${randomUUID()}`);
         await mkdir(dir, { recursive: true });
         const p = join(dir, "input.pdf");
         try {
           await writeFile(p, raw);
-          try {
-            await qpdfCheck(p);
-          } catch (err) {
-            throw new InputValidationError(
-              `Damaged PDF: ${err instanceof Error ? err.message.slice(0, 300) : "structural check failed"}`,
-            );
-          }
-          if (env.MAX_PDF_PAGES > 0) {
-            const pages = await qpdfPageCount(p);
-            if (pages > env.MAX_PDF_PAGES) {
+          if (await qpdfRequiresPassword(p)) {
+            // Password-protected PDFs are structurally unverifiable without the
+            // password and are legitimate inputs (unlock-pdf). Page caps cannot be
+            // read either; the consuming tool enforces its own limits.
+          } else {
+            try {
+              await qpdfCheck(p);
+            } catch (err) {
               throw new InputValidationError(
-                `PDF has ${pages} pages, exceeding the maximum of ${env.MAX_PDF_PAGES}`,
+                `Damaged PDF: ${err instanceof Error ? err.message.slice(0, 300) : "structural check failed"}`,
               );
+            }
+            if (env.MAX_PDF_PAGES > 0) {
+              const pages = await qpdfPageCount(p);
+              if (pages > env.MAX_PDF_PAGES) {
+                throw new InputValidationError(
+                  `PDF has ${pages} pages, exceeding the maximum of ${env.MAX_PDF_PAGES}`,
+                );
+              }
             }
           }
         } finally {
