@@ -11,7 +11,7 @@
  */
 import { randomUUID } from "node:crypto";
 import { extname } from "node:path";
-import { and, desc, eq, like, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, like, sql } from "drizzle-orm";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import sharp from "sharp";
 import { z } from "zod";
@@ -481,52 +481,70 @@ export async function userFileRoutes(app: FastifyInstance): Promise<void> {
     }
     const { ids } = parsed.data;
 
-    let deletedCount = 0;
+    // Check files:all permission once upfront
+    const canDeleteAll = await hasEffectivePermission(user, "files:all");
+
+    // Batch ownership check: single SELECT for all requested IDs
+    const candidates = await db
+      .select({ id: schema.userFiles.id, userId: schema.userFiles.userId })
+      .from(schema.userFiles)
+      .where(inArray(schema.userFiles.id, ids));
+
+    const validIds = candidates
+      .filter((f) => f.userId === user.id || canDeleteAll)
+      .map((f) => f.id);
+
+    if (validIds.length === 0) {
+      await auditLog(request.log, "FILE_DELETED", { userId: user.id, count: 0, ids });
+      return reply.send({ deleted: 0 });
+    }
 
     type DeleteChainRow = {
       id: string;
       stored_name: string;
     };
 
-    for (const id of ids) {
-      // Ownership check: non-admin users can only delete their own files
-      const [file] = await db.select().from(schema.userFiles).where(eq(schema.userFiles.id, id));
-      if (!file || (file.userId !== user.id && !(await hasEffectivePermission(user, "files:all"))))
-        continue;
-      // Collect all files in the chain using a recursive CTE
-      const cteResult = await db.execute<DeleteChainRow>(sql`
-        WITH RECURSIVE chain(id, stored_name) AS (
-          SELECT f.id, f.stored_name
-          FROM user_files f
-          WHERE f.id = (
-            WITH RECURSIVE ancestors(id, parent_id) AS (
-              SELECT id, parent_id FROM user_files WHERE id = ${id}
-              UNION ALL
-              SELECT uf.id, uf.parent_id FROM user_files uf
-              INNER JOIN ancestors a ON uf.id = a.parent_id
-            )
-            SELECT id FROM ancestors WHERE parent_id IS NULL LIMIT 1
-          )
-          UNION ALL
-          SELECT child.id, child.stored_name
-          FROM user_files child
-          INNER JOIN chain c ON child.parent_id = c.id
-        )
-        SELECT id, stored_name FROM chain
-      `);
-      const chainRows = cteResult.rows;
+    // Single recursive CTE to collect all chain members for every valid ID
+    const cteResult = await db.execute<DeleteChainRow>(sql`
+      WITH RECURSIVE
+      ancestors(id, parent_id) AS (
+        SELECT id, parent_id FROM user_files
+        WHERE id = ANY(${validIds}::uuid[])
+        UNION ALL
+        SELECT uf.id, uf.parent_id FROM user_files uf
+        INNER JOIN ancestors a ON uf.id = a.parent_id
+      ),
+      chain(id, stored_name) AS (
+        SELECT f.id, f.stored_name FROM user_files f
+        WHERE f.id IN (SELECT id FROM ancestors WHERE parent_id IS NULL)
+        UNION ALL
+        SELECT child.id, child.stored_name
+        FROM user_files child
+        INNER JOIN chain c ON child.parent_id = c.id
+      )
+      SELECT DISTINCT id, stored_name FROM chain
+    `);
+    const chainRows = cteResult.rows;
 
-      for (const row of chainRows) {
-        await deleteStoredFile(row.stored_name);
-        await deleteThumbnail(row.stored_name);
-        await db.delete(schema.userFiles).where(eq(schema.userFiles.id, row.id));
-        deletedCount++;
-      }
+    // Filesystem deletes (must loop; cannot batch across the OS)
+    for (const row of chainRows) {
+      await deleteStoredFile(row.stored_name);
+      await deleteThumbnail(row.stored_name);
     }
 
-    await auditLog(request.log, "FILE_DELETED", { userId: user.id, count: deletedCount, ids });
+    // Batch DB delete
+    const chainIds = chainRows.map((r) => r.id);
+    if (chainIds.length > 0) {
+      await db.delete(schema.userFiles).where(inArray(schema.userFiles.id, chainIds));
+    }
 
-    return reply.send({ deleted: deletedCount });
+    await auditLog(request.log, "FILE_DELETED", {
+      userId: user.id,
+      count: chainRows.length,
+      ids,
+    });
+
+    return reply.send({ deleted: chainRows.length });
   });
 
   /**
