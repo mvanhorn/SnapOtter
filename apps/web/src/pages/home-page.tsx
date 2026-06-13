@@ -5,12 +5,14 @@ import {
   TOOL_BUNDLE_MAP,
   TOOLS,
 } from "@snapotter/shared";
-import { Clock, Download, Loader2 } from "lucide-react";
+import { Clock, Download, FileArchive, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ImageViewer } from "@/components/common/image-viewer";
 import { MultiImageViewer } from "@/components/common/multi-image-viewer";
 import { AppLayout } from "@/components/layout/app-layout";
+import { DocumentView } from "@/components/tools/document-view";
+import { MediaPlayerView } from "@/components/tools/media-player-view";
 import { useTranslation } from "@/contexts/i18n-context";
 import { useMobile } from "@/hooks/use-mobile";
 import { ICON_MAP } from "@/lib/icon-map";
@@ -173,7 +175,7 @@ export function HomePage() {
             })}
           </div>
 
-          {/* Full-width image preview */}
+          {/* Full-width file preview */}
           <div className="flex-1 flex items-center justify-center p-4 min-h-0">
             {files.length > 1 ? (
               <MultiImageViewer />
@@ -182,6 +184,20 @@ export function HomePage() {
                 <Loader2 className="h-8 w-8 text-muted-foreground animate-spin" />
                 <p className="text-sm text-muted-foreground">{t.homePage.generatingPreview}</p>
                 <p className="text-xs text-muted-foreground">{selectedFileName}</p>
+              </div>
+            ) : currentEntry?.previewKind === "video" || currentEntry?.previewKind === "audio" ? (
+              <MediaPlayerView />
+            ) : currentEntry?.previewKind === "document" ? (
+              <DocumentView />
+            ) : currentEntry?.previewKind === "none" ? (
+              <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
+                <FileArchive className="h-12 w-12 text-muted-foreground" />
+                <p className="text-sm font-medium text-foreground">
+                  {selectedFileName ?? files[0].name}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {selectedFileSize ? `${(selectedFileSize / 1024).toFixed(1)} KB` : ""}
+                </p>
               </div>
             ) : originalBlobUrl ? (
               <ImageViewer
@@ -390,7 +406,7 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* Right panel: Image preview */}
+        {/* Right panel: File preview (modality-aware) */}
         <div className="flex-1 flex items-center justify-center p-6 min-h-0">
           {files.length > 1 ? (
             <MultiImageViewer />
@@ -399,6 +415,20 @@ export function HomePage() {
               <Loader2 className="h-8 w-8 text-muted-foreground animate-spin" />
               <p className="text-sm text-muted-foreground">{t.homePage.generatingPreview}</p>
               <p className="text-xs text-muted-foreground">{selectedFileName}</p>
+            </div>
+          ) : currentEntry?.previewKind === "video" || currentEntry?.previewKind === "audio" ? (
+            <MediaPlayerView />
+          ) : currentEntry?.previewKind === "document" ? (
+            <DocumentView />
+          ) : currentEntry?.previewKind === "none" ? (
+            <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
+              <FileArchive className="h-12 w-12 text-muted-foreground" />
+              <p className="text-sm font-medium text-foreground">
+                {selectedFileName ?? files[0].name}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {selectedFileSize ? `${(selectedFileSize / 1024).toFixed(1)} KB` : ""}
+              </p>
             </div>
           ) : originalBlobUrl ? (
             <ImageViewer
