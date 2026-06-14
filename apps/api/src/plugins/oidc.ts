@@ -5,6 +5,7 @@ import { env } from "../config.js";
 import { db, schema } from "../db/index.js";
 import { auditFromRequest, sanitizeAuditInput } from "../lib/audit.js";
 import { resolveExternalUser, sanitizeUsername } from "../lib/external-auth-resolver.js";
+import { authAttempts } from "../lib/metrics.js";
 import { createSessionToken } from "./auth.js";
 
 // ── Types ─────────────────────────────────────────────────────────
@@ -189,6 +190,7 @@ export async function oidcRoutes(app: FastifyInstance): Promise<void> {
         { error: query.error, description: query.error_description },
         "OIDC IdP returned error",
       );
+      authAttempts.inc({ method: "oidc", result: "failure" });
       await audit("OIDC_LOGIN_FAILED", {
         reason: sanitizeAuditInput(String(query.error)),
       });
@@ -219,6 +221,7 @@ export async function oidcRoutes(app: FastifyInstance): Promise<void> {
       });
     } catch (err) {
       request.log.error({ err }, "OIDC token exchange failed");
+      authAttempts.inc({ method: "oidc", result: "failure" });
       await audit("OIDC_LOGIN_FAILED", { reason: "token_exchange_failed" });
       return redirectToLogin(reply, "oidc_auth_failed");
     }
@@ -227,6 +230,7 @@ export async function oidcRoutes(app: FastifyInstance): Promise<void> {
     const claims = tokenResponse.claims();
     if (!claims) {
       request.log.error("OIDC callback: no ID token claims");
+      authAttempts.inc({ method: "oidc", result: "failure" });
       await audit("OIDC_LOGIN_FAILED", { reason: "no_id_token" });
       return redirectToLogin(reply, "oidc_auth_failed");
     }
@@ -254,6 +258,7 @@ export async function oidcRoutes(app: FastifyInstance): Promise<void> {
     });
 
     if (result.action === "denied" || !result.user) {
+      authAttempts.inc({ method: "oidc", result: "failure" });
       if (result.deniedReason === "user_limit_reached") {
         return redirectToLogin(reply, "oidc_user_limit_reached");
       }
@@ -273,6 +278,7 @@ export async function oidcRoutes(app: FastifyInstance): Promise<void> {
       idToken,
     });
 
+    authAttempts.inc({ method: "oidc", result: "success" });
     await audit("OIDC_LOGIN_SUCCESS", {
       userId: resolvedUser.id,
       username: resolvedUser.username,

@@ -10,6 +10,7 @@ import {
   resolveExternalUser,
   sanitizeUsername,
 } from "../lib/external-auth-resolver.js";
+import { authAttempts } from "../lib/metrics.js";
 import { createSessionToken } from "./auth.js";
 
 // -- SAML instance factory ----------------------------------------------------
@@ -100,6 +101,7 @@ export async function registerSaml(app: FastifyInstance): Promise<void> {
       profile = result.profile;
     } catch (err) {
       request.log.error({ err }, "SAML assertion validation failed");
+      authAttempts.inc({ method: "saml", result: "failure" });
       await audit("SAML_LOGIN_FAILED", {
         error: err instanceof Error ? err.message : "Unknown error",
       });
@@ -108,6 +110,7 @@ export async function registerSaml(app: FastifyInstance): Promise<void> {
 
     if (!profile || !profile.nameID) {
       request.log.warn("SAML callback: no profile or nameID in assertion");
+      authAttempts.inc({ method: "saml", result: "failure" });
       await audit("SAML_LOGIN_FAILED", { reason: "missing_profile" });
       return redirectToLogin(reply, "saml_auth_failed");
     }
@@ -140,6 +143,7 @@ export async function registerSaml(app: FastifyInstance): Promise<void> {
     });
 
     if (result.action === "denied" || !result.user) {
+      authAttempts.inc({ method: "saml", result: "failure" });
       const errorParam =
         result.deniedReason === "user_limit_reached"
           ? "saml_user_limit_reached"
@@ -159,6 +163,7 @@ export async function registerSaml(app: FastifyInstance): Promise<void> {
       expiresAt,
     });
 
+    authAttempts.inc({ method: "saml", result: "success" });
     await audit("SAML_LOGIN_SUCCESS", {
       userId: resolvedUser.id,
       username: resolvedUser.username,

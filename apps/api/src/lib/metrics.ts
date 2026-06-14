@@ -5,7 +5,7 @@
  * and a metricsText() function that appends live queue-depth gauges
  * from BullMQ before returning the scrape payload.
  */
-import { Counter, collectDefaultMetrics, Histogram, Registry } from "prom-client";
+import { Counter, collectDefaultMetrics, Gauge, Histogram, Registry } from "prom-client";
 import { perPoolCounts } from "../jobs/queues.js";
 
 export const registry = new Registry();
@@ -23,6 +23,28 @@ export const jobDuration = new Histogram({
   help: "Job processing duration",
   labelNames: ["pool"] as const,
   buckets: [0.1, 0.5, 1, 2, 5, 15, 60, 300, 1800],
+  registers: [registry],
+});
+
+export const requestDuration = new Histogram({
+  name: "snapotter_http_request_duration_seconds",
+  help: "HTTP request duration in seconds",
+  labelNames: ["route_group", "status_class"] as const,
+  buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+  registers: [registry],
+});
+
+export const storageUsage = new Gauge({
+  name: "snapotter_storage_bytes",
+  help: "Storage usage in bytes",
+  labelNames: ["category"] as const,
+  registers: [registry],
+});
+
+export const authAttempts = new Counter({
+  name: "snapotter_auth_attempts_total",
+  help: "Authentication attempts",
+  labelNames: ["method", "result"] as const,
   registers: [registry],
 });
 

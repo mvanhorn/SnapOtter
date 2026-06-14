@@ -22,6 +22,7 @@ import { shouldRunStartupCleanup } from "./lib/cleanup.js";
 import { buildCsp } from "./lib/csp.js";
 import { ensureAiDirs, recoverInterruptedInstalls } from "./lib/feature-status.js";
 
+import { requestDuration } from "./lib/metrics.js";
 import { getSettingString } from "./lib/settings-helpers.js";
 import { requirePermission } from "./permissions.js";
 import {
@@ -268,6 +269,26 @@ app.addHook("onSend", async (_request, reply) => {
   reply.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
   reply.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
   reply.header("Content-Security-Policy", buildCsp(_request.url.startsWith("/api/docs")));
+});
+
+// Record HTTP request duration for Prometheus (bounded cardinality: 5 route groups * 5 status classes)
+app.addHook("onResponse", (request, reply, done) => {
+  const duration = reply.elapsedTime / 1000;
+
+  const url = request.url;
+  let routeGroup = "other";
+  if (url.startsWith("/api/v1/tools/") || url.startsWith("/api/v1/jobs/")) routeGroup = "tools";
+  else if (url.startsWith("/api/auth/") || url.startsWith("/api/v1/enterprise/"))
+    routeGroup = "auth";
+  else if (url.startsWith("/api/v1/admin/") || url.startsWith("/api/v1/settings"))
+    routeGroup = "admin";
+  else if (url.startsWith("/api/v1/files")) routeGroup = "files";
+  else if (url.startsWith("/api/v1/scim/")) routeGroup = "scim";
+
+  const statusClass = `${Math.floor(reply.statusCode / 100)}xx`;
+
+  requestDuration.observe({ route_group: routeGroup, status_class: statusClass }, duration);
+  done();
 });
 
 // Always register rate-limit plugin so per-route limits (login brute-force protection) work.

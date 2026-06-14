@@ -7,6 +7,7 @@ import { env } from "../config.js";
 import { db, schema } from "../db/index.js";
 import { sharedRedis } from "../jobs/connection.js";
 import { auditFromRequest, sanitizeAuditInput } from "../lib/audit.js";
+import { authAttempts } from "../lib/metrics.js";
 import { getSettingNumber, getSettingString } from "../lib/settings-helpers.js";
 import { getPermissions, requirePermission } from "../permissions.js";
 
@@ -326,6 +327,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
       const audit = auditFromRequest(request);
 
       if (!user || !user.passwordHash) {
+        authAttempts.inc({ method: "password", result: "failure" });
         await audit("LOGIN_FAILED", {
           username: sanitizeAuditInput(body.username),
           reason: "unknown_user",
@@ -335,6 +337,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
 
       const valid = await verifyPassword(body.password, user.passwordHash);
       if (!valid) {
+        authAttempts.inc({ method: "password", result: "failure" });
         await audit("LOGIN_FAILED", {
           username: sanitizeAuditInput(body.username),
           reason: "bad_password",
@@ -395,6 +398,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
         }
       }
 
+      authAttempts.inc({ method: "password", result: "success" });
       await audit("LOGIN_SUCCESS", { userId: user.id, username: user.username });
 
       const [teamRow] = await db.select().from(schema.teams).where(eq(schema.teams.id, user.team));
@@ -1091,6 +1095,7 @@ export async function authMiddleware(app: FastifyInstance): Promise<void> {
               .from(schema.users)
               .where(eq(schema.users.id, key.userId));
             if (apiUser) {
+              authAttempts.inc({ method: "apikey", result: "success" });
               const keyPermissions = key.permissions ?? undefined;
               (request as FastifyRequest & { user?: AuthUser }).user = {
                 id: apiUser.id,
@@ -1102,6 +1107,7 @@ export async function authMiddleware(app: FastifyInstance): Promise<void> {
             }
           }
         }
+        authAttempts.inc({ method: "apikey", result: "failure" });
       }
 
       // Public routes can proceed without a valid session
