@@ -469,10 +469,10 @@ export function MoveToolTransformer({
       flipEnabled
       keepRatio={false}
       anchorSize={8}
-      anchorStroke="#3b82f6"
+      anchorStroke="#E07832"
       anchorFill="#ffffff"
       anchorCornerRadius={2}
-      borderStroke="#3b82f6"
+      borderStroke="#E07832"
       borderStrokeWidth={1}
       padding={2}
     />

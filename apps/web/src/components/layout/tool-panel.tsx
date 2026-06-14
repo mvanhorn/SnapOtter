@@ -119,10 +119,7 @@ export function ToolPanel() {
           return (
             <div key={modality.id} className={isLast ? "" : "mb-2"}>
               {idx > 0 && <hr className="border-border mb-4" />}
-              <div
-                className="flex items-center gap-2 mt-4 mb-3 pl-2.5 border-l-[3px] rounded-sm"
-                style={{ borderColor: modality.color }}
-              >
+              <div className="flex items-center gap-2 mt-4 mb-3 pl-1">
                 {ModalityIcon && (
                   <span className="shrink-0" style={{ color: modality.color }}>
                     <ModalityIcon className="h-4.5 w-4.5" />

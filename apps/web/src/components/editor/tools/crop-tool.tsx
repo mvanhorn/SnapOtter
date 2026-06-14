@@ -258,7 +258,7 @@ export function CropOverlay() {
         keepRatio={false}
         anchorSize={8}
         anchorStroke="#ffffff"
-        anchorFill="#3b82f6"
+        anchorFill="#E07832"
         anchorCornerRadius={1}
         borderStroke="#ffffff"
         borderStrokeWidth={1}

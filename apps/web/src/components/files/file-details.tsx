@@ -188,8 +188,8 @@ export function FileDetails({ mobile = false }: FileDetailsProps) {
       {/* Details card */}
       <div className="flex-1">
         <div className="rounded-lg border border-border overflow-hidden">
-          <div className="bg-blue-500/10 border-b border-border px-3 py-2">
-            <h4 className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+          <div className="bg-primary/10 border-b border-border px-3 py-2">
+            <h4 className="text-sm font-semibold text-primary-dark dark:text-primary-light">
               {t.files.fileDetailsHeading}
             </h4>
           </div>

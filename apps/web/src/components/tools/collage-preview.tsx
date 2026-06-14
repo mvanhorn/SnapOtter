@@ -459,7 +459,7 @@ function CollageCell({
       className={cn(
         "relative overflow-hidden transition-shadow",
         isSelected && "ring-2 ring-primary ring-offset-1",
-        isOver && !isSelected && "ring-2 ring-blue-500",
+        isOver && !isSelected && "ring-2 ring-primary",
         !image && "border-2 border-dashed border-border/50",
         image && !isSelected && "cursor-grab",
         image && isSelected && "cursor-grab active:cursor-grabbing",
@@ -521,7 +521,7 @@ function CollageCell({
             className={cn(
               "flex items-center gap-1 rounded px-1.5 py-1 text-[11px] font-medium backdrop-blur-sm transition-colors",
               transform.objectFit === "contain"
-                ? "bg-blue-500/80 text-white hover:bg-blue-500/90"
+                ? "bg-primary/80 text-white hover:bg-primary/90"
                 : "bg-black/50 text-white hover:bg-black/70",
             )}
             title={transform.objectFit === "cover" ? "Fit entire image" : "Fill cell"}
