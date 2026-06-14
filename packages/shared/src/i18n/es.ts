@@ -2437,6 +2437,10 @@ export const es: TranslationKeys = {
     downloadAllZip: "Descargar todo (ZIP)",
     hideSettings: "Ocultar configuracion",
     imageArea: "Area de imagen",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "Generando vista previa...",

@@ -2449,6 +2449,10 @@ export const it: TranslationKeys = {
     downloadAllZip: "Scarica tutto (ZIP)",
     hideSettings: "Nascondi impostazioni",
     imageArea: "Area immagine",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "Generazione anteprima...",

@@ -2451,6 +2451,10 @@ export const ru: TranslationKeys = {
     downloadAllZip: "Скачать всё (ZIP)",
     hideSettings: "Скрыть настройки",
     imageArea: "Область изображения",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "Генерация предпросмотра...",

@@ -2383,6 +2383,10 @@ export const zhCN: TranslationKeys = {
     downloadAllZip: "全部下载（ZIP）",
     hideSettings: "隐藏设置",
     imageArea: "图片区域",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "正在生成预览...",

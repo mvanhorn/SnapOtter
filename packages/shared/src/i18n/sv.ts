@@ -2448,6 +2448,10 @@ export const sv: TranslationKeys = {
     downloadAllZip: "Ladda ner alla (ZIP)",
     hideSettings: "Dolj installningar",
     imageArea: "Bildomrade",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "Genererar forhandsvisning...",

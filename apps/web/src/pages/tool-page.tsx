@@ -17,6 +17,7 @@ import { type BgPreviewState, ImageViewer } from "@/components/common/image-view
 import { ReviewPanel } from "@/components/common/review-panel";
 import { SideBySideComparison } from "@/components/common/side-by-side-comparison";
 import { ThumbnailStrip } from "@/components/common/thumbnail-strip";
+import { ToolDropzone } from "@/components/common/tool-dropzone";
 import { FeatureInstallPrompt } from "@/components/features/feature-install-prompt";
 import { AppLayout } from "@/components/layout/app-layout";
 import { CropCanvas } from "@/components/tools/crop-canvas";
@@ -26,8 +27,8 @@ import type { PreviewTransform } from "@/components/tools/rotate-settings";
 import { useTranslation } from "@/contexts/i18n-context";
 import { useAuth } from "@/hooks/use-auth";
 import { useMobile } from "@/hooks/use-mobile";
-import { recordRecentTool } from "@/hooks/use-recent-tools";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { recordRecentTool } from "@/hooks/use-recent-tools";
 import { formatFileSize } from "@/lib/download";
 import { format } from "@/lib/format";
 import { ICON_MAP } from "@/lib/icon-map";
@@ -41,6 +42,7 @@ import { useFileStore } from "@/stores/file-store";
 import { useHtmlToImageStore } from "@/stores/html-to-image-store";
 import { usePdfToImageStore } from "@/stores/pdf-to-image-store";
 import { useQrStore } from "@/stores/qr-store";
+import { useSettingsStore } from "@/stores/settings-store";
 import { useSplitStore } from "@/stores/split-store";
 
 const MediaPlayerView = lazy(() =>
@@ -183,6 +185,7 @@ export function ToolPage() {
   usePageTitle(tool ? getToolName(t, tool.id, tool.name) : undefined);
   const { hasPermission } = useAuth();
   const isAdmin = hasPermission("settings:write");
+  const disabledTools = useSettingsStore((s) => s.disabledTools);
 
   const breadcrumb = useMemo(() => {
     if (!tool) return undefined;
@@ -382,6 +385,22 @@ export function ToolPage() {
     URL.revokeObjectURL(url);
   }, [batchZipBlob, batchZipFilename]);
 
+  if (toolId && TOOLS.some((tt) => tt.id === toolId) && disabledTools.includes(toolId)) {
+    return (
+      <AppLayout>
+        <div className="flex flex-col items-center justify-center h-full gap-4 text-muted-foreground">
+          <p className="text-lg font-medium">{t.toolPage.disabledByAdmin}</p>
+          <Link
+            to="/"
+            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium"
+          >
+            {t.toolPage.browseOtherTools}
+          </Link>
+        </div>
+      </AppLayout>
+    );
+  }
+
   if (!tool || !registryEntry) {
     return (
       <AppLayout>
@@ -410,13 +429,15 @@ export function ToolPage() {
 
   if (isAiTool && !toolInstalled && featureBundle) {
     return (
-      <AppLayout>
-        <FeatureInstallPrompt
-          bundle={featureBundle}
-          isAdmin={isAdmin}
-          toolName={tool?.name}
-          toolDescription={tool?.description}
-        />
+      <AppLayout breadcrumb={breadcrumb}>
+        <div className="flex-1 flex items-center justify-center overflow-y-auto bg-muted/20">
+          <FeatureInstallPrompt
+            bundle={featureBundle}
+            isAdmin={isAdmin}
+            toolName={tool?.name}
+            toolDescription={tool?.description}
+          />
+        </div>
       </AppLayout>
     );
   }
@@ -849,6 +870,24 @@ export function ToolPage() {
 
   // Mobile layout: full-height image area with BottomSheet for settings
   if (isMobile) {
+    // Full-width dropzone when no file is loaded (non-generator tools)
+    if (!hasFile && !isNoDropzone) {
+      return (
+        <AppLayout breadcrumb={breadcrumb}>
+          <div className="flex-1 flex items-center justify-center overflow-y-auto bg-muted/20">
+            <ToolDropzone
+              tool={tool}
+              accept={toolAccept}
+              fileFilter={toolFileFilter}
+              multiple
+              onFiles={handleFiles}
+              onUrlImport={handleUrlImport}
+            />
+          </div>
+        </AppLayout>
+      );
+    }
+
     return (
       <AppLayout breadcrumb={breadcrumb}>
         <div className="flex flex-col w-full h-full">
@@ -900,6 +939,24 @@ export function ToolPage() {
           >
             <div className="settings-container space-y-3">{renderSettingsContent()}</div>
           </BottomSheet>
+        </div>
+      </AppLayout>
+    );
+  }
+
+  // Desktop: full-width dropzone when no file is loaded (non-generator tools)
+  if (!hasFile && !isNoDropzone) {
+    return (
+      <AppLayout breadcrumb={breadcrumb}>
+        <div className="flex-1 flex items-center justify-center overflow-y-auto bg-muted/20">
+          <ToolDropzone
+            tool={tool}
+            accept={toolAccept}
+            fileFilter={toolFileFilter}
+            multiple
+            onFiles={handleFiles}
+            onUrlImport={handleUrlImport}
+          />
         </div>
       </AppLayout>
     );

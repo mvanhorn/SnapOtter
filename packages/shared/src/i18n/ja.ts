@@ -2408,6 +2408,10 @@ export const ja: TranslationKeys = {
     downloadAllZip: "一括ダウンロード（ZIP）",
     hideSettings: "設定を隠す",
     imageArea: "画像エリア",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "プレビューを生成中...",

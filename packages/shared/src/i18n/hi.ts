@@ -2438,6 +2438,10 @@ export const hi: TranslationKeys = {
     downloadAllZip: "सभी डाउनलोड करें (ZIP)",
     hideSettings: "सेटिंग्स छुपाएं",
     imageArea: "इमेज क्षेत्र",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "प्रीव्यू जनरेट हो रहा है...",

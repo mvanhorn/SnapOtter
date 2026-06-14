@@ -2441,6 +2441,10 @@ export const ar: TranslationKeys = {
     downloadAllZip: "تحميل الكل (ZIP)",
     hideSettings: "إخفاء الإعدادات",
     imageArea: "منطقة الصورة",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "جاري إنشاء المعاينة...",

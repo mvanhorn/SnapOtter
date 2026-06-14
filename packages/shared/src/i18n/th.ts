@@ -2430,6 +2430,10 @@ export const th: TranslationKeys = {
     downloadAllZip: "ดาวน์โหลดทั้งหมด (ZIP)",
     hideSettings: "ซ่อนการตั้งค่า",
     imageArea: "พื้นที่ภาพ",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "กำลังสร้างตัวอย่าง...",

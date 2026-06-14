@@ -2381,6 +2381,10 @@ export const zhTW: TranslationKeys = {
     downloadAllZip: "全部下載（ZIP）",
     hideSettings: "隱藏設定",
     imageArea: "影像區域",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "正在產生預覽...",

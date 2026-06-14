@@ -2450,6 +2450,10 @@ export const id: TranslationKeys = {
     downloadAllZip: "Unduh Semua (ZIP)",
     hideSettings: "Sembunyikan Pengaturan",
     imageArea: "Area gambar",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "Membuat pratinjau...",

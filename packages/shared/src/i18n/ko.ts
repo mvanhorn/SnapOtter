@@ -2393,6 +2393,10 @@ export const ko: TranslationKeys = {
     downloadAllZip: "전체 다운로드 (ZIP)",
     hideSettings: "설정 숨기기",
     imageArea: "이미지 영역",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "미리보기 생성 중...",

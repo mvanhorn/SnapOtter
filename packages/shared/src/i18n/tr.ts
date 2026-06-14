@@ -2453,6 +2453,10 @@ export const tr: TranslationKeys = {
     downloadAllZip: "Tümünü İndir (ZIP)",
     hideSettings: "Ayarları Gizle",
     imageArea: "Görüntü alanı",
+    disabledByAdmin: "This tool has been disabled by your administrator",
+    browseOtherTools: "Browse other tools",
+    privacyNote: "Files are processed on your server and never leave your network",
+    andMore: "and {count} more",
   },
   homePage: {
     generatingPreview: "Önizleme oluşturuluyor...",
