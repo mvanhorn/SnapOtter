@@ -26,6 +26,7 @@ import type { PreviewTransform } from "@/components/tools/rotate-settings";
 import { useTranslation } from "@/contexts/i18n-context";
 import { useAuth } from "@/hooks/use-auth";
 import { useMobile } from "@/hooks/use-mobile";
+import { recordRecentTool } from "@/hooks/use-recent-tools";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { formatFileSize } from "@/lib/download";
 import { format } from "@/lib/format";
@@ -197,6 +198,13 @@ export function ToolPage() {
   useEffect(() => {
     if (isAiTool) fetchFeatures();
   }, [isAiTool, fetchFeatures]);
+
+  useEffect(() => {
+    if (tool) {
+      recordRecentTool(tool.id);
+    }
+  }, [tool]);
+
   const {
     files,
     entries,
