@@ -94,6 +94,7 @@ import { registerOcrPdf } from "./ocr-pdf.js";
 import { registerOptimizeForWeb } from "./optimize-for-web.js";
 import { registerOrganizePdf } from "./organize-pdf.js";
 import { registerPassportPhoto } from "./passport-photo.js";
+import { registerPopularTools } from "./popular.js";
 import { registerPdfMetadata } from "./pdf-metadata.js";
 import { registerPdfPageNumbers } from "./pdf-page-numbers.js";
 import { registerPdfToImage } from "./pdf-to-image.js";
@@ -168,6 +169,9 @@ import { registerYamlJson } from "./yaml-json.js";
  * (when `enableExperimentalTools` is off) are skipped at startup.
  */
 export async function registerToolRoutes(app: FastifyInstance): Promise<void> {
+  // Register non-tool utility endpoints (not subject to disable/experimental skip logic)
+  await registerPopularTools(app);
+
   // Read disabled tools from settings
   const [disabledRow] = await db
     .select()
