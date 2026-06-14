@@ -25,6 +25,7 @@ __pycache__/
 
 # Build artifacts
 .next/
+.astro/
 **/.vitepress/cache/
 out/
 coverage/
