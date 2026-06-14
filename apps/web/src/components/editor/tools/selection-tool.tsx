@@ -793,7 +793,7 @@ export function ActiveSelectionPreview({
 }) {
   if (type === "lasso" && points.length >= 4) {
     return (
-      <Line points={points} stroke="#3b82f6" strokeWidth={1} dash={[4, 4]} listening={false} />
+      <Line points={points} stroke="#E07832" strokeWidth={1} dash={[4, 4]} listening={false} />
     );
   }
 
@@ -812,7 +812,7 @@ export function ActiveSelectionPreview({
         y={y + h / 2}
         radiusX={w / 2}
         radiusY={h / 2}
-        stroke="#3b82f6"
+        stroke="#E07832"
         strokeWidth={1}
         dash={[4, 4]}
         listening={false}
@@ -826,7 +826,7 @@ export function ActiveSelectionPreview({
       y={y}
       width={w}
       height={h}
-      stroke="#3b82f6"
+      stroke="#E07832"
       strokeWidth={1}
       dash={[4, 4]}
       listening={false}

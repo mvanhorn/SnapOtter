@@ -29,14 +29,17 @@ export function DocumentView() {
 
   /* C+D: cancel in-flight renders and destroy the doc proxy on cleanup. */
   useEffect(() => {
-    if (!src || !canvasRef.current) return;
+    if (!canvasRef.current) return;
+    const file = entry?.file;
+    if (!file && !src) return;
     let cancelled = false;
     let doc: pdfjs.PDFDocumentProxy | undefined;
     let renderTask: pdfjs.RenderTask | undefined;
 
     (async () => {
       try {
-        doc = await pdfjs.getDocument({ url: src }).promise;
+        const source = file ? { data: new Uint8Array(await file.arrayBuffer()) } : { url: src! };
+        doc = await pdfjs.getDocument(source).promise;
         if (cancelled) return;
         setPageCount(doc.numPages);
         const pdfPage = await doc.getPage(Math.min(page, doc.numPages));
@@ -60,7 +63,7 @@ export function DocumentView() {
       renderTask?.cancel();
       doc?.loadingTask.destroy();
     };
-  }, [src, page]);
+  }, [src, page, entry?.file]);
 
   if (!entry) return null;
 

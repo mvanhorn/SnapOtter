@@ -1,7 +1,7 @@
-import { Download, FileUp, Loader2, X } from "lucide-react";
-import { useCallback, useRef } from "react";
+import { Download, Loader2 } from "lucide-react";
+import { useEffect } from "react";
 import { useTranslation } from "@/contexts/i18n-context";
-import { format } from "@/lib/format";
+import { useFileStore } from "@/stores/file-store";
 import { usePdfToImageStore } from "@/stores/pdf-to-image-store";
 
 const FORMAT_OPTIONS = [
@@ -41,57 +41,22 @@ const LOSSY_FORMATS = ["jpg", "webp", "avif", "heic", "heif", "jxl"];
 export function PdfToImageSettings() {
   const { t } = useTranslation();
   const store = usePdfToImageStore();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const file = useFileStore((s) => s.entries[s.selectedIndex]?.file);
+
+  useEffect(() => {
+    if (file && file !== store.file) {
+      store.setFile(file);
+      store.loadPreview(file);
+    }
+  }, [file, store]);
 
   const isLossy = LOSSY_FORMATS.includes(store.format);
-
-  const handleFileChange = useCallback(
-    (files: FileList | null) => {
-      const pdfFile = files?.[0];
-      if (!pdfFile) return;
-      store.setFile(pdfFile);
-      store.loadPreview(pdfFile);
-    },
-    [store],
-  );
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      handleFileChange(e.dataTransfer.files);
-    },
-    [handleFileChange],
-  );
-
-  const handleRemoveFile = useCallback(() => {
-    store.setFile(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  }, [store]);
-
   const selectedCount = store.selectedPages.size;
 
   return (
     <div className="space-y-4">
-      {/* PDF upload area */}
-      {!store.file ? (
-        <button
-          type="button"
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-          className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary/50 transition-colors w-full"
-        >
-          <FileUp className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">{t.toolSettings["pdf-to-image"].dropPdf}</p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="application/pdf"
-            className="hidden"
-            onChange={(e) => handleFileChange(e.target.files)}
-          />
-        </button>
-      ) : (
+      {/* PDF info */}
+      {store.file && (
         <div className="flex items-center gap-2 p-3 rounded-lg bg-muted">
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate">{store.file.name}</p>
@@ -106,13 +71,6 @@ export function PdfToImageSettings() {
               ) : null}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={handleRemoveFile}
-            className="p-1 hover:bg-background rounded"
-          >
-            <X className="h-4 w-4 text-muted-foreground" />
-          </button>
         </div>
       )}
 

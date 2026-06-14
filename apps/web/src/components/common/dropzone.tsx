@@ -1,4 +1,4 @@
-import { FileUp, Upload } from "lucide-react";
+import { FileImage, FileUp, Upload } from "lucide-react";
 import { type DragEvent, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "@/contexts/i18n-context";
 import { useUrlImport } from "@/hooks/use-url-import";

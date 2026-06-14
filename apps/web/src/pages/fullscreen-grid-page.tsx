@@ -219,10 +219,7 @@ export function FullscreenGridPage() {
               }>;
               return (
                 <section key={section.modality.id}>
-                  <div
-                    className="flex items-center gap-3 mb-5 pb-3 border-b-2"
-                    style={{ borderColor: section.modality.color }}
-                  >
+                  <div className="flex items-center gap-3 mb-5 pb-3 border-b border-border">
                     {SectionIcon && (
                       <div
                         className="p-2 rounded-lg"
@@ -268,10 +265,7 @@ export function FullscreenGridPage() {
                 ? (ICON_MAP[activeMod.icon] as React.ComponentType<{ className?: string }>)
                 : null;
               return activeMod ? (
-                <div
-                  className="flex items-center gap-3 mb-6 pb-3 border-b-2"
-                  style={{ borderColor: activeMod.color }}
-                >
+                <div className="flex items-center gap-3 mb-6 pb-3 border-b border-border">
                   {ModIcon && (
                     <div
                       className="p-2 rounded-lg"
@@ -331,10 +325,7 @@ function CategoryCard({
     (ICON_MAP[category.icon] as React.ComponentType<{ className?: string }>) ?? LayoutGrid;
 
   return (
-    <div
-      className="rounded-xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-      style={accentColor ? { borderLeftWidth: 3, borderLeftColor: accentColor } : undefined}
-    >
+    <div className="rounded-xl border border-border bg-card overflow-hidden" style={undefined}>
       {/* Header */}
       <div
         className="px-4 py-3 flex items-center gap-3"

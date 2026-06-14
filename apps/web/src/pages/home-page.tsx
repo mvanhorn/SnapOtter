@@ -5,8 +5,8 @@ import {
   TOOL_BUNDLE_MAP,
   TOOLS,
 } from "@snapotter/shared";
-import { Clock, Download, FileArchive, Loader2 } from "lucide-react";
-import { useCallback, useEffect, useMemo } from "react";
+import { Clock, Download, FileArchive, LayoutGrid, Loader2 } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ImageViewer } from "@/components/common/image-viewer";
 import { MultiImageViewer } from "@/components/common/multi-image-viewer";
@@ -17,12 +17,12 @@ import { useTranslation } from "@/contexts/i18n-context";
 import { useMobile } from "@/hooks/use-mobile";
 import { ICON_MAP } from "@/lib/icon-map";
 import { getCategoryName, getModalityName, getToolName } from "@/lib/tool-i18n";
+import { cn } from "@/lib/utils";
 import { useFeaturesStore } from "@/stores/features-store";
 import { useFileStore } from "@/stores/file-store";
 import { useSettingsStore } from "@/stores/settings-store";
 
 // Tools shown prominently as "quick actions" at the top
-const QUICK_ACTION_IDS = ["resize", "compress", "convert", "remove-background"];
 
 let hasAppliedDefaultRedirect = false;
 
@@ -96,6 +96,9 @@ export function HomePage() {
     [setFiles],
   );
 
+  const [modalityFilter, setModalityFilter] = useState<string>("all");
+  const TAB_MODALITIES = useMemo(() => MODALITIES.filter((m) => m.id !== "file"), []);
+
   const hasFile = files.length > 0;
 
   // If no file uploaded, show default layout (tool panel + dropzone)
@@ -125,54 +128,6 @@ export function HomePage() {
             >
               {t.homePage.changeFile}
             </button>
-          </div>
-
-          {/* Quick action buttons - horizontal scroll */}
-          <div className="flex overflow-x-auto gap-2 px-4 py-3 border-b border-border scrollbar-none">
-            {QUICK_ACTION_IDS.map((id) => {
-              const tool = TOOLS.find((t) => t.id === id);
-              if (!tool) return null;
-              const Icon =
-                (ICON_MAP[tool.icon] as React.ComponentType<{ className?: string }>) ??
-                ICON_MAP.FileImage;
-              const status = getToolStatus(id);
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => navigate(tool.route)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border hover:border-primary hover:bg-primary/5 transition-colors shrink-0"
-                >
-                  <div className="p-1 rounded-lg bg-primary/10 text-primary">
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <span className="text-xs font-medium text-foreground whitespace-nowrap">
-                    {getToolName(t, tool.id, tool.name)}
-                  </span>
-                  {status === "not_installed" && (
-                    <>
-                      <Download className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-                      <span className="sr-only">{t.a11y.notInstalled}</span>
-                    </>
-                  )}
-                  {status === "queued" && (
-                    <>
-                      <Clock className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-                      <span className="sr-only">{t.a11y.queued}</span>
-                    </>
-                  )}
-                  {status === "installing" && (
-                    <>
-                      <Loader2
-                        className="h-3.5 w-3.5 text-muted-foreground animate-spin"
-                        aria-hidden="true"
-                      />
-                      <span className="sr-only">{t.a11y.installing}</span>
-                    </>
-                  )}
-                </button>
-              );
-            })}
           </div>
 
           {/* Full-width file preview */}
@@ -244,72 +199,52 @@ export function HomePage() {
             </button>
           </div>
 
-          {/* Quick actions */}
-          <div className="p-4 border-b border-border">
-            <h3 className="text-xs font-semibold uppercase text-muted-foreground tracking-wider mb-3">
-              {t.homePage.quickActions}
-            </h3>
-            <div className="grid grid-cols-2 gap-2">
-              {QUICK_ACTION_IDS.map((id) => {
-                const tool = TOOLS.find((t) => t.id === id);
-                if (!tool) return null;
-                const Icon =
-                  (ICON_MAP[tool.icon] as React.ComponentType<{ className?: string }>) ??
-                  ICON_MAP.FileImage;
-                const status = getToolStatus(id);
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => navigate(tool.route)}
-                    className="flex items-center gap-2 p-3 rounded-xl border border-border hover:border-primary hover:bg-primary/5 transition-colors text-start"
-                  >
-                    <div className="p-1.5 rounded-lg bg-primary/10 text-primary">
-                      <Icon className="h-4 w-4" />
-                    </div>
-                    <span className="text-xs font-medium text-foreground">
-                      {getToolName(t, tool.id, tool.name)}
-                    </span>
-                    {status === "not_installed" && (
-                      <>
-                        <Download
-                          className="h-3.5 w-3.5 text-muted-foreground ms-auto"
-                          aria-hidden="true"
-                        />
-                        <span className="sr-only">{t.a11y.notInstalled}</span>
-                      </>
-                    )}
-                    {status === "queued" && (
-                      <>
-                        <Clock
-                          className="h-3.5 w-3.5 text-muted-foreground ms-auto"
-                          aria-hidden="true"
-                        />
-                        <span className="sr-only">{t.a11y.queued}</span>
-                      </>
-                    )}
-                    {status === "installing" && (
-                      <>
-                        <Loader2
-                          className="h-3.5 w-3.5 text-muted-foreground ms-auto animate-spin"
-                          aria-hidden="true"
-                        />
-                        <span className="sr-only">{t.a11y.installing}</span>
-                      </>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+          {/* Modality filter tabs */}
+          <div className="flex flex-wrap gap-1 px-4 pt-3 pb-2 border-b border-border sticky top-0 bg-background z-10">
+            <button
+              type="button"
+              onClick={() => setModalityFilter("all")}
+              className={cn(
+                "flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors",
+                modalityFilter === "all"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted",
+              )}
+            >
+              <LayoutGrid className="h-3.5 w-3.5" />
+              <span>All</span>
+            </button>
+            {TAB_MODALITIES.map((m) => {
+              const Icon = ICON_MAP[m.icon] as React.ComponentType<{ className?: string }>;
+              const isActive = modalityFilter === m.id;
+              const label = m.id === "document" ? "Docs" : m.name;
+              return (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => setModalityFilter(m.id)}
+                  className={cn(
+                    "flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors",
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                  )}
+                >
+                  {Icon && <Icon className="h-3.5 w-3.5" />}
+                  <span>{label}</span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* All tools by modality and category */}
+          {/* Tools by modality and category */}
           <div className="p-4">
-            <h3 className="text-xs font-semibold uppercase text-muted-foreground tracking-wider mb-3">
-              {t.homePage.allTools}
-            </h3>
             {MODALITIES.filter((m) => {
               if (m.id === "file") return false;
+              if (modalityFilter !== "all") {
+                if (modalityFilter === "document") return m.id === "document";
+                return m.id === modalityFilter;
+              }
               const key = m.id;
               return TOOLS.some(
                 (tool) => tool.modality === key || (key === "document" && tool.modality === "file"),
