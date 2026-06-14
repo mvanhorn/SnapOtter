@@ -2455,6 +2455,7 @@ export const vi: TranslationKeys = {
     privacyNote: "Files are processed on your server and never leave your network",
     applyAndDownload: "Áp dụng và tải xuống",
     andMore: "and {count} more",
+    importFromFiles: "Import from Files",
     adjustSettings: "Adjust settings",
     startOver: "Start over with a new file",
     backToTools: "Back to Tools",

@@ -2413,6 +2413,7 @@ export const ja: TranslationKeys = {
     privacyNote: "Files are processed on your server and never leave your network",
     applyAndDownload: "適用してダウンロード",
     andMore: "and {count} more",
+    importFromFiles: "Import from Files",
     adjustSettings: "Adjust settings",
     startOver: "Start over with a new file",
     backToTools: "Back to Tools",

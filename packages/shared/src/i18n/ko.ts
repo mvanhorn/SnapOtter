@@ -2398,6 +2398,7 @@ export const ko: TranslationKeys = {
     privacyNote: "Files are processed on your server and never leave your network",
     applyAndDownload: "적용 및 다운로드",
     andMore: "and {count} more",
+    importFromFiles: "Import from Files",
     adjustSettings: "Adjust settings",
     startOver: "Start over with a new file",
     backToTools: "Back to Tools",

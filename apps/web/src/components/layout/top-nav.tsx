@@ -195,30 +195,8 @@ export function TopNav({
       {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Right: Contextual nav links (when breadcrumb) + help + avatar */}
+      {/* Right: help + avatar */}
       <div className="flex items-center gap-1">
-        {breadcrumb && (
-          <>
-            {navLinks
-              .filter((link) => link.href !== "/")
-              .map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  className={cn(
-                    "px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
-                    isDark
-                      ? "text-[#aaa] hover:text-[#e0e0e0] hover:bg-[#333]"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted",
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            <div className={cn("w-px h-5 mx-1", isDark ? "bg-[#444]" : "bg-border")} />
-          </>
-        )}
-
         <button
           type="button"
           onClick={onHelpClick}

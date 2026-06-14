@@ -1,6 +1,7 @@
 import type { Tool } from "@snapotter/shared";
-import { FileImage } from "lucide-react";
+import { FileImage, FolderOpen } from "lucide-react";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "@/contexts/i18n-context";
 import { format } from "@/lib/format";
 import { ICON_MAP } from "@/lib/icon-map";
@@ -71,6 +72,15 @@ export function ToolDropzone({
         acceptDescription={formatsDisplay ?? undefined}
       />
 
+      {/* Import from library */}
+      <Link
+        to="/files"
+        state={{ selectForTool: tool.id }}
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <FolderOpen className="h-4 w-4" />
+        {t.toolPage.importFromFiles}
+      </Link>
     </div>
   );
 }

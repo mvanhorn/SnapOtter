@@ -2388,6 +2388,7 @@ export const zhCN: TranslationKeys = {
     privacyNote: "Files are processed on your server and never leave your network",
     applyAndDownload: "应用并下载",
     andMore: "and {count} more",
+    importFromFiles: "Import from Files",
     adjustSettings: "Adjust settings",
     startOver: "Start over with a new file",
     backToTools: "Back to Tools",
