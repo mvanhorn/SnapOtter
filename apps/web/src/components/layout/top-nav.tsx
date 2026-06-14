@@ -63,7 +63,7 @@ export function TopNav({
       <header
         className={cn(
           "flex items-center h-12 px-4 border-b shrink-0",
-          isDark ? "bg-[#222] border-[#333]" : "bg-white border-border",
+          isDark ? "bg-[#222] border-[#333]" : "bg-background border-border",
         )}
       >
         {breadcrumb ? (
@@ -119,7 +119,7 @@ export function TopNav({
     <header
       className={cn(
         "flex items-center h-12 px-4 border-b shrink-0",
-        isDark ? "bg-[#222] border-[#333]" : "bg-white border-border",
+        isDark ? "bg-[#222] border-[#333]" : "bg-background border-border",
       )}
     >
       {/* Left: Logo */}
