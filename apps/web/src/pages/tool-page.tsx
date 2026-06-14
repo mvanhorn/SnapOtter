@@ -641,6 +641,20 @@ export function ToolPage() {
           );
         }
       }
+      // Tools that convert video to a non-video format (gif, webp, frames):
+      // after processing, show the result as an image instead of a video player
+      if (hasProcessed && processedUrl) {
+        const ext = (currentEntry?.processedFilename ?? "").split(".").pop()?.toLowerCase();
+        if (ext && ["gif", "webp", "png", "jpg", "jpeg", "apng"].includes(ext)) {
+          return (
+            <ImageViewer
+              src={processedUrl}
+              filename={currentEntry?.processedFilename ?? ""}
+              fileSize={currentEntry?.processedSize ?? 0}
+            />
+          );
+        }
+      }
       return (
         <Suspense fallback={<div className="text-sm text-muted-foreground">Loading...</div>}>
           <MediaPlayerView />
