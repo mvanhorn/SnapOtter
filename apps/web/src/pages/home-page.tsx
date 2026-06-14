@@ -1,6 +1,6 @@
 import type { Tool } from "@snapotter/shared";
-import { CATEGORIES, MODALITIES, TOOLS } from "@snapotter/shared";
-import { FileImage, Search, X } from "lucide-react";
+import { CATEGORIES, TOOLS } from "@snapotter/shared";
+import { Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ToolCard } from "@/components/common/tool-card.js";
@@ -10,25 +10,12 @@ import { useTranslation } from "@/contexts/i18n-context";
 import { useFuseSearch } from "@/hooks/use-fuse-search.js";
 import { usePageTitle } from "@/hooks/use-page-title.js";
 import { useRecentTools } from "@/hooks/use-recent-tools.js";
-import { apiGet } from "@/lib/api.js";
 import { format } from "@/lib/format.js";
-import { ICON_MAP } from "@/lib/icon-map.js";
 import { getCategoryName, getToolName } from "@/lib/tool-i18n.js";
 import { cn } from "@/lib/utils.js";
 import { useSettingsStore } from "@/stores/settings-store";
 
 // ── Constants ────────────────────────────────────────────────────
-
-const FALLBACK_POPULAR_IDS = [
-  "resize",
-  "crop",
-  "compress",
-  "convert",
-  "remove-background",
-  "upscale",
-  "merge-pdf",
-  "watermark-text",
-];
 
 interface TabDef {
   key: string;
@@ -126,33 +113,6 @@ export function HomePage() {
     [recentToolIds, visibleTools],
   );
 
-  // ── Popular tools (fetch from API, cache result) ────────────
-
-  const [popularIds, setPopularIds] = useState<string[]>(FALLBACK_POPULAR_IDS);
-
-  useEffect(() => {
-    let cancelled = false;
-    apiGet<{ tools: string[] }>("/v1/tools/popular")
-      .then((data) => {
-        if (!cancelled && data.tools.length > 0) setPopularIds(data.tools);
-      })
-      .catch(() => {
-        // keep fallback
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const popularTools = useMemo(
-    () =>
-      popularIds
-        .map((id) => visibleTools.find((tool) => tool.id === id))
-        .filter((tool): tool is Tool => tool != null)
-        .slice(0, 12),
-    [popularIds, visibleTools],
-  );
-
   // ── Render ──────────────────────────────────────────────────
 
   return (
@@ -182,10 +142,7 @@ export function HomePage() {
           ) : activeTab === "all" ? (
             <AllTabContent
               recentTools={recentTools}
-              popularTools={popularTools}
-              visibleTools={visibleTools}
-              tabCounts={tabCounts}
-              onTabChange={setActiveTab}
+              groupedTools={groupedTools}
             />
           ) : (
             <ModalityTabContent groupedTools={groupedTools} />
@@ -330,25 +287,19 @@ function SearchResults({
 
 function AllTabContent({
   recentTools,
-  popularTools,
-  visibleTools,
-  tabCounts,
-  onTabChange,
+  groupedTools,
 }: {
   recentTools: Tool[];
-  popularTools: Tool[];
-  visibleTools: Tool[];
-  tabCounts: Record<string, number>;
-  onTabChange: (key: string) => void;
+  groupedTools: Map<string, Tool[]>;
 }) {
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {/* Recent tools (only shown if user has history) */}
       {recentTools.length > 0 && (
         <section>
-          <h2 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-3">
+          <h2 className="text-xs font-semibold uppercase text-muted-foreground tracking-wider mb-2">
             {t.homePage.recent}
           </h2>
           <div className="flex flex-wrap gap-2">
@@ -365,81 +316,20 @@ function AllTabContent({
         </section>
       )}
 
-      {/* Popular */}
-      {popularTools.length > 0 && (
-        <section>
-          <h2 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-3">
-            {t.homePage.popular}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1">
-            {popularTools.map((tool) => (
-              <ToolCard key={tool.id} tool={tool} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Browse by Category */}
-      <section>
-        <h2 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-3">
-          {t.homePage.browseByCategory}
-        </h2>
-        <BrowseByCategoryGrid tabCounts={tabCounts} onTabChange={onTabChange} />
-      </section>
-    </div>
-  );
-}
-
-// ── Browse by Category Grid ──────────────────────────────────────
-
-const BROWSE_TABS: Array<{
-  key: string;
-  modalityId: string;
-  label: string;
-}> = [
-  { key: "image", modalityId: "image", label: "Image" },
-  { key: "video", modalityId: "video", label: "Video" },
-  { key: "audio", modalityId: "audio", label: "Audio" },
-  { key: "document", modalityId: "document", label: "Documents" },
-  { key: "data", modalityId: "file", label: "Data" },
-];
-
-function BrowseByCategoryGrid({
-  tabCounts,
-  onTabChange,
-}: {
-  tabCounts: Record<string, number>;
-  onTabChange: (key: string) => void;
-}) {
-  const { t } = useTranslation();
-
-  return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-      {BROWSE_TABS.map((tab) => {
-        const modality = MODALITIES.find((m) => m.id === tab.modalityId);
-        const IconComponent = modality
-          ? ((ICON_MAP[modality.icon] as React.ComponentType<{ className?: string }>) ?? FileImage)
-          : FileImage;
-        const count = tabCounts[tab.key] ?? 0;
-
+      {/* All tools grouped by category */}
+      {CATEGORIES.filter((cat) => groupedTools.has(cat.id)).map((category) => {
+        const tools = groupedTools.get(category.id) ?? [];
         return (
-          <button
-            key={tab.key}
-            type="button"
-            onClick={() => onTabChange(tab.key)}
-            className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-card hover:bg-muted transition-colors text-center"
-          >
-            <div
-              className="p-2.5 rounded-lg"
-              style={{ backgroundColor: `${modality?.color ?? "#6B7280"}15` }}
-            >
-              <IconComponent className="h-5 w-5" style={{ color: modality?.color ?? "#6B7280" }} />
+          <section key={category.id}>
+            <h2 className="text-xs font-semibold uppercase text-muted-foreground tracking-wider mb-2">
+              {getCategoryName(t, category.id, category.name)}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+              {tools.map((tool) => (
+                <ToolCard key={tool.id} tool={tool} variant="descriptive" />
+              ))}
             </div>
-            <span className="text-sm font-medium text-foreground">{tab.label}</span>
-            <span className="text-xs text-muted-foreground">
-              {format(t.homePage.toolCount, { count })}
-            </span>
-          </button>
+          </section>
         );
       })}
     </div>
