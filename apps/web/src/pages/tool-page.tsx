@@ -333,7 +333,7 @@ export function ToolPage() {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: toolId triggers intentional reset on tool navigation
   useEffect(() => {
-    useFileStore.getState().undoProcessing();
+    useFileStore.getState().reset();
 
     useBase64Store.getState().reset();
     useCollageStore.getState().reset();
