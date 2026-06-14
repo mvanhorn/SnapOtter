@@ -19,15 +19,6 @@ import { useSettingsStore } from "@/stores/settings-store";
 
 // ── Constants ────────────────────────────────────────────────────
 
-const GETTING_STARTED_IDS = [
-  "resize",
-  "compress",
-  "convert",
-  "crop",
-  "remove-background",
-  "merge-pdf",
-];
-
 const FALLBACK_POPULAR_IDS = [
   "resize",
   "crop",
@@ -354,8 +345,8 @@ function AllTabContent({
 
   return (
     <div className="space-y-10">
-      {/* Recent or Getting Started */}
-      {recentTools.length > 0 ? (
+      {/* Recent tools (only shown if user has history) */}
+      {recentTools.length > 0 && (
         <section>
           <h2 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-3">
             {t.homePage.recent}
@@ -372,8 +363,6 @@ function AllTabContent({
             ))}
           </div>
         </section>
-      ) : (
-        <GettingStartedSection visibleTools={visibleTools} />
       )}
 
       {/* Popular */}
@@ -398,35 +387,6 @@ function AllTabContent({
         <BrowseByCategoryGrid tabCounts={tabCounts} onTabChange={onTabChange} />
       </section>
     </div>
-  );
-}
-
-// ── Getting Started (first-time user, no recents) ────────────────
-
-function GettingStartedSection({ visibleTools }: { visibleTools: Tool[] }) {
-  const { t } = useTranslation();
-
-  const gettingStartedTools = useMemo(
-    () =>
-      GETTING_STARTED_IDS.map((id) => visibleTools.find((tool) => tool.id === id)).filter(
-        (tool): tool is Tool => tool != null,
-      ),
-    [visibleTools],
-  );
-
-  if (gettingStartedTools.length === 0) return null;
-
-  return (
-    <section>
-      <h2 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-3">
-        {t.homePage.gettingStarted}
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1">
-        {gettingStartedTools.map((tool) => (
-          <ToolCard key={tool.id} tool={tool} />
-        ))}
-      </div>
-    </section>
   );
 }
 
