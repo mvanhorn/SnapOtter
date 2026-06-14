@@ -1,27 +1,17 @@
-import { TOOLS } from "@snapotter/shared";
-import {
-  ArrowRight,
-  ChevronDown,
-  ChevronRight,
-  Download,
-  FileImage,
-  PenTool,
-  Undo2,
-} from "lucide-react";
-import { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, CheckCircle2, Download } from "lucide-react";
+import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "@/contexts/i18n-context";
 import { formatFileSize, triggerDownload } from "@/lib/download";
-import { ICON_MAP } from "@/lib/icon-map";
-import { getSuggestedTools } from "@/lib/suggested-tools";
 
 interface ReviewPanelProps {
   filename: string;
   fileSize: number;
   fileType: string;
+  originalSize: number;
   downloadUrl: string;
-  previewUrl?: string;
   onUndo: () => void;
+  onStartOver: () => void;
   currentToolId: string;
 }
 
@@ -29,30 +19,18 @@ export function ReviewPanel({
   filename,
   fileSize,
   fileType,
+  originalSize,
   downloadUrl,
-  previewUrl,
   onUndo,
-  currentToolId,
+  onStartOver,
+  currentToolId: _currentToolId,
 }: ReviewPanelProps) {
   const { t } = useTranslation();
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [isSuggestionsExpanded, setIsSuggestionsExpanded] = useState(true);
-  const navigate = useNavigate();
 
-  const suggestedToolIds = useMemo(() => getSuggestedTools(currentToolId), [currentToolId]);
-
-  const suggestedTools = useMemo(
-    () =>
-      suggestedToolIds
-        .map((id) => TOOLS.find((t) => t.id === id))
-        .filter((t): t is (typeof TOOLS)[number] => t !== undefined),
-    [suggestedToolIds],
-  );
-
-  const timestamp = useMemo(() => {
-    const now = new Date();
-    return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  }, []);
+  const sizeDelta = useMemo(() => {
+    if (!originalSize || originalSize === 0) return 0;
+    return Math.round((1 - fileSize / originalSize) * 100);
+  }, [originalSize, fileSize]);
 
   const handleDownload = () => {
     triggerDownload(downloadUrl, filename);
@@ -62,108 +40,80 @@ export function ReviewPanel({
     <div className="space-y-3">
       <div className="border-t border-border" />
 
-      {/* Review header */}
-      <button
-        type="button"
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center justify-between w-full text-sm font-medium text-muted-foreground hover:text-foreground"
-      >
-        <span>{t.reviewPanel.reviewHeading}</span>
-        {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-      </button>
+      {/* Success indicator */}
+      <div className="flex items-center gap-2">
+        <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+        <span className="text-sm font-medium text-foreground">{t.toolPage.conversionComplete}</span>
+      </div>
 
-      {isExpanded && (
-        <div className="space-y-3">
-          {/* Preview thumbnail */}
-          {previewUrl && (
-            <div className="rounded-lg border border-border overflow-hidden bg-muted/30">
-              <img
-                src={previewUrl}
-                alt="Processed result"
-                className="w-full h-auto max-h-32 object-contain"
-              />
-            </div>
-          )}
-
-          {/* File metadata */}
-          <div className="space-y-1 text-xs text-muted-foreground">
-            <p className="truncate text-foreground font-medium">{filename}</p>
-            <p>Size: {formatFileSize(fileSize)}</p>
-            <p>Type: {fileType}</p>
-            <p>Processed: {timestamp}</p>
+      {/* Size delta */}
+      {originalSize > 0 && (
+        <div className="space-y-1 text-xs">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">{t.toolPage.original}</span>
+            <span className="tabular-nums text-foreground">{formatFileSize(originalSize)}</span>
           </div>
-
-          {/* Action buttons */}
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={onUndo}
-              className="flex-1 py-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted flex items-center justify-center gap-1.5 text-xs font-medium"
-            >
-              <Undo2 className="h-3.5 w-3.5" />
-              {t.reviewPanel.undoButton}
-            </button>
-            <button
-              type="button"
-              onClick={handleDownload}
-              className="flex-1 py-2 rounded-lg bg-primary text-primary-foreground flex items-center justify-center gap-1.5 text-xs font-medium hover:bg-primary/90"
-            >
-              <Download className="h-3.5 w-3.5" />
-              {t.common.download}
-            </button>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">{t.toolPage.processed}</span>
+            <span className="tabular-nums text-foreground">{formatFileSize(fileSize)}</span>
           </div>
-
-          {/* Open in Editor */}
-          <Link
-            to={`/editor?url=${encodeURIComponent(downloadUrl)}`}
-            className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted text-xs font-medium"
-          >
-            <PenTool className="h-3.5 w-3.5" />
-            {t.reviewPanel.openInEditor}
-          </Link>
-
-          {/* Suggested tools */}
-          {suggestedTools.length > 0 && (
-            <div className="space-y-2">
-              <div className="border-t border-border pt-2" />
-              <button
-                type="button"
-                onClick={() => setIsSuggestionsExpanded(!isSuggestionsExpanded)}
-                className="flex items-center justify-between w-full text-xs font-medium text-muted-foreground hover:text-foreground"
-              >
-                <span>{t.reviewPanel.continueEditing}</span>
-                {isSuggestionsExpanded ? (
-                  <ChevronDown className="h-3.5 w-3.5" />
-                ) : (
-                  <ChevronRight className="h-3.5 w-3.5" />
-                )}
-              </button>
-
-              {isSuggestionsExpanded && (
-                <div className="space-y-1">
-                  {suggestedTools.map((tool) => {
-                    const ToolIcon =
-                      (ICON_MAP[tool.icon] as React.ComponentType<{ className?: string }>) ??
-                      FileImage;
-                    return (
-                      <button
-                        key={tool.id}
-                        type="button"
-                        onClick={() => navigate(tool.route)}
-                        className="flex items-center gap-2 w-full px-2 py-1.5 rounded text-xs text-muted-foreground hover:text-foreground hover:bg-muted group"
-                      >
-                        <ToolIcon className="h-3.5 w-3.5 shrink-0" />
-                        <span className="flex-1 text-start">{tool.name}</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 shrink-0" />
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">{t.toolPage.saved}</span>
+            <span
+              className={`tabular-nums font-medium ${
+                sizeDelta > 0
+                  ? "text-emerald-600"
+                  : sizeDelta === 0
+                    ? "text-muted-foreground"
+                    : "text-foreground"
+              }`}
+            >
+              {sizeDelta === 0
+                ? t.toolPage.noChange
+                : sizeDelta > 0
+                  ? `-${sizeDelta}%`
+                  : `+${Math.abs(sizeDelta)}%`}
+            </span>
+          </div>
         </div>
       )}
+
+      {/* Download button with format + size */}
+      <button
+        type="button"
+        onClick={handleDownload}
+        className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm flex items-center justify-center gap-2 hover:bg-primary/90"
+      >
+        <Download className="h-4 w-4" />
+        {t.toolPage.download} {fileType} ({formatFileSize(fileSize)})
+      </button>
+
+      {/* Adjust settings */}
+      <button
+        type="button"
+        onClick={onUndo}
+        className="w-full py-2 rounded-lg border border-border text-foreground hover:bg-muted text-sm font-medium"
+      >
+        {t.toolPage.adjustSettings}
+      </button>
+
+      {/* Text links */}
+      <div className="flex flex-col items-center gap-1.5 text-xs">
+        <button
+          type="button"
+          onClick={onStartOver}
+          className="text-muted-foreground hover:text-foreground"
+        >
+          {t.toolPage.startOver}
+        </button>
+        <Link
+          to="/"
+          className="text-muted-foreground hover:text-foreground flex items-center gap-1"
+        >
+          <ArrowLeft className="h-3 w-3" />
+          {t.toolPage.backToTools}
+        </Link>
+      </div>
     </div>
   );
 }

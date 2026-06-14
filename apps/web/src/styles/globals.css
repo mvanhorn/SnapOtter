@@ -110,6 +110,47 @@ input[type="range"]::-moz-range-track {
   text-align: left;
 }
 
+/* Slide-in animation for settings panel */
+@keyframes settings-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes settings-slide-in-rtl {
+  from {
+    opacity: 0;
+    transform: translateX(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.settings-slide-in {
+  animation: settings-slide-in 200ms ease-out;
+}
+
+[dir="rtl"] .settings-slide-in {
+  animation-name: settings-slide-in-rtl;
+}
+
+/* Fade-in animation for processed results and review panel */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 200ms ease-out;
+}
+
 /* Container queries for responsive settings panels */
 .settings-container {
   container-type: inline-size;

@@ -360,6 +360,10 @@ export function ToolPage() {
     setEraserSliderInitPos(null);
   }, [undoProcessing]);
 
+  const startOver = useCallback(() => {
+    reset();
+  }, [reset]);
+
   const handleAddMore = useCallback(() => {
     const input = document.createElement("input");
     input.type = "file";
@@ -850,19 +854,18 @@ export function ToolPage() {
         )}
 
         {hasProcessed && processedSize != null && (
-          <ReviewPanel
-            filename={processedFileName}
-            fileSize={processedSize}
-            fileType={processedFileType}
-            downloadUrl={processedUrl}
-            previewUrl={
-              isProcessedPreviewable
-                ? processedUrl
-                : (processedPreviewUrl ?? originalBlobUrl ?? undefined)
-            }
-            onUndo={handleUndo}
-            currentToolId={tool?.id ?? ""}
-          />
+          <div className="animate-fade-in">
+            <ReviewPanel
+              filename={processedFileName}
+              fileSize={processedSize}
+              fileType={processedFileType}
+              originalSize={originalSize ?? 0}
+              downloadUrl={processedUrl}
+              onUndo={handleUndo}
+              onStartOver={startOver}
+              currentToolId={tool?.id ?? ""}
+            />
+          </div>
         )}
       </>
     );
@@ -967,17 +970,20 @@ export function ToolPage() {
     <AppLayout breadcrumb={breadcrumb}>
       <div className="flex h-full w-full">
         {/* Tool Settings Panel */}
-        <div className="settings-container w-72 border-r border-border p-4 space-y-4 overflow-y-auto shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary text-primary-foreground">
-              <IconComponent className="h-5 w-5" />
+        <div className="settings-container settings-slide-in w-72 border-e border-border shrink-0 flex flex-col">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary text-primary-foreground">
+                <IconComponent className="h-5 w-5" />
+              </div>
+              <h1 className="font-semibold text-lg text-foreground">
+                {getToolName(t, tool.id, tool.name)}
+              </h1>
             </div>
-            <h1 className="font-semibold text-lg text-foreground">
-              {getToolName(t, tool.id, tool.name)}
-            </h1>
-          </div>
 
-          {renderSettingsContent()}
+            {renderSettingsContent()}
+          </div>
+          <div className="pointer-events-none sticky bottom-0 h-6 bg-gradient-to-t from-background to-transparent" />
         </div>
 
         {/* Main area: image viewer */}
@@ -990,7 +996,10 @@ export function ToolPage() {
           <div aria-live="polite" aria-atomic="true" className="sr-only">
             {liveMessage}
           </div>
-          <div className="flex-1 relative flex items-center justify-center p-6 min-h-0 min-w-0">
+          <div
+            key={hasProcessed ? `processed-${selectedIndex}` : `pending-${selectedIndex}`}
+            className={`flex-1 relative flex items-center justify-center p-6 min-h-0 min-w-0 ${hasProcessed ? "animate-fade-in" : ""}`}
+          >
             {renderNavArrows()}
             {renderImageArea()}
           </div>
