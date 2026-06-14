@@ -150,7 +150,7 @@ function HomeSearchBar({
   }, [location.search, navigate]);
 
   return (
-    <div className="relative max-w-2xl mx-auto mb-8">
+    <div className="relative mb-8">
       <Search className="absolute start-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
       <input
         ref={inputRef}
