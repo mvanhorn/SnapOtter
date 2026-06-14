@@ -317,6 +317,7 @@ await app.register(cookie, {
 
 // IP allowlist (enterprise -- must run before auth to reject early)
 import { registerIpAllowlist } from "./plugins/ip-allowlist.js";
+import { registerPerUserRateLimit } from "./plugins/per-user-rate-limit.js";
 
 await registerIpAllowlist(app);
 
@@ -325,6 +326,9 @@ await configRoutes(app);
 
 // Auth middleware (must be registered before routes it protects)
 await authMiddleware(app);
+
+// Per-user rate limiting (after auth so request.user is populated)
+await registerPerUserRateLimit(app);
 
 // Auth routes
 await authRoutes(app);
