@@ -3241,6 +3241,8 @@ export const sv: TranslationKeys = {
     addUrlButton: "Lagg till",
     importMultipleUrls: "Importera flera URL:er...",
     filesSelected: "{count} filer valda",
+    dropToAdd: "Slapp for att lagga till filer",
+    dropToReplace: "Slapp for att ersatta fil",
   },
   reviewPanel: {
     processedResultAlt: "Bearbetat resultat",

@@ -3218,6 +3218,8 @@ export const th: TranslationKeys = {
     addUrlButton: "เพิ่ม",
     importMultipleUrls: "นำเข้าหลาย URL...",
     filesSelected: "เลือกแล้ว {count} ไฟล์",
+    dropToAdd: "วางเพื่อเพิ่มไฟล์",
+    dropToReplace: "วางเพื่อแทนที่ไฟล์",
   },
   reviewPanel: {
     processedResultAlt: "ผลลัพธ์ที่ประมวลผลแล้ว",

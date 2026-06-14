@@ -3247,6 +3247,8 @@ export const uk: TranslationKeys = {
     addUrlButton: "Додати",
     importMultipleUrls: "Імпорт кількох URL...",
     filesSelected: "Обрано файлів: {count}",
+    dropToAdd: "Відпустіть, щоб додати файли",
+    dropToReplace: "Відпустіть, щоб замінити файл",
   },
   reviewPanel: {
     processedResultAlt: "Результат обробки",

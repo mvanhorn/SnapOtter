@@ -3196,6 +3196,8 @@ export const en = {
     addUrlButton: "Add",
     importMultipleUrls: "Import multiple URLs...",
     filesSelected: "{count} files selected",
+    dropToAdd: "Drop to add files",
+    dropToReplace: "Drop to replace file",
   },
   reviewPanel: {
     processedResultAlt: "Processed result",

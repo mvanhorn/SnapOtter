@@ -3251,6 +3251,8 @@ export const tr: TranslationKeys = {
     addUrlButton: "Ekle",
     importMultipleUrls: "Birden fazla URL içe aktar...",
     filesSelected: "{count} dosya seçildi",
+    dropToAdd: "Dosya eklemek icin birakin",
+    dropToReplace: "Dosyayi degistirmek icin birakin",
   },
   reviewPanel: {
     processedResultAlt: "İşlenmiş sonuç",

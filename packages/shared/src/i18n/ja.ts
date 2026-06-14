@@ -3200,6 +3200,8 @@ export const ja: TranslationKeys = {
     addUrlButton: "追加",
     importMultipleUrls: "複数のURLをインポート...",
     filesSelected: "{count}ファイルを選択済み",
+    dropToAdd: "ファイルを追加するにはドロップ",
+    dropToReplace: "ファイルを置き換えるにはドロップ",
   },
   reviewPanel: {
     processedResultAlt: "処理結果",

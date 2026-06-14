@@ -3167,6 +3167,8 @@ export const zhTW: TranslationKeys = {
     addUrlButton: "加入",
     importMultipleUrls: "匯入多個URL...",
     filesSelected: "已選取{count}個檔案",
+    dropToAdd: "放下以新增檔案",
+    dropToReplace: "放下以取代檔案",
   },
   reviewPanel: {
     processedResultAlt: "處理結果",

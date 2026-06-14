@@ -3244,6 +3244,8 @@ export const id: TranslationKeys = {
     addUrlButton: "Tambah",
     importMultipleUrls: "Impor beberapa URL...",
     filesSelected: "{count} file dipilih",
+    dropToAdd: "Lepas untuk menambahkan file",
+    dropToReplace: "Lepas untuk mengganti file",
   },
   reviewPanel: {
     processedResultAlt: "Hasil yang diproses",

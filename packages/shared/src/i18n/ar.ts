@@ -3230,6 +3230,8 @@ export const ar: TranslationKeys = {
     addUrlButton: "إضافة",
     importMultipleUrls: "استيراد روابط متعددة...",
     filesSelected: "تم اختيار {count} ملف",
+    dropToAdd: "أفلت لإضافة ملفات",
+    dropToReplace: "أفلت لاستبدال الملف",
   },
   reviewPanel: {
     processedResultAlt: "النتيجة المعالجة",

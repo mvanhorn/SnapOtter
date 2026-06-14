@@ -3185,6 +3185,8 @@ export const ko: TranslationKeys = {
     addUrlButton: "추가",
     importMultipleUrls: "여러 URL 가져오기...",
     filesSelected: "{count}개 파일 선택됨",
+    dropToAdd: "파일을 추가하려면 놓기",
+    dropToReplace: "파일을 교체하려면 놓기",
   },
   reviewPanel: {
     processedResultAlt: "처리 결과",

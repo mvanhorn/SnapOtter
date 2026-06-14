@@ -3241,6 +3241,8 @@ export const vi: TranslationKeys = {
     addUrlButton: "Thêm",
     importMultipleUrls: "Nhập nhiều URL...",
     filesSelected: "Đã chọn {count} tệp",
+    dropToAdd: "Tha de them tep",
+    dropToReplace: "Tha de thay the tep",
   },
   reviewPanel: {
     processedResultAlt: "Kết quả đã xử lý",

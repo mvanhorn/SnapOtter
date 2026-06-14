@@ -6,6 +6,7 @@ import {
   Download,
   FileImage,
   Loader2,
+  Upload,
 } from "lucide-react";
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Crop } from "react-image-crop";
@@ -32,6 +33,7 @@ import { recordRecentTool } from "@/hooks/use-recent-tools";
 import { formatFileSize } from "@/lib/download";
 import { format } from "@/lib/format";
 import { ICON_MAP } from "@/lib/icon-map";
+import { MULTI_FILE_TOOLS } from "@/lib/tool-display-modes";
 import { getToolName } from "@/lib/tool-i18n";
 import { getToolRegistryEntry } from "@/lib/tool-registry";
 import { useBase64Store } from "@/stores/base64-store";
@@ -293,6 +295,11 @@ export function ToolPage() {
   // Center of the painted mask as a 0-100 percentage — used to init the slider at the right spot
   const [eraserSliderInitPos, setEraserSliderInitPos] = useState<number | null>(null);
 
+  // Page-level drag overlay state
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const dragCounter = useRef(0);
+  const isMultiFileTool = toolId ? MULTI_FILE_TOOLS.has(toolId) : false;
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: toolId triggers intentional reset on tool navigation
   useEffect(() => {
     useFileStore.getState().undoProcessing();
@@ -378,6 +385,72 @@ export function ToolPage() {
     };
     input.click();
   }, [addFiles, toolAccept, toolFileFilter]);
+
+  // Page-level drag handlers (active when a file is already loaded)
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    dragCounter.current++;
+    if (e.dataTransfer.types.includes("Files")) {
+      setIsDraggingOver(true);
+    }
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+  }, []);
+
+  const handleDragLeave = useCallback(() => {
+    dragCounter.current--;
+    if (dragCounter.current === 0) setIsDraggingOver(false);
+  }, []);
+
+  const handlePageDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      dragCounter.current = 0;
+      setIsDraggingOver(false);
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      if (droppedFiles.length === 0) return;
+      const validFiles = toolFileFilter ? droppedFiles.filter(toolFileFilter) : droppedFiles;
+      if (validFiles.length === 0) return;
+      if (isMultiFileTool) {
+        addFiles(validFiles);
+      } else {
+        setFiles(validFiles);
+      }
+    },
+    [toolFileFilter, addFiles, setFiles, isMultiFileTool],
+  );
+
+  // Document-level paste handler (skip for generator tools that don't accept file input)
+  useEffect(() => {
+    if (registryEntry?.displayMode === "no-dropzone") return;
+
+    const handlePaste = (e: ClipboardEvent) => {
+      const pastedFiles: File[] = [];
+      if (e.clipboardData?.files.length) {
+        pastedFiles.push(...Array.from(e.clipboardData.files));
+      } else if (e.clipboardData?.items) {
+        for (const item of Array.from(e.clipboardData.items)) {
+          if (item.kind === "file") {
+            const file = item.getAsFile();
+            if (file) pastedFiles.push(file);
+          }
+        }
+      }
+      if (pastedFiles.length > 0) {
+        e.preventDefault();
+        const filtered = toolFileFilter ? pastedFiles.filter(toolFileFilter) : pastedFiles;
+        if (filtered.length > 0) {
+          if (isMultiFileTool) addFiles(filtered);
+          else setFiles(filtered);
+        }
+      }
+    };
+
+    document.addEventListener("paste", handlePaste);
+    return () => document.removeEventListener("paste", handlePaste);
+  }, [toolFileFilter, isMultiFileTool, addFiles, setFiles, registryEntry?.displayMode]);
 
   const handleDownloadAll = useCallback(() => {
     if (!batchZipBlob) return;
@@ -893,7 +966,29 @@ export function ToolPage() {
 
     return (
       <AppLayout breadcrumb={breadcrumb}>
-        <div className="flex flex-col w-full h-full">
+        <div
+          className="flex flex-col w-full h-full"
+          {...(!isNoDropzone
+            ? {
+                onDragEnter: handleDragEnter,
+                onDragOver: handleDragOver,
+                onDragLeave: handleDragLeave,
+                onDrop: handlePageDrop,
+              }
+            : {})}
+        >
+          {/* Page-level drop overlay */}
+          {isDraggingOver && !isNoDropzone && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+              <div className="text-center">
+                <Upload className="mx-auto h-12 w-12 text-primary animate-bounce" />
+                <p className="mt-3 text-lg font-medium">
+                  {isMultiFileTool ? t.dropzone.dropToAdd : t.dropzone.dropToReplace}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Tool header */}
           <div className="flex items-center gap-3 p-4 border-b border-border shrink-0">
             <div className="p-2 rounded-lg bg-primary text-primary-foreground">
@@ -968,7 +1063,29 @@ export function ToolPage() {
   // Desktop layout: side-by-side
   return (
     <AppLayout breadcrumb={breadcrumb}>
-      <div className="flex h-full w-full">
+      <div
+        className="flex h-full w-full"
+        {...(!isNoDropzone
+          ? {
+              onDragEnter: handleDragEnter,
+              onDragOver: handleDragOver,
+              onDragLeave: handleDragLeave,
+              onDrop: handlePageDrop,
+            }
+          : {})}
+      >
+        {/* Page-level drop overlay */}
+        {isDraggingOver && !isNoDropzone && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+            <div className="text-center">
+              <Upload className="mx-auto h-12 w-12 text-primary animate-bounce" />
+              <p className="mt-3 text-lg font-medium">
+                {isMultiFileTool ? t.dropzone.dropToAdd : t.dropzone.dropToReplace}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Tool Settings Panel */}
         <div className="settings-container settings-slide-in w-72 border-e border-border shrink-0 flex flex-col">
           <div className="flex-1 overflow-y-auto p-4 space-y-4">

@@ -3169,6 +3169,8 @@ export const zhCN: TranslationKeys = {
     addUrlButton: "添加",
     importMultipleUrls: "导入多个 URL...",
     filesSelected: "已选择 {count} 个文件",
+    dropToAdd: "放下以添加文件",
+    dropToReplace: "放下以替换文件",
   },
   reviewPanel: {
     processedResultAlt: "处理结果",

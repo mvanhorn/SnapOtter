@@ -3227,6 +3227,8 @@ export const hi: TranslationKeys = {
     addUrlButton: "जोड़ें",
     importMultipleUrls: "कई URL इम्पोर्ट करें...",
     filesSelected: "{count} फाइलें चुनी गईं",
+    dropToAdd: "फाइलें जोड़ने के लिए छोड़ें",
+    dropToReplace: "फाइल बदलने के लिए छोड़ें",
   },
   reviewPanel: {
     processedResultAlt: "प्रोसेस्ड परिणाम",

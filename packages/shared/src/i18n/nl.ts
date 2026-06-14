@@ -3247,6 +3247,8 @@ export const nl: TranslationKeys = {
     addUrlButton: "Toevoegen",
     importMultipleUrls: "Meerdere URLs importeren...",
     filesSelected: "{count} bestanden geselecteerd",
+    dropToAdd: "Laat los om bestanden toe te voegen",
+    dropToReplace: "Laat los om bestand te vervangen",
   },
   reviewPanel: {
     processedResultAlt: "Verwerkt resultaat",

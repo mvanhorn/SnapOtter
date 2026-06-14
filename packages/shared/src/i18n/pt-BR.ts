@@ -3247,6 +3247,8 @@ export const ptBR: TranslationKeys = {
     addUrlButton: "Adicionar",
     importMultipleUrls: "Importar multiplas URLs...",
     filesSelected: "{count} arquivos selecionados",
+    dropToAdd: "Solte para adicionar arquivos",
+    dropToReplace: "Solte para substituir arquivo",
   },
   reviewPanel: {
     processedResultAlt: "Resultado processado",

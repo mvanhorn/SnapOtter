@@ -3246,6 +3246,8 @@ export const ru: TranslationKeys = {
     addUrlButton: "Добавить",
     importMultipleUrls: "Импорт нескольких URL...",
     filesSelected: "Выбрано файлов: {count}",
+    dropToAdd: "Отпустите, чтобы добавить файлы",
+    dropToReplace: "Отпустите, чтобы заменить файл",
   },
   reviewPanel: {
     processedResultAlt: "Результат обработки",

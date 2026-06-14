@@ -3259,6 +3259,8 @@ export const de: TranslationKeys = {
     addUrlButton: "Hinzufuegen",
     importMultipleUrls: "Mehrere URLs importieren...",
     filesSelected: "{count} Dateien ausgewaehlt",
+    dropToAdd: "Ablegen, um Dateien hinzuzufuegen",
+    dropToReplace: "Ablegen, um Datei zu ersetzen",
   },
   reviewPanel: {
     processedResultAlt: "Verarbeitetes Ergebnis",
