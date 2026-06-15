@@ -315,6 +315,10 @@ export function getFileDownloadUrl(id: string): string {
   return `/api/v1/files/${id}/download`;
 }
 
+export function getFilePreviewUrl(id: string): string {
+  return `/api/v1/files/${id}/preview`;
+}
+
 export async function apiDownloadBlob(jobId: string, filename: string): Promise<Blob> {
   let res: Response;
   try {

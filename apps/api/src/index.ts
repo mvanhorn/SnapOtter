@@ -47,6 +47,7 @@ import { docsRoutes } from "./routes/docs.js";
 import { registerEnterpriseRoutes } from "./routes/enterprise/index.js";
 import { registerFeatureRoutes } from "./routes/features.js";
 import { registerFetchUrlsRoute } from "./routes/fetch-urls.js";
+import { filePreviewRoutes } from "./routes/file-preview.js";
 import { fileRoutes } from "./routes/files.js";
 import { registerMemeTemplates } from "./routes/meme-templates.js";
 import { registerPipelineRoutes } from "./routes/pipeline.js";
@@ -347,6 +348,9 @@ await fileRoutes(app);
 
 // User file library routes (persistent file management with versioning)
 await userFileRoutes(app);
+
+// File preview routes (server-side video/audio preview generation)
+await filePreviewRoutes(app);
 
 // Meme template listing and static serving (before tool routes which have catch-all)
 await registerMemeTemplates(app);

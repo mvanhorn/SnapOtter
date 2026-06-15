@@ -1,12 +1,13 @@
 import { TOOLS } from "@snapotter/shared";
-import { FileImage, FileText, ImageIcon, Music, Video } from "lucide-react";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { FileImage, FileText, ImageIcon, Loader2, Music, Play, Video } from "lucide-react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "@/contexts/i18n-context";
 import {
   apiGetFileDetails,
   formatHeaders,
   getFileDownloadUrl,
+  getFilePreviewUrl,
   getFileThumbnailUrl,
   type UserFileDetail,
 } from "@/lib/api";
@@ -64,6 +65,16 @@ function AuthImage({ src, alt, className }: { src: string; alt: string; classNam
   return <img src={blobUrl} alt={alt} className={className} />;
 }
 
+const NATIVE_VIDEO = new Set(["mp4", "webm", "ogg", "ogv", "m4v"]);
+const NATIVE_AUDIO = new Set(["mp3", "wav", "ogg", "oga", "opus", "aac", "m4a", "flac", "webm"]);
+
+function isNativePlayable(mimeType: string, filename: string): boolean {
+  const ext = filename.split(".").pop()?.toLowerCase() ?? "";
+  if (mimeType.startsWith("video/")) return NATIVE_VIDEO.has(ext);
+  if (mimeType.startsWith("audio/")) return NATIVE_AUDIO.has(ext);
+  return false;
+}
+
 function FilePreview({
   fileId,
   mimeType,
@@ -73,14 +84,29 @@ function FilePreview({
   mimeType: string;
   name: string;
 }) {
-  const downloadUrl = getFileDownloadUrl(fileId);
-  const headers = formatHeaders();
   const [mediaSrc, setMediaSrc] = useState<string | null>(null);
+  const [previewSrc, setPreviewSrc] = useState<string | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewError, setPreviewError] = useState(false);
 
+  const isMedia = mimeType.startsWith("video/") || mimeType.startsWith("audio/");
+  const nativePlayable = isMedia && isNativePlayable(mimeType, name);
+
+  // Fetch native-playable media directly from the download endpoint.
+  // Also resets server-side preview state when the file changes.
   useEffect(() => {
-    if (!mimeType.startsWith("video/") && !mimeType.startsWith("audio/")) return;
+    // Reset server-side preview state on every file change
+    setPreviewSrc((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+    setPreviewLoading(false);
+    setPreviewError(false);
+
+    if (!isMedia || !nativePlayable) return;
     let revoked = false;
-    fetch(downloadUrl, { headers })
+    const url = getFileDownloadUrl(fileId);
+    fetch(url, { headers: formatHeaders() })
       .then((res) => res.blob())
       .then((blob) => {
         if (!revoked) setMediaSrc(URL.createObjectURL(blob));
@@ -88,30 +114,132 @@ function FilePreview({
       .catch(() => {});
     return () => {
       revoked = true;
-      if (mediaSrc) URL.revokeObjectURL(mediaSrc);
+      setMediaSrc((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return null;
+      });
     };
+  }, [isMedia, nativePlayable, fileId]);
+
+  const handleGeneratePreview = useCallback(() => {
+    setPreviewLoading(true);
+    setPreviewError(false);
+    fetch(getFilePreviewUrl(fileId), { headers: formatHeaders() })
+      .then((res) => {
+        if (!res.ok) throw new Error("Preview generation failed");
+        return res.blob();
+      })
+      .then((blob) => {
+        setPreviewSrc(URL.createObjectURL(blob));
+      })
+      .catch(() => {
+        setPreviewError(true);
+      })
+      .finally(() => {
+        setPreviewLoading(false);
+      });
   }, [fileId]);
 
+  const ext = name.split(".").pop()?.toLowerCase() ?? "";
+
+  // Video files
   if (mimeType.startsWith("video/")) {
-    return mediaSrc ? (
-      <video src={mediaSrc} controls className="w-full rounded-lg max-h-48 bg-black">
-        <track kind="captions" />
-      </video>
-    ) : (
-      <div className="w-full h-32 rounded-lg bg-muted flex items-center justify-center">
-        <Video className="h-8 w-8 text-muted-foreground animate-pulse" />
+    // Native-playable: fetch and render directly
+    if (nativePlayable) {
+      return mediaSrc ? (
+        <video src={mediaSrc} controls className="w-full rounded-lg max-h-48 bg-black">
+          <track kind="captions" />
+        </video>
+      ) : (
+        <div className="w-full h-32 rounded-lg bg-muted flex items-center justify-center">
+          <Video className="h-8 w-8 text-muted-foreground animate-pulse" />
+        </div>
+      );
+    }
+
+    // Non-native: show preview button or server-generated preview
+    if (previewSrc) {
+      return (
+        <video src={previewSrc} controls className="w-full rounded-lg max-h-48 bg-black">
+          <track kind="captions" />
+        </video>
+      );
+    }
+
+    if (previewLoading) {
+      return (
+        <div className="w-full h-32 rounded-lg bg-muted flex items-center justify-center">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        </div>
+      );
+    }
+
+    return (
+      <div className="w-full h-32 rounded-lg bg-muted flex flex-col items-center justify-center gap-2">
+        <button
+          type="button"
+          onClick={handleGeneratePreview}
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          <Play className="h-5 w-5" />
+          Generate Preview
+        </button>
+        <span className="text-xs text-muted-foreground">
+          {previewError
+            ? "Preview generation failed. Try again."
+            : `${ext.toUpperCase()} requires server-side conversion`}
+        </span>
       </div>
     );
   }
 
+  // Audio files
   if (mimeType.startsWith("audio/")) {
-    return mediaSrc ? (
-      <Suspense fallback={<div className="w-full h-24 rounded-lg bg-muted animate-pulse" />}>
-        <WaveformPlayer src={mediaSrc} className="w-full" />
-      </Suspense>
-    ) : (
-      <div className="w-full h-24 rounded-lg bg-muted flex items-center justify-center">
-        <Music className="h-8 w-8 text-muted-foreground animate-pulse" />
+    // Native-playable: fetch and render directly
+    if (nativePlayable) {
+      return mediaSrc ? (
+        <Suspense fallback={<div className="w-full h-24 rounded-lg bg-muted animate-pulse" />}>
+          <WaveformPlayer src={mediaSrc} className="w-full" />
+        </Suspense>
+      ) : (
+        <div className="w-full h-24 rounded-lg bg-muted flex items-center justify-center">
+          <Music className="h-8 w-8 text-muted-foreground animate-pulse" />
+        </div>
+      );
+    }
+
+    // Non-native: show preview button or server-generated preview
+    if (previewSrc) {
+      return (
+        <Suspense fallback={<div className="w-full h-24 rounded-lg bg-muted animate-pulse" />}>
+          <WaveformPlayer src={previewSrc} className="w-full" />
+        </Suspense>
+      );
+    }
+
+    if (previewLoading) {
+      return (
+        <div className="w-full h-32 rounded-lg bg-muted flex items-center justify-center">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        </div>
+      );
+    }
+
+    return (
+      <div className="w-full h-32 rounded-lg bg-muted flex flex-col items-center justify-center gap-2">
+        <button
+          type="button"
+          onClick={handleGeneratePreview}
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          <Play className="h-5 w-5" />
+          Generate Preview
+        </button>
+        <span className="text-xs text-muted-foreground">
+          {previewError
+            ? "Preview generation failed. Try again."
+            : `${ext.toUpperCase()} requires server-side conversion`}
+        </span>
       </div>
     );
   }
