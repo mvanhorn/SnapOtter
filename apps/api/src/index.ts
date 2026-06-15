@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { statfs } from "node:fs/promises";
-import { join } from "node:path";
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
+import { trace } from "@opentelemetry/api";
 import { getDispatcherStatus, initDispatcher, isGpuAvailable } from "@snapotter/ai";
 import { APP_VERSION } from "@snapotter/shared";
 import { eq, sql } from "drizzle-orm";
@@ -21,7 +21,7 @@ import { captureException, initAnalytics, shutdownAnalytics } from "./lib/analyt
 import { shouldRunStartupCleanup } from "./lib/cleanup.js";
 import { buildCsp } from "./lib/csp.js";
 import { ensureAiDirs, recoverInterruptedInstalls } from "./lib/feature-status.js";
-
+import { logger } from "./lib/logger.js";
 import { requestDuration } from "./lib/metrics.js";
 import { getSettingString } from "./lib/settings-helpers.js";
 import { requirePermission } from "./permissions.js";
@@ -31,6 +31,7 @@ import {
   ensureAnonymousUser,
   ensureBuiltinRoles,
   ensureDefaultAdmin,
+  getAuthUser,
 } from "./plugins/auth.js";
 import { registerMfa } from "./plugins/mfa.js";
 import { oidcRoutes } from "./plugins/oidc.js";
@@ -56,6 +57,7 @@ import { settingsRoutes } from "./routes/settings.js";
 import { teamsRoutes } from "./routes/teams.js";
 import { registerToolRoutes } from "./routes/tools/index.js";
 import { userFileRoutes } from "./routes/user-files.js";
+import { shutdownTracing } from "./tracing.js";
 
 // Run before anything else
 try {
@@ -188,26 +190,7 @@ function parseTrustProxy(value: string): boolean | number | string {
 
 const app = Fastify({
   genReqId: (req) => (req.headers["x-request-id"] as string) ?? randomUUID(),
-  logger: {
-    level: env.LOG_LEVEL,
-    transport: {
-      targets: [
-        { target: "pino/file", options: { destination: 1 } },
-        {
-          // Rotate at 10 MB, keep 5 files
-          target: "pino-roll",
-          options: {
-            file: join(env.LOG_DIR, "snapotter"),
-            extension: ".log",
-            size: "10m",
-            limit: { count: 5 },
-            mkdir: true,
-          },
-        },
-      ],
-    },
-    redact: ["req.headers.authorization", "req.headers.cookie"],
-  },
+  loggerInstance: logger,
   bodyLimit: env.MAX_UPLOAD_SIZE_MB > 0 ? env.MAX_UPLOAD_SIZE_MB * 1024 * 1024 : 1073741824,
   trustProxy: parseTrustProxy(env.TRUST_PROXY),
   routerOptions: { maxParamLength: 500 },
@@ -329,6 +312,18 @@ await authMiddleware(app);
 
 // Per-user rate limiting (after auth so request.user is populated)
 await registerPerUserRateLimit(app);
+
+// Enrich active OTel span with tool_id and user_id when available
+app.addHook("preHandler", (request, _reply, done) => {
+  const span = trace.getActiveSpan();
+  if (span) {
+    const params = request.params as Record<string, string> | undefined;
+    if (params?.toolId) span.setAttribute("snapotter.tool_id", params.toolId);
+    const user = getAuthUser(request);
+    if (user) span.setAttribute("snapotter.user_id", user.id);
+  }
+  done();
+});
 
 // Auth routes
 await authRoutes(app);
@@ -668,6 +663,17 @@ async function shutdown(signal: string) {
   // Close BullMQ resources before database (workers first so no new jobs start)
   try {
     await closeWorkers();
+  } catch (err) {
+    console.error("Error closing workers:", err);
+  }
+
+  try {
+    await shutdownTracing();
+  } catch {
+    // tracing shutdown is best-effort
+  }
+
+  try {
     await closeFlowProducer();
     await closeQueueEvents();
     await closeQueues();

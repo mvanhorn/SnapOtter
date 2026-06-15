@@ -5,6 +5,7 @@
  * the appropriate BullMQ queue. waitForJob() blocks the HTTP request
  * until the worker produces a result or the sync-wait window expires.
  */
+import { context, propagation } from "@opentelemetry/api";
 import { FlowProducer, type Job, QueueEvents } from "bullmq";
 import { eq } from "drizzle-orm";
 import { env } from "../config.js";
@@ -54,6 +55,24 @@ export async function closeFlowProducer(): Promise<void> {
   }
 }
 
+// ── Trace context injection ─────────────────────────────────────
+
+/**
+ * Inject the active OpenTelemetry trace context into a ToolJobData object.
+ * Called from enqueueToolJob (single jobs) and from pipeline/batch routes
+ * that build FlowProducer trees bypassing enqueueToolJob.
+ */
+export function injectTraceContext(data: ToolJobData): void {
+  const carrier: Record<string, string> = {};
+  propagation.inject(context.active(), carrier);
+  if (carrier.traceparent) {
+    data._otel = {
+      traceparent: carrier.traceparent,
+      tracestate: carrier.tracestate,
+    };
+  }
+}
+
 // ── Enqueue + wait ──────────────────────────────────────────────
 
 /**
@@ -81,6 +100,8 @@ export async function enqueueToolJob(data: ToolJobData): Promise<Job<ToolJobData
   if (data.userId) {
     void computeDeleteAfter(data.jobId, data.userId).catch(() => {});
   }
+
+  injectTraceContext(data);
 
   const queue = getQueue(data.pool);
   const job = await queue.add(data.toolId, { ...data, jobId: data.jobId }, { jobId: data.jobId });
