@@ -30,7 +30,7 @@ import { eq } from "drizzle-orm";
 import { env } from "../config.js";
 import { db, schema } from "../db/index.js";
 import { resolveConcurrency } from "../lib/env.js";
-import { stripInternalPaths } from "../lib/errors.js";
+import { friendlyError } from "../lib/errors.js";
 import { logger } from "../lib/logger.js";
 import { jobDuration, jobsTotal } from "../lib/metrics.js";
 import { getObjectBuffer, putObject } from "../lib/object-storage.js";
@@ -340,6 +340,12 @@ async function processToolJob(job: Job<ToolJobData>): Promise<ToolJobResult> {
           ? `Timed out after ${Math.round(timeoutMs / 1000)}s`
           : errorMessage;
 
+      // Keep the full error (incl. raw tool stderr) in server logs; clients only
+      // ever see friendlyError(finalError).
+      if (!isCanceled && !isTimeout) {
+        logger.error({ err, jobId, toolId: data.toolId }, "tool job failed");
+      }
+
       // Record error on the OTel span
       if (span) {
         span.setStatus({ code: SpanStatusCode.ERROR, message: finalError });
@@ -366,7 +372,7 @@ async function processToolJob(job: Job<ToolJobData>): Promise<ToolJobResult> {
             status: isCanceled ? "canceled" : "failed",
             completedAt: new Date(),
             durationMs,
-            error: { message: finalError },
+            error: { message: friendlyError(finalError) },
           })
           .where(eq(schema.jobs.id, jobId))
           .catch(() => {});
@@ -387,7 +393,7 @@ async function processToolJob(job: Job<ToolJobData>): Promise<ToolJobResult> {
             jobId: progressJobId,
             phase: "failed",
             percent: 0,
-            error: stripInternalPaths(finalError),
+            error: friendlyError(finalError),
           });
         }
       }
@@ -441,7 +447,7 @@ async function processPipelineStep(job: Job<ToolJobData>): Promise<ToolJobResult
 
     if (!prevRow || prevRow.status === "failed" || !prevRow.outputRefs?.[0]) {
       // Previous step failed -- propagate the error without processing.
-      const prevError = stripInternalPaths(
+      const prevError = friendlyError(
         prevRow?.status === "failed"
           ? ((prevRow.error as { message?: string } | null)?.message ?? "Processing failed")
           : "Previous step has no output",
@@ -481,7 +487,7 @@ async function processPipelineStep(job: Job<ToolJobData>): Promise<ToolJobResult
     // Step failed -- return failure marker. processToolJob already
     // updated the DB row to "failed" and emitted a terminal event
     // on the step's own progress channel.
-    const errorMsg = stripInternalPaths(err instanceof Error ? err.message : String(err));
+    const errorMsg = friendlyError(err instanceof Error ? err.message : String(err));
     return {
       outputRefs: [],
       filename: data.filename,
@@ -580,7 +586,7 @@ async function processPipelineFinalize(job: Job<ToolJobData>): Promise<ToolJobRe
 
   // ── Failure path ────────────────────────────────────────────
   if (failedAtStep !== null) {
-    const errorMsg = stripInternalPaths(`Step ${failedAtStep + 1}: ${failError}`);
+    const errorMsg = `Step ${failedAtStep + 1}: ${friendlyError(failError)}`;
 
     await db
       .update(schema.jobs)
@@ -696,7 +702,7 @@ async function processBatchChild(job: Job<ToolJobData>): Promise<ToolJobResult> 
     await recordChildOutcome(parentId, totalFiles, job.data.filename);
     return result;
   } catch (err) {
-    const error = stripInternalPaths(err instanceof Error ? err.message : String(err));
+    const error = friendlyError(err instanceof Error ? err.message : String(err));
     await recordChildOutcome(parentId, totalFiles, job.data.filename, error);
     // Return a completed job with a failure marker so the parent runs.
     return {
@@ -747,7 +753,7 @@ async function processBatchFinalize(job: Job<ToolJobData>): Promise<ToolJobResul
     } else {
       const errorMsg = (row.error as { message?: string } | null)?.message ?? "Processing failed";
       const inputFilename = row.inputRefs?.[0]?.split("/").pop() ?? `file-${i}`;
-      manifest.push({ index: i, filename: inputFilename, error: stripInternalPaths(errorMsg) });
+      manifest.push({ index: i, filename: inputFilename, error: friendlyError(errorMsg) });
     }
   }
 
