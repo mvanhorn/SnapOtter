@@ -249,6 +249,7 @@ export async function registerBatchRoutes(app: FastifyInstance): Promise<void> {
               processFilename,
               {
                 scratchDir: batchScratch,
+                lenient: getToolConfig(toolId)?.skipStructuralValidation,
               },
             );
             processBuffer = prepared.buffer;

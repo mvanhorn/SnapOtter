@@ -304,6 +304,7 @@ export async function registerPipelineRoutes(app: FastifyInstance): Promise<void
       try {
         const prepared = await inputHandlerFor(inputModality).prepare(fileBuffer, filename, {
           scratchDir: pipelineScratch,
+          lenient: getToolConfig(firstToolId ?? "")?.skipStructuralValidation,
         });
         fileBuffer = prepared.buffer;
         filename = prepared.filename;
@@ -893,7 +894,10 @@ export async function registerPipelineRoutes(app: FastifyInstance): Promise<void
           const prepared = await inputHandlerFor(batchModality).prepare(
             processBuffer,
             processFilename,
-            { scratchDir: pipelineBatchScratch },
+            {
+              scratchDir: pipelineBatchScratch,
+              lenient: getToolConfig(pipeline.steps[0]?.toolId ?? "")?.skipStructuralValidation,
+            },
           );
           processBuffer = prepared.buffer;
           processFilename = prepared.filename;
