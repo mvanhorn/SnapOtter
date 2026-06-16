@@ -1,8 +1,13 @@
 import { extname, join } from "node:path";
-import { probeMedia, resolveEncoder } from "@snapotter/media-engine";
+import { probeMedia } from "@snapotter/media-engine";
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { runFfmpegWithProgress, stageMediaInputs, videoContentType } from "../../lib/media-tool.js";
+import {
+  audioEncodeArgsForContainer,
+  runFfmpegWithProgress,
+  stageMediaInputs,
+  videoContentType,
+} from "../../lib/media-tool.js";
 import { InputValidationError } from "../../modality/contract.js";
 import { createToolRoute } from "../tool-factory.js";
 
@@ -30,17 +35,18 @@ export function registerVideoLoudnorm(app: FastifyInstance) {
 
       const outPath = join(ctx.scratchDir, "media", outName);
 
+      // loudnorm runs internally at 192 kHz and emits at 192 kHz unless we
+      // resample back, so restore the source rate to avoid inflating the audio.
+      const sr = info.streams.find((s) => s.type === "audio")?.sampleRate ?? 48000;
+
       const args = [
         "-i",
         inPath,
         "-af",
-        "loudnorm=I=-16:TP=-1.5:LRA=11",
+        `loudnorm=I=-16:TP=-1.5:LRA=11,aresample=${sr}`,
         "-c:v",
         "copy",
-        "-c:a",
-        resolveEncoder("aac"),
-        "-b:a",
-        "192k",
+        ...audioEncodeArgsForContainer(origExt),
         outPath,
       ];
 

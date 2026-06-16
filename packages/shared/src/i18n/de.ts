@@ -70,7 +70,7 @@ export const de: TranslationKeys = {
     image: "Image",
     video: "Video",
     audio: "Audio",
-    documentsAndFiles: "Documents & Files",
+    documentsAndFiles: "PDF & Data",
   },
   tools: {
     resize: {
@@ -2501,7 +2501,7 @@ export const de: TranslationKeys = {
     noToolsMatch: "No tools match '{query}'",
     clearSearch: "Clear search",
     all: "All",
-    documents: "Documents",
+    documents: "PDF",
     data: "Data",
     toolCount: "{count} tools",
     heading: "SnapOtter Tools",

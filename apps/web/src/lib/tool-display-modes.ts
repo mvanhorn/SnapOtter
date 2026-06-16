@@ -63,7 +63,7 @@ export const TOOL_DISPLAY_MODES: Record<string, DisplayMode> = {
   pixelate: "live-preview",
   vignette: "live-preview",
 
-  "gif-webp": "live-preview",
+  "gif-webp": "before-after",
   histogram: "no-comparison",
   "lqip-placeholder": "no-comparison",
   "sprite-sheet": "no-comparison",
@@ -101,11 +101,11 @@ export const TOOL_DISPLAY_MODES: Record<string, DisplayMode> = {
   "transparency-fixer": "before-after",
   "content-aware-resize": "side-by-side",
   "ai-canvas-expand": "before-after",
-  "ocr-pdf": "no-comparison",
+  "ocr-pdf": "custom-results",
   "transcribe-audio": "no-comparison",
   "auto-subtitles": "media-player",
-  "background-replace": "no-comparison",
-  "blur-background": "no-comparison",
+  "background-replace": "before-after",
+  "blur-background": "before-after",
 
   // Video tools
   "convert-video": "media-player",
