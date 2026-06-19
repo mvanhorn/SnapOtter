@@ -1,12 +1,8 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import sharp from "sharp";
 import { describe, expect, it } from "vitest";
 import { decodeToSharpCompat, needsCliDecode } from "../../../apps/api/src/lib/format-decoders.js";
 import { encodeQoi } from "../../../apps/api/src/lib/format-encoders.js";
 import { fixtures, readFixture } from "../../fixtures/index.js";
-
-const FIXTURES = join(__dirname, "../../fixtures");
 
 function isImageMagickError(err: unknown): boolean {
   if (!(err instanceof Error)) return false;
@@ -366,7 +362,7 @@ describe("decodeToSharpCompat - individual decoder verification", () => {
   for (const fmt of formats) {
     it(`${fmt}: output has non-zero dimensions`, async () => {
       try {
-        const input = await readFile(join(FIXTURES, `formats/sample.${fmt}`));
+        const input = readFixture(fixtures.image.formats(fmt));
         const result = await decodeToSharpCompat(input, fmt);
         const { width, height } = await assertValidImage(result);
         expect(width).toBeGreaterThan(0);
@@ -383,7 +379,7 @@ describe("decodeToSharpCompat - individual decoder verification", () => {
   for (const fmt of delegateFormats) {
     it(`${fmt}: output has non-zero dimensions (requires delegate)`, async () => {
       try {
-        const input = await readFile(join(FIXTURES, `formats/sample.${fmt}`));
+        const input = readFixture(fixtures.image.formats(fmt));
         const result = await decodeToSharpCompat(input, fmt);
         const { width, height } = await assertValidImage(result);
         expect(width).toBeGreaterThan(0);
