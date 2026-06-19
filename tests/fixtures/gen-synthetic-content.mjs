@@ -14,7 +14,7 @@
 // System deps on PATH:
 //   ffmpeg
 
-import { writeFileSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -22,12 +22,25 @@ import { createRequire } from "node:module";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const IMAGE_VALID = join(__dirname, "image/valid");
-const VIDEO_VALID = join(__dirname, "video/valid");
-const AUDIO_VALID = join(__dirname, "audio/valid");
 const DOC_VALID = join(__dirname, "document/valid");
 const require = createRequire(join(__dirname, "../../apps/api/package.json"));
 const sharp = require("sharp");
 const QRCode = require("qrcode");
+
+const FORCE = process.argv.includes("--force");
+
+// Write file only if it does not already exist (or --force is set).
+// Committed synthetics must not be silently overwritten because
+// encoder-version differences can change bytes and break manifest hashes.
+function writeIfMissing(path, data, label) {
+  if (!FORCE && existsSync(path)) {
+    console.log(`  SKIP (exists): ${label || path}`);
+    return false;
+  }
+  writeFileSync(path, data);
+  console.log(`  ${label || path}`);
+  return true;
+}
 
 // ── Code 128B barcode encoder ──────────────────────────────
 
@@ -215,10 +228,31 @@ function ff(args, label) {
   }
 }
 
+// Like ff(), but skip if the output file already exists (unless --force).
+function ffIfMissing(outPath, args, label) {
+  if (!FORCE && existsSync(outPath)) {
+    console.log(`  SKIP (exists): ${label}`);
+    return;
+  }
+  ff(args, label);
+}
+
 // ── Main ───────────────────────────────────────────────────
+//
+// Scoped outputs:
+//   - image/valid/  : QR codes, barcodes, OCR text, SVG logo, multi-face, animated GIF
+//   - document/valid/: alt-2page.pdf, multipage-6.pdf
+//
+// Deliberately EXCLUDED (committed real heroes, not synthetics):
+//   - video/valid/media-30s.mp4  (Big Buck Bunny CC-BY clip)
+//   - audio/valid/media-30s.wav  (committed TTS/synthetic, hash-locked)
+//   - video/valid/speech-10s.mp4 (macOS TTS, committed)
+//   - audio/valid/speech-*.{wav,flac,ogg,m4a,aac,opus} (macOS TTS, committed)
+//   - video/valid/hero.{mov,webm,mkv,avi} (Big Buck Bunny CC-BY, committed)
 
 async function main() {
-  console.log("Regenerating Category A & B content fixtures...\n");
+  console.log("Regenerating Category A & B content fixtures...");
+  console.log(`Mode: ${FORCE ? "FORCE (overwrite all)" : "skip existing files (pass --force to overwrite)"}\n`);
 
   // ── QR codes (A) ──
   console.log("QR codes:");
@@ -226,28 +260,23 @@ async function main() {
   const qrPng = await QRCode.toBuffer(qrData, {
     width: 400, margin: 2, color: { dark: "#000000", light: "#ffffff" },
   });
-  writeFileSync(join(IMAGE_VALID, "qr-code.png"), qrPng);
-  console.log("  qr-code.png");
+  writeIfMissing(join(IMAGE_VALID, "qr-code.png"), qrPng, "qr-code.png");
 
   const qrSvg = await QRCode.toString(qrData, { type: "svg", width: 296, margin: 2 });
-  writeFileSync(join(IMAGE_VALID, "qr-code.svg"), qrSvg);
-  console.log("  qr-code.svg");
+  writeIfMissing(join(IMAGE_VALID, "qr-code.svg"), qrSvg, "qr-code.svg");
 
   const qrAvif = await sharp(qrPng).resize(400, 400).avif({ quality: 80 }).toBuffer();
-  writeFileSync(join(IMAGE_VALID, "qr-code.avif"), qrAvif);
-  console.log("  qr-code.avif");
+  writeIfMissing(join(IMAGE_VALID, "qr-code.avif"), qrAvif, "qr-code.avif");
 
   // ── Barcodes (A) ──
   console.log("Barcodes:");
   const bcText = "SNAPOTTER-TEST-123";
   const bcSvgStr = barcodeSvg(bcText, 699, 152);
   const bcPng = await sharp(Buffer.from(bcSvgStr)).png().toBuffer();
-  writeFileSync(join(IMAGE_VALID, "barcode.png"), bcPng);
-  console.log("  barcode.png");
+  writeIfMissing(join(IMAGE_VALID, "barcode.png"), bcPng, "barcode.png");
 
   const bcAvif = await sharp(Buffer.from(bcSvgStr)).avif({ quality: 80 }).toBuffer();
-  writeFileSync(join(IMAGE_VALID, "barcode.avif"), bcAvif);
-  console.log("  barcode.avif");
+  writeIfMissing(join(IMAGE_VALID, "barcode.avif"), bcAvif, "barcode.avif");
 
   // ── OCR text images (A) ──
   console.log("OCR text images:");
@@ -256,8 +285,7 @@ async function main() {
     <text x="400" y="115" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="42" font-weight="bold" fill="black">The quick brown fox 12345</text>
   </svg>`;
   const ocrEngPng = await sharp(Buffer.from(ocrEngSvg)).png().toBuffer();
-  writeFileSync(join(IMAGE_VALID, "ocr-clean.png"), ocrEngPng);
-  console.log("  ocr-clean.png");
+  writeIfMissing(join(IMAGE_VALID, "ocr-clean.png"), ocrEngPng, "ocr-clean.png");
 
   const jpText =
     "日本語の表記においては，漢字や仮名だけで" +
@@ -276,73 +304,61 @@ async function main() {
     ${lines.map((line, i) => `<text x="16" y="${30 + i * 28}" font-family="Hiragino Sans, Hiragino Kaku Gothic Pro, sans-serif" font-size="20" fill="black">${line}</text>`).join("\n    ")}
   </svg>`;
   const jpPng = await sharp(Buffer.from(jpSvg)).png().toBuffer();
-  writeFileSync(join(IMAGE_VALID, "ocr-japanese.png"), jpPng);
-  console.log("  ocr-japanese.png");
+  writeIfMissing(join(IMAGE_VALID, "ocr-japanese.png"), jpPng, "ocr-japanese.png");
 
-  // ── PDFs (A) ──
+  // ── PDFs (A: deterministic generator, safe to overwrite) ──
   console.log("PDFs:");
-  writeFileSync(join(DOC_VALID, "alt-2page.pdf"), generatePdf(2));
-  console.log("  alt-2page.pdf");
-  writeFileSync(join(DOC_VALID, "multipage-6.pdf"), generatePdf(6));
-  console.log("  multipage-6.pdf");
+  writeIfMissing(join(DOC_VALID, "alt-2page.pdf"), generatePdf(2), "alt-2page.pdf");
+  writeIfMissing(join(DOC_VALID, "multipage-6.pdf"), generatePdf(6), "multipage-6.pdf");
 
   // ── SVG logo (B: replaces ConvertICO brand) ──
   console.log("SVG logo (replacing ConvertICO brand):");
-  writeFileSync(join(IMAGE_VALID, "svg-logo.svg"), projectSvg());
-  console.log("  svg-logo.svg");
+  writeIfMissing(join(IMAGE_VALID, "svg-logo.svg"), projectSvg(), "svg-logo.svg");
 
   // ── Multi-face placeholder (B: replaces Shutterstock photo) ──
   console.log("Multi-face placeholder (replacing Shutterstock stock photo):");
   const mfSvg = multiFaceSvg(433, 280);
   const mfWebp = await sharp(Buffer.from(mfSvg)).webp({ quality: 80 }).toBuffer();
-  writeFileSync(join(IMAGE_VALID, "multi-face.webp"), mfWebp);
-  console.log("  multi-face.webp");
+  writeIfMissing(join(IMAGE_VALID, "multi-face.webp"), mfWebp, "multi-face.webp");
 
   // ── Animated GIF (B: replaces copyrighted Simpsons clip) ──
   console.log("Animated GIF (replacing copyrighted Simpsons clip):");
   const gifOut = join(IMAGE_VALID, "animated-simpsons.gif");
-  ff(
+  ffIfMissing(
+    gifOut,
     `-f lavfi -i "testsrc=duration=3:size=320x320:rate=10" -pix_fmt rgb8 -loop 0 -y "${gifOut}"`,
     "animated-simpsons.gif",
   );
 
   // ── Synthetic audio/video (A) ──
-  console.log("Synthetic audio/video:");
+  // NOTE: media-30s.mp4 and media-30s.wav are no longer generated here.
+  // media-30s.mp4 is now a real Big Buck Bunny CC-BY hero clip (committed).
+  // media-30s.wav is a committed synthetic whose hash is locked in manifest.json.
+  // Regenerating either would clobber the committed content with different bytes.
+  console.log("Synthetic audio/video (metadata-tagged synthetics only):");
 
-  ff(
+  const audioTagsOut = join(__dirname, "audio/valid/audio-with-tags.mp3");
+  ffIfMissing(
+    audioTagsOut,
     `-f lavfi -i "sine=frequency=440:duration=1.2:sample_rate=8000" ` +
     `-c:a libmp3lame -b:a 64k -ar 8000 -ac 1 ` +
     `-metadata title="Test Song" -metadata artist="Test Artist" ` +
     `-metadata album="Test Album" -metadata date="2026" ` +
     `-metadata genre="Electronic" -metadata track="1/10" ` +
-    `-y "${join(AUDIO_VALID, "audio-with-tags.mp3")}"`,
+    `-y "${audioTagsOut}"`,
     "audio-with-tags.mp3",
   );
 
-  ff(
+  const videoMetaOut = join(__dirname, "video/valid/video-with-meta.mp4");
+  ffIfMissing(
+    videoMetaOut,
     `-f lavfi -i "color=c=0xE07832:s=64x64:d=1:rate=16" ` +
     `-c:v libx264 -pix_fmt yuv420p -movflags +faststart ` +
-    `-y "${join(VIDEO_VALID, "video-with-meta.mp4")}"`,
+    `-y "${videoMetaOut}"`,
     "video-with-meta.mp4",
   );
 
-  ff(
-    `-f lavfi -i "testsrc2=duration=30:size=640x360:rate=24" ` +
-    `-f lavfi -i "sine=frequency=440:duration=30:sample_rate=44100" ` +
-    `-c:v libx264 -pix_fmt yuv420p -preset ultrafast ` +
-    `-c:a aac -b:a 128k -ac 1 -movflags +faststart ` +
-    `-y "${join(VIDEO_VALID, "media-30s.mp4")}"`,
-    "media-30s.mp4",
-  );
-
-  ff(
-    `-f lavfi -i "sine=frequency=440:duration=30:sample_rate=44100" ` +
-    `-ac 1 -c:a pcm_s16le ` +
-    `-y "${join(AUDIO_VALID, "media-30s.wav")}"`,
-    "media-30s.wav",
-  );
-
-  console.log("\nDone. Run gen-manifest.mjs to re-stamp hashes.");
+  console.log("\nDone. Run gen-manifest.mjs to re-stamp hashes if any files were regenerated.");
 }
 
 main().catch((e) => {

@@ -73,6 +73,14 @@
       "bytes": 854
     },
     {
+      "path": "document/valid/encrypted.pdf",
+      "sourceUrl": "generate-test-fixtures.mjs (qpdf AES-256 encryption of test-3page.pdf)",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "fd34ac2a0a5149eb0906dab62950d479e38e78e21aa161737b65c2c493e763bb",
+      "bytes": 3069
+    },
+    {
       "path": "document/valid/multipage-6.pdf",
       "sourceUrl": "gen-synthetic-content.mjs",
       "license": "CC0",
@@ -89,12 +97,36 @@
       "bytes": 1049673
     },
     {
+      "path": "document/valid/test-3page.pdf",
+      "sourceUrl": "Project-generated minimal 3-page PDF test fixture",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "d3caf5c109f742a3c7e1980f88c1bef3fc5c7f57d4cc08e3322ef471c19bcdb7",
+      "bytes": 2201
+    },
+    {
       "path": "image/valid/animated-simpsons.gif",
       "sourceUrl": "gen-synthetic-content.mjs (ffmpeg testsrc, replaces copyrighted Simpsons clip)",
       "license": "CC0",
       "toolsServed": [],
       "sha256": "738a6c04c1744c32bd9889372a4754dcb2d7af84586a33c9aa67e09ada8bdeb8",
       "bytes": 193823
+    },
+    {
+      "path": "image/valid/animated.gif",
+      "sourceUrl": "Project-generated minimal animated GIF (2-frame, tiny)",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "96842e54f8aa6b34ef4923c6fe76c013aadcab4018da410008dc42eee3f2b545",
+      "bytes": 615
+    },
+    {
+      "path": "image/valid/animated.webp",
+      "sourceUrl": "Project-generated minimal animated WebP (tiny)",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "1cdbbc5423fa24eb0162beb90f454cfd75fec599563ecf9897a6fca05c8a9015",
+      "bytes": 392
     },
     {
       "path": "image/valid/barcode.avif",
@@ -233,6 +265,14 @@
       "bytes": 368937
     },
     {
+      "path": "image/valid/sample-photo.jpg",
+      "sourceUrl": "Project-generated sample JPEG photo (used as hostile-fixture source)",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "4eda0de1008fd816d1412f7380a2eec96b3bfecec1bf787ea21771b33a74c6af",
+      "bytes": 129438
+    },
+    {
       "path": "image/valid/stress-large.jpg",
       "sourceUrl": "Unknown; added in babca4cf (test coverage expansion). Samsung Galaxy S24 Ultra photo (EXIF 2026-04-11), Muay Thai event.",
       "license": "UNVERIFIED-REVIEW",
@@ -247,6 +287,78 @@
       "toolsServed": [],
       "sha256": "dae7668c0db8688e93cd7d6fedfd7f7121c3bfa563eee19e4492bc0dbfc73a0b",
       "bytes": 1426
+    },
+    {
+      "path": "image/valid/test-100x100.jpg",
+      "sourceUrl": "Project-generated minimal 100x100 JPEG test fixture (Sharp)",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "4749f4af300d0bdcee870efdb9299125a132c4770dc2aaa885d194fe58c31758",
+      "bytes": 342
+    },
+    {
+      "path": "image/valid/test-100x100.svg",
+      "sourceUrl": "Project-generated minimal 100x100 SVG test fixture",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "fb5616fc72722429294f4f23c76c8bac56bb0b2e4a4dac163d78703cd71269da",
+      "bytes": 195
+    },
+    {
+      "path": "image/valid/test-200x150.heic",
+      "sourceUrl": "Project-generated minimal 200x150 HEIC test fixture (Sharp)",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "5566100fbb0da3892ed14cbacf59c66b67e7c1279bd068145bd0abda2e97e66d",
+      "bytes": 782
+    },
+    {
+      "path": "image/valid/test-200x150.png",
+      "sourceUrl": "Project-generated minimal 200x150 PNG test fixture (Sharp)",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "a645232af22f8ffa0685cda619d25eefa8baf2fd9efe09c88f5a7825901232f8",
+      "bytes": 544
+    },
+    {
+      "path": "image/valid/test-50x50.webp",
+      "sourceUrl": "Project-generated minimal 50x50 WebP test fixture (Sharp)",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "aa6de3f8a94a0715707fb6966a7c63b52ba1ae11faf2fc2e9be9fa3171647857",
+      "bytes": 128
+    },
+    {
+      "path": "image/valid/test-portrait.heic",
+      "sourceUrl": "Project-generated minimal portrait HEIC test fixture (Sharp)",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "5566100fbb0da3892ed14cbacf59c66b67e7c1279bd068145bd0abda2e97e66d",
+      "bytes": 782
+    },
+    {
+      "path": "image/valid/test-portrait.jpg",
+      "sourceUrl": "Project-generated minimal portrait JPEG test fixture (Sharp)",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "4749f4af300d0bdcee870efdb9299125a132c4770dc2aaa885d194fe58c31758",
+      "bytes": 342
+    },
+    {
+      "path": "image/valid/test-scene.png",
+      "sourceUrl": "Project-generated scene PNG test fixture (Sharp SVG render)",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "0ec225bdcf444a305c2a5d0394e65d9a7e4119e3904f003f21c86dd4390ba8e4",
+      "bytes": 5496
+    },
+    {
+      "path": "image/valid/test-with-exif.jpg",
+      "sourceUrl": "Project-generated JPEG with synthetic EXIF GPS/camera data (Sharp)",
+      "license": "CC0",
+      "toolsServed": [],
+      "sha256": "6074b156e1c1d281fcbf43f28785adcbaed9c84234b6c98c7df16198193613ab",
+      "bytes": 758
     },
     {
       "path": "image/valid/watermark.jpg",
