@@ -21,15 +21,12 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           echo "ci-token-check-$(date -u +%Y%m%dT%H%M%S)" > /tmp/check.txt
-          hf upload deepsafe/feature-bundles /tmp/check.txt .ci-checks/upload-check.txt \
-            --repo-type model
+          hf upload deepsafe/feature-bundles /tmp/check.txt .ci-checks/upload-check.txt --repo-type model
           echo "UPLOAD_OK"
 
       - name: Verify anonymous download
         run: |
-          curl -fsSL \
-            "https://huggingface.co/deepsafe/feature-bundles/resolve/main/.ci-checks/upload-check.txt" \
-            -o /tmp/downloaded.txt
+          curl -fsSL "https://huggingface.co/deepsafe/feature-bundles/resolve/main/.ci-checks/upload-check.txt" -o /tmp/downloaded.txt
           cat /tmp/downloaded.txt
           echo "ANON_DOWNLOAD_OK"
 
@@ -38,8 +35,4 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          python3 -c "
-from huggingface_hub import HfApi
-HfApi().delete_file('.ci-checks/upload-check.txt', repo_id='deepsafe/feature-bundles', repo_type='model')
-print('CLEANUP_OK')
-" || true
+          python3 -c "from huggingface_hub import HfApi; HfApi().delete_file('.ci-checks/upload-check.txt', repo_id='deepsafe/feature-bundles', repo_type='model'); print('CLEANUP_OK')" || true
