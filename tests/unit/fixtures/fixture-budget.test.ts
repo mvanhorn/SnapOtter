@@ -25,7 +25,8 @@ function walk(dir: string): string[] {
       e.name === "index.ts" ||
       e.name === ".gitkeep" ||
       e.name.endsWith(".md") ||
-      e.name.endsWith(".json")
+      e.name.endsWith(".json") ||
+      e.name.endsWith(".mjs")
     )
       return [];
     return [full];

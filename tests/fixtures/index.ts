@@ -113,11 +113,11 @@ export function readFixture(path: string): Buffer {
 
 // Recursively collect every string-valued leaf, EXCLUDING `*hostileEmpty*` groups
 // (intentionally zero-byte) and function leaves (the `formats`/`tiny` accessors).
-export function flattenFixturePaths(node: unknown, key = ""): string[] {
+export function flattenFixturePaths(node: unknown): string[] {
   if (typeof node === "string") return [node];
   if (node && typeof node === "object") {
     return Object.entries(node).flatMap(([k, v]) =>
-      k.toLowerCase().includes("hostileempty") ? [] : flattenFixturePaths(v, k),
+      k.toLowerCase().includes("hostileempty") ? [] : flattenFixturePaths(v),
     );
   }
   return []; // functions (accessors) and other non-leaves
