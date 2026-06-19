@@ -2,13 +2,12 @@
 // Requires pandoc. Skips locally (pandoc absent on dev Macs);
 // the Docker compose smoke is the real proof.
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { pandocAvailable } from "@snapotter/doc-engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const MD = readFileSync(join(__dirname, "..", "fixtures", "documents", "tiny.md"));
+const MD = readFixture(fixtures.document.tiny("md"));
 
 let testApp: TestApp;
 let adminToken: string;

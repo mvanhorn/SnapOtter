@@ -5,16 +5,14 @@
  * (not an image). Tests verify response shape, color count, and format handling.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const WEBP = readFixture(fixtures.image.base.webp50);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -199,7 +197,7 @@ describe("Multipart error handling", () => {
 // ── HEIC input handling ─────────────────────────────────────────
 describe("HEIC input", () => {
   it("extracts palette from HEIC image", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body: payload, contentType } = makeFilePayload(HEIC, "photo.heic", "image/heic");
     const res = await app.inject({
       method: "POST",
@@ -263,7 +261,7 @@ describe("Multi-color extraction", () => {
 // ── Tiny and stress inputs ──────────────────────────────────────
 describe("Edge size inputs", () => {
   it("extracts palette from 1x1 pixel image", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body: payload, contentType } = makeFilePayload(TINY, "tiny.png", "image/png");
     const res = await app.inject({
       method: "POST",
@@ -280,7 +278,7 @@ describe("Edge size inputs", () => {
   });
 
   it("extracts palette from stress-large.jpg", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body: payload, contentType } = makeFilePayload(LARGE, "large.jpg", "image/jpeg");
     const res = await app.inject({
       method: "POST",
@@ -384,7 +382,7 @@ describe("Solid white image", () => {
 // ── HEIF input ─────────────────────────────────────────────────
 describe("HEIF input", () => {
   it("extracts palette from HEIF image", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const HEIF = readFixture(fixtures.image.motorcycle);
     const { body: payload, contentType } = makeFilePayload(HEIF, "photo.heif", "image/heif");
     const res = await app.inject({
       method: "POST",
@@ -404,7 +402,7 @@ describe("HEIF input", () => {
 // ── Animated GIF input ──────────────────────────────────────────
 describe("Animated GIF input", () => {
   it("extracts palette from animated GIF", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body: payload, contentType } = makeFilePayload(GIF, "anim.gif", "image/gif");
     const res = await app.inject({
       method: "POST",
@@ -424,7 +422,7 @@ describe("Animated GIF input", () => {
 // ── SVG input ───────────────────────────────────────────────────
 describe("SVG input", () => {
   it("extracts palette from SVG image", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body: payload, contentType } = makeFilePayload(SVG, "icon.svg", "image/svg+xml");
     const res = await app.inject({
       method: "POST",
@@ -444,7 +442,7 @@ describe("SVG input", () => {
 // ── TIFF input ─────────────────────────────────────────────────
 describe("TIFF input", () => {
   it("extracts palette from TIFF image", async () => {
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const { body: payload, contentType } = makeFilePayload(TIFF, "test.tiff", "image/tiff");
     const res = await app.inject({
       method: "POST",
@@ -465,7 +463,7 @@ describe("TIFF input", () => {
 // ── Real photo with many colors ────────────────────────────────
 describe("Real photo palette", () => {
   it("extracts palette from portrait-color.jpg", async () => {
-    const PHOTO = readFileSync(join(FIXTURES, "content", "portrait-color.jpg"));
+    const PHOTO = readFixture(fixtures.image.portrait.jpg);
     const { body: payload, contentType } = makeFilePayload(PHOTO, "photo.jpg", "image/jpeg");
     const res = await app.inject({
       method: "POST",
@@ -537,7 +535,7 @@ describe("Color count bounds", () => {
 // ── AVIF input ─────────────────────────────────────────────────
 describe("AVIF input", () => {
   it("extracts palette from AVIF image", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const { body: payload, contentType } = makeFilePayload(AVIF, "test.avif", "image/avif");
     const res = await app.inject({
       method: "POST",
@@ -576,7 +574,7 @@ describe("Filename tracking", () => {
 // ── Extracted colors are unique ────────────────────────────────
 describe("Color uniqueness", () => {
   it("returns only unique colors (no duplicates)", async () => {
-    const PHOTO = readFileSync(join(FIXTURES, "content", "portrait-color.jpg"));
+    const PHOTO = readFixture(fixtures.image.portrait.jpg);
     const { body: payload, contentType } = makeFilePayload(PHOTO, "photo.jpg", "image/jpeg");
     const res = await app.inject({
       method: "POST",
@@ -597,7 +595,7 @@ describe("Color uniqueness", () => {
 // ── SVG logo from content fixtures ────────────────────────────
 describe("SVG logo input", () => {
   it("extracts palette from svg-logo.svg", async () => {
-    const SVG_LOGO = readFileSync(join(FIXTURES, "content", "svg-logo.svg"));
+    const SVG_LOGO = readFixture(fixtures.image.svgLogo);
     const { body: payload, contentType } = makeFilePayload(SVG_LOGO, "logo.svg", "image/svg+xml");
     const res = await app.inject({
       method: "POST",
@@ -682,7 +680,7 @@ describe("No settings field", () => {
 // ── BMP input ─────────────────────────────────────────────────
 describe("BMP input", () => {
   it("extracts palette from BMP image", async () => {
-    const BMP = readFileSync(join(FIXTURES, "formats", "sample.bmp"));
+    const BMP = readFixture(fixtures.image.formats("bmp"));
     const { body: payload, contentType } = makeFilePayload(BMP, "test.bmp", "image/bmp");
     const res = await app.inject({
       method: "POST",
@@ -705,7 +703,7 @@ describe("BMP input", () => {
 // ── Portrait image palette ───────────────────────────────────
 describe("Portrait image palette", () => {
   it("extracts palette from portrait-bw.jpeg (mostly black/white)", async () => {
-    const BW = readFileSync(join(FIXTURES, "content", "portrait-bw.jpeg"));
+    const BW = readFixture(fixtures.image.portrait.bw);
     const { body: payload, contentType } = makeFilePayload(BW, "bw.jpg", "image/jpeg");
     const res = await app.inject({
       method: "POST",
@@ -726,7 +724,7 @@ describe("Portrait image palette", () => {
 // ── Cross-format chat WebP ──────────────────────────────────
 describe("Cross-format WebP input", () => {
   it("extracts palette from cross-format-chat.webp", async () => {
-    const CHAT = readFileSync(join(FIXTURES, "content", "cross-format-chat.webp"));
+    const CHAT = readFixture(fixtures.image.crossFormatChat);
     const { body: payload, contentType } = makeFilePayload(CHAT, "chat.webp", "image/webp");
     const res = await app.inject({
       method: "POST",

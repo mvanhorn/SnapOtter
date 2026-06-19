@@ -1,12 +1,11 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { qpdfAvailable } from "@snapotter/doc-engine";
 import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { db, schema } from "../../apps/api/src/db/index.js";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const PDF = readFileSync(join(__dirname, "..", "fixtures", "test-3page.pdf"));
+const PDF = readFixture(fixtures.document.pdf3);
 
 let testApp: TestApp;
 let adminToken: string;

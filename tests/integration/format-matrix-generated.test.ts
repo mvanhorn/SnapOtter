@@ -4,6 +4,7 @@ import { TOOLS } from "@snapotter/shared";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { getRegisteredToolIds, getToolConfig } from "../../apps/api/src/routes/tool-factory.js";
+import { fixtureDir } from "../fixtures/index.js";
 import { defaultSettingsFor, TOOL_SETTINGS_OVERRIDES } from "../helpers/tool-default-settings.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
@@ -18,7 +19,6 @@ import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from
  * PR runs use the core web formats; FULL_MATRIX=1 (nightly) unlocks all
  * fixtures in tests/fixtures/formats/.
  */
-const FORMATS_DIR = join(__dirname, "..", "fixtures", "formats");
 
 const CORE_FORMATS = [
   "sample.png",
@@ -30,7 +30,7 @@ const CORE_FORMATS = [
 ];
 
 const fixtureFiles = process.env.FULL_MATRIX
-  ? readdirSync(FORMATS_DIR).filter((f) => !f.startsWith("."))
+  ? readdirSync(fixtureDir.formats).filter((f) => !f.startsWith("."))
   : CORE_FORMATS;
 
 const ALLOWED_STATUSES = new Set([200, 202, 400, 413, 415, 422, 501]);
@@ -86,7 +86,7 @@ describe("tool x format matrix (generated)", () => {
     const toolId = tool.id;
     it(`${toolId} handles every input format cleanly`, async () => {
       for (const fixture of fixtureFiles) {
-        const content = readFileSync(join(FORMATS_DIR, fixture));
+        const content = readFileSync(join(fixtureDir.formats, fixture));
         const { body, contentType } = createMultipartPayload([
           { name: "file", filename: fixture, contentType: "application/octet-stream", content },
           { name: "settings", content: JSON.stringify(defaultSettingsFor(toolId)) },

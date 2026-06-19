@@ -14,14 +14,14 @@ import AdmZip from "adm-zip";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { sharedRedis } from "../../apps/api/src/jobs/connection.js";
 import { bullPrefix } from "../../apps/api/src/jobs/types.js";
+import { fixtureDir, fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
-const TINY_MP4 = readFileSync(join(FIXTURES, "media", "tiny.mp4"));
-const TINY_MOV = readFileSync(join(FIXTURES, "media", "tiny.mov"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const WEBP = readFixture(fixtures.image.base.webp50);
+const TINY_MP4 = readFixture(fixtures.video.tiny("mp4"));
+const TINY_MOV = readFixture(fixtures.video.tiny("mov"));
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -404,8 +404,6 @@ describe("Batch with default settings", () => {
 
 // ── Exotic format batch processing ─────────────────────────────
 describe("Exotic format batch processing", () => {
-  const FORMATS_DIR = join(FIXTURES, "formats");
-
   const exoticFormats = [
     { ext: "pbm", mime: "image/x-portable-bitmap" },
     { ext: "pgm", mime: "image/x-portable-graymap" },
@@ -432,7 +430,7 @@ describe("Exotic format batch processing", () => {
   const settings = JSON.stringify({ mode: "quality", quality: 50 });
 
   async function batchCompress(ext: string, mime: string) {
-    const fileBuffer = readFileSync(join(FORMATS_DIR, `sample.${ext}`));
+    const fileBuffer = readFileSync(join(fixtureDir.formats, `sample.${ext}`));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: `sample.${ext}`, contentType: mime, content: fileBuffer },
       { name: "settings", content: settings },
@@ -462,9 +460,9 @@ describe("Exotic format batch processing", () => {
   }
 
   it("processes mixed exotic formats (PBM + TIFF + QOI) in one batch", async () => {
-    const pbm = readFileSync(join(FORMATS_DIR, "sample.pbm"));
-    const tiff = readFileSync(join(FORMATS_DIR, "sample.tiff"));
-    const qoi = readFileSync(join(FORMATS_DIR, "sample.qoi"));
+    const pbm = readFixture(fixtures.image.formats("pbm"));
+    const tiff = readFixture(fixtures.image.formats("tiff"));
+    const qoi = readFixture(fixtures.image.formats("qoi"));
 
     const { body, contentType } = createMultipartPayload([
       {

@@ -1,10 +1,9 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const JSON_FIXTURE = readFileSync(join(__dirname, "..", "fixtures", "data", "tiny.json"));
-const XML_FIXTURE = readFileSync(join(__dirname, "..", "fixtures", "data", "tiny.xml"));
+const JSON_FIXTURE = readFixture(fixtures.data.json);
+const XML_FIXTURE = readFixture(fixtures.data.xml);
 
 let testApp: TestApp;
 let adminToken: string;

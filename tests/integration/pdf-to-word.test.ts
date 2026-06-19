@@ -3,13 +3,12 @@
 // the Task 13 Docker compose smoke is the real proof. Uses the 202+poll
 // pattern because pdf-to-word has executionHint "long".
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { pythonWith } from "../helpers/python-gate.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const PDF = readFileSync(join(__dirname, "..", "fixtures", "test-3page.pdf"));
+const PDF = readFixture(fixtures.document.pdf3);
 const hasPdf2docx = pythonWith("pdf2docx");
 
 let testApp: TestApp;

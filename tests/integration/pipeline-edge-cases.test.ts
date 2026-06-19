@@ -5,18 +5,16 @@
  * single steps, invalid tools, conflicting steps, and multi-step chains.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { ffmpegAvailable } from "@snapotter/media-engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
 // ---------------------------------------------------------------------------
 // Fixtures
 // ---------------------------------------------------------------------------
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG_200x150 = readFileSync(join(FIXTURES, "test-200x150.png"));
-const TINY_MP4 = readFileSync(join(FIXTURES, "media", "tiny.mp4"));
+const PNG_200x150 = readFixture(fixtures.image.base.png200);
+const TINY_MP4 = readFixture(fixtures.video.tiny("mp4"));
 
 // ---------------------------------------------------------------------------
 // Shared state

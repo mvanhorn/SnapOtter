@@ -20,9 +20,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtureDir, fixtures } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
-
-const FORMATS_DIR = join(__dirname, "..", "fixtures", "formats");
 
 // ---------------------------------------------------------------------------
 // Format sample definitions (matches format-matrix.test.ts)
@@ -405,7 +404,7 @@ beforeAll(async () => {
   adminToken = await loginAsAdmin(app);
 
   // Use sample.png as the mask for erase-object
-  const maskPath = join(FORMATS_DIR, "sample.png");
+  const maskPath = fixtures.image.formats("png");
   maskBuffer = readFileSync(maskPath);
 }, 30_000);
 
@@ -419,7 +418,7 @@ afterAll(async () => {
 describe("AI tool cross-format matrix", () => {
   for (const fmt of FORMAT_SAMPLES) {
     describe(`${fmt.name} input (${fmt.file})`, () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
 
       for (const tool of AI_TOOLS) {
         const perTestTimeout = fmt.needsHeifDecoder || fmt.needsCliDecoder ? 180_000 : undefined;
@@ -546,7 +545,7 @@ describe("Missing file returns 400", () => {
 describe("Unauthenticated requests return 401", () => {
   for (const tool of AI_TOOLS) {
     it(`${tool.label}: no auth -> 401`, async () => {
-      const fixturePath = join(FORMATS_DIR, "sample.png");
+      const fixturePath = fixtures.image.formats("png");
       if (!existsSync(fixturePath)) return;
 
       const buffer = readFileSync(fixturePath);
@@ -585,7 +584,7 @@ describe("Invalid settings return 400", () => {
 
   for (const tool of TOOLS_WITH_INVALID_SETTINGS) {
     it(`${tool.label}: invalid settings -> 400`, async () => {
-      const fixturePath = join(FORMATS_DIR, "sample.png");
+      const fixturePath = fixtures.image.formats("png");
       if (!existsSync(fixturePath)) return;
 
       const buffer = readFileSync(fixturePath);
@@ -649,7 +648,7 @@ describe("Invalid settings return 400", () => {
 // ---------------------------------------------------------------------------
 describe("Erase-object missing mask returns 400", () => {
   it("erase-object without mask file -> 400 or 501", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.png");
+    const fixturePath = fixtures.image.formats("png");
     if (!existsSync(fixturePath)) return;
 
     const buffer = readFileSync(fixturePath);
@@ -686,7 +685,7 @@ describe("Erase-object missing mask returns 400", () => {
 // ---------------------------------------------------------------------------
 describe("Content-aware-resize without dimensions returns 400", () => {
   it("content-aware-resize without width/height/square -> 400", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.png");
+    const fixturePath = fixtures.image.formats("png");
     if (!existsSync(fixturePath)) return;
 
     const buffer = readFileSync(fixturePath);
@@ -732,7 +731,7 @@ describe("Malformed JSON settings return 400", () => {
 
   for (const tool of REPRESENTATIVE_TOOLS) {
     it(`${tool.label}: malformed JSON settings -> 400 or 501`, async () => {
-      const fixturePath = join(FORMATS_DIR, "sample.png");
+      const fixturePath = fixtures.image.formats("png");
       if (!existsSync(fixturePath)) return;
 
       const buffer = readFileSync(fixturePath);

@@ -1,11 +1,12 @@
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { ffmpegAvailable, probeMedia } from "@snapotter/media-engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const TONE_GAP = readFileSync(join(__dirname, "..", "fixtures", "media", "tone-gap.wav"));
+const TONE_GAP = readFixture(fixtures.audio.gap);
 
 let testApp: TestApp;
 let adminToken: string;

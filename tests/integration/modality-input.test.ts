@@ -8,33 +8,34 @@ import { afterAll, describe, expect, it } from "vitest";
 import { InputValidationError } from "../../apps/api/src/modality/contract.js";
 import { DocumentInputHandler } from "../../apps/api/src/modality/document-input.js";
 import { MediaInputHandler } from "../../apps/api/src/modality/media-input.js";
+import { fixtures, readFixture } from "../fixtures/index.js";
 
 const scratchDir = mkdtempSync(join(tmpdir(), "modality-input-"));
 afterAll(() => rmSync(scratchDir, { recursive: true, force: true }));
 
 describe.skipIf(!ffmpegAvailable())("MediaInputHandler (requires ffmpeg)", () => {
   it("accepts the mp4 fixture as video", async () => {
-    const buf = await readFile(join(process.cwd(), "tests/fixtures/media/tiny.mp4"));
+    const buf = readFixture(fixtures.video.tiny("mp4"));
     const out = await new MediaInputHandler("video").prepare(buf, "tiny.mp4", { scratchDir });
     expect(out.buffer).toBe(buf);
   });
 
   it("rejects an audio-only file as video", async () => {
-    const buf = await readFile(join(process.cwd(), "tests/fixtures/media/tiny.mp3"));
+    const buf = readFixture(fixtures.audio.tiny("mp3"));
     await expect(
       new MediaInputHandler("video").prepare(buf, "fake.mp4", { scratchDir }),
     ).rejects.toThrow(InputValidationError);
   });
 
   it("rejects a still image presented as video", async () => {
-    const buf = await readFile(join(process.cwd(), "tests/fixtures/test-1x1.png"));
+    const buf = readFixture(fixtures.image.edge.px1);
     await expect(
       new MediaInputHandler("video").prepare(buf, "fake.mp4", { scratchDir }),
     ).rejects.toThrow(/still image/i);
   });
 
   it("accepts a real video despite short duration", async () => {
-    const buf = await readFile(join(process.cwd(), "tests/fixtures/media/tiny.mp4"));
+    const buf = readFixture(fixtures.video.tiny("mp4"));
     const out = await new MediaInputHandler("video").prepare(buf, "tiny.mp4", { scratchDir });
     expect(out.filename).toBe("tiny.mp4");
   });
@@ -44,7 +45,7 @@ describe.skipIf(!ffmpegAvailable())("MediaInputHandler (requires ffmpeg)", () =>
     const original = env.MAX_AUDIO_DURATION_S;
     (env as Record<string, unknown>).MAX_AUDIO_DURATION_S = 0.5;
     try {
-      const buf = await readFile(join(process.cwd(), "tests/fixtures/media/tiny.mp3"));
+      const buf = readFixture(fixtures.audio.tiny("mp3"));
       await expect(
         new MediaInputHandler("audio").prepare(buf, "tiny.mp3", { scratchDir }),
       ).rejects.toThrow(/exceeds the maximum/);
@@ -62,7 +63,7 @@ describe("DocumentInputHandler", () => {
   });
 
   it.skipIf(!qpdfAvailable())("accepts the 3-page fixture and enforces page caps", async () => {
-    const buf = await readFile(join(process.cwd(), "tests/fixtures/test-3page.pdf"));
+    const buf = readFixture(fixtures.document.pdf3);
     const out = await new DocumentInputHandler().prepare(buf, "test.pdf", { scratchDir });
     expect(out.buffer).toBe(buf);
     const { env } = await import("../../apps/api/src/config.js");
@@ -78,13 +79,13 @@ describe("DocumentInputHandler", () => {
   });
 
   it.skipIf(!qpdfAvailable())("accepts a password-protected pdf (unlock-pdf's input)", async () => {
-    const buf = await readFile(join(process.cwd(), "tests/fixtures/documents/encrypted.pdf"));
+    const buf = readFixture(fixtures.document.encrypted);
     const out = await new DocumentInputHandler().prepare(buf, "encrypted.pdf", { scratchDir });
     expect(out.filename).toBe("encrypted.pdf");
   });
 
   it.skipIf(!qpdfAvailable())("rejects a truncated PDF under strict mode", async () => {
-    const full = await readFile(join(process.cwd(), "tests/fixtures/test-3page.pdf"));
+    const full = readFixture(fixtures.document.pdf3);
     const truncated = full.subarray(0, Math.floor(full.length * 0.6));
     await expect(
       new DocumentInputHandler().prepare(truncated, "broken.pdf", { scratchDir }),
@@ -92,7 +93,7 @@ describe("DocumentInputHandler", () => {
   });
 
   it.skipIf(!qpdfAvailable())("accepts a truncated PDF under lenient mode", async () => {
-    const full = await readFile(join(process.cwd(), "tests/fixtures/test-3page.pdf"));
+    const full = readFixture(fixtures.document.pdf3);
     const truncated = full.subarray(0, Math.floor(full.length * 0.6));
     const out = await new DocumentInputHandler().prepare(truncated, "broken.pdf", {
       scratchDir,
@@ -103,7 +104,7 @@ describe("DocumentInputHandler", () => {
   });
 
   it("accepts the docx fixture container", async () => {
-    const buf = await readFile(join(process.cwd(), "tests/fixtures/documents/tiny.docx"));
+    const buf = readFixture(fixtures.document.tiny("docx"));
     const out = await new DocumentInputHandler().prepare(buf, "tiny.docx", { scratchDir });
     expect(out.buffer).toBe(buf);
   });

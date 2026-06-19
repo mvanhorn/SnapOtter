@@ -1,11 +1,11 @@
-import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { qpdfAvailable, qpdfPageCount } from "@snapotter/doc-engine";
 import AdmZip from "adm-zip";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const PDF = readFileSync(join(__dirname, "..", "fixtures", "test-3page.pdf"));
+const PDF = readFixture(fixtures.document.pdf3);
 
 let testApp: TestApp;
 let adminToken: string;

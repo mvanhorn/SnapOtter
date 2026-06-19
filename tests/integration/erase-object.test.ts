@@ -6,17 +6,15 @@
  * 501 (feature not installed). Validation paths are always testable.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
-const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+const PNG = readFixture(fixtures.image.base.png200);
+const HEIC = readFixture(fixtures.image.base.heic200);
+const TINY = readFixture(fixtures.image.edge.px1);
 // Use the same PNG as a mask (any valid image works for test purposes)
-const MASK = readFileSync(join(FIXTURES, "test-200x150.png"));
+const MASK = readFixture(fixtures.image.base.png200);
 
 let testApp: TestApp;
 let app: TestApp["app"];

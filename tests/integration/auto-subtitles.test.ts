@@ -8,13 +8,12 @@
  */
 
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtureDir, fixtures } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const MEDIA = join(FIXTURES, "media");
-const MP4 = readFileSync(join(MEDIA, "tiny.mp4"));
+const MEDIA = fixtureDir.media;
+const MP4 = readFileSync(fixtures.video.tiny("mp4"));
 
 let testApp: TestApp;
 let app: TestApp["app"];

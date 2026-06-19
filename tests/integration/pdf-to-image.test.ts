@@ -1,11 +1,9 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PDF_3PAGE = readFileSync(join(FIXTURES, "test-3page.pdf"));
+const PDF_3PAGE = readFixture(fixtures.document.pdf3);
 
 let testApp: TestApp;
 let app: TestApp["app"];

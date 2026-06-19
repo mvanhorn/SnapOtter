@@ -9,6 +9,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtureDir, fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
 function isAsyncFallback(res: { statusCode: number; body: string }): boolean {
@@ -18,8 +19,6 @@ function isAsyncFallback(res: { statusCode: number; body: string }): boolean {
   expect(body.jobId).toBeDefined();
   return true;
 }
-
-const FORMATS_DIR = join(__dirname, "..", "fixtures", "formats");
 
 describe("New format support", () => {
   let testApp: TestApp;
@@ -43,7 +42,7 @@ describe("New format support", () => {
 
   for (const format of NEW_OUTPUT_FORMATS) {
     it(`converts PNG to ${format}`, async () => {
-      const fileBuffer = readFileSync(join(FORMATS_DIR, "sample.png"));
+      const fileBuffer = readFixture(fixtures.image.formats("png"));
       const { body, contentType } = createMultipartPayload([
         {
           name: "file",
@@ -82,7 +81,7 @@ describe("New format support", () => {
   // SVGZ input decoding
   // ---------------------------------------------------------------------------
   it("decodes SVGZ input correctly", async () => {
-    const fileBuffer = readFileSync(join(FORMATS_DIR, "sample.svgz"));
+    const fileBuffer = readFixture(fixtures.image.formats("svgz"));
     const { body, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -118,7 +117,7 @@ describe("New format support", () => {
   // JXL quality affects file size
   // ---------------------------------------------------------------------------
   it("JXL quality affects file size", async () => {
-    const fileBuffer = readFileSync(join(FORMATS_DIR, "sample.png"));
+    const fileBuffer = readFixture(fixtures.image.formats("png"));
 
     const convert = async (quality: number) => {
       const { body, contentType } = createMultipartPayload([
@@ -183,7 +182,7 @@ describe("New format support", () => {
         if (inLower === outFmt || (inLower === "jpeg" && outFmt === "jpg")) continue;
         const testTimeout = outFmt === "avif" ? 120_000 : 60_000;
         it(`converts ${input.name} to ${outFmt}`, { timeout: testTimeout }, async () => {
-          const fileBuffer = readFileSync(join(FORMATS_DIR, input.file));
+          const fileBuffer = readFileSync(join(fixtureDir.formats, input.file));
           const { body, contentType } = createMultipartPayload([
             { name: "file", filename: input.file, contentType: input.mime, content: fileBuffer },
             { name: "settings", content: JSON.stringify({ format: outFmt, quality: 80 }) },
@@ -223,7 +222,7 @@ describe("New format support", () => {
     ];
     for (const fmt of NEW_INPUT_FORMATS) {
       it(`resizes ${fmt.name} input to 25x25`, async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
         const fileBuffer = readFileSync(fixturePath);
         const { body, contentType } = createMultipartPayload([
@@ -257,7 +256,7 @@ describe("New format support", () => {
     ];
     for (const fmt of PREVIEW_FORMATS) {
       it(`generates preview for ${fmt.name}`, async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
         const fileBuffer = readFileSync(fixturePath);
         const { body, contentType } = createMultipartPayload([

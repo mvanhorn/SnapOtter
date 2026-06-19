@@ -5,15 +5,13 @@
  * that validates SVG input separately from the standard image validation.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
+const SVG = readFixture(fixtures.image.base.svg100);
+const PNG = readFixture(fixtures.image.base.png200);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -397,7 +395,7 @@ describe("svg-to-raster", () => {
   });
 
   it("converts a complex SVG with gradients and filters", async () => {
-    const COMPLEX_SVG = readFileSync(join(FIXTURES, "content", "svg-logo.svg"));
+    const COMPLEX_SVG = readFixture(fixtures.image.svgLogo);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "logo.svg", contentType: "image/svg+xml", content: COMPLEX_SVG },
       { name: "settings", content: JSON.stringify({ width: 800 }) },
@@ -417,7 +415,7 @@ describe("svg-to-raster", () => {
   });
 
   it("converts a QR code SVG (complex path)", async () => {
-    const QR_SVG = readFileSync(join(FIXTURES, "content", "qr-code.svg"));
+    const QR_SVG = readFixture(fixtures.image.code.qrSvg);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "qr.svg", contentType: "image/svg+xml", content: QR_SVG },
       { name: "settings", content: JSON.stringify({ outputFormat: "png", dpi: 300 }) },
@@ -642,7 +640,7 @@ describe("svg-to-raster", () => {
     });
 
     it("batch converts complex SVGs to webp format", async () => {
-      const COMPLEX_SVG = readFileSync(join(FIXTURES, "content", "svg-logo.svg"));
+      const COMPLEX_SVG = readFixture(fixtures.image.svgLogo);
       const { body, contentType } = createMultipartPayload([
         { name: "file", filename: "logo.svg", contentType: "image/svg+xml", content: COMPLEX_SVG },
         { name: "file", filename: "simple.svg", contentType: "image/svg+xml", content: SVG },
@@ -1134,7 +1132,7 @@ describe("svg-to-raster", () => {
   // ── SVGZ (compressed SVG) input ──────────────────────────────────
 
   it("converts a SVGZ (compressed SVG) to PNG", async () => {
-    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const SVGZ = readFixture(fixtures.image.formats("svgz"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "icon.svgz", contentType: "image/svg+xml", content: SVGZ },
       { name: "settings", content: JSON.stringify({ outputFormat: "png" }) },
@@ -1262,7 +1260,7 @@ describe("svg-to-raster", () => {
   // ── Batch with SVGZ input ────────────────────────────────────────
 
   it("batch converts SVGZ files to PNG", async () => {
-    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const SVGZ = readFixture(fixtures.image.formats("svgz"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.svgz", contentType: "image/svg+xml", content: SVGZ },
       { name: "file", filename: "b.svg", contentType: "image/svg+xml", content: SVG },

@@ -6,15 +6,13 @@
  * and "watermark" for the overlay image.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const SMALL_PNG = readFileSync(join(FIXTURES, "test-1x1.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+const PNG = readFixture(fixtures.image.base.png200);
+const SMALL_PNG = readFixture(fixtures.image.edge.px1);
+const JPG = readFixture(fixtures.image.base.jpg100);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -234,7 +232,7 @@ describe("watermark-image", () => {
   // ── HEIC input handling ───────────────────────────────────────────
 
   it("processes HEIC main image", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
       { name: "watermark", filename: "wm.png", contentType: "image/png", content: SMALL_PNG },
@@ -278,7 +276,7 @@ describe("watermark-image", () => {
   // ── Stress: large file ────────────────────────────────────────────
 
   it("processes stress-large.jpg as main image", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
       { name: "watermark", filename: "wm.jpg", contentType: "image/jpeg", content: JPG },
@@ -382,7 +380,7 @@ describe("watermark-image", () => {
   // ── HEIC watermark image ─────────────────────────────────────────
 
   it("processes HEIC watermark image", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "main.png", contentType: "image/png", content: PNG },
       { name: "watermark", filename: "wm.heic", contentType: "image/heic", content: HEIC },
@@ -489,7 +487,7 @@ describe("watermark-image", () => {
     "processes HEIF main image (motorcycle.heif)",
     { timeout: 120_000 },
     async () => {
-      const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+      const HEIF = readFixture(fixtures.image.motorcycle);
       const { body, contentType } = createMultipartPayload([
         { name: "file", filename: "photo.heif", contentType: "image/heif", content: HEIF },
         { name: "watermark", filename: "wm.png", contentType: "image/png", content: SMALL_PNG },
@@ -514,7 +512,7 @@ describe("watermark-image", () => {
   // ── Animated GIF input ──────────────────────────────────────────
 
   it("processes animated GIF main image", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
       { name: "watermark", filename: "wm.png", contentType: "image/png", content: SMALL_PNG },
@@ -536,7 +534,7 @@ describe("watermark-image", () => {
   // ── SVG main image input ──────────────────────────────────────────
 
   it("processes SVG main image with watermark", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "icon.svg", contentType: "image/svg+xml", content: SVG },
       { name: "watermark", filename: "wm.png", contentType: "image/png", content: SMALL_PNG },
@@ -587,7 +585,7 @@ describe("watermark-image", () => {
   // ── TIFF watermark image ────────────────────────────────────────
 
   it("processes TIFF format watermark image", async () => {
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "main.png", contentType: "image/png", content: PNG },
       { name: "watermark", filename: "wm.tiff", contentType: "image/tiff", content: TIFF },
@@ -669,7 +667,7 @@ describe("watermark-image", () => {
   // ── WebP watermark image ─────────────────────────────────────────
 
   it("processes WebP watermark image", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "main.png", contentType: "image/png", content: PNG },
       { name: "watermark", filename: "wm.webp", contentType: "image/webp", content: WEBP },
@@ -710,7 +708,7 @@ describe("watermark-image", () => {
   // ── SVG watermark image ─────────────────────────────────────────
 
   it("processes SVG watermark image", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "main.png", contentType: "image/png", content: PNG },
       { name: "watermark", filename: "wm.svg", contentType: "image/svg+xml", content: SVG },
@@ -757,7 +755,7 @@ describe("watermark-image", () => {
   // ── AVIF watermark image ──────────────────────────────────────
 
   it("processes AVIF watermark image", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "main.png", contentType: "image/png", content: PNG },
       { name: "watermark", filename: "wm.avif", contentType: "image/avif", content: AVIF },

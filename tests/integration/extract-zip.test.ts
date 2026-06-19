@@ -5,10 +5,11 @@ import { join } from "node:path";
 import AdmZip from "adm-zip";
 import archiver from "archiver";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const CSV_A = readFileSync(join(__dirname, "..", "fixtures", "data", "tiny-a.csv"));
-const CSV_B = readFileSync(join(__dirname, "..", "fixtures", "data", "tiny-b.csv"));
+const CSV_A = readFixture(fixtures.data.csvA);
+const CSV_B = readFixture(fixtures.data.csvB);
 
 let testApp: TestApp;
 let adminToken: string;

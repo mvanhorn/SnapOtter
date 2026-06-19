@@ -5,13 +5,10 @@
  * plus the metadata endpoint. Uses a real Fastify server with in-memory SQLite.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
-
-const FIXTURES = join(__dirname, "..", "fixtures");
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -22,7 +19,7 @@ beforeAll(async () => {
   testApp = await buildTestApp();
   app = testApp.app;
   adminToken = await loginAsAdmin(app);
-  animatedGif = readFileSync(join(FIXTURES, "animated.gif"));
+  animatedGif = readFixture(fixtures.image.animated.gif);
 }, 30_000);
 
 afterAll(async () => {
@@ -75,7 +72,7 @@ describe("POST /api/v1/tools/gif-tools/info", () => {
   });
 
   it("returns pages=1 for a static image", async () => {
-    const png = readFileSync(join(FIXTURES, "test-200x150.png"));
+    const png = readFixture(fixtures.image.base.png200);
     const { body: payload, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -431,7 +428,7 @@ describe("Rotate mode", () => {
   });
 
   it("rotates a static image (single frame)", async () => {
-    const png = readFileSync(join(FIXTURES, "test-200x150.png"));
+    const png = readFixture(fixtures.image.base.png200);
     const gifBuf = await sharp(png).gif().toBuffer();
     const { body: payload, contentType } = makePayload(
       { mode: "rotate", angle: 90 },
@@ -477,7 +474,7 @@ describe("Reverse mode with speed adjustment", () => {
   });
 
   it("reverses a single-frame GIF gracefully", async () => {
-    const png = readFileSync(join(FIXTURES, "test-200x150.png"));
+    const png = readFixture(fixtures.image.base.png200);
     const singleFrameGif = await sharp(png).gif().toBuffer();
     const { body: payload, contentType } = makePayload(
       { mode: "reverse" },
@@ -959,7 +956,7 @@ describe("Extract format edge cases", () => {
 // ── Content animated GIF ────────────────────────────────────────
 describe("Content animated GIF (animated-simpsons.gif)", () => {
   it("resizes a larger animated GIF", async () => {
-    const contentGif = readFileSync(join(FIXTURES, "content", "animated-simpsons.gif"));
+    const contentGif = readFixture(fixtures.image.animated.real);
     const { body: payload, contentType } = makePayload(
       { mode: "resize", width: 50 },
       contentGif,
@@ -982,7 +979,7 @@ describe("Content animated GIF (animated-simpsons.gif)", () => {
   });
 
   it("metadata endpoint returns correct info for content GIF", async () => {
-    const contentGif = readFileSync(join(FIXTURES, "content", "animated-simpsons.gif"));
+    const contentGif = readFixture(fixtures.image.animated.real);
     const { body: payload, contentType } = createMultipartPayload([
       { name: "file", filename: "simpsons.gif", contentType: "image/gif", content: contentGif },
     ]);

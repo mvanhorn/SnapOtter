@@ -7,11 +7,10 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import AdmZip from "adm-zip";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
 /** Check if ImageMagick is available on this system. */
@@ -31,8 +30,7 @@ function checkMagickAvailable(): boolean {
 
 const HAS_MAGICK = checkMagickAvailable();
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
+const PNG = readFixture(fixtures.image.base.png200);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -184,7 +182,7 @@ describe("favicon", () => {
 
   // ── Additional coverage: SVG input ─────────────────────────────
   it("generates favicons from SVG input", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "logo.svg", contentType: "image/svg+xml", content: SVG },
     ]);
@@ -214,7 +212,7 @@ describe("favicon", () => {
         name: "file",
         filename: "logo.jpg",
         contentType: "image/jpeg",
-        content: readFileSync(join(FIXTURES, "test-100x100.jpg")),
+        content: readFixture(fixtures.image.base.jpg100),
       },
     ]);
 
@@ -239,7 +237,7 @@ describe("favicon", () => {
         name: "file",
         filename: "logo.webp",
         contentType: "image/webp",
-        content: readFileSync(join(FIXTURES, "test-50x50.webp")),
+        content: readFixture(fixtures.image.base.webp50),
       },
     ]);
 
@@ -259,7 +257,7 @@ describe("favicon", () => {
 
   // ── Additional coverage: HEIC input ────────────────────────────
   it("generates favicons from HEIC input", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
     ]);
@@ -434,7 +432,7 @@ describe("favicon", () => {
   // ── Tiny 1x1 input ───────────────────────────────────────────────
 
   it("generates favicons from a 1x1 pixel image", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "tiny.png", contentType: "image/png", content: TINY },
     ]);
@@ -463,7 +461,7 @@ describe("favicon", () => {
   // ── Large stress file ─────────────────────────────────────────────
 
   it("generates favicons from stress-large.jpg", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
     ]);
@@ -485,7 +483,7 @@ describe("favicon", () => {
   // ── Portrait HEIC input ───────────────────────────────────────────
 
   it("generates favicons from portrait HEIC", { timeout: 120_000 }, async () => {
-    const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
+    const HEIC_PORTRAIT = readFixture(fixtures.image.portraitHeic);
     const { body, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -598,8 +596,8 @@ describe("favicon", () => {
   // ── Three images produce three subfolders ────────────────────────
 
   it("generates favicons for 3 images in subfolders", async () => {
-    const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const JPG = readFixture(fixtures.image.base.jpg100);
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "brand1.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "brand2.jpg", contentType: "image/jpeg", content: JPG },
@@ -644,7 +642,7 @@ describe("favicon", () => {
   // ── TIFF input format ─────────────────────────────────────────────
 
   it("generates favicons from TIFF input", async () => {
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "logo.tiff", contentType: "image/tiff", content: TIFF },
     ]);
@@ -667,7 +665,7 @@ describe("favicon", () => {
   // ── AVIF input format ───────────────────────────────────────────
 
   it("generates favicons from AVIF input", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "logo.avif", contentType: "image/avif", content: AVIF },
     ]);
@@ -746,7 +744,7 @@ describe("favicon", () => {
   // ── Animated GIF input ────────────────────────────────────────────
 
   it("generates favicons from animated GIF input", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
     ]);
@@ -768,9 +766,9 @@ describe("favicon", () => {
   // ── Batch: 5+ images ────────────────────────────────────────────
 
   it("generates favicons for 5 images in subfolders", async () => {
-    const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const JPG = readFixture(fixtures.image.base.jpg100);
+    const WEBP = readFixture(fixtures.image.base.webp50);
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -799,7 +797,7 @@ describe("favicon", () => {
   // ── HEIF format input ────────────────────────────────────────────
 
   it("generates favicons from HEIF input", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const HEIF = readFixture(fixtures.image.motorcycle);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heif", contentType: "image/heif", content: HEIF },
     ]);
@@ -928,7 +926,7 @@ describe("favicon", () => {
   // ── Favicon from stress-large.jpg verifies 512x512 is square ───
 
   it("512x512 chrome icon is square from large rectangular input", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
     ]);
@@ -952,7 +950,7 @@ describe("favicon", () => {
   // ── GIF with settings combination ───────────────────────────────
 
   it("generates favicons from GIF with empty settings", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
       { name: "settings", content: JSON.stringify({}) },

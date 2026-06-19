@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { TOOLS } from "@snapotter/shared";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { TOOL_DISPLAY_MODES } from "../../apps/web/src/lib/tool-display-modes.js";
+import { fixtureDir } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
 /**
@@ -13,7 +14,6 @@ import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from
  *
  * Fixtures come from scripts/generate-hostile-fixtures.mjs (committed).
  */
-const HOSTILE_DIR = join(__dirname, "..", "fixtures", "hostile");
 
 /** Fixtures that are unreadable garbage: the server must NOT report success. */
 const GARBAGE_FIXTURES = ["truncated.jpg", "zero-byte.png", "garbage.jpg", "bomb-50000x50000.png"];
@@ -55,7 +55,7 @@ describe("hostile input matrix", () => {
   }, 10_000);
 
   async function postFile(toolId: string, fixtureName: string) {
-    const content = readFileSync(join(HOSTILE_DIR, fixtureName));
+    const content = readFileSync(join(fixtureDir.hostile, fixtureName));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: fixtureName, contentType: "application/octet-stream", content },
       { name: "settings", content: "{}" },

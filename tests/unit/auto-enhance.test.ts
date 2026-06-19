@@ -1,11 +1,9 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { analyzeImage, applyCorrections, scaleCorrections } from "@snapotter/image-engine";
 import sharp from "sharp";
 import { describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG_200x150 = readFileSync(join(FIXTURES, "test-200x150.png"));
+const PNG_200x150 = readFixture(fixtures.image.base.png200);
 
 describe("analyzeImage", () => {
   it("returns scores, corrections, issues, and suggestedMode", async () => {

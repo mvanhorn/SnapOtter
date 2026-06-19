@@ -2,14 +2,13 @@
 // Requires WeasyPrint (Python). Skips locally (weasyprint absent on dev Macs);
 // the Docker compose smoke is the real end-to-end proof.
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { pythonWith } from "../helpers/python-gate.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const HTML = readFileSync(join(__dirname, "..", "fixtures", "documents", "tiny.html"));
-const REMOTE_HTML = readFileSync(join(__dirname, "..", "fixtures", "documents", "remote-img.html"));
+const HTML = readFixture(fixtures.document.tiny("html"));
+const REMOTE_HTML = readFixture(fixtures.document.remoteImgHtml);
 
 const hasWeasyprint = pythonWith("weasyprint");
 

@@ -1,14 +1,15 @@
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { ffmpegAvailable, probeMedia } from "@snapotter/media-engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const MP4 = readFileSync(join(__dirname, "..", "fixtures", "media", "tiny.mp4"));
-const SRT = readFileSync(join(__dirname, "..", "fixtures", "media", "tiny.srt"));
-const VTT = readFileSync(join(__dirname, "..", "fixtures", "media", "tiny.vtt"));
-const PNG = readFileSync(join(__dirname, "..", "fixtures", "test-200x150.png"));
+const MP4 = readFixture(fixtures.video.tiny("mp4"));
+const SRT = readFixture(fixtures.video.subs.srt);
+const VTT = readFixture(fixtures.video.subs.vtt);
+const PNG = readFixture(fixtures.image.base.png200);
 
 let testApp: TestApp;
 let adminToken: string;

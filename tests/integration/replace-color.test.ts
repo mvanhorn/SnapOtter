@@ -6,15 +6,13 @@
  * and verifies pixel-level changes.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -262,7 +260,7 @@ describe("Alpha format fallback", () => {
 // ── HEIC input handling ─────────────────────────────────────────
 describe("HEIC input", () => {
   it("processes HEIC image", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const res = await postTool(
       { sourceColor: "#808080", targetColor: "#FF0000", tolerance: 50 },
       HEIC,
@@ -278,7 +276,7 @@ describe("HEIC input", () => {
 // ── WebP input ──────────────────────────────────────────────────
 describe("WebP input", () => {
   it("processes WebP image", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const res = await postTool(
       { sourceColor: "#808080", targetColor: "#00FF00", tolerance: 40 },
       WEBP,
@@ -294,7 +292,7 @@ describe("WebP input", () => {
 // ── Edge size inputs ────────────────────────────────────────────
 describe("Edge size inputs", () => {
   it("processes 1x1 pixel image", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const res = await postTool(
       { sourceColor: "#000000", targetColor: "#FFFFFF", tolerance: 255 },
       TINY,
@@ -307,7 +305,7 @@ describe("Edge size inputs", () => {
   });
 
   it("processes stress-large.jpg", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const res = await postTool(
       { sourceColor: "#808080", targetColor: "#FF0000", tolerance: 30 },
       LARGE,
@@ -361,7 +359,7 @@ describe("Dimension preservation", () => {
 // ── makeTransparent on WebP (alpha-capable, no forced PNG) ──────
 describe("WebP with makeTransparent", () => {
   it("keeps WebP when makeTransparent is used on WebP input", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const res = await postTool(
       { sourceColor: "#808080", makeTransparent: true, tolerance: 100 },
       WEBP,
@@ -427,7 +425,7 @@ describe("HEIF input", () => {
     "processes HEIF image (motorcycle.heif)",
     { timeout: 120_000 },
     async () => {
-      const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+      const HEIF = readFixture(fixtures.image.motorcycle);
       const res = await postTool(
         { sourceColor: "#808080", targetColor: "#FF0000", tolerance: 50 },
         HEIF,
@@ -445,7 +443,7 @@ describe("HEIF input", () => {
 // ── Animated GIF input ─────────────────────────────────────────
 describe("Animated GIF input", () => {
   it("processes animated GIF", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const res = await postTool(
       { sourceColor: "#808080", targetColor: "#00FF00", tolerance: 60 },
       GIF,
@@ -475,7 +473,7 @@ describe("Same source and target", () => {
 // ── TIFF input ─────────────────────────────────────────────────
 describe("TIFF input", () => {
   it("processes TIFF image", async () => {
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const res = await postTool(
       { sourceColor: "#808080", targetColor: "#00FF00", tolerance: 50 },
       TIFF,
@@ -491,7 +489,7 @@ describe("TIFF input", () => {
 // ── BMP input ──────────────────────────────────────────────────
 describe("BMP input", () => {
   it("processes BMP image", async () => {
-    const BMP = readFileSync(join(FIXTURES, "formats", "sample.bmp"));
+    const BMP = readFixture(fixtures.image.formats("bmp"));
     const res = await postTool(
       { sourceColor: "#808080", targetColor: "#FF00FF", tolerance: 40 },
       BMP,
@@ -551,7 +549,7 @@ describe("Short hex color validation", () => {
 // ── SVG input ──────────────────────────────────────────────────
 describe("SVG input", () => {
   it("processes SVG image", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const res = await postTool(
       { sourceColor: "#000000", targetColor: "#FF0000", tolerance: 30 },
       SVG,
@@ -593,7 +591,7 @@ describe("Explicit makeTransparent false", () => {
 // ── makeTransparent on HEIC input ─────────────────────────────
 describe("makeTransparent on HEIC", () => {
   it("makes pixels transparent in a HEIC image", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const res = await postTool(
       { sourceColor: "#808080", makeTransparent: true, tolerance: 100 },
       HEIC,
@@ -691,7 +689,7 @@ describe("makeTransparent ignores targetColor", () => {
 // ── AVIF input ─────────────────────────────────────────────────
 describe("AVIF input", () => {
   it("processes AVIF image with color replacement", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const res = await postTool(
       { sourceColor: "#808080", targetColor: "#FF0000", tolerance: 50 },
       AVIF,

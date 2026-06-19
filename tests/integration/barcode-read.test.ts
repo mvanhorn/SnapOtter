@@ -8,14 +8,12 @@
  * it back with barcode-read, guaranteeing a clean, machine-readable input.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PLAIN_PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
+const PLAIN_PNG = readFixture(fixtures.image.base.png200);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -199,7 +197,7 @@ describe("Barcode Read", () => {
     // AVIF fixtures may or may not contain machine-readable barcodes depending
     // on image quality. This test verifies the route handles AVIF input without
     // errors regardless of detection outcome.
-    const avifBarcode = readFileSync(join(FIXTURES, "content", "barcode.avif"));
+    const avifBarcode = readFixture(fixtures.image.code.barcodeAvif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "barcode.avif", contentType: "image/avif", content: avifBarcode },
     ]);
@@ -350,7 +348,7 @@ describe("Barcode Read", () => {
   });
 
   it("reads QR code from AVIF content fixture", async () => {
-    const qrAvif = readFileSync(join(FIXTURES, "content", "qr-code.avif"));
+    const qrAvif = readFixture(fixtures.image.code.qrAvif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "qr-code.avif", contentType: "image/avif", content: qrAvif },
     ]);
@@ -461,7 +459,7 @@ describe("Barcode Read", () => {
   });
 
   it("handles a 1x1 pixel image gracefully", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "tiny.png", contentType: "image/png", content: TINY },
     ]);
@@ -485,7 +483,7 @@ describe("Barcode Read", () => {
   // ── Branch coverage: HEIC input (lines 49-152, ensureSharpCompat) ───
 
   it("reads barcodes from a HEIC image", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
     ]);
@@ -534,7 +532,7 @@ describe("Barcode Read", () => {
   // ── Branch coverage: large image handling ───────────────────────────
 
   it("reads barcodes from a large stress image", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
     ]);
@@ -582,7 +580,7 @@ describe("Barcode Read", () => {
   // ── Branch coverage: portrait HEIC (with exif orientation) ──────────
 
   it("reads barcodes from portrait HEIC image", { timeout: 120_000 }, async () => {
-    const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
+    const HEIC_PORTRAIT = readFixture(fixtures.image.portraitHeic);
     const { body, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -656,7 +654,7 @@ describe("Barcode Read", () => {
   // ── Branch coverage: blank image → no barcodes found (line 229) ─────
 
   it("handles a blank white image gracefully", async () => {
-    const BLANK = readFileSync(join(FIXTURES, "test-blank.png"));
+    const BLANK = readFixture(fixtures.image.edge.blank);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "blank.png", contentType: "image/png", content: BLANK },
     ]);
@@ -683,7 +681,7 @@ describe("Barcode Read", () => {
   it("reads barcodes from portrait HEIC image (additional format)", {
     timeout: 120_000,
   }, async () => {
-    const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
+    const HEIC_PORTRAIT = readFixture(fixtures.image.portraitHeic);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo2.heic", contentType: "image/heic", content: HEIC_PORTRAIT },
     ]);
@@ -732,7 +730,7 @@ describe("Barcode Read", () => {
   // ── Branch coverage: EXIF-oriented input ───────────────────────────
 
   it("reads barcodes from EXIF-oriented image", async () => {
-    const EXIF = readFileSync(join(FIXTURES, "test-with-exif.jpg"));
+    const EXIF = readFixture(fixtures.image.exifGps);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "exif.jpg", contentType: "image/jpeg", content: EXIF },
     ]);
@@ -781,7 +779,7 @@ describe("Barcode Read", () => {
   // ── Branch coverage: portrait image with no barcode ────────────────
 
   it("handles portrait JPEG with no barcodes", async () => {
-    const PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.jpg"));
+    const PORTRAIT = readFixture(fixtures.image.portraitJpg);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "portrait.jpg", contentType: "image/jpeg", content: PORTRAIT },
     ]);
@@ -832,7 +830,7 @@ describe("Barcode Read", () => {
   // ── HEIF format input ─────────────────────────────────────────────
 
   it("reads barcodes from a HEIF image", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const HEIF = readFixture(fixtures.image.motorcycle);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heif", contentType: "image/heif", content: HEIF },
     ]);
@@ -856,7 +854,7 @@ describe("Barcode Read", () => {
   // ── Animated GIF input ────────────────────────────────────────────
 
   it("reads barcodes from an animated GIF", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
     ]);
@@ -880,7 +878,7 @@ describe("Barcode Read", () => {
   // ── SVG input ─────────────────────────────────────────────────────
 
   it("reads barcodes from an SVG image", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "icon.svg", contentType: "image/svg+xml", content: SVG },
     ]);
@@ -1017,7 +1015,7 @@ describe("Barcode Read", () => {
   // ── SVGZ format input ────────────────────────────────────────────
 
   it("reads barcodes from a SVGZ input image", async () => {
-    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const SVGZ = readFixture(fixtures.image.formats("svgz"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "icon.svgz", contentType: "image/svg+xml", content: SVGZ },
     ]);

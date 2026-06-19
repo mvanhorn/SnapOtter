@@ -5,13 +5,12 @@
  * the factory (route registration, file collection, per-file prepare,
  * inputRefs on the durable row, and the too-many-files rejection).
  */
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { TOOLS } from "@snapotter/shared";
 import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { db, schema } from "../../apps/api/src/db/index.js";
 import { createToolRoute } from "../../apps/api/src/routes/tool-factory.js";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import {
   buildTestApp,
   createMultipartPayload,
@@ -20,10 +19,10 @@ import {
   type TestApp,
 } from "./test-server.js";
 
-const PNG = readFileSync(join(__dirname, "..", "fixtures", "test-1x1.png"));
-const PNG_A = readFileSync(join(__dirname, "..", "fixtures", "test-1x1.png"));
-const PNG_B = readFileSync(join(__dirname, "..", "fixtures", "test-200x150.png"));
-const PNG_C = readFileSync(join(__dirname, "..", "fixtures", "test-blank.png"));
+const PNG = readFixture(fixtures.image.edge.px1);
+const PNG_A = readFixture(fixtures.image.edge.px1);
+const PNG_B = readFixture(fixtures.image.base.png200);
+const PNG_C = readFixture(fixtures.image.edge.blank);
 
 // Minimal schema stand-in that satisfies the factory's safeParse call
 // without pulling in a zod dependency at the test root.

@@ -1,11 +1,10 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { TOOLS } from "@snapotter/shared";
 import fc from "fast-check";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { z } from "zod";
 import { ZodFastCheck } from "zod-fast-check";
 import { getToolConfig } from "../../apps/api/src/routes/tool-factory.js";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { collectRegexStringSchemas } from "../helpers/zod-pict.js";
 import { buildTestApp, type TestApp } from "./test-server.js";
 
@@ -28,7 +27,7 @@ describe.skipIf(!FUZZ)("settings fuzz (property-based)", () => {
 
   beforeAll(async () => {
     testApp = await buildTestApp();
-    inputPng = readFileSync(join(__dirname, "..", "fixtures", "test-200x150.png"));
+    inputPng = readFixture(fixtures.image.base.png200);
   }, 30_000);
 
   afterAll(async () => {

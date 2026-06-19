@@ -1,9 +1,8 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const YAML = readFileSync(join(__dirname, "..", "fixtures", "data", "tiny.yaml"));
+const YAML = readFixture(fixtures.data.yaml);
 
 let testApp: TestApp;
 let adminToken: string;

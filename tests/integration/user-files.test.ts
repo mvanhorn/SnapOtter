@@ -5,17 +5,15 @@
  * bulk delete, save-result versioning, search, and pagination.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const _WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
-const TINY_PNG = readFileSync(join(FIXTURES, "test-1x1.png"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const _WEBP = readFixture(fixtures.image.base.webp50);
+const TINY_PNG = readFixture(fixtures.image.edge.px1);
 
 let testApp: TestApp;
 let app: TestApp["app"];

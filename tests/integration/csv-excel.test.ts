@@ -1,12 +1,11 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import AdmZip from "adm-zip";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const CSV = readFileSync(join(__dirname, "..", "fixtures", "data", "tiny.csv"));
-const TSV = readFileSync(join(__dirname, "..", "fixtures", "data", "tiny.tsv"));
-const XLSX_FIXTURE = readFileSync(join(__dirname, "..", "fixtures", "documents", "tiny.xlsx"));
+const CSV = readFixture(fixtures.data.csv);
+const TSV = readFixture(fixtures.data.tsv);
+const XLSX_FIXTURE = readFixture(fixtures.document.tiny("xlsx"));
 
 let testApp: TestApp;
 let adminToken: string;

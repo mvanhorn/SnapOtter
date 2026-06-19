@@ -5,19 +5,17 @@
  * placeholders, custom start index, ZIP response format, and input validation.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import AdmZip from "adm-zip";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
-const TINY_PNG = readFileSync(join(FIXTURES, "test-1x1.png"));
-const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
-const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const WEBP = readFixture(fixtures.image.base.webp50);
+const TINY_PNG = readFixture(fixtures.image.edge.px1);
+const SVG = readFixture(fixtures.image.base.svg100);
+const GIF = readFixture(fixtures.image.animated.gif);
 
 /** Extract sorted filenames from a ZIP buffer. */
 function zipEntryNames(buf: Buffer): string[] {
@@ -573,7 +571,7 @@ describe("Bulk Rename", () => {
   // ── HEIC file handling in rename ────────────────────────────────
 
   it("renames HEIC files preserving extension", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
       { name: "settings", content: JSON.stringify({ pattern: "renamed-{{index}}" }) },
@@ -621,7 +619,7 @@ describe("Bulk Rename", () => {
   // ── HEIF file handling ─────────────────────────────────────────
 
   it("renames HEIF files preserving extension", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "formats", "sample.heif"));
+    const HEIF = readFixture(fixtures.image.formats("heif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heif", contentType: "image/heif", content: HEIF },
       { name: "settings", content: JSON.stringify({ pattern: "renamed-{{index}}" }) },
@@ -645,7 +643,7 @@ describe("Bulk Rename", () => {
   // ── Large file handling ────────────────────────────────────────
 
   it("renames a large stress image preserving content", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "big.jpg", contentType: "image/jpeg", content: LARGE },
       { name: "settings", content: JSON.stringify({ pattern: "large-{{index}}" }) },
@@ -743,7 +741,7 @@ describe("Bulk Rename", () => {
   // ── Mixed format batch (5+ files) ─────────────────────────────
 
   it("renames a batch of 5+ mixed format files", async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -919,7 +917,7 @@ describe("Bulk Rename", () => {
   // ── Large file content integrity ──────────────────────────────
 
   it("preserves content integrity for large file", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "big.jpg", contentType: "image/jpeg", content: LARGE },
       { name: "settings", content: JSON.stringify({ pattern: "verify-{{index}}" }) },
@@ -1116,8 +1114,8 @@ describe("Bulk Rename", () => {
   // ── Content verification for batch of 5+ files ──────────────
 
   it("batch of 6 files preserves all content and extensions", async () => {
-    const _HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
-    const _LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const _HEIC = readFixture(fixtures.image.base.heic200);
+    const _LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },

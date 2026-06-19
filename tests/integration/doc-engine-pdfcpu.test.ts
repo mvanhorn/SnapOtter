@@ -10,8 +10,9 @@ import {
   pdfcpuTextStamp,
 } from "@snapotter/doc-engine";
 import { describe, expect, it } from "vitest";
+import { fixtures } from "../fixtures/index.js";
 
-const PDF = join(process.cwd(), "tests/fixtures/test-3page.pdf");
+const PDF = fixtures.document.pdf3;
 
 // --- Gated integration tests: skip when pdfcpu is not installed locally ---
 describe.skipIf(!pdfcpuAvailable())("doc-engine pdfcpu (requires pdfcpu binary)", () => {

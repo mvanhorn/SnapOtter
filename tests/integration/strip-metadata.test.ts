@@ -6,15 +6,13 @@
  * metadata is actually removed from the output.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const EXIF_JPG = readFileSync(join(FIXTURES, "test-with-exif.jpg"));
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
+const EXIF_JPG = readFixture(fixtures.image.exifGps);
+const PNG = readFixture(fixtures.image.base.png200);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -339,7 +337,7 @@ describe("Selective stripping with download verification", () => {
 // ── WebP input ──────────────────────────────────────────────────
 describe("WebP format handling", () => {
   it("processes WebP input and strips metadata", async () => {
-    const webp = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const webp = readFixture(fixtures.image.base.webp50);
     const res = await postTool({ stripAll: true }, webp, "test.webp", "image/webp");
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
@@ -518,7 +516,7 @@ describe("Inspect endpoint: ICC and XMP parsing", () => {
   });
 
   it("inspect returns empty metadata for image without any metadata", async () => {
-    const blankPng = readFileSync(join(FIXTURES, "test-blank.png"));
+    const blankPng = readFixture(fixtures.image.edge.blank);
     const { body: payload, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -599,7 +597,7 @@ describe("Inspect endpoint: ICC and XMP parsing", () => {
 // ── HEIC format handling ────────────────────────────────────────
 describe("HEIC format handling", () => {
   it("strips metadata from HEIC input", { timeout: 120_000 }, async () => {
-    const heic = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const heic = readFixture(fixtures.image.base.heic200);
     const res = await postTool({ stripAll: true }, heic, "test.heic", "image/heic");
     // HEIC decode may not be available
     expect([200, 422]).toContain(res.statusCode);
@@ -611,7 +609,7 @@ describe("HEIC format handling", () => {
   });
 
   it("strips selective metadata from HEIC input", { timeout: 120_000 }, async () => {
-    const heic = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const heic = readFixture(fixtures.image.base.heic200);
     const res = await postTool(
       { stripAll: false, stripExif: true, stripGps: true },
       heic,
@@ -629,7 +627,7 @@ describe("HEIC format handling", () => {
 // ── Large file handling ────────────────────────────────────────
 describe("Large file handling", () => {
   it("strips metadata from a large stress image", async () => {
-    const large = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const large = readFixture(fixtures.image.stressLarge);
     const res = await postTool({ stripAll: true }, large, "stress-large.jpg", "image/jpeg");
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
@@ -641,7 +639,7 @@ describe("Large file handling", () => {
 // ── Tiny file handling ─────────────────────────────────────────
 describe("Tiny file handling", () => {
   it("strips metadata from a 1x1 pixel image", async () => {
-    const tiny = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const tiny = readFixture(fixtures.image.edge.px1);
     const res = await postTool({ stripAll: true }, tiny, "tiny.png", "image/png");
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
@@ -650,7 +648,7 @@ describe("Tiny file handling", () => {
   });
 
   it("inspects a 1x1 pixel image", async () => {
-    const tiny = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const tiny = readFixture(fixtures.image.edge.px1);
     const { body: payload, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -678,7 +676,7 @@ describe("Tiny file handling", () => {
 // ── AVIF fixture re-encoding ─────────────────────────────────────
 describe("AVIF fixture re-encoding", () => {
   it("re-encodes real AVIF fixture after stripping", async () => {
-    const avifFixture = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const avifFixture = readFixture(fixtures.image.formats("avif"));
     const res = await postTool({ stripAll: true }, avifFixture, "sample.avif", "image/avif");
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
@@ -696,7 +694,7 @@ describe("AVIF fixture re-encoding", () => {
   });
 
   it("selectively strips EXIF from AVIF fixture", async () => {
-    const avifFixture = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const avifFixture = readFixture(fixtures.image.formats("avif"));
     const res = await postTool(
       { stripAll: false, stripExif: true },
       avifFixture,

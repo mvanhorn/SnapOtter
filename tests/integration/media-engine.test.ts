@@ -3,8 +3,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { ffmpegAvailable, probeMedia, runFfmpeg } from "@snapotter/media-engine";
 import { describe, expect, it } from "vitest";
+import { fixtures } from "../fixtures/index.js";
 
-const FIXTURE = join(process.cwd(), "tests/fixtures/media/tiny.mp4");
+const FIXTURE = fixtures.video.tiny("mp4");
 
 describe.skipIf(!ffmpegAvailable())("media-engine (requires ffmpeg)", () => {
   it("probes the mp4 fixture with caps", async () => {

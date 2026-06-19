@@ -20,10 +20,8 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtureDir, fixtures } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
-
-const FORMATS_DIR = join(__dirname, "..", "fixtures", "formats");
-const FIXTURES_DIR = join(__dirname, "..", "fixtures");
 
 // ---------------------------------------------------------------------------
 // Format definitions
@@ -209,7 +207,7 @@ describe("Format auto-detection with wrong extensions", () => {
   describe("info tool detects correct format regardless of extension", () => {
     for (const tc of WRONG_EXTENSION_CASES) {
       it(tc.label, async () => {
-        const fixturePath = join(FORMATS_DIR, tc.file);
+        const fixturePath = join(fixtureDir.formats, tc.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -233,7 +231,7 @@ describe("Format auto-detection with wrong extensions", () => {
   describe("resize tool processes files despite wrong extension", () => {
     for (const tc of WRONG_EXTENSION_CASES) {
       it(tc.label, async () => {
-        const fixturePath = join(FORMATS_DIR, tc.file);
+        const fixturePath = join(fixtureDir.formats, tc.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -256,7 +254,7 @@ describe("Format auto-detection with wrong extensions", () => {
   describe("convert tool processes files despite wrong extension", () => {
     for (const tc of WRONG_EXTENSION_CASES) {
       it(tc.label, async () => {
-        const fixturePath = join(FORMATS_DIR, tc.file);
+        const fixturePath = join(fixtureDir.formats, tc.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -286,7 +284,7 @@ describe("Exotic format output conversion matrix", () => {
     describe(`${fmt.name} input`, () => {
       for (const outFmt of ALL_OUTPUT_FORMATS) {
         it(`-> ${outFmt}`, async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath)) return;
 
           const buffer = readFileSync(fixturePath);
@@ -315,7 +313,7 @@ describe("Exotic format output conversion matrix", () => {
       // Also test extended output formats (may need encoders)
       for (const outFmt of EXTENDED_OUTPUT_FORMATS) {
         it(`-> ${outFmt} (extended)`, async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath)) return;
 
           const buffer = readFileSync(fixturePath);
@@ -350,7 +348,7 @@ describe("Core format to extended output format matrix", () => {
 
     for (const outFmt of EXTENDED_OUTPUT_FORMATS) {
       it(`${fmt.name} -> ${outFmt}`, async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -386,7 +384,7 @@ describe("Exotic format deep-dive: DNG", () => {
   };
 
   it("resize with percentage", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("resize", fmt.file, fmt.mime, buffer, { percentage: 25 });
@@ -394,7 +392,7 @@ describe("Exotic format deep-dive: DNG", () => {
   }, 180_000);
 
   it("rotate 270 degrees", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("rotate", fmt.file, fmt.mime, buffer, { angle: 270 });
@@ -402,7 +400,7 @@ describe("Exotic format deep-dive: DNG", () => {
   }, 180_000);
 
   it("color palette extraction", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("color-palette", fmt.file, fmt.mime, buffer, {});
@@ -416,7 +414,7 @@ describe("Exotic format deep-dive: DNG", () => {
   }, 180_000);
 
   it("image to base64", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("image-to-base64", fmt.file, fmt.mime, buffer, {});
@@ -432,7 +430,7 @@ describe("Exotic format deep-dive: DNG", () => {
   }, 180_000);
 
   it("optimize for web as webp", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("optimize-for-web", fmt.file, fmt.mime, buffer, {
@@ -452,7 +450,7 @@ describe("Exotic format deep-dive: EXR", () => {
   };
 
   it("color adjustments - brightness and contrast", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("adjust-colors", fmt.file, fmt.mime, buffer, {
@@ -464,7 +462,7 @@ describe("Exotic format deep-dive: EXR", () => {
   }, 180_000);
 
   it("border with thick border", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("border", fmt.file, fmt.mime, buffer, {
@@ -475,7 +473,7 @@ describe("Exotic format deep-dive: EXR", () => {
   }, 180_000);
 
   it("text overlay", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("text-overlay", fmt.file, fmt.mime, buffer, {
@@ -487,7 +485,7 @@ describe("Exotic format deep-dive: EXR", () => {
   }, 180_000);
 
   it("replace color", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("replace-color", fmt.file, fmt.mime, buffer, {
@@ -508,7 +506,7 @@ describe("Exotic format deep-dive: HDR", () => {
   };
 
   it("sharpening with unsharp-mask", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("sharpening", fmt.file, fmt.mime, buffer, {
@@ -518,7 +516,7 @@ describe("Exotic format deep-dive: HDR", () => {
   }, 180_000);
 
   it("crop region", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("crop", fmt.file, fmt.mime, buffer, {
@@ -531,7 +529,7 @@ describe("Exotic format deep-dive: HDR", () => {
   }, 180_000);
 
   it("watermark text overlay", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("watermark-text", fmt.file, fmt.mime, buffer, {
@@ -543,7 +541,7 @@ describe("Exotic format deep-dive: HDR", () => {
   }, 180_000);
 
   it("compress quality 30", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("compress", fmt.file, fmt.mime, buffer, {
@@ -563,7 +561,7 @@ describe("Exotic format deep-dive: JXL", () => {
   };
 
   it("resize to exact dimensions", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("resize", fmt.file, fmt.mime, buffer, {
@@ -575,7 +573,7 @@ describe("Exotic format deep-dive: JXL", () => {
   }, 180_000);
 
   it("image enhancement in low-light mode", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("image-enhancement", fmt.file, fmt.mime, buffer, {
@@ -586,7 +584,7 @@ describe("Exotic format deep-dive: JXL", () => {
   }, 300_000);
 
   it("strip all metadata", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("strip-metadata", fmt.file, fmt.mime, buffer, {
@@ -605,7 +603,7 @@ describe("Exotic format deep-dive: PSD", () => {
   };
 
   it("resize with contain fit", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("resize", fmt.file, fmt.mime, buffer, {
@@ -617,7 +615,7 @@ describe("Exotic format deep-dive: PSD", () => {
   }, 180_000);
 
   it("rotate 180", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("rotate", fmt.file, fmt.mime, buffer, { angle: 180 });
@@ -625,7 +623,7 @@ describe("Exotic format deep-dive: PSD", () => {
   }, 180_000);
 
   it("color-blindness deuteranopia simulation", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("color-blindness", fmt.file, fmt.mime, buffer, {
@@ -635,7 +633,7 @@ describe("Exotic format deep-dive: PSD", () => {
   }, 180_000);
 
   it("beautify with solid background", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("beautify", fmt.file, fmt.mime, buffer, {
@@ -648,7 +646,7 @@ describe("Exotic format deep-dive: PSD", () => {
   }, 180_000);
 
   it("vectorize in bw mode", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("vectorize", fmt.file, fmt.mime, buffer, {
@@ -672,7 +670,7 @@ describe("Exotic format deep-dive: TGA", () => {
   };
 
   it("convert to multiple formats", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
 
@@ -689,7 +687,7 @@ describe("Exotic format deep-dive: TGA", () => {
   }, 180_000);
 
   it("meme generator", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("meme-generator", fmt.file, fmt.mime, buffer, {
@@ -703,7 +701,7 @@ describe("Exotic format deep-dive: TGA", () => {
   }, 180_000);
 
   it("adjust colors with saturation", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("adjust-colors", fmt.file, fmt.mime, buffer, {
@@ -723,7 +721,7 @@ describe("Exotic format deep-dive: APNG", () => {
   };
 
   it("resize preserves output", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("resize", fmt.file, fmt.mime, buffer, {
@@ -739,7 +737,7 @@ describe("Exotic format deep-dive: APNG", () => {
   });
 
   it("info extraction", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("info", fmt.file, fmt.mime, buffer, {});
@@ -751,7 +749,7 @@ describe("Exotic format deep-dive: APNG", () => {
   });
 
   it("convert to gif", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("convert", fmt.file, fmt.mime, buffer, { format: "gif" });
@@ -762,7 +760,7 @@ describe("Exotic format deep-dive: APNG", () => {
   });
 
   it("convert to webp", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("convert", fmt.file, fmt.mime, buffer, { format: "webp" });
@@ -773,7 +771,7 @@ describe("Exotic format deep-dive: APNG", () => {
   });
 
   it("border and color adjustments", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
 
@@ -797,7 +795,7 @@ describe("Exotic format deep-dive: APNG", () => {
   });
 
   it("sharpening and compress", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
 
@@ -823,7 +821,7 @@ describe("Exotic format deep-dive: QOI", () => {
   };
 
   it("info extraction", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("info", fmt.file, fmt.mime, buffer, {});
@@ -836,7 +834,7 @@ describe("Exotic format deep-dive: QOI", () => {
   }, 180_000);
 
   it("resize and verify output with Sharp", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("resize", fmt.file, fmt.mime, buffer, {
@@ -866,7 +864,7 @@ describe("Exotic format deep-dive: QOI", () => {
   }, 180_000);
 
   it("convert to png and verify", async () => {
-    const fixturePath = join(FORMATS_DIR, fmt.file);
+    const fixturePath = join(fixtureDir.formats, fmt.file);
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("convert", fmt.file, fmt.mime, buffer, { format: "png" });
@@ -897,7 +895,7 @@ describe("Exotic format deep-dive: QOI", () => {
 // =========================================================================
 describe("Output verification with Sharp", () => {
   it("resize JPEG to 64x48 produces correct dimensions", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.jpg");
+    const fixturePath = fixtures.image.formats("jpg");
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("resize", "sample.jpg", "image/jpeg", buffer, {
@@ -922,7 +920,7 @@ describe("Output verification with Sharp", () => {
   });
 
   it("convert PNG to WebP produces valid WebP output", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.png");
+    const fixturePath = fixtures.image.formats("png");
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
     const res = await callToolWithFile("convert", "sample.png", "image/png", buffer, {
@@ -946,7 +944,7 @@ describe("Output verification with Sharp", () => {
   });
 
   it("rotate WebP 90 degrees swaps width and height", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.webp");
+    const fixturePath = fixtures.image.formats("webp");
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
 
@@ -979,7 +977,7 @@ describe("Output verification with Sharp", () => {
   });
 
   it("border on PNG adds pixels to dimensions", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.png");
+    const fixturePath = fixtures.image.formats("png");
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
 
@@ -1013,7 +1011,7 @@ describe("Output verification with Sharp", () => {
   });
 
   it("crop AVIF produces exact requested dimensions", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.avif");
+    const fixturePath = fixtures.image.formats("avif");
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
 
@@ -1040,7 +1038,7 @@ describe("Output verification with Sharp", () => {
   });
 
   it("convert GIF to TIFF produces valid TIFF", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.gif");
+    const fixturePath = fixtures.image.formats("gif");
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
 
@@ -1063,7 +1061,7 @@ describe("Output verification with Sharp", () => {
   });
 
   it("convert AVIF to JPEG produces valid JPEG", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.avif");
+    const fixturePath = fixtures.image.formats("avif");
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
 
@@ -1094,7 +1092,7 @@ describe("Output verification with Sharp", () => {
 // =========================================================================
 describe("Chained operations on exotic formats", () => {
   it("APNG -> resize -> convert to jpg -> compress", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.apng");
+    const fixturePath = fixtures.image.formats("apng");
     if (!existsSync(fixturePath)) return;
     const buffer = readFileSync(fixturePath);
 
@@ -1157,7 +1155,7 @@ describe("Chained operations on exotic formats", () => {
 // =========================================================================
 describe("Edge cases: corrupt and truncated files", () => {
   it("truncated JPEG (first 100 bytes)", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.jpg");
+    const fixturePath = fixtures.image.formats("jpg");
     if (!existsSync(fixturePath)) return;
     const fullBuffer = readFileSync(fixturePath);
     const truncated = fullBuffer.subarray(0, 100);
@@ -1177,7 +1175,7 @@ describe("Edge cases: corrupt and truncated files", () => {
   });
 
   it("truncated PNG (first 50 bytes)", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.png");
+    const fixturePath = fixtures.image.formats("png");
     if (!existsSync(fixturePath)) return;
     const fullBuffer = readFileSync(fixturePath);
     const truncated = fullBuffer.subarray(0, 50);
@@ -1241,11 +1239,11 @@ describe("Edge cases: corrupt and truncated files", () => {
 // stitch, collage, compare.
 // =========================================================================
 describe("Exotic formats with multi-file tools", () => {
-  const PNG_PATH = join(FORMATS_DIR, "sample.png");
+  const PNG_PATH = fixtures.image.formats("png");
 
   for (const fmt of EXOTIC_FORMATS) {
     it(`compose: ${fmt.name} base + PNG overlay`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
       const baseBuffer = readFileSync(fixturePath);
@@ -1278,7 +1276,7 @@ describe("Exotic formats with multi-file tools", () => {
 
   for (const fmt of EXOTIC_FORMATS) {
     it(`stitch: ${fmt.name} + PNG vertically`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
       const fmtBuffer = readFileSync(fixturePath);
@@ -1306,7 +1304,7 @@ describe("Exotic formats with multi-file tools", () => {
 
   for (const fmt of EXOTIC_FORMATS) {
     it(`collage: ${fmt.name} + PNG in 2-image layout`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
       const fmtBuffer = readFileSync(fixturePath);
@@ -1362,7 +1360,7 @@ describe("Additional uncommon format fixtures", () => {
     describe(`${fmt.name}`, () => {
       for (const tool of TOOLS_TO_TEST) {
         it(`${tool.id}`, async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath)) return;
           const buffer = readFileSync(fixturePath);
           const res = await callToolWithFile(tool.id, fmt.file, fmt.mime, buffer, tool.settings);
@@ -1394,7 +1392,7 @@ describe("Additional uncommon format fixtures", () => {
 // with very small images.
 // =========================================================================
 describe("Tiny file (1x1 pixel) edge cases", () => {
-  const tinyPath = join(FIXTURES_DIR, "test-1x1.png");
+  const tinyPath = fixtures.image.edge.px1;
 
   it("resize 1x1 to 100x100", async () => {
     if (!existsSync(tinyPath)) return;

@@ -7,15 +7,12 @@
  * network calls entirely.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+const JPG = readFixture(fixtures.image.base.jpg100);
+const TIFF = readFixture(fixtures.image.formats("tiff"));
 
 let testApp: TestApp;
 let app: TestApp["app"];

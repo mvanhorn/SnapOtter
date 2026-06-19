@@ -6,14 +6,12 @@
  * threshold, path mode, and more.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const SMALL_PNG = readFileSync(join(FIXTURES, "test-1x1.png"));
+const PNG = readFixture(fixtures.image.base.png200);
+const SMALL_PNG = readFixture(fixtures.image.edge.px1);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -303,7 +301,7 @@ describe("vectorize", () => {
   });
 
   it("processes a JPEG input file", async () => {
-    const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+    const JPG = readFixture(fixtures.image.base.jpg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.jpg", contentType: "image/jpeg", content: JPG },
       { name: "settings", content: JSON.stringify({}) },
@@ -391,7 +389,7 @@ describe("vectorize", () => {
   });
 
   it("works with HEIC input after decoding", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.heic", contentType: "image/heic", content: HEIC },
       { name: "settings", content: JSON.stringify({}) },
@@ -480,7 +478,7 @@ describe("vectorize", () => {
         name: "file",
         filename: "test.webp",
         contentType: "image/webp",
-        content: readFileSync(join(FIXTURES, "test-50x50.webp")),
+        content: readFixture(fixtures.image.base.webp50),
       },
       { name: "settings", content: JSON.stringify({}) },
     ]);
@@ -500,7 +498,7 @@ describe("vectorize", () => {
   // ── Large file handling ───────────────────────────────────────
 
   it("vectorizes a large stress image in bw mode", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
       { name: "settings", content: JSON.stringify({ colorMode: "bw" }) },
@@ -703,7 +701,7 @@ describe("vectorize", () => {
   // ── HEIF input ───────────────────────────────────────────────
 
   it("works with HEIF (sample.heif) input after decoding", { timeout: 180_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "formats", "sample.heif"));
+    const HEIF = readFixture(fixtures.image.formats("heif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "sample.heif", contentType: "image/heif", content: HEIF },
       { name: "settings", content: JSON.stringify({}) },
@@ -727,7 +725,7 @@ describe("vectorize", () => {
   // ── SVG input ────────────────────────────────────────────────
 
   it("vectorizes SVG input (re-traces after rasterization)", async () => {
-    const SVG_BUF = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG_BUF = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.svg", contentType: "image/svg+xml", content: SVG_BUF },
       { name: "settings", content: JSON.stringify({ colorMode: "bw" }) },
@@ -751,7 +749,7 @@ describe("vectorize", () => {
   // ── Animated GIF input ───────────────────────────────────────
 
   it("vectorizes animated GIF input", async () => {
-    const GIF_BUF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF_BUF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "animated.gif", contentType: "image/gif", content: GIF_BUF },
       { name: "settings", content: JSON.stringify({ colorMode: "bw" }) },
@@ -1049,7 +1047,7 @@ describe("vectorize", () => {
   // ── Large file in color mode ──────────────────────────────────
 
   it("vectorizes large stress image in color mode", { timeout: 180_000 }, async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
       {
@@ -1210,7 +1208,7 @@ describe("vectorize", () => {
   // ── Portrait image vectorization ─────────────────────────────
 
   it("vectorizes portrait image in bw mode", async () => {
-    const PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.jpg"));
+    const PORTRAIT = readFixture(fixtures.image.portraitJpg);
     const { body, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -1235,7 +1233,7 @@ describe("vectorize", () => {
   });
 
   it("vectorizes portrait image in color mode", async () => {
-    const PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.jpg"));
+    const PORTRAIT = readFixture(fixtures.image.portraitJpg);
     const { body, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -1337,7 +1335,7 @@ describe("vectorize", () => {
   // ── Blank image vectorization ────────────────────────────────
 
   it("vectorizes a blank (single-color) image", async () => {
-    const BLANK = readFileSync(join(FIXTURES, "test-blank.png"));
+    const BLANK = readFixture(fixtures.image.edge.blank);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "blank.png", contentType: "image/png", content: BLANK },
       { name: "settings", content: JSON.stringify({ colorMode: "bw" }) },
@@ -1359,7 +1357,7 @@ describe("vectorize", () => {
   // ── Content image vectorization ──────────────────────────────
 
   it("vectorizes content/portrait-color.jpg in color mode", async () => {
-    const PORTRAIT_COLOR = readFileSync(join(FIXTURES, "content", "portrait-color.jpg"));
+    const PORTRAIT_COLOR = readFixture(fixtures.image.portrait.jpg);
     const { body, contentType } = createMultipartPayload([
       {
         name: "file",

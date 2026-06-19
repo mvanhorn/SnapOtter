@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { extname, join } from "node:path";
 import { TOOL_BUNDLE_MAP, TOOLS } from "@snapotter/shared";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtureDir } from "../fixtures/index.js";
 import { defaultSettingsFor } from "../helpers/tool-default-settings.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
@@ -22,10 +23,9 @@ import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from
  */
 
 // ── Fixture directories ──────────────────────────────────────────
-const FIXTURES_ROOT = join(__dirname, "..", "fixtures");
-const MEDIA_DIR = join(FIXTURES_ROOT, "media");
-const DOCUMENTS_DIR = join(FIXTURES_ROOT, "documents");
-const DATA_DIR = join(FIXTURES_ROOT, "data");
+const MEDIA_DIR = fixtureDir.media;
+const DOCUMENTS_DIR = fixtureDir.documents;
+const DATA_DIR = fixtureDir.data;
 
 // ── Build a global map: extension -> list of { dir, filename } ──
 interface FixtureFile {

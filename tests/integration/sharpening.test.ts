@@ -5,16 +5,14 @@
  * custom parameters, denoise option, and format support.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const WEBP = readFixture(fixtures.image.base.webp50);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -248,7 +246,7 @@ describe("Error handling", () => {
 // ── HEIC input handling ─────────────────────────────────────────
 describe("HEIC input", () => {
   it("processes HEIC image with adaptive sharpening", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const res = await postTool({ method: "adaptive" }, HEIC, "photo.heic", "image/heic");
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
@@ -259,13 +257,13 @@ describe("HEIC input", () => {
 // ── Edge size inputs ────────────────────────────────────────────
 describe("Edge size inputs", () => {
   it("processes 1x1 pixel image", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const res = await postTool({ method: "adaptive" }, TINY, "tiny.png", "image/png");
     expect(res.statusCode).toBe(200);
   });
 
   it("processes stress-large.jpg", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const res = await postTool(
       { method: "unsharp-mask", amount: 150 },
       LARGE,
@@ -431,7 +429,7 @@ describe("Denoise off", () => {
 // ── HEIC with unsharp-mask method ──────────────────────────────
 describe("HEIC with different methods", () => {
   it("processes HEIC with unsharp-mask", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const res = await postTool(
       { method: "unsharp-mask", amount: 200 },
       HEIC,
@@ -442,7 +440,7 @@ describe("HEIC with different methods", () => {
   });
 
   it("processes HEIC with high-pass", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const res = await postTool(
       { method: "high-pass", strength: 60 },
       HEIC,
@@ -459,7 +457,7 @@ describe("HEIF input", () => {
     "processes HEIF image (motorcycle.heif)",
     { timeout: 120_000 },
     async () => {
-      const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+      const HEIF = readFixture(fixtures.image.motorcycle);
       const res = await postTool(
         { method: "adaptive", sigma: 2.0 },
         HEIF,
@@ -477,7 +475,7 @@ describe("HEIF input", () => {
 // ── Animated GIF input ──────────────────────────────────────────
 describe("Animated GIF input", () => {
   it("processes animated GIF", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const res = await postTool(
       { method: "unsharp-mask", amount: 150 },
       GIF,
@@ -493,7 +491,7 @@ describe("Animated GIF input", () => {
 // ── SVG input ───────────────────────────────────────────────────
 describe("SVG input", () => {
   it("processes SVG image", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const res = await postTool({ method: "adaptive" }, SVG, "icon.svg", "image/svg+xml");
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
@@ -504,7 +502,7 @@ describe("SVG input", () => {
 // ── TIFF input ─────────────────────────────────────────────────
 describe("TIFF input", () => {
   it("processes TIFF image with unsharp-mask", async () => {
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const res = await postTool(
       { method: "unsharp-mask", amount: 150 },
       TIFF,
@@ -520,7 +518,7 @@ describe("TIFF input", () => {
 // ── BMP input ──────────────────────────────────────────────────
 describe("BMP input", () => {
   it("processes BMP image with adaptive sharpening", async () => {
-    const BMP = readFileSync(join(FIXTURES, "formats", "sample.bmp"));
+    const BMP = readFixture(fixtures.image.formats("bmp"));
     const res = await postTool({ method: "adaptive", sigma: 2.0 }, BMP, "test.bmp", "image/bmp");
     expect([200, 400, 422]).toContain(res.statusCode);
     if (res.statusCode === 200) {
@@ -721,7 +719,7 @@ describe("Invalid settings JSON", () => {
 // ── Extreme sharpening on tiny image ──────────────────────────
 describe("Extreme sharpening on tiny image", () => {
   it("applies maximum sharpening to 1x1 pixel image", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const res = await postTool(
       { method: "unsharp-mask", amount: 1000, radius: 5.0, threshold: 0 },
       TINY,
@@ -761,7 +759,7 @@ describe("Adaptive with denoise on JPEG", () => {
 // ── AVIF input ──────────────────────────────────────────────────
 describe("AVIF input", () => {
   it("processes AVIF image with adaptive sharpening", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const res = await postTool({ method: "adaptive", sigma: 2.0 }, AVIF, "test.avif", "image/avif");
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);

@@ -5,16 +5,14 @@
  * similarity score, diff image generation, and input validation.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const WEBP = readFixture(fixtures.image.base.webp50);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -271,7 +269,7 @@ describe("Compare", () => {
   });
 
   it("compares HEIC vs PNG", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.heic", contentType: "image/heic", content: HEIC },
       { name: "file", filename: "b.png", contentType: "image/png", content: PNG },
@@ -294,7 +292,7 @@ describe("Compare", () => {
   });
 
   it("compares two HEIC images (same file)", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.heic", contentType: "image/heic", content: HEIC },
       { name: "file", filename: "b.heic", contentType: "image/heic", content: HEIC },
@@ -388,7 +386,7 @@ describe("Compare", () => {
   });
 
   it("compares a portrait JPEG with a landscape PNG", async () => {
-    const PORTRAIT_JPG = readFileSync(join(FIXTURES, "test-portrait.jpg"));
+    const PORTRAIT_JPG = readFixture(fixtures.image.portraitJpg);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "portrait.jpg", contentType: "image/jpeg", content: PORTRAIT_JPG },
       { name: "file", filename: "landscape.png", contentType: "image/png", content: PNG },
@@ -490,7 +488,7 @@ describe("Compare", () => {
   // ── Branch coverage: 1x1 tiny images (line 117-121 area) ───────────
 
   it("compares two 1x1 pixel images", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.png", contentType: "image/png", content: TINY },
       { name: "file", filename: "b.png", contentType: "image/png", content: TINY },
@@ -514,7 +512,7 @@ describe("Compare", () => {
   });
 
   it("compares a 1x1 image with a large image", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "tiny.png", contentType: "image/png", content: TINY },
       { name: "file", filename: "large.png", contentType: "image/png", content: PNG },
@@ -542,7 +540,7 @@ describe("Compare", () => {
   // ── Branch coverage: large file handling ────────────────────────────
 
   it("compares a large stress image with a small image", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
       { name: "file", filename: "small.jpg", contentType: "image/jpeg", content: JPG },
@@ -568,8 +566,8 @@ describe("Compare", () => {
   // ── Branch coverage: HEIC vs HEIC (portrait) ───────────────────────
 
   it("compares HEIC portrait with standard HEIC", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
-    const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
+    const HEIC_PORTRAIT = readFixture(fixtures.image.portraitHeic);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "standard.heic", contentType: "image/heic", content: HEIC },
       {
@@ -625,7 +623,7 @@ describe("Compare", () => {
   // ── Branch coverage: blank image comparison ─────────────────────────
 
   it("compares blank image with colored image", async () => {
-    const BLANK = readFileSync(join(FIXTURES, "test-blank.png"));
+    const BLANK = readFixture(fixtures.image.edge.blank);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "blank.png", contentType: "image/png", content: BLANK },
       { name: "file", filename: "colored.png", contentType: "image/png", content: PNG },
@@ -676,7 +674,7 @@ describe("Compare", () => {
   // ── Branch coverage: HEIF content format input ─────────────────────
 
   it("compares portrait HEIC image with PNG", { timeout: 120_000 }, async () => {
-    const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
+    const HEIC_PORTRAIT = readFixture(fixtures.image.portraitHeic);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.heic", contentType: "image/heic", content: HEIC_PORTRAIT },
       { name: "file", filename: "b.png", contentType: "image/png", content: PNG },
@@ -727,7 +725,7 @@ describe("Compare", () => {
   // ── Branch coverage: exif-oriented image comparison ────────────────
 
   it("compares an EXIF-oriented image with a standard image", async () => {
-    const EXIF = readFileSync(join(FIXTURES, "test-with-exif.jpg"));
+    const EXIF = readFixture(fixtures.image.exifGps);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "exif.jpg", contentType: "image/jpeg", content: EXIF },
       { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -754,7 +752,7 @@ describe("Compare", () => {
   // ── Branch coverage: large stress image compared to small ──────────
 
   it("compares two large stress images", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.jpg", contentType: "image/jpeg", content: LARGE },
       { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: LARGE },
@@ -778,7 +776,7 @@ describe("Compare", () => {
   // ── HEIF format input ─────────────────────────────────────────────
 
   it("compares HEIF image with PNG", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const HEIF = readFixture(fixtures.image.motorcycle);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.heif", contentType: "image/heif", content: HEIF },
       { name: "file", filename: "b.png", contentType: "image/png", content: PNG },
@@ -806,7 +804,7 @@ describe("Compare", () => {
   // ── Animated GIF input ────────────────────────────────────────────
 
   it("compares animated GIF with PNG", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.gif", contentType: "image/gif", content: GIF },
       { name: "file", filename: "b.png", contentType: "image/png", content: PNG },
@@ -832,7 +830,7 @@ describe("Compare", () => {
   // ── SVG input ─────────────────────────────────────────────────────
 
   it("compares SVG image with PNG", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.svg", contentType: "image/svg+xml", content: SVG },
       { name: "file", filename: "b.png", contentType: "image/png", content: PNG },
@@ -858,7 +856,7 @@ describe("Compare", () => {
   // ── SVG vs SVG comparison ─────────────────────────────────────────
 
   it("compares two identical SVG images (100% similarity)", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.svg", contentType: "image/svg+xml", content: SVG },
       { name: "file", filename: "b.svg", contentType: "image/svg+xml", content: SVG },
@@ -885,8 +883,8 @@ describe("Compare", () => {
   // ── Two different SVGs ────────────────────────────────────────────
 
   it("compares two different SVG images", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
-    const LOGO_SVG = readFileSync(join(FIXTURES, "content", "svg-logo.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
+    const LOGO_SVG = readFixture(fixtures.image.svgLogo);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.svg", contentType: "image/svg+xml", content: SVG },
       { name: "file", filename: "b.svg", contentType: "image/svg+xml", content: LOGO_SVG },
@@ -911,7 +909,7 @@ describe("Compare", () => {
   // ── Portrait vs portrait comparison ───────────────────────────────
 
   it("compares two portrait images", async () => {
-    const PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.jpg"));
+    const PORTRAIT = readFixture(fixtures.image.portraitJpg);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.jpg", contentType: "image/jpeg", content: PORTRAIT },
       { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: PORTRAIT },
@@ -966,7 +964,7 @@ describe("Compare", () => {
   // ── AVIF format input ─────────────────────────────────────────────
 
   it("compares two AVIF images", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.avif", contentType: "image/avif", content: AVIF },
       { name: "file", filename: "b.avif", contentType: "image/avif", content: AVIF },
@@ -991,7 +989,7 @@ describe("Compare", () => {
   // ── AVIF vs PNG cross-format comparison ──────────────────────────
 
   it("compares AVIF with PNG (cross-format)", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.avif", contentType: "image/avif", content: AVIF },
       { name: "file", filename: "b.png", contentType: "image/png", content: PNG },
@@ -1018,7 +1016,7 @@ describe("Compare", () => {
   // ── SVGZ input (compare validates with validateImageBuffer first) ─
 
   it("handles SVGZ input: rejects as invalid or processes successfully", async () => {
-    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const SVGZ = readFixture(fixtures.image.formats("svgz"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.svgz", contentType: "image/svg+xml", content: SVGZ },
       { name: "file", filename: "b.png", contentType: "image/png", content: PNG },
@@ -1047,8 +1045,8 @@ describe("Compare", () => {
   // ── HEIF vs AVIF cross-format ────────────────────────────────────
 
   it("compares HEIF with AVIF (cross-format)", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const HEIF = readFixture(fixtures.image.motorcycle);
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.heif", contentType: "image/heif", content: HEIF },
       { name: "file", filename: "b.avif", contentType: "image/avif", content: AVIF },
@@ -1074,7 +1072,7 @@ describe("Compare", () => {
   // ── Blank image vs blank image (100% similarity) ─────────────────
 
   it("compares two blank images (100% similarity)", async () => {
-    const BLANK = readFileSync(join(FIXTURES, "test-blank.png"));
+    const BLANK = readFixture(fixtures.image.edge.blank);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.png", contentType: "image/png", content: BLANK },
       { name: "file", filename: "b.png", contentType: "image/png", content: BLANK },

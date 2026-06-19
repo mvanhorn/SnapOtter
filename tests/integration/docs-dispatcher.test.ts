@@ -10,6 +10,7 @@ import {
   pdfTextPy,
 } from "@snapotter/doc-engine";
 import { afterAll, describe, expect, it } from "vitest";
+import { fixtures } from "../fixtures/index.js";
 import { hasFitz, hasPikepdf, hasPython } from "../helpers/python-gate.js";
 
 // Ensure the bridge uses a reachable Python; set PYTHON_VENV_PATH before
@@ -50,12 +51,12 @@ describe.skipIf(!hasPython)("docs dispatcher health probe", () => {
 
 describe.skipIf(!hasPikepdf)("docs dispatcher pikepdf (requires python + pikepdf)", () => {
   it("counts pdf pages through the docs profile", async () => {
-    const pages = await pdfPageCountPy(join(process.cwd(), "tests/fixtures/test-3page.pdf"));
+    const pages = await pdfPageCountPy(fixtures.document.pdf3);
     expect(pages).toBe(3);
   });
 
   it("metadata get/set roundtrip", async () => {
-    const pdf = join(process.cwd(), "tests/fixtures/test-3page.pdf");
+    const pdf = fixtures.document.pdf3;
     const dir = mkdtempSync(join(tmpdir(), "meta-"));
     try {
       const out = join(dir, "meta.pdf");
@@ -70,7 +71,7 @@ describe.skipIf(!hasPikepdf)("docs dispatcher pikepdf (requires python + pikepdf
 
 describe.skipIf(!hasFitz)("docs dispatcher fitz (requires python + PyMuPDF)", () => {
   it("extracts text with chars > 0", async () => {
-    const pdf = join(process.cwd(), "tests/fixtures/test-3page.pdf");
+    const pdf = fixtures.document.pdf3;
     const dir = mkdtempSync(join(tmpdir(), "text-"));
     try {
       const out = join(dir, "text.txt");

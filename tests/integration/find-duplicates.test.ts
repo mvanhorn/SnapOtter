@@ -5,18 +5,16 @@
  * threshold tuning, response structure, and input validation.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const WEBP = readFixture(fixtures.image.base.webp50);
 // Use a content photo that is perceptually very different from the test images
-const PORTRAIT = readFileSync(join(FIXTURES, "content", "portrait-color.jpg"));
+const PORTRAIT = readFixture(fixtures.image.portrait.jpg);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -414,7 +412,7 @@ describe("Find Duplicates", () => {
   });
 
   it("handles HEIC input images", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.heic", contentType: "image/heic", content: HEIC },
       { name: "file", filename: "b.heic", contentType: "image/heic", content: HEIC },
@@ -663,7 +661,7 @@ describe("Find Duplicates", () => {
   // ── Branch coverage: 1x1 tiny images ────────────────────────────────
 
   it("handles 1x1 pixel images", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "tiny1.png", contentType: "image/png", content: TINY },
       { name: "file", filename: "tiny2.png", contentType: "image/png", content: TINY },
@@ -689,7 +687,7 @@ describe("Find Duplicates", () => {
   // ── Branch coverage: large file handling ────────────────────────────
 
   it("handles a large content image in duplicate detection", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large1.jpg", contentType: "image/jpeg", content: LARGE },
       { name: "file", filename: "large2.jpg", contentType: "image/jpeg", content: LARGE },
@@ -777,7 +775,7 @@ describe("Find Duplicates", () => {
   // ── Branch coverage: HEIF content format input ─────────────────────
 
   it("handles portrait HEIC images in duplicate detection", { timeout: 120_000 }, async () => {
-    const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
+    const HEIC_PORTRAIT = readFixture(fixtures.image.portraitHeic);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.heic", contentType: "image/heic", content: HEIC_PORTRAIT },
       { name: "file", filename: "b.heic", contentType: "image/heic", content: HEIC_PORTRAIT },
@@ -884,7 +882,7 @@ describe("Find Duplicates", () => {
   // ── Branch coverage: exif-oriented image duplicate detection ───────
 
   it("handles EXIF-oriented images in duplicate detection", async () => {
-    const EXIF = readFileSync(join(FIXTURES, "test-with-exif.jpg"));
+    const EXIF = readFixture(fixtures.image.exifGps);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "exif1.jpg", contentType: "image/jpeg", content: EXIF },
       { name: "file", filename: "exif2.jpg", contentType: "image/jpeg", content: EXIF },
@@ -970,7 +968,7 @@ describe("Find Duplicates", () => {
     "handles HEIF input images in duplicate detection",
     { timeout: 120_000 },
     async () => {
-      const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+      const HEIF = readFixture(fixtures.image.motorcycle);
       const { body, contentType } = createMultipartPayload([
         { name: "file", filename: "a.heif", contentType: "image/heif", content: HEIF },
         { name: "file", filename: "b.heif", contentType: "image/heif", content: HEIF },
@@ -998,7 +996,7 @@ describe("Find Duplicates", () => {
   // ── Animated GIF input ────────────────────────────────────────────
 
   it("handles animated GIF input in duplicate detection", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.gif", contentType: "image/gif", content: GIF },
       { name: "file", filename: "b.gif", contentType: "image/gif", content: GIF },
@@ -1023,7 +1021,7 @@ describe("Find Duplicates", () => {
   // ── SVG input ─────────────────────────────────────────────────────
 
   it("handles SVG input in duplicate detection", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.svg", contentType: "image/svg+xml", content: SVG },
       { name: "file", filename: "b.svg", contentType: "image/svg+xml", content: SVG },
@@ -1048,7 +1046,7 @@ describe("Find Duplicates", () => {
   // ── Mixed SVG and raster duplicate detection ──────────────────────
 
   it("detects duplicates across SVG and raster formats", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.svg", contentType: "image/svg+xml", content: SVG },
       { name: "file", filename: "b.svg", contentType: "image/svg+xml", content: SVG },
@@ -1230,7 +1228,7 @@ describe("Find Duplicates", () => {
   // ── AVIF format input ─────────────────────────────────────────────
 
   it("handles AVIF input images in duplicate detection", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.avif", contentType: "image/avif", content: AVIF },
       { name: "file", filename: "b.avif", contentType: "image/avif", content: AVIF },
@@ -1256,7 +1254,7 @@ describe("Find Duplicates", () => {
   // ── SVGZ input ───────────────────────────────────────────────────
 
   it("handles SVGZ (compressed SVG) input in duplicate detection", async () => {
-    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const SVGZ = readFixture(fixtures.image.formats("svgz"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.svgz", contentType: "image/svg+xml", content: SVGZ },
       { name: "file", filename: "b.svgz", contentType: "image/svg+xml", content: SVGZ },
@@ -1281,8 +1279,8 @@ describe("Find Duplicates", () => {
   // ── Mixed format batch: AVIF + HEIC + PNG ────────────────────────
 
   it("detects duplicates across AVIF, HEIC, and PNG formats", { timeout: 120_000 }, async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.avif", contentType: "image/avif", content: AVIF },
       { name: "file", filename: "b.heic", contentType: "image/heic", content: HEIC },

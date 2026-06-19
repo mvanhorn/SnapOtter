@@ -5,17 +5,15 @@
  * output is actually smaller than input, and that format is preserved.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtureDir, fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const FORMATS = join(FIXTURES, "formats");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const _JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+const FORMATS = fixtureDir.formats;
+const PNG = readFixture(fixtures.image.base.png200);
+const _JPG = readFixture(fixtures.image.base.jpg100);
+const WEBP = readFixture(fixtures.image.base.webp50);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -222,7 +220,7 @@ describe("Exotic format processing", () => {
 
   for (const { ext, mime } of exoticFormats) {
     it(`processes ${ext.toUpperCase()} input without error`, async () => {
-      const buf = readFileSync(join(FORMATS, `sample.${ext}`));
+      const buf = readFixture(fixtures.image.formats(ext));
       const res = await postTool({ mode: "quality", quality: 50 }, buf, `sample.${ext}`, mime);
       expect(res.statusCode).toBe(200);
       const result = JSON.parse(res.body);

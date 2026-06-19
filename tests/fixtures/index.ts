@@ -5,6 +5,17 @@ import { fileURLToPath } from "node:url";
 const ROOT = dirname(fileURLToPath(import.meta.url)); // tests/fixtures
 const p = (rel: string): string => join(ROOT, rel);
 
+export const fixtureRoot = ROOT;
+export const fixtureDir = {
+  formats: join(ROOT, "formats"),
+  hostile: join(ROOT, "hostile"),
+  media: join(ROOT, "media"),
+  documents: join(ROOT, "documents"),
+  data: join(ROOT, "data"),
+  content: join(ROOT, "content"),
+  security: join(ROOT, "security"),
+};
+
 export const fixtures = {
   image: {
     base: {
@@ -37,9 +48,16 @@ export const fixtures = {
     },
     code: {
       barcodePng: p("content/barcode.png"),
+      barcodeAvif: p("content/barcode.avif"),
       qrPng: p("content/qr-code.png"),
       qrSvg: p("content/qr-code.svg"),
+      qrAvif: p("content/qr-code.avif"),
     },
+    svgLogo: p("content/svg-logo.svg"),
+    motorcycle: p("content/motorcycle.heif"),
+    crossFormatChat: p("content/cross-format-chat.webp"),
+    portraitJpg: p("test-portrait.jpg"),
+    portraitHeic: p("test-portrait.heic"),
     watermark: p("content/watermark.jpg"),
     stressLarge: p("content/stress-large.jpg"),
     edge: {
@@ -49,6 +67,7 @@ export const fixtures = {
       extreme: p("test-portrait-extreme.png"),
     },
     formats: (ext: string) => p(`formats/sample.${ext}`),
+    multipageTiff: p("formats/multipage.tiff"),
     hostile: {
       truncated: p("hostile/truncated.jpg"),
       garbage: p("hostile/garbage.jpg"),

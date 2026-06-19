@@ -4,8 +4,9 @@ import { join } from "node:path";
 import { ffmpegAvailable } from "@snapotter/media-engine";
 import { describe, expect, it } from "vitest";
 import { MediaInputHandler } from "../../apps/api/src/modality/media-input.js";
+import { fixtureRoot } from "../fixtures/index.js";
 
-const FIX = join(__dirname, "..", "fixtures");
+const FIX = fixtureRoot;
 const MP4 = readFileSync(join(FIX, "media", "tiny.mp4"));
 const MP3 = readFileSync(join(FIX, "media", "tiny.mp3"));
 const SRT = readFileSync(join(FIX, "media", "tiny.srt"));

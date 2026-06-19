@@ -6,18 +6,16 @@
  * reading metadata with sharp.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
-const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
-const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const HEIC = readFixture(fixtures.image.base.heic200);
+const TINY = readFixture(fixtures.image.edge.px1);
+const WEBP = readFixture(fixtures.image.base.webp50);
 
 let testApp: TestApp;
 let app: TestApp["app"];

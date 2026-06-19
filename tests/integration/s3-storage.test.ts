@@ -9,8 +9,6 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import {
   CreateBucketCommand,
   DeleteBucketCommand,
@@ -22,9 +20,9 @@ import {
 import { loadS3Storage, type S3StorageModule } from "@snapotter/enterprise";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { env } from "../../apps/api/src/config.js";
+import { fixtures, readFixture } from "../fixtures/index.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
+const PNG = readFixture(fixtures.image.base.png200);
 
 const S3_ENDPOINT = "http://localhost:19000";
 const BUCKET = `snapotter-s3test-${Date.now()}`;

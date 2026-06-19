@@ -5,17 +5,15 @@
  * histogram, EXIF presence, and input validation.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
-const EXIF_JPG = readFileSync(join(FIXTURES, "test-with-exif.jpg"));
-const TINY_PNG = readFileSync(join(FIXTURES, "test-1x1.png"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const WEBP = readFixture(fixtures.image.base.webp50);
+const EXIF_JPG = readFixture(fixtures.image.exifGps);
+const TINY_PNG = readFixture(fixtures.image.edge.px1);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -272,7 +270,7 @@ describe("Info", () => {
   // ── HEIC format info ──────────────────────────────────────────
 
   it("returns correct metadata for HEIC image", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.heic", contentType: "image/heic", content: HEIC },
     ]);
@@ -299,7 +297,7 @@ describe("Info", () => {
   // ── SVG info ──────────────────────────────────────────────────
 
   it("returns correct metadata for SVG image", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.svg", contentType: "image/svg+xml", content: SVG },
     ]);
@@ -440,7 +438,7 @@ describe("Info", () => {
   // ── Large file info ─────────────────────────────────────────────
 
   it("returns metadata for a large stress image", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "stress-large.jpg", contentType: "image/jpeg", content: LARGE },
     ]);
@@ -466,7 +464,7 @@ describe("Info", () => {
   // ── Animated GIF info ───────────────────────────────────────────
 
   it("returns page count for animated GIF", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "animated.gif", contentType: "image/gif", content: GIF },
     ]);
@@ -490,7 +488,7 @@ describe("Info", () => {
   // ── Multi-page TIFF info ────────────────────────────────────────
 
   it("returns metadata for multi-page TIFF", async () => {
-    const TIFF = readFileSync(join(FIXTURES, "formats", "multipage.tiff"));
+    const TIFF = readFixture(fixtures.image.multipageTiff);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "multipage.tiff", contentType: "image/tiff", content: TIFF },
     ]);
@@ -514,7 +512,7 @@ describe("Info", () => {
   // ── AVIF info ───────────────────────────────────────────────────
 
   it("returns metadata for AVIF image", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "sample.avif", contentType: "image/avif", content: AVIF },
     ]);
@@ -590,7 +588,7 @@ describe("Info", () => {
   // ── HEIF format info ──────────────────────────────────────────
 
   it("returns correct metadata for HEIF (sample.heif) image", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "formats", "sample.heif"));
+    const HEIF = readFixture(fixtures.image.formats("heif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "sample.heif", contentType: "image/heif", content: HEIF },
     ]);
@@ -667,7 +665,7 @@ describe("Info", () => {
   // ── BMP format info ──────────────────────────────────────────────
 
   it("returns metadata for BMP image", async () => {
-    const BMP = readFileSync(join(FIXTURES, "formats", "sample.bmp"));
+    const BMP = readFixture(fixtures.image.formats("bmp"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "sample.bmp", contentType: "image/bmp", content: BMP },
     ]);
@@ -695,7 +693,7 @@ describe("Info", () => {
   // ── TIFF format info ──────────────────────────────────────────────
 
   it("returns metadata for single-page TIFF image", async () => {
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "sample.tiff", contentType: "image/tiff", content: TIFF },
     ]);
@@ -721,7 +719,7 @@ describe("Info", () => {
   // ── GIF format info ───────────────────────────────────────────────
 
   it("returns correct format string for GIF", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.gif", contentType: "image/gif", content: GIF },
     ]);
@@ -768,7 +766,7 @@ describe("Info", () => {
   // ── Large file fileSize accuracy ──────────────────────────────────
 
   it("reports accurate fileSize for large image", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "stress-large.jpg", contentType: "image/jpeg", content: LARGE },
     ]);
@@ -815,7 +813,7 @@ describe("Info", () => {
   // ── Portrait image info ───────────────────────────────────────────
 
   it("returns correct dimensions for portrait-oriented image", async () => {
-    const PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.jpg"));
+    const PORTRAIT = readFixture(fixtures.image.portraitJpg);
     const { body, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -845,7 +843,7 @@ describe("Info", () => {
   // ── Blank image info ──────────────────────────────────────────────
 
   it("returns metadata for blank PNG image", async () => {
-    const BLANK = readFileSync(join(FIXTURES, "test-blank.png"));
+    const BLANK = readFixture(fixtures.image.edge.blank);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test-blank.png", contentType: "image/png", content: BLANK },
     ]);
@@ -918,7 +916,7 @@ describe("Info", () => {
   // ── Multi-page PDF info ──────────────────────────────────────────
 
   it("returns metadata for multi-page PDF", async () => {
-    const PDF = readFileSync(join(FIXTURES, "test-3page.pdf"));
+    const PDF = readFixture(fixtures.document.pdf3);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test-3page.pdf", contentType: "application/pdf", content: PDF },
     ]);
@@ -983,7 +981,7 @@ describe("Info", () => {
   // ── SVG info detailed checks ─────────────────────────────────────
 
   it("returns correct dimensions and format for SVG", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.svg", contentType: "image/svg+xml", content: SVG },
     ]);
@@ -1010,7 +1008,7 @@ describe("Info", () => {
   // ── Extreme portrait image info ──────────────────────────────────
 
   it("returns correct dimensions for extreme portrait image", async () => {
-    const PORTRAIT_TALL = readFileSync(join(FIXTURES, "test-portrait-tall.png"));
+    const PORTRAIT_TALL = readFixture(fixtures.image.edge.tall);
     const { body, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -1041,7 +1039,7 @@ describe("Info", () => {
   // ── Content fixture info ─────────────────────────────────────────
 
   it("returns detailed metadata for content/portrait-color.jpg", async () => {
-    const PORTRAIT_COLOR = readFileSync(join(FIXTURES, "content", "portrait-color.jpg"));
+    const PORTRAIT_COLOR = readFixture(fixtures.image.portrait.jpg);
     const { body, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -1075,7 +1073,7 @@ describe("Info", () => {
   // ── SVG logo info ───────────────────────────────────────────────
 
   it("returns info for content/svg-logo.svg", async () => {
-    const SVG_LOGO = readFileSync(join(FIXTURES, "content", "svg-logo.svg"));
+    const SVG_LOGO = readFixture(fixtures.image.svgLogo);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "svg-logo.svg", contentType: "image/svg+xml", content: SVG_LOGO },
     ]);

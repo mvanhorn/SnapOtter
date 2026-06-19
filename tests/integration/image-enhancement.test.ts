@@ -6,21 +6,19 @@
  * intensity parameter, selective corrections, and the analyze endpoint.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
 vi.setConfig({ testTimeout: 60_000 });
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
-const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
-const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
-const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const WEBP = readFixture(fixtures.image.base.webp50);
+const HEIC = readFixture(fixtures.image.base.heic200);
+const SVG = readFixture(fixtures.image.base.svg100);
+const GIF = readFixture(fixtures.image.animated.gif);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -653,7 +651,7 @@ describe("Alpha channel preservation", () => {
 // ── Large file handling ─────────────────────────────────────────
 describe("Large file handling", () => {
   it("enhances a large stress image", { timeout: 120_000 }, async () => {
-    const large = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const large = readFixture(fixtures.image.stressLarge);
     const res = await postTool(
       { mode: "auto", intensity: 50 },
       large,
@@ -674,7 +672,7 @@ describe("Large file handling", () => {
 // ── Tiny file handling ──────────────────────────────────────────
 describe("Tiny file handling", () => {
   it("enhances a 1x1 pixel image", async () => {
-    const tiny = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const tiny = readFixture(fixtures.image.edge.px1);
     const res = await postTool({ mode: "auto" }, tiny, "tiny.png", "image/png");
     if (isAsyncFallback(res)) return;
     expect(res.statusCode).toBe(200);
@@ -730,7 +728,7 @@ describe("Authentication", () => {
 // ── HEIF input ─────────────────────────────────────────────────
 describe("HEIF input", () => {
   it("enhances HEIF (sample.heif) input", { timeout: 300_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "formats", "sample.heif"));
+    const HEIF = readFixture(fixtures.image.formats("heif"));
     const res = await postTool({ mode: "auto" }, HEIF, "sample.heif", "image/heif");
     expect([200, 422]).toContain(res.statusCode);
     if (res.statusCode === 200) {
@@ -1017,7 +1015,7 @@ describe("Invalid image data", () => {
 // ── Large file with specific modes ──────────────────────────────
 describe("Large file with modes", () => {
   it("enhances large image in low-light mode", { timeout: 120_000 }, async () => {
-    const large = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const large = readFixture(fixtures.image.stressLarge);
     const res = await postTool(
       { mode: "low-light", intensity: 70 },
       large,
@@ -1031,7 +1029,7 @@ describe("Large file with modes", () => {
   });
 
   it("enhances large image in document mode", { timeout: 120_000 }, async () => {
-    const large = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const large = readFixture(fixtures.image.stressLarge);
     const res = await postTool(
       { mode: "document", intensity: 90 },
       large,
@@ -1148,7 +1146,7 @@ describe("Darkening regression", () => {
 // ── Portrait image enhancement ─────────────────────────────────
 describe("Portrait image enhancement", () => {
   it("enhances a real portrait image in portrait mode", async () => {
-    const portrait = readFileSync(join(FIXTURES, "test-portrait.jpg"));
+    const portrait = readFixture(fixtures.image.portraitJpg);
     const res = await postTool(
       { mode: "portrait", intensity: 60 },
       portrait,
@@ -1172,7 +1170,7 @@ describe("Portrait image enhancement", () => {
   });
 
   it("enhances portrait-color content image in landscape mode", async () => {
-    const portraitColor = readFileSync(join(FIXTURES, "content", "portrait-color.jpg"));
+    const portraitColor = readFixture(fixtures.image.portrait.jpg);
     const res = await postTool(
       { mode: "landscape", intensity: 70 },
       portraitColor,
@@ -1189,7 +1187,7 @@ describe("Portrait image enhancement", () => {
 // ── Batch processing (5+ images) ───────────────────────────────
 describe("Batch processing", () => {
   it("batch processes 5+ images and returns a ZIP", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body: payload, contentType } = createMultipartPayload([
       { name: "file", filename: "a.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },

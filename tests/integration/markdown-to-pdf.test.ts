@@ -2,13 +2,12 @@
 // Requires WeasyPrint AND the markdown Python module.
 // Both are Docker-only, absent locally; gated describes skip cleanly.
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { pythonWith } from "../helpers/python-gate.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const MD = readFileSync(join(__dirname, "..", "fixtures", "documents", "tiny.md"));
+const MD = readFixture(fixtures.document.tiny("md"));
 
 const hasWeasyprint = pythonWith("weasyprint");
 const hasMarkdownMod = pythonWith("markdown");

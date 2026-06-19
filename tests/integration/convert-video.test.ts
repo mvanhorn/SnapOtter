@@ -1,10 +1,9 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { ffmpegAvailable } from "@snapotter/media-engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const MP4 = readFileSync(join(__dirname, "..", "fixtures", "media", "tiny.mp4"));
+const MP4 = readFixture(fixtures.video.tiny("mp4"));
 
 let testApp: TestApp;
 let adminToken: string;
@@ -74,7 +73,7 @@ describe.skipIf(!ffmpegAvailable())("convert-video (requires ffmpeg)", () => {
   }, 90_000);
 
   it("rejects a non-video upload", async () => {
-    const png = readFileSync(join(__dirname, "..", "fixtures", "test-1x1.png"));
+    const png = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "x.mp4", contentType: "video/mp4", content: png },
       { name: "settings", content: JSON.stringify({ format: "mp4" }) },

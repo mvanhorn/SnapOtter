@@ -7,15 +7,13 @@
  * extremes, format forcing, and error handling through the HTTP layer.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -1098,7 +1096,7 @@ describe("Beautify", () => {
 
   // ── HEIC input ─────────────────────────────────────────────────────
   it("HEIC input with solid background", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const payload = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
       {
@@ -1123,7 +1121,7 @@ describe("Beautify", () => {
 
   // ── Large file handling ────────────────────────────────────────────
   it("beautifies stress-large.jpg with shadow", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const payload = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
       {
@@ -1143,7 +1141,7 @@ describe("Beautify", () => {
 
   // ── Tiny file handling ─────────────────────────────────────────────
   it("beautifies 1x1 pixel image", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const payload = createMultipartPayload([
       { name: "file", filename: "tiny.png", contentType: "image/png", content: TINY },
       {
@@ -1214,7 +1212,7 @@ describe("Beautify", () => {
 
   // ── WebP input ─────────────────────────────────────────────────────
   it("beautifies WebP input with frame", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const payload = createMultipartPayload([
       { name: "file", filename: "photo.webp", contentType: "image/webp", content: WEBP },
       {

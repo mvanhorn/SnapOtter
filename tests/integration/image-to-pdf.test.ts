@@ -6,14 +6,12 @@
  * and margin.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -238,7 +236,7 @@ describe("image-to-pdf", () => {
   // ── HEIC input handling ───────────────────────────────────────────
 
   it("converts HEIC image to PDF", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
       { name: "settings", content: JSON.stringify({}) },
@@ -296,7 +294,7 @@ describe("image-to-pdf", () => {
   // ── WebP input ────────────────────────────────────────────────────
 
   it("converts WebP image to PDF", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.webp", contentType: "image/webp", content: WEBP },
       { name: "settings", content: JSON.stringify({}) },
@@ -317,7 +315,7 @@ describe("image-to-pdf", () => {
   // ── Tiny 1x1 input ───────────────────────────────────────────────
 
   it("converts 1x1 pixel image to PDF", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "tiny.png", contentType: "image/png", content: TINY },
       { name: "settings", content: JSON.stringify({}) },
@@ -339,7 +337,7 @@ describe("image-to-pdf", () => {
   // ── Three images in a single PDF ──────────────────────────────────
 
   it("creates 3-page PDF from three images", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "p1.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "p2.jpg", contentType: "image/jpeg", content: JPG },
@@ -593,7 +591,7 @@ describe("image-to-pdf", () => {
   // ── Large stress file ────────────────────────────────────────────
 
   it("converts stress-large.jpg to PDF", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
       { name: "settings", content: JSON.stringify({}) },
@@ -615,8 +613,8 @@ describe("image-to-pdf", () => {
   // ── 5+ images batch PDF ──────────────────────────────────────────
 
   it("creates 5-page PDF from five images", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "p1.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "p2.jpg", contentType: "image/jpeg", content: JPG },
@@ -687,7 +685,7 @@ describe("image-to-pdf", () => {
   // ── Multi-image with target size ─────────────────────────────────
 
   it("compresses 3-image PDF with target size", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "p1.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "p2.jpg", contentType: "image/jpeg", content: JPG },
@@ -745,7 +743,7 @@ describe("image-to-pdf", () => {
     "converts HEIF image to PDF",
     { timeout: 120_000 },
     async () => {
-      const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+      const HEIF = readFixture(fixtures.image.motorcycle);
       const { body, contentType } = createMultipartPayload([
         { name: "file", filename: "photo.heif", contentType: "image/heif", content: HEIF },
         { name: "settings", content: JSON.stringify({}) },
@@ -769,7 +767,7 @@ describe("image-to-pdf", () => {
   // ── Animated GIF input ──────────────────────────────────────────
 
   it("converts animated GIF to PDF", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
       { name: "settings", content: JSON.stringify({}) },
@@ -791,7 +789,7 @@ describe("image-to-pdf", () => {
   // ── SVG input ───────────────────────────────────────────────────
 
   it("converts SVG to PDF", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "icon.svg", contentType: "image/svg+xml", content: SVG },
       { name: "settings", content: JSON.stringify({}) },
@@ -813,7 +811,7 @@ describe("image-to-pdf", () => {
   // ── TIFF input ────────────────────────────────────────────────────
 
   it("converts TIFF image to PDF", async () => {
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.tiff", contentType: "image/tiff", content: TIFF },
       { name: "settings", content: JSON.stringify({}) },
@@ -835,8 +833,8 @@ describe("image-to-pdf", () => {
   // ── Mixed format multi-page PDF ─────────────────────────────────
 
   it("creates multi-page PDF from mixed formats (PNG + JPG + WebP + TIFF)", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "p1.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "p2.jpg", contentType: "image/jpeg", content: JPG },
@@ -1037,7 +1035,7 @@ describe("image-to-pdf", () => {
   // ── Multi-image with all settings ────────────────────────────────
 
   it("creates multi-page PDF with all settings combined", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "p1.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "p2.jpg", contentType: "image/jpeg", content: JPG },
@@ -1150,7 +1148,7 @@ describe("image-to-pdf", () => {
   // ── collate=false with all settings ─────────────────────────────
 
   it("creates individual PDFs with all settings combined when collate=false", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },

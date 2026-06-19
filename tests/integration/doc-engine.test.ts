@@ -10,9 +10,10 @@ import {
   sofficeAvailable,
 } from "@snapotter/doc-engine";
 import { describe, expect, it } from "vitest";
+import { fixtures } from "../fixtures/index.js";
 
-const PDF = join(process.cwd(), "tests/fixtures/test-3page.pdf");
-const DOCX = join(process.cwd(), "tests/fixtures/documents/tiny.docx");
+const PDF = fixtures.document.pdf3;
+const DOCX = fixtures.document.tiny("docx");
 
 describe.skipIf(!qpdfAvailable())("doc-engine qpdf (requires qpdf)", () => {
   it("counts pages", async () => {

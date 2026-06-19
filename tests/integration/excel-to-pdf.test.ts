@@ -3,13 +3,12 @@
 // the Docker compose smoke is the real proof that this tool works end to end
 // against the containerised LibreOffice install.
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { sofficeAvailable } from "@snapotter/doc-engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const XLSX = readFileSync(join(__dirname, "..", "fixtures", "documents", "tiny.xlsx"));
+const XLSX = readFixture(fixtures.document.tiny("xlsx"));
 
 let testApp: TestApp;
 let adminToken: string;

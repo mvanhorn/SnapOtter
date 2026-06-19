@@ -15,12 +15,9 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
-
-const FIXTURES = join(__dirname, "..", "fixtures");
 
 // ── Binary gates ──────────────────────────────────────────────────────
 function hasBinary(name: string): boolean {
@@ -86,7 +83,7 @@ describe("cross-modality launch smoke", () => {
         name: "file",
         filename: "test.png",
         contentType: "image/png",
-        content: readFileSync(join(FIXTURES, "test-200x150.png")),
+        content: readFixture(fixtures.image.base.png200),
       },
       { name: "settings", content: JSON.stringify({ angle: 90, flipH: false, flipV: false }) },
     ]);
@@ -101,7 +98,7 @@ describe("cross-modality launch smoke", () => {
 
   // ── Image: rotate (Sharp, no external binary) ─────────────────────
   it("image modality: rotate", async () => {
-    const file = readFileSync(join(FIXTURES, "test-200x150.png"));
+    const file = readFixture(fixtures.image.base.png200);
     const res = await postTool(app, adminToken, "rotate", file, "test.png", "image/png", {
       angle: 90,
       flipH: false,
@@ -118,7 +115,7 @@ describe("cross-modality launch smoke", () => {
   it.skipIf(!HAS_FFMPEG)(
     "video modality: mute-video",
     async () => {
-      const file = readFileSync(join(FIXTURES, "media", "tiny.mp4"));
+      const file = readFixture(fixtures.video.tiny("mp4"));
       const res = await postTool(app, adminToken, "mute-video", file, "tiny.mp4", "video/mp4", {});
       if (isAsyncFallback(res)) return;
       expect(res.statusCode).toBe(200);
@@ -133,7 +130,7 @@ describe("cross-modality launch smoke", () => {
   it.skipIf(!HAS_FFMPEG)(
     "audio modality: convert-audio",
     async () => {
-      const file = readFileSync(join(FIXTURES, "media", "tiny.wav"));
+      const file = readFixture(fixtures.audio.tiny("wav"));
       const res = await postTool(app, adminToken, "convert-audio", file, "tone.wav", "audio/wav", {
         format: "mp3",
         bitrate: 128,
@@ -151,7 +148,7 @@ describe("cross-modality launch smoke", () => {
   it.skipIf(!HAS_QPDF)(
     "document modality: rotate-pdf",
     async () => {
-      const file = readFileSync(join(FIXTURES, "documents", "tiny.pdf"));
+      const file = readFixture(fixtures.document.tiny("pdf"));
       const res = await postTool(
         app,
         adminToken,
@@ -172,7 +169,7 @@ describe("cross-modality launch smoke", () => {
 
   // ── Data/File: csv-json (pure JS, no binary) ─────────────────────
   it("data modality: csv-json", async () => {
-    const file = readFileSync(join(FIXTURES, "data", "tiny.csv"));
+    const file = readFixture(fixtures.data.csv);
     const res = await postTool(app, adminToken, "csv-json", file, "tiny.csv", "text/csv", {
       direction: "csv-to-json",
     });

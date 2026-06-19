@@ -1,11 +1,10 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { ffmpegAvailable } from "@snapotter/media-engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const MKV = readFileSync(join(__dirname, "..", "fixtures", "media", "tiny-subs.mkv"));
-const MP4 = readFileSync(join(__dirname, "..", "fixtures", "media", "tiny.mp4"));
+const MKV = readFixture(fixtures.video.subs.mkv);
+const MP4 = readFixture(fixtures.video.tiny("mp4"));
 
 let testApp: TestApp;
 let adminToken: string;

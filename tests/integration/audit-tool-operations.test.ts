@@ -5,13 +5,12 @@
  * `auditToolOperations` admin setting is enabled and stays silent when it
  * is disabled (the default).
  */
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { db, schema } from "../../apps/api/src/db/index.js";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const PNG = readFileSync(join(__dirname, "..", "fixtures", "test-1x1.png"));
+const PNG = readFixture(fixtures.image.edge.px1);
 
 let testApp: TestApp;
 let adminToken: string;

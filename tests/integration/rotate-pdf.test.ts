@@ -1,11 +1,12 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { qpdfAvailable, qpdfPageCount } from "@snapotter/doc-engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const PDF = readFileSync(join(__dirname, "..", "fixtures", "test-3page.pdf"));
+const PDF = readFixture(fixtures.document.pdf3);
 
 let testApp: TestApp;
 let adminToken: string;

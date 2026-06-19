@@ -6,13 +6,11 @@
  * 2. Custom image mode: multipart with file upload + settings
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
+const PNG = readFixture(fixtures.image.base.png200);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -320,7 +318,7 @@ describe("Meme Generator", () => {
 
   // ── Custom image with JPEG input ────────────────────────────────
   it("custom image mode with JPEG input", async () => {
-    const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+    const JPG = readFixture(fixtures.image.base.jpg100);
     const settings = {
       textLayout: "top-bottom",
       textBoxes: [
@@ -563,7 +561,7 @@ describe("Meme Generator", () => {
 
   // ── Custom image with HEIC input ────────────────────────────────
   it("custom image mode with HEIC input", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const settings = {
       textLayout: "center",
       textBoxes: [{ id: "center", text: "HEIC MEME" }],

@@ -6,15 +6,13 @@
  * while still verifying route existence and input validation.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG_200x150 = readFileSync(join(FIXTURES, "test-200x150.png"));
-const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+const PNG_200x150 = readFixture(fixtures.image.base.png200);
+const HEIC = readFixture(fixtures.image.base.heic200);
+const JPG = readFixture(fixtures.image.base.jpg100);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -507,7 +505,7 @@ describe("Content-Aware Resize", () => {
   it("processes a 1x1 pixel image", async () => {
     const { readFileSync } = await import("node:fs");
     const { join } = await import("node:path");
-    const TINY = readFileSync(join(__dirname, "..", "fixtures", "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "tiny.png", contentType: "image/png", content: TINY },
       { name: "settings", content: JSON.stringify({ square: true, protectFaces: false }) },
@@ -530,7 +528,7 @@ describe("Content-Aware Resize", () => {
   it("processes a large stress image", async () => {
     const { readFileSync } = await import("node:fs");
     const { join } = await import("node:path");
-    const LARGE = readFileSync(join(__dirname, "..", "fixtures", "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
       { name: "settings", content: JSON.stringify({ width: 400, protectFaces: false }) },
@@ -552,7 +550,7 @@ describe("Content-Aware Resize", () => {
   it("processes WebP input", async () => {
     const { readFileSync } = await import("node:fs");
     const { join } = await import("node:path");
-    const WEBP = readFileSync(join(__dirname, "..", "fixtures", "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.webp", contentType: "image/webp", content: WEBP },
       { name: "settings", content: JSON.stringify({ width: 40, protectFaces: false }) },

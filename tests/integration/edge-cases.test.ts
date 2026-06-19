@@ -5,17 +5,15 @@
  * extreme filenames, missing/empty settings, and unknown fields.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
 // ---------------------------------------------------------------------------
 // Fixtures
 // ---------------------------------------------------------------------------
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG_200x150 = readFileSync(join(FIXTURES, "test-200x150.png"));
-const PNG_1x1 = readFileSync(join(FIXTURES, "test-1x1.png"));
+const PNG_200x150 = readFixture(fixtures.image.base.png200);
+const PNG_1x1 = readFixture(fixtures.image.edge.px1);
 
 // ---------------------------------------------------------------------------
 // Shared state
@@ -660,7 +658,7 @@ describe("Missing file part in multipart request", () => {
 // ═══════════════════════════════════════════════════════════════════════════
 describe("Wrong extension — additional format mismatches", () => {
   it("handles JPEG data uploaded with .webp extension gracefully", async () => {
-    const jpgBuffer = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+    const jpgBuffer = readFixture(fixtures.image.base.jpg100);
 
     const { body, contentType } = createMultipartPayload([
       {
@@ -684,7 +682,7 @@ describe("Wrong extension — additional format mismatches", () => {
   });
 
   it("handles WebP data uploaded with .png extension gracefully", async () => {
-    const webpBuffer = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const webpBuffer = readFixture(fixtures.image.base.webp50);
 
     const { body, contentType } = createMultipartPayload([
       {

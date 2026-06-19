@@ -1,13 +1,11 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const _WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const _WEBP = readFixture(fixtures.image.base.webp50);
 
 const ALL_TYPES = [
   "protanopia",
@@ -133,19 +131,19 @@ describe("Multiple input formats", () => {
   });
 
   it("processes WebP input", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const res = await postTool({ simulationType: "tritanopia" }, WEBP, "test.webp", "image/webp");
     expect(res.statusCode).toBe(200);
   });
 
   it("processes HEIC input", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const res = await postTool({ simulationType: "protanomaly" }, HEIC, "photo.heic", "image/heic");
     expect(res.statusCode).toBe(200);
   });
 
   it("processes SVG input", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const res = await postTool(
       { simulationType: "achromatopsia" },
       SVG,
@@ -156,7 +154,7 @@ describe("Multiple input formats", () => {
   });
 
   it("processes animated GIF input", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const res = await postTool({ simulationType: "deuteranomaly" }, GIF, "anim.gif", "image/gif");
     expect(res.statusCode).toBe(200);
   });
@@ -187,7 +185,7 @@ describe("Error handling", () => {
 
 describe("Edge cases", () => {
   it("processes 1x1 pixel image", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const res = await postTool({ simulationType: "deuteranomaly" }, TINY, "tiny.png", "image/png");
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
@@ -195,7 +193,7 @@ describe("Edge cases", () => {
   });
 
   it("processes stress-large.jpg", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const res = await postTool({ simulationType: "protanopia" }, LARGE, "large.jpg", "image/jpeg");
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
@@ -304,7 +302,7 @@ describe("Invalid settings JSON", () => {
 
 describe("Cross-format inputs from fixtures/formats", () => {
   it("processes AVIF input", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const res = await postTool(
       { simulationType: "protanomaly" },
       AVIF,
@@ -317,7 +315,7 @@ describe("Cross-format inputs from fixtures/formats", () => {
   });
 
   it("processes TIFF input", async () => {
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const res = await postTool(
       { simulationType: "tritanomaly" },
       TIFF,
@@ -330,7 +328,7 @@ describe("Cross-format inputs from fixtures/formats", () => {
   });
 
   it("processes GIF input from formats", async () => {
-    const GIF = readFileSync(join(FIXTURES, "formats", "sample.gif"));
+    const GIF = readFixture(fixtures.image.formats("gif"));
     const res = await postTool({ simulationType: "achromatopsia" }, GIF, "sample.gif", "image/gif");
     expect(res.statusCode).toBe(200);
   });
@@ -338,7 +336,7 @@ describe("Cross-format inputs from fixtures/formats", () => {
 
 describe("HEIF input", () => {
   it("processes HEIF (sample.heif) input", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "formats", "sample.heif"));
+    const HEIF = readFixture(fixtures.image.formats("heif"));
     const res = await postTool(
       { simulationType: "blueConeMonochromacy" },
       HEIF,

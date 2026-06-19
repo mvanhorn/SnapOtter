@@ -6,15 +6,13 @@
  * and "overlay" for the overlay image.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -510,7 +508,7 @@ describe("Compose", () => {
   });
 
   it("handles HEIC base image", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.heic", contentType: "image/heic", content: HEIC },
       { name: "overlay", filename: "overlay.jpg", contentType: "image/jpeg", content: JPG },
@@ -533,7 +531,7 @@ describe("Compose", () => {
   });
 
   it("handles HEIC overlay image", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
       { name: "overlay", filename: "overlay.heic", contentType: "image/heic", content: HEIC },
@@ -556,7 +554,7 @@ describe("Compose", () => {
   });
 
   it("uses WebP overlay on PNG base", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
       { name: "overlay", filename: "overlay.webp", contentType: "image/webp", content: WEBP },
@@ -698,7 +696,7 @@ describe("Compose", () => {
   // ── Branch coverage: 1x1 tiny image handling ────────────────────────
 
   it("returns 422 when 1x1 base is smaller than overlay", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.png", contentType: "image/png", content: TINY },
       { name: "overlay", filename: "overlay.jpg", contentType: "image/jpeg", content: JPG },
@@ -722,7 +720,7 @@ describe("Compose", () => {
   });
 
   it("handles 1x1 pixel overlay image", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
       { name: "overlay", filename: "overlay.png", contentType: "image/png", content: TINY },
@@ -754,7 +752,7 @@ describe("Compose", () => {
   // ── Branch coverage: large file handling ────────────────────────────
 
   it("handles a large content image as base", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.jpg", contentType: "image/jpeg", content: LARGE },
       { name: "overlay", filename: "overlay.jpg", contentType: "image/jpeg", content: JPG },
@@ -779,7 +777,7 @@ describe("Compose", () => {
   // ── Branch coverage: HEIC overlay with opacity ──────────────────────
 
   it("applies opacity with HEIC overlay", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
       { name: "overlay", filename: "overlay.heic", contentType: "image/heic", content: HEIC },
@@ -872,7 +870,7 @@ describe("Compose", () => {
   // ── Branch coverage: HEIF content format input ─────────────────────
 
   it("handles portrait HEIC base image", { timeout: 120_000 }, async () => {
-    const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
+    const HEIC_PORTRAIT = readFixture(fixtures.image.portraitHeic);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.heic", contentType: "image/heic", content: HEIC_PORTRAIT },
       { name: "overlay", filename: "overlay.jpg", contentType: "image/jpeg", content: JPG },
@@ -1013,7 +1011,7 @@ describe("Compose", () => {
   // ── HEIF format input ─────────────────────────────────────────────
 
   it("handles HEIF base image", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const HEIF = readFixture(fixtures.image.motorcycle);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.heif", contentType: "image/heif", content: HEIF },
       { name: "overlay", filename: "overlay.jpg", contentType: "image/jpeg", content: JPG },
@@ -1039,8 +1037,8 @@ describe("Compose", () => {
   // ── Animated GIF input ────────────────────────────────────────────
 
   it("handles animated GIF as base image", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const GIF = readFixture(fixtures.image.animated.gif);
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.gif", contentType: "image/gif", content: GIF },
       { name: "overlay", filename: "overlay.png", contentType: "image/png", content: TINY },
@@ -1066,7 +1064,7 @@ describe("Compose", () => {
   // ── SVG input ─────────────────────────────────────────────────────
 
   it("handles SVG as overlay image", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
       { name: "overlay", filename: "overlay.svg", contentType: "image/svg+xml", content: SVG },
@@ -1092,8 +1090,8 @@ describe("Compose", () => {
   // ── SVG as base image ─────────────────────────────────────────────
 
   it("handles SVG as base image with small overlay", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const SVG = readFixture(fixtures.image.base.svg100);
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.svg", contentType: "image/svg+xml", content: SVG },
       { name: "overlay", filename: "overlay.png", contentType: "image/png", content: TINY },
@@ -1198,8 +1196,8 @@ describe("Compose", () => {
   // ── AVIF format input ─────────────────────────────────────────────
 
   it("handles AVIF base image", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.avif", contentType: "image/avif", content: AVIF },
       { name: "overlay", filename: "overlay.png", contentType: "image/png", content: TINY },
@@ -1225,7 +1223,7 @@ describe("Compose", () => {
   // ── SVGZ overlay (compose uses decodeBuffer which validates first) ──
 
   it("handles SVGZ overlay: succeeds or returns 422 for unsupported format", async () => {
-    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const SVGZ = readFixture(fixtures.image.formats("svgz"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
       { name: "overlay", filename: "overlay.svgz", contentType: "image/svg+xml", content: SVGZ },

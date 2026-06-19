@@ -16,21 +16,19 @@
  * 10. Pipeline with format conversion mid-chain affecting subsequent tools
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
 // ---------------------------------------------------------------------------
 // Fixtures
 // ---------------------------------------------------------------------------
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG_200x150 = readFileSync(join(FIXTURES, "test-200x150.png"));
-const PNG_1x1 = readFileSync(join(FIXTURES, "test-1x1.png"));
-const JPG_100x100 = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const WEBP_50x50 = readFileSync(join(FIXTURES, "test-50x50.webp"));
-const SVG_100x100 = readFileSync(join(FIXTURES, "test-100x100.svg"));
+const PNG_200x150 = readFixture(fixtures.image.base.png200);
+const PNG_1x1 = readFixture(fixtures.image.edge.px1);
+const JPG_100x100 = readFixture(fixtures.image.base.jpg100);
+const WEBP_50x50 = readFixture(fixtures.image.base.webp50);
+const SVG_100x100 = readFixture(fixtures.image.base.svg100);
 
 // ---------------------------------------------------------------------------
 // Shared state

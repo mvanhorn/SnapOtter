@@ -9,19 +9,17 @@
  * and concurrent.test.ts.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
 // ---------------------------------------------------------------------------
 // Fixtures
 // ---------------------------------------------------------------------------
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG_200x150 = readFileSync(join(FIXTURES, "test-200x150.png"));
-const PNG_1x1 = readFileSync(join(FIXTURES, "test-1x1.png"));
-const JPG_100x100 = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const STRESS_LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+const PNG_200x150 = readFixture(fixtures.image.base.png200);
+const PNG_1x1 = readFixture(fixtures.image.edge.px1);
+const JPG_100x100 = readFixture(fixtures.image.base.jpg100);
+const STRESS_LARGE = readFixture(fixtures.image.stressLarge);
 
 // ---------------------------------------------------------------------------
 // Shared state

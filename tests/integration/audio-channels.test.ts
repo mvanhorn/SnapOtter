@@ -1,12 +1,13 @@
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { ffmpegAvailable, probeMedia } from "@snapotter/media-engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const STEREO = readFileSync(join(__dirname, "..", "fixtures", "media", "tone-stereo.wav"));
-const MONO_MP3 = readFileSync(join(__dirname, "..", "fixtures", "media", "tiny.mp3"));
+const STEREO = readFixture(fixtures.audio.stereo);
+const MONO_MP3 = readFixture(fixtures.audio.tiny("mp3"));
 
 let testApp: TestApp;
 let adminToken: string;

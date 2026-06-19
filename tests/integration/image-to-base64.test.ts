@@ -5,14 +5,12 @@
  * with results/errors arrays rather than a file download.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -255,7 +253,7 @@ describe("image-to-base64", () => {
 
   // ── Quality affects encoded size ─────────────────────────────────
   it("lower quality produces smaller encoded size for jpeg", async () => {
-    const largeJPG = readFileSync(join(FIXTURES, "content", "portrait-color.jpg"));
+    const largeJPG = readFixture(fixtures.image.portrait.jpg);
     const makeRequest = async (quality: number) => {
       const { body, contentType } = createMultipartPayload([
         { name: "file", filename: "test.jpg", contentType: "image/jpeg", content: largeJPG },
@@ -297,7 +295,7 @@ describe("image-to-base64", () => {
 
   // ── WebP input preserves format in original mode ─────────────────
   it("preserves WebP format in original mode", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.webp", contentType: "image/webp", content: WEBP },
       { name: "settings", content: JSON.stringify({}) },
@@ -319,7 +317,7 @@ describe("image-to-base64", () => {
 
   // ── HEIC input gets converted to JPEG in original mode ───────────
   it("converts HEIC to JPEG in original mode", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
       { name: "settings", content: JSON.stringify({}) },
@@ -423,7 +421,7 @@ describe("image-to-base64", () => {
 
   // ── SVG input passthrough in original mode ────────────────────────
   it("passes through SVG without conversion in original mode", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "icon.svg", contentType: "image/svg+xml", content: SVG },
       { name: "settings", content: JSON.stringify({}) },
@@ -512,7 +510,7 @@ describe("image-to-base64", () => {
   // ── Branch coverage: line 180 (overheadPercent = 0 for empty) ─────
 
   it("handles 1x1 tiny image", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "tiny.png", contentType: "image/png", content: TINY },
       { name: "settings", content: JSON.stringify({}) },
@@ -535,7 +533,7 @@ describe("image-to-base64", () => {
   // ── HEIC with resize ──────────────────────────────────────────────
 
   it("converts HEIC to JPEG with resize applied", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
       { name: "settings", content: JSON.stringify({ maxWidth: 50 }) },
@@ -557,7 +555,7 @@ describe("image-to-base64", () => {
   // ── HEIC with explicit format conversion ──────────────────────────
 
   it("converts HEIC to PNG when outputFormat is png", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
       { name: "settings", content: JSON.stringify({ outputFormat: "png" }) },
@@ -599,7 +597,7 @@ describe("image-to-base64", () => {
   // ── Large stress file ─────────────────────────────────────────────
 
   it("converts stress-large.jpg to base64", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
       { name: "settings", content: JSON.stringify({ maxWidth: 200 }) },
@@ -640,8 +638,8 @@ describe("image-to-base64", () => {
   // ── 5+ images batch conversion ──────────────────────────────────
 
   it("converts 5 images in a single request", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "img1.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "img2.jpg", contentType: "image/jpeg", content: JPG },
@@ -715,7 +713,7 @@ describe("image-to-base64", () => {
     "converts HEIF to JPEG in original mode",
     { timeout: 120_000 },
     async () => {
-      const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+      const HEIF = readFixture(fixtures.image.motorcycle);
       const { body, contentType } = createMultipartPayload([
         { name: "file", filename: "photo.heif", contentType: "image/heif", content: HEIF },
         { name: "settings", content: JSON.stringify({}) },
@@ -796,7 +794,7 @@ describe("image-to-base64", () => {
   // ── Animated GIF input ──────────────────────────────────────────
 
   it("converts animated GIF to base64", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
       { name: "settings", content: JSON.stringify({}) },
@@ -865,7 +863,7 @@ describe("image-to-base64", () => {
   // ── TIFF input format ───────────────────────────────────────────
 
   it("converts TIFF to base64", async () => {
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.tiff", contentType: "image/tiff", content: TIFF },
       { name: "settings", content: JSON.stringify({}) },
@@ -923,8 +921,8 @@ describe("image-to-base64", () => {
   // ── Multiple formats in single request ──────────────────────────
 
   it("converts mixed formats in a single batch request", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -1048,7 +1046,7 @@ describe("image-to-base64", () => {
 
   // ── AVIF input format ────────────────────────────────────────
   it("converts AVIF to base64 in original mode", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.avif", contentType: "image/avif", content: AVIF },
       { name: "settings", content: JSON.stringify({}) },
@@ -1069,7 +1067,7 @@ describe("image-to-base64", () => {
 
   // ── GIF with resize ──────────────────────────────────────────
   it("resizes animated GIF and converts to JPEG", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
       { name: "settings", content: JSON.stringify({ outputFormat: "jpeg", maxWidth: 30 }) },
@@ -1090,7 +1088,7 @@ describe("image-to-base64", () => {
 
   // ── TIFF with explicit format conversion ─────────────────────
   it("converts TIFF to WebP format", async () => {
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.tiff", contentType: "image/tiff", content: TIFF },
       { name: "settings", content: JSON.stringify({ outputFormat: "webp", quality: 50 }) },
@@ -1150,7 +1148,7 @@ describe("image-to-base64", () => {
 
   // ── SVG with explicit format conversion ──────────────────────
   it("converts SVG to JPEG when outputFormat is jpeg", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "icon.svg", contentType: "image/svg+xml", content: SVG },
       { name: "settings", content: JSON.stringify({ outputFormat: "jpeg" }) },

@@ -1,29 +1,27 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
 // ---------------------------------------------------------------------------
 // Fixtures -- one canonical file per modality
 // ---------------------------------------------------------------------------
-const FIXTURES_DIR = join(__dirname, "..", "fixtures");
-const IMG = () => readFileSync(join(FIXTURES_DIR, "test-200x150.png"));
-const VID = () => readFileSync(join(FIXTURES_DIR, "media", "tiny.mp4"));
-const AUD = () => readFileSync(join(FIXTURES_DIR, "media", "tiny.mp3"));
-const PDF = () => readFileSync(join(FIXTURES_DIR, "test-3page.pdf"));
-const CSV = () => readFileSync(join(FIXTURES_DIR, "data", "tiny.csv"));
-const JSON_F = () => readFileSync(join(FIXTURES_DIR, "data", "tiny.json"));
-const XML_F = () => readFileSync(join(FIXTURES_DIR, "data", "tiny.xml"));
-const YAML_F = () => readFileSync(join(FIXTURES_DIR, "data", "tiny.yaml"));
-const DOCX = () => readFileSync(join(FIXTURES_DIR, "documents", "tiny.docx"));
-const XLSX = () => readFileSync(join(FIXTURES_DIR, "documents", "tiny.xlsx"));
-const PPTX = () => readFileSync(join(FIXTURES_DIR, "documents", "tiny.pptx"));
-const HTML = () => readFileSync(join(FIXTURES_DIR, "documents", "tiny.html"));
-const MD = () => readFileSync(join(FIXTURES_DIR, "documents", "tiny.md"));
-const EPUB = () => readFileSync(join(FIXTURES_DIR, "documents", "tiny.epub"));
-const GIF = () => readFileSync(join(FIXTURES_DIR, "animated.gif"));
-const SRT = () => readFileSync(join(FIXTURES_DIR, "media", "tiny.srt"));
-const WAV = () => readFileSync(join(FIXTURES_DIR, "media", "tiny.wav"));
+const IMG = () => readFixture(fixtures.image.base.png200);
+const VID = () => readFixture(fixtures.video.tiny("mp4"));
+const AUD = () => readFixture(fixtures.audio.tiny("mp3"));
+const PDF = () => readFixture(fixtures.document.pdf3);
+const CSV = () => readFixture(fixtures.data.csv);
+const JSON_F = () => readFixture(fixtures.data.json);
+const XML_F = () => readFixture(fixtures.data.xml);
+const YAML_F = () => readFixture(fixtures.data.yaml);
+const DOCX = () => readFixture(fixtures.document.tiny("docx"));
+const XLSX = () => readFixture(fixtures.document.tiny("xlsx"));
+const PPTX = () => readFixture(fixtures.document.tiny("pptx"));
+const HTML = () => readFixture(fixtures.document.tiny("html"));
+const MD = () => readFixture(fixtures.document.tiny("md"));
+const EPUB = () => readFixture(fixtures.document.tiny("epub"));
+const GIF = () => readFixture(fixtures.image.animated.gif);
+const SRT = () => readFixture(fixtures.video.subs.srt);
+const WAV = () => readFixture(fixtures.audio.tiny("wav"));
 
 // ---------------------------------------------------------------------------
 // Fixture + filename resolver per tool modality

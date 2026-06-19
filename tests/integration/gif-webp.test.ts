@@ -5,17 +5,16 @@
  * and extension validation.
  */
 
-import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const ANIMATED_GIF = readFileSync(join(FIXTURES, "animated.gif"));
-const ANIMATED_WEBP = readFileSync(join(FIXTURES, "animated.webp"));
-const STILL_PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const SIMPSONS_GIF = readFileSync(join(FIXTURES, "content", "animated-simpsons.gif"));
+const ANIMATED_GIF = readFixture(fixtures.image.animated.gif);
+const ANIMATED_WEBP = readFixture(fixtures.image.animated.webp);
+const STILL_PNG = readFixture(fixtures.image.base.png200);
+const SIMPSONS_GIF = readFixture(fixtures.image.animated.real);
 
 let testApp: TestApp;
 let app: TestApp["app"];

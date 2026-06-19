@@ -1,8 +1,7 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { TOOLS } from "@snapotter/shared";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { getToolConfig } from "../../apps/api/src/routes/tool-factory.js";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { pairwise } from "../helpers/pairwise.js";
 import { defaultSettingsFor } from "../helpers/tool-default-settings.js";
 import { compactCase, deriveAxes } from "../helpers/zod-pict.js";
@@ -41,7 +40,7 @@ describe("pairwise settings matrix", () => {
 
   beforeAll(async () => {
     testApp = await buildTestApp();
-    inputPng = readFileSync(join(__dirname, "..", "fixtures", "test-200x150.png"));
+    inputPng = readFixture(fixtures.image.base.png200);
   }, 30_000);
 
   afterAll(async () => {

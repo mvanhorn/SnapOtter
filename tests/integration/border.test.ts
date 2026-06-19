@@ -5,15 +5,13 @@
  * verification, and input validation.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -552,7 +550,7 @@ describe("Border", () => {
   });
 
   it("handles HEIC input", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
       {
@@ -574,7 +572,7 @@ describe("Border", () => {
   });
 
   it("handles HEIF input (motorcycle.heif)", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const HEIF = readFixture(fixtures.image.motorcycle);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heif", contentType: "image/heif", content: HEIF },
       {
@@ -596,7 +594,7 @@ describe("Border", () => {
   });
 
   it("handles SVG input", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "icon.svg", contentType: "image/svg+xml", content: SVG },
       {
@@ -618,7 +616,7 @@ describe("Border", () => {
   });
 
   it("handles animated GIF input", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
       {
@@ -768,7 +766,7 @@ describe("Border", () => {
   });
 
   it("handles WebP input with border only (no alpha needed)", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.webp", contentType: "image/webp", content: WEBP },
       {
@@ -797,7 +795,7 @@ describe("Border", () => {
   });
 
   it("handles tiny 1x1 image input", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "tiny.png", contentType: "image/png", content: TINY },
       {
@@ -828,7 +826,7 @@ describe("Border", () => {
   // ── Large stress file ────────────────────────────────────────────
 
   it("handles stress-large.jpg with border", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
       {
@@ -911,7 +909,7 @@ describe("Border", () => {
   });
 
   it("handles TIFF input format", async () => {
-    const TIFF = readFileSync(join(FIXTURES, "formats", "sample.tiff"));
+    const TIFF = readFixture(fixtures.image.formats("tiff"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.tiff", contentType: "image/tiff", content: TIFF },
       {
@@ -933,7 +931,7 @@ describe("Border", () => {
   });
 
   it("handles BMP input format", async () => {
-    const BMP = readFileSync(join(FIXTURES, "formats", "sample.bmp"));
+    const BMP = readFixture(fixtures.image.formats("bmp"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.bmp", contentType: "image/bmp", content: BMP },
       {
@@ -1162,7 +1160,7 @@ describe("Border", () => {
   // ── WebP with corner radius (alpha-capable format stays WebP) ────
 
   it("keeps WebP format when corner radius is applied to WebP input", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.webp", contentType: "image/webp", content: WEBP },
       {
@@ -1290,7 +1288,7 @@ describe("Border", () => {
   // ── AVIF input format ────────────────────────────────────────────
 
   it("handles AVIF input format", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.avif", contentType: "image/avif", content: AVIF },
       {

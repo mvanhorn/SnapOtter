@@ -7,14 +7,13 @@
  */
 
 import { randomUUID } from "node:crypto";
-import { readFileSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
-
-const FIXTURES = join(__dirname, "..", "fixtures");
 
 // All output formats accepted by the convert tool
 const OUTPUT_FORMATS = [
@@ -69,7 +68,7 @@ beforeAll(async () => {
   adminToken = await loginAsAdmin(app);
 
   // Base fixture
-  const png = readFileSync(join(FIXTURES, "test-200x150.png"));
+  const png = readFixture(fixtures.image.base.png200);
 
   // Generate all raster input formats from the PNG fixture
   inputs.png = { buffer: png, filename: "test.png", contentType: "image/png" };
@@ -99,12 +98,12 @@ beforeAll(async () => {
     contentType: "image/gif",
   };
   inputs.heic = {
-    buffer: readFileSync(join(FIXTURES, "test-200x150.heic")),
+    buffer: readFixture(fixtures.image.base.heic200),
     filename: "test.heic",
     contentType: "image/heic",
   };
   inputs.svg = {
-    buffer: readFileSync(join(FIXTURES, "test-100x100.svg")),
+    buffer: readFixture(fixtures.image.base.svg100),
     filename: "test.svg",
     contentType: "image/svg+xml",
   };
@@ -350,7 +349,7 @@ describe("SVG via dedicated svg-to-raster endpoint", () => {
 // ---------------------------------------------------------------------------
 describe("Animated format preservation", () => {
   it("preserves animation when converting animated GIF to WebP", async () => {
-    const animatedGif = readFileSync(join(FIXTURES, "animated.gif"));
+    const animatedGif = readFixture(fixtures.image.animated.gif);
     const { body: payload, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -390,7 +389,7 @@ describe("Animated format preservation", () => {
   });
 
   it("converts animated GIF to PNG as single frame without error", async () => {
-    const animatedGif = readFileSync(join(FIXTURES, "animated.gif"));
+    const animatedGif = readFixture(fixtures.image.animated.gif);
     const { body: payload, contentType } = createMultipartPayload([
       {
         name: "file",

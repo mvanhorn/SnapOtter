@@ -28,11 +28,10 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { fixtureDir } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
 vi.setConfig({ testTimeout: 60_000 });
-
-const FORMATS_DIR = join(__dirname, "..", "fixtures", "formats");
 
 // ---------------------------------------------------------------------------
 // Format definitions for the 16 primary formats
@@ -235,7 +234,7 @@ afterAll(async () => {
 // Helper: send a tool request and return the response
 // ---------------------------------------------------------------------------
 async function callTool(toolId: string, fmt: FormatDef, settings: Record<string, unknown>) {
-  const fixturePath = join(FORMATS_DIR, fmt.file);
+  const fixturePath = join(fixtureDir.formats, fmt.file);
   if (!existsSync(fixturePath)) {
     return null;
   }
@@ -541,7 +540,7 @@ describe("Strip-metadata across all 16 primary formats", () => {
       it(
         `inspects ${fmt.name}`,
         async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath)) return;
 
           const buffer = readFileSync(fixturePath);
@@ -675,7 +674,7 @@ describe("Image enhancement across all 16 primary formats", () => {
       it(
         `analyzes ${fmt.name}`,
         async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath)) return;
 
           const buffer = readFileSync(fixturePath);

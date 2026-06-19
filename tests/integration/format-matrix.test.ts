@@ -19,9 +19,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtureDir, fixtures } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
-
-const FORMATS_DIR = join(__dirname, "..", "fixtures", "formats");
 
 // ---------------------------------------------------------------------------
 // Format sample definitions
@@ -492,7 +491,7 @@ afterAll(async () => {
 describe("Cross-format matrix", () => {
   for (const fmt of FORMAT_SAMPLES) {
     describe(`${fmt.name} input (${fmt.file})`, () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
 
       for (const tool of TOOLS) {
         // Skip "Convert to PNG" when input is already PNG (no-op conversion)
@@ -618,7 +617,7 @@ describe("Cross-format matrix", () => {
 // Edge-case matrix: multipage TIFF
 // ---------------------------------------------------------------------------
 describe("Multipage TIFF handling", () => {
-  const multipagePath = join(FORMATS_DIR, "multipage.tiff");
+  const multipagePath = fixtures.image.multipageTiff;
 
   for (const tool of TOOLS) {
     it(`${tool.label} handles multipage TIFF`, async () => {
@@ -701,7 +700,7 @@ describe("Cross-format conversion matrix", () => {
 
       const testTimeout = outFmt === "avif" ? 120_000 : 60_000;
       it(`${fmt.name} -> ${outFmt}`, { timeout: testTimeout }, async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -757,7 +756,7 @@ describe("Exotic format error resilience", () => {
       it(`${fmt.name} + ${tool.label}: returns JSON error (no crash)`, {
         timeout: 120_000,
       }, async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -801,7 +800,7 @@ describe("Image enhancement analysis across formats", () => {
 
   for (const fmt of ANALYZABLE_FORMATS) {
     it(`analyzes ${fmt.name} and returns correction recommendations`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath)) return;
 
       const buffer = readFileSync(fixturePath);
@@ -838,7 +837,7 @@ describe("Image enhancement analysis across formats", () => {
 
   for (const fmt of EXOTIC_FORMATS) {
     it(`${fmt.name} analyze: returns clean response (no crash)`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath)) return;
 
       const buffer = readFileSync(fixturePath);
@@ -884,7 +883,7 @@ describe("Strip-metadata inspection across formats", () => {
 
   for (const fmt of INSPECTABLE_FORMATS) {
     it(`inspects ${fmt.name} metadata`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath)) return;
 
       const buffer = readFileSync(fixturePath);
@@ -926,7 +925,7 @@ describe("Strip-metadata inspection across formats", () => {
 // ---------------------------------------------------------------------------
 describe("Watermark-image cross-format matrix", () => {
   // Use the PNG fixture as the known-good counterpart
-  const PNG_PATH = join(FORMATS_DIR, "sample.png");
+  const PNG_PATH = fixtures.image.formats("png");
 
   describe("format as main image (watermark is PNG)", () => {
     for (const fmt of FORMAT_SAMPLES) {
@@ -935,7 +934,7 @@ describe("Watermark-image cross-format matrix", () => {
       it(
         `${fmt.name} main image with PNG watermark`,
         async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
           const mainBuffer = readFileSync(fixturePath);
@@ -1005,7 +1004,7 @@ describe("Watermark-image cross-format matrix", () => {
       it(
         `PNG main image with ${fmt.name} watermark`,
         async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
           const mainBuffer = readFileSync(PNG_PATH);
@@ -1078,7 +1077,7 @@ describe("Watermark-image cross-format matrix", () => {
     for (const fmt of CORE_FORMATS) {
       for (const position of POSITIONS) {
         it(`${fmt.name} with position=${position}`, async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
           const mainBuffer = readFileSync(fixturePath);
@@ -1138,7 +1137,7 @@ describe("Image-to-PDF cross-format matrix", () => {
       it(
         `converts ${fmt.name} to PDF`,
         async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath)) return;
 
           const buffer = readFileSync(fixturePath);
@@ -1210,7 +1209,7 @@ describe("Image-to-PDF cross-format matrix", () => {
     for (const fmt of CORE_FORMATS) {
       for (const cfg of PAGE_CONFIGS) {
         it(`${fmt.name} -> ${cfg.pageSize} ${cfg.orientation}`, async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath)) return;
 
           const buffer = readFileSync(fixturePath);
@@ -1264,8 +1263,8 @@ describe("Image-to-PDF cross-format matrix", () => {
       if (fmt.name === "PNG") continue;
 
       it(`${fmt.name} + PNG as 2-page PDF`, async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
-        const pngPath = join(FORMATS_DIR, "sample.png");
+        const fixturePath = join(fixtureDir.formats, fmt.file);
+        const pngPath = fixtures.image.formats("png");
         if (!existsSync(fixturePath) || !existsSync(pngPath)) return;
 
         const fmtBuffer = readFileSync(fixturePath);
@@ -1310,7 +1309,7 @@ describe("Image-to-PDF cross-format matrix", () => {
   });
 
   describe("multipage TIFF to PDF", () => {
-    const multipagePath = join(FORMATS_DIR, "multipage.tiff");
+    const multipagePath = fixtures.image.multipageTiff;
 
     it("converts multipage TIFF to PDF", async () => {
       if (!existsSync(multipagePath)) return;
@@ -1358,7 +1357,7 @@ describe("Image-to-PDF cross-format matrix", () => {
 
     for (const fmt of EXOTIC_FORMATS) {
       it(`${fmt.name} -> PDF: returns clean response (no crash)`, async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -1407,12 +1406,12 @@ describe("Image-to-PDF cross-format matrix", () => {
 // ---------------------------------------------------------------------------
 describe("Watermark-image exotic format error resilience", () => {
   const EXOTIC_FORMATS = FORMAT_SAMPLES.filter((f) => f.needsCliDecoder);
-  const PNG_PATH = join(FORMATS_DIR, "sample.png");
+  const PNG_PATH = fixtures.image.formats("png");
 
   describe("exotic format as main image", () => {
     for (const fmt of EXOTIC_FORMATS) {
       it(`${fmt.name} main + PNG watermark: no crash`, async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
         const mainBuffer = readFileSync(fixturePath);
@@ -1463,7 +1462,7 @@ describe("Watermark-image exotic format error resilience", () => {
   describe("exotic format as watermark image", () => {
     for (const fmt of EXOTIC_FORMATS) {
       it(`PNG main + ${fmt.name} watermark: no crash`, async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
         const mainBuffer = readFileSync(PNG_PATH);

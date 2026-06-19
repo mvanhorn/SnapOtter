@@ -6,15 +6,13 @@
  * raw binary rather than JSON.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import AdmZip from "adm-zip";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
+const PNG = readFixture(fixtures.image.base.png200);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -405,7 +403,7 @@ describe("Split", () => {
   });
 
   it("keeps original format when outputFormat is 'original'", async () => {
-    const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+    const JPG = readFixture(fixtures.image.base.jpg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.jpg", contentType: "image/jpeg", content: JPG },
       {
@@ -543,7 +541,7 @@ describe("Split", () => {
   });
 
   it("splits a JPEG input image", async () => {
-    const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+    const JPG = readFixture(fixtures.image.base.jpg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.jpg", contentType: "image/jpeg", content: JPG },
       {
@@ -574,7 +572,7 @@ describe("Split", () => {
   });
 
   it("splits a WebP input image", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "img.webp", contentType: "image/webp", content: WEBP },
       {
@@ -604,7 +602,7 @@ describe("Split", () => {
   });
 
   it("splits a HEIC input image", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
       {
@@ -818,7 +816,7 @@ describe("Split", () => {
   it("splits a HEIC image into a grid without format conversion", {
     timeout: 120_000,
   }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
       {
@@ -846,7 +844,7 @@ describe("Split", () => {
   // ── Branch coverage: custom tile dimensions with HEIC ───────────────
 
   it("splits HEIC image using fixed tile dimensions", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
       {
@@ -877,7 +875,7 @@ describe("Split", () => {
   // ── Branch coverage: 1x1 pixel image split ──────────────────────────
 
   it("splits a 1x1 pixel image into a single tile", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "tiny.png", contentType: "image/png", content: TINY },
       {
@@ -908,7 +906,7 @@ describe("Split", () => {
   // ── Branch coverage: large stress image ─────────────────────────────
 
   it("splits a large stress image", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
       {
@@ -1032,7 +1030,7 @@ describe("Split", () => {
   // ── Branch coverage: PNG format conversion ──────────────────────────
 
   it("converts tiles to explicit png format from jpg source", async () => {
-    const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+    const JPG = readFixture(fixtures.image.base.jpg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.jpg", contentType: "image/jpeg", content: JPG },
       {
@@ -1097,7 +1095,7 @@ describe("Split", () => {
   // ── Branch coverage: portrait image split ───────────────────────────
 
   it("splits a portrait image into a grid", async () => {
-    const PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.jpg"));
+    const PORTRAIT = readFixture(fixtures.image.portraitJpg);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "portrait.jpg", contentType: "image/jpeg", content: PORTRAIT },
       {
@@ -1125,7 +1123,7 @@ describe("Split", () => {
   // ── Branch coverage: HEIC split with webp output ────────────────────
 
   it("splits HEIC image with webp output format", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
       {
@@ -1234,7 +1232,7 @@ describe("Split", () => {
   // ── Branch coverage: exif-oriented image split ──────────────────────
 
   it("splits an image with EXIF orientation data", async () => {
-    const EXIF = readFileSync(join(FIXTURES, "test-with-exif.jpg"));
+    const EXIF = readFixture(fixtures.image.exifGps);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "exif.jpg", contentType: "image/jpeg", content: EXIF },
       {
@@ -1317,7 +1315,7 @@ describe("Split", () => {
   });
 
   it("splits via batch endpoint with output format conversion", async () => {
-    const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+    const JPG = readFixture(fixtures.image.base.jpg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "batch-fmt.jpg", contentType: "image/jpeg", content: JPG },
       {
@@ -1386,7 +1384,7 @@ describe("Split", () => {
   // ── Additional edge cases ──────────────────────────────────────────
 
   it("splits large stress image via batch endpoint", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "stress.jpg", contentType: "image/jpeg", content: LARGE },
       {
@@ -1409,7 +1407,7 @@ describe("Split", () => {
   });
 
   it("splits with original format preserved via batch endpoint", async () => {
-    const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+    const JPG = readFixture(fixtures.image.base.jpg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "keep.jpg", contentType: "image/jpeg", content: JPG },
       {
@@ -1456,7 +1454,7 @@ describe("Split", () => {
   // ── HEIF format input ─────────────────────────────────────────────
 
   it("splits a HEIF input image", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const HEIF = readFixture(fixtures.image.motorcycle);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heif", contentType: "image/heif", content: HEIF },
       {
@@ -1491,7 +1489,7 @@ describe("Split", () => {
   // ── Animated GIF input ────────────────────────────────────────────
 
   it("splits an animated GIF input image", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
       {
@@ -1519,7 +1517,7 @@ describe("Split", () => {
   // ── SVG input ─────────────────────────────────────────────────────
 
   it("splits an SVG input image", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "icon.svg", contentType: "image/svg+xml", content: SVG },
       {
@@ -1657,7 +1655,7 @@ describe("Split", () => {
   // ── AVIF format input ─────────────────────────────────────────────
 
   it("splits an AVIF input image", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.avif", contentType: "image/avif", content: AVIF },
       {
@@ -1692,7 +1690,7 @@ describe("Split", () => {
   // ── SVGZ input ───────────────────────────────────────────────────
 
   it("splits a SVGZ (compressed SVG) input image", async () => {
-    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const SVGZ = readFixture(fixtures.image.formats("svgz"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "icon.svgz", contentType: "image/svg+xml", content: SVGZ },
       {

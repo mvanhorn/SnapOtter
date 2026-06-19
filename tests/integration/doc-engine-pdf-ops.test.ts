@@ -20,8 +20,9 @@ import {
   qpdfSplitRanges,
 } from "@snapotter/doc-engine";
 import { describe, expect, it } from "vitest";
+import { fixtures } from "../fixtures/index.js";
 
-const PDF = join(process.cwd(), "tests/fixtures/test-3page.pdf");
+const PDF = fixtures.document.pdf3;
 
 describe.skipIf(!qpdfAvailable())("doc-engine pdf ops (requires qpdf)", () => {
   it("merges two pdfs into one with summed pages", async () => {
@@ -86,11 +87,7 @@ describe.skipIf(!qpdfAvailable())("doc-engine pdf ops (requires qpdf)", () => {
     const dir = mkdtempSync(join(tmpdir(), "pdf-ops-"));
     try {
       await expect(
-        qpdfDecrypt(
-          join(process.cwd(), "tests/fixtures/documents/encrypted.pdf"),
-          "wrong",
-          join(dir, "x.pdf"),
-        ),
+        qpdfDecrypt(fixtures.document.encrypted, "wrong", join(dir, "x.pdf")),
       ).rejects.toThrow(/password|invalid/i);
     } finally {
       rmSync(dir, { recursive: true, force: true });

@@ -34,9 +34,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtureDir, fixtures } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
-
-const FORMATS_DIR = join(__dirname, "..", "fixtures", "formats");
 
 // ---------------------------------------------------------------------------
 // Format sample definitions (subset relevant to the expanded tools)
@@ -235,7 +234,7 @@ describe("Color-blindness simulation cross-format", () => {
     it(
       `processes ${fmt.name} input`,
       async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -300,7 +299,7 @@ describe("Beautify cross-format", () => {
     it(
       `processes ${fmt.name} input`,
       async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -369,7 +368,7 @@ describe("Edit-metadata cross-format", () => {
       it(
         `edits metadata in ${fmt.name} input`,
         async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath)) return;
 
           const buffer = readFileSync(fixturePath);
@@ -429,7 +428,7 @@ describe("Edit-metadata cross-format", () => {
       it(
         `inspects ${fmt.name} metadata`,
         async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath)) return;
 
           const buffer = readFileSync(fixturePath);
@@ -484,7 +483,7 @@ describe("Vectorize cross-format", () => {
     it(
       `vectorizes ${fmt.name} input`,
       async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -545,7 +544,7 @@ describe("Vectorize cross-format", () => {
 describe("Split cross-format", () => {
   for (const fmt of CORE_FORMATS) {
     it(`splits ${fmt.name} into grid tiles`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath)) return;
 
       const buffer = readFileSync(fixturePath);
@@ -585,7 +584,7 @@ describe("Split cross-format", () => {
     it(
       `${fmt.name}: no server crash`,
       async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -630,7 +629,7 @@ describe("Split cross-format", () => {
 describe("Favicon cross-format", () => {
   for (const fmt of CORE_FORMATS) {
     it(`generates favicons from ${fmt.name} input`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath)) return;
 
       const buffer = readFileSync(fixturePath);
@@ -680,7 +679,7 @@ describe("Meme-generator cross-format", () => {
     it(
       `generates meme from ${fmt.name} input`,
       async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -748,7 +747,7 @@ describe("Barcode-read cross-format", () => {
     it(
       `scans ${fmt.name} input for barcodes`,
       async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -808,7 +807,7 @@ describe("Barcode-read cross-format", () => {
 // ---------------------------------------------------------------------------
 describe("SVG-to-raster", () => {
   it("converts SVG to PNG", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.svg");
+    const fixturePath = fixtures.image.formats("svg");
     if (!existsSync(fixturePath)) return;
 
     const buffer = readFileSync(fixturePath);
@@ -853,7 +852,7 @@ describe("SVG-to-raster", () => {
   for (const outFmt of SVG_OUTPUT_FORMATS) {
     const testTimeout = outFmt === "avif" ? 120_000 : 30_000;
     it(`converts SVG to ${outFmt}`, { timeout: testTimeout }, async () => {
-      const fixturePath = join(FORMATS_DIR, "sample.svg");
+      const fixturePath = fixtures.image.formats("svg");
       if (!existsSync(fixturePath)) return;
 
       const buffer = readFileSync(fixturePath);
@@ -895,7 +894,7 @@ describe("SVG-to-raster", () => {
 
   for (const fmt of NON_SVG_FORMATS) {
     it(`rejects ${fmt.name} input with 400`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath)) return;
 
       const buffer = readFileSync(fixturePath);
@@ -938,12 +937,12 @@ describe("SVG-to-raster", () => {
 // as the base image with a fixed PNG overlay, and vice versa.
 // ---------------------------------------------------------------------------
 describe("Compose cross-format", () => {
-  const PNG_PATH = join(FORMATS_DIR, "sample.png");
+  const PNG_PATH = fixtures.image.formats("png");
 
   describe("format as base image (overlay is PNG)", () => {
     for (const fmt of CORE_FORMATS) {
       it(`${fmt.name} base + PNG overlay`, async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
         const baseBuffer = readFileSync(fixturePath);
@@ -998,7 +997,7 @@ describe("Compose cross-format", () => {
       if (fmt.name === "PNG") continue;
 
       it(`PNG base + ${fmt.name} overlay`, async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
         const baseBuffer = readFileSync(PNG_PATH);
@@ -1064,7 +1063,7 @@ describe("Compose cross-format", () => {
       it(
         `${fmt.name} base + PNG overlay: no crash`,
         async () => {
-          const fixturePath = join(FORMATS_DIR, fmt.file);
+          const fixturePath = join(fixtureDir.formats, fmt.file);
           if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
           const baseBuffer = readFileSync(fixturePath);
@@ -1115,11 +1114,11 @@ describe("Compose cross-format", () => {
 // Tests comparing each core format against PNG.
 // ---------------------------------------------------------------------------
 describe("Compare cross-format", () => {
-  const PNG_PATH = join(FORMATS_DIR, "sample.png");
+  const PNG_PATH = fixtures.image.formats("png");
 
   for (const fmt of CORE_FORMATS) {
     it(`compares ${fmt.name} with PNG`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
       const bufferA = readFileSync(fixturePath);
@@ -1168,7 +1167,7 @@ describe("Compare cross-format", () => {
     it(
       `${fmt.name} vs PNG: no crash`,
       async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
         const bufferA = readFileSync(fixturePath);
@@ -1214,14 +1213,14 @@ describe("Compare cross-format", () => {
 // with a PNG fixture in a 2-image collage.
 // ---------------------------------------------------------------------------
 describe("Collage cross-format", () => {
-  const PNG_PATH = join(FORMATS_DIR, "sample.png");
+  const PNG_PATH = fixtures.image.formats("png");
 
   for (const fmt of CORE_FORMATS) {
     // Skip PNG + PNG (trivial)
     if (fmt.name === "PNG") continue;
 
     it(`${fmt.name} + PNG in 2-image collage`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
       const fmtBuffer = readFileSync(fixturePath);
@@ -1275,7 +1274,7 @@ describe("Collage cross-format", () => {
     it(
       `${fmt.name} + PNG collage: no crash`,
       async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
         const fmtBuffer = readFileSync(fixturePath);
@@ -1328,14 +1327,14 @@ describe("Collage cross-format", () => {
 // Requires 2+ images. Tests stitching each core format with a PNG fixture.
 // ---------------------------------------------------------------------------
 describe("Stitch cross-format", () => {
-  const PNG_PATH = join(FORMATS_DIR, "sample.png");
+  const PNG_PATH = fixtures.image.formats("png");
 
   for (const fmt of CORE_FORMATS) {
     // Skip PNG + PNG (trivial)
     if (fmt.name === "PNG") continue;
 
     it(`stitches ${fmt.name} + PNG horizontally`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
       const fmtBuffer = readFileSync(fixturePath);
@@ -1389,7 +1388,7 @@ describe("Stitch cross-format", () => {
     it(
       `${fmt.name} + PNG stitch: no crash`,
       async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
         const fmtBuffer = readFileSync(fixturePath);
@@ -1449,7 +1448,7 @@ describe("Transparency-fixer cross-format", () => {
     it(
       `${fmt.name}: returns 501 or accepts input`,
       async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath)) return;
 
         const buffer = readFileSync(fixturePath);
@@ -1519,7 +1518,7 @@ describe("Color-blindness simulation types", () => {
 
   for (const simType of SIMULATION_TYPES) {
     it(`simulation: ${simType}`, async () => {
-      const fixturePath = join(FORMATS_DIR, "sample.jpg");
+      const fixturePath = fixtures.image.formats("jpg");
       if (!existsSync(fixturePath)) return;
 
       const buffer = readFileSync(fixturePath);
@@ -1562,7 +1561,7 @@ describe("Color-blindness simulation types", () => {
 // ---------------------------------------------------------------------------
 describe("Vectorize color modes", () => {
   it("BW mode", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.jpg");
+    const fixturePath = fixtures.image.formats("jpg");
     if (!existsSync(fixturePath)) return;
 
     const buffer = readFileSync(fixturePath);
@@ -1601,7 +1600,7 @@ describe("Vectorize color modes", () => {
   });
 
   it("color mode", async () => {
-    const fixturePath = join(FORMATS_DIR, "sample.jpg");
+    const fixturePath = fixtures.image.formats("jpg");
     if (!existsSync(fixturePath)) return;
 
     const buffer = readFileSync(fixturePath);
@@ -1648,11 +1647,11 @@ describe("Vectorize color modes", () => {
 describe("Compose blend modes", () => {
   const BLEND_MODES = ["over", "multiply", "screen", "overlay", "darken", "lighten"] as const;
 
-  const PNG_PATH = join(FORMATS_DIR, "sample.png");
+  const PNG_PATH = fixtures.image.formats("png");
 
   for (const blendMode of BLEND_MODES) {
     it(`blend mode: ${blendMode}`, async () => {
-      const jpgPath = join(FORMATS_DIR, "sample.jpg");
+      const jpgPath = fixtures.image.formats("jpg");
       if (!existsSync(jpgPath) || !existsSync(PNG_PATH)) return;
 
       const baseBuffer = readFileSync(jpgPath);
@@ -1713,8 +1712,8 @@ describe("Stitch direction modes", () => {
     { direction: "grid", gridColumns: 2 },
   ] as const;
 
-  const JPG_PATH = join(FORMATS_DIR, "sample.jpg");
-  const PNG_PATH = join(FORMATS_DIR, "sample.png");
+  const JPG_PATH = fixtures.image.formats("jpg");
+  const PNG_PATH = fixtures.image.formats("png");
 
   for (const { direction, gridColumns } of DIRECTIONS) {
     it(`direction: ${direction}`, async () => {
@@ -1773,11 +1772,11 @@ describe("Stitch direction modes", () => {
 // find-duplicates computes perceptual hashes and returns duplicate groups.
 // ---------------------------------------------------------------------------
 describe("Find-duplicates cross-format", () => {
-  const PNG_PATH = join(FORMATS_DIR, "sample.png");
+  const PNG_PATH = fixtures.image.formats("png");
 
   for (const fmt of CORE_FORMATS) {
     it(`detects ${fmt.name} + PNG pair`, async () => {
-      const fixturePath = join(FORMATS_DIR, fmt.file);
+      const fixturePath = join(fixtureDir.formats, fmt.file);
       if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
       const fmtBuffer = readFileSync(fixturePath);
@@ -1829,7 +1828,7 @@ describe("Find-duplicates cross-format", () => {
     it(
       `${fmt.name} + PNG find-duplicates: no crash`,
       async () => {
-        const fixturePath = join(FORMATS_DIR, fmt.file);
+        const fixturePath = join(fixtureDir.formats, fmt.file);
         if (!existsSync(fixturePath) || !existsSync(PNG_PATH)) return;
 
         const fmtBuffer = readFileSync(fixturePath);
@@ -1957,7 +1956,7 @@ describe("Unauthenticated requests return 401 for expanded tools", () => {
     const toolName = url.split("/").pop();
 
     it(`${toolName}: no auth -> 401`, async () => {
-      const fixturePath = join(FORMATS_DIR, "sample.png");
+      const fixturePath = fixtures.image.formats("png");
       if (!existsSync(fixturePath)) return;
 
       const buffer = readFileSync(fixturePath);

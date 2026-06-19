@@ -1,10 +1,9 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { ffmpegAvailable } from "@snapotter/media-engine";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const MP3 = readFileSync(join(__dirname, "..", "fixtures", "media", "tiny.mp3"));
+const MP3 = readFixture(fixtures.audio.tiny("mp3"));
 
 let testApp: TestApp;
 let adminToken: string;

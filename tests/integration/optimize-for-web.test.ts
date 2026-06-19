@@ -6,18 +6,16 @@
  * and the preview endpoint.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
-const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
-const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const WEBP = readFixture(fixtures.image.base.webp50);
+const SVG = readFixture(fixtures.image.base.svg100);
+const HEIC = readFixture(fixtures.image.base.heic200);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -202,7 +200,7 @@ describe("Max dimension resizing", () => {
 // ── Metadata stripping ───────────────────────────────────────────
 describe("Metadata stripping", () => {
   it("strips metadata by default (stripMetadata=true)", async () => {
-    const exifJpg = readFileSync(join(FIXTURES, "test-with-exif.jpg"));
+    const exifJpg = readFixture(fixtures.image.exifGps);
     const res = await postTool(
       { format: "jpeg", stripMetadata: true },
       exifJpg,
@@ -379,7 +377,7 @@ describe("Dimension preservation", () => {
 // ── Metadata stripping toggle ───────────────────────────────────
 describe("Metadata stripping toggle", () => {
   it("preserves metadata when stripMetadata=false", async () => {
-    const exifJpg = readFileSync(join(FIXTURES, "test-with-exif.jpg"));
+    const exifJpg = readFixture(fixtures.image.exifGps);
     const res = await postTool(
       { format: "jpeg", stripMetadata: false },
       exifJpg,
@@ -627,7 +625,7 @@ describe("HEIC input", () => {
 // ── Large file handling ─────────────────────────────────────────
 describe("Large file handling", () => {
   it("optimizes a large stress image", async () => {
-    const large = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const large = readFixture(fixtures.image.stressLarge);
     const res = await postTool(
       { format: "webp", quality: 60, maxWidth: 800 },
       large,
@@ -644,7 +642,7 @@ describe("Large file handling", () => {
 // ── Tiny file handling ──────────────────────────────────────────
 describe("Tiny file handling", () => {
   it("optimizes a 1x1 pixel image", async () => {
-    const tiny = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const tiny = readFixture(fixtures.image.edge.px1);
     const res = await postTool({ format: "webp" }, tiny, "tiny.png", "image/png");
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
@@ -740,7 +738,7 @@ describe("Authentication", () => {
 // ── HEIF input handling ───────────────────────────────────────
 describe("HEIF input", () => {
   it("optimizes HEIF (sample.heif) input to webp", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "formats", "sample.heif"));
+    const HEIF = readFixture(fixtures.image.formats("heif"));
     const res = await postTool({ format: "webp" }, HEIF, "sample.heif", "image/heif");
     // HEIF decode may not be available
     expect([200, 422]).toContain(res.statusCode);
@@ -755,7 +753,7 @@ describe("HEIF input", () => {
 // ── Animated GIF input ────────────────────────────────────────
 describe("Animated GIF input", () => {
   it("optimizes animated GIF to webp", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const res = await postTool({ format: "webp" }, GIF, "animated.gif", "image/gif");
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
@@ -809,7 +807,7 @@ describe("Invalid image data", () => {
 // ── Size reduction verification ─────────────────────────────────
 describe("Size reduction", () => {
   it("reduces file size when optimizing large JPEG to WebP with low quality", async () => {
-    const large = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const large = readFixture(fixtures.image.stressLarge);
     const res = await postTool(
       { format: "webp", quality: 30, maxWidth: 400 },
       large,
@@ -914,7 +912,7 @@ describe("Resize with different input formats", () => {
 // ── Combined progressive + quality + resize ─────────────────────
 describe("Combined parameter variations", () => {
   it("applies progressive + quality + maxWidth + stripMetadata simultaneously", async () => {
-    const exifJpg = readFileSync(join(FIXTURES, "test-with-exif.jpg"));
+    const exifJpg = readFixture(fixtures.image.exifGps);
     const res = await postTool(
       { format: "jpeg", quality: 50, maxWidth: 100, progressive: true, stripMetadata: true },
       exifJpg,
@@ -990,7 +988,7 @@ describe("Response structure", () => {
 // ── Batch processing (5+ images) ──────────────────────────────
 describe("Batch processing", () => {
   it("processes 5+ images and returns a valid ZIP", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body: payload, contentType } = createMultipartPayload([
       { name: "file", filename: "a.png", contentType: "image/png", content: PNG },
       { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -1086,7 +1084,7 @@ describe("JXL format output", () => {
 // ── Portrait image optimization ────────────────────────────────
 describe("Portrait image optimization", () => {
   it("optimizes portrait-oriented image with maxWidth", async () => {
-    const portrait = readFileSync(join(FIXTURES, "test-portrait.jpg"));
+    const portrait = readFixture(fixtures.image.portraitJpg);
     const res = await postTool(
       { format: "webp", maxWidth: 100 },
       portrait,

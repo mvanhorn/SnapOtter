@@ -5,17 +5,15 @@
  * correctly without data corruption, crashes, or race conditions.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
 // ---------------------------------------------------------------------------
 // Fixtures
 // ---------------------------------------------------------------------------
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG_200x150 = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG_100x100 = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+const PNG_200x150 = readFixture(fixtures.image.base.png200);
+const JPG_100x100 = readFixture(fixtures.image.base.jpg100);
 
 // ---------------------------------------------------------------------------
 // Shared state

@@ -6,15 +6,13 @@
  * rather than createToolRoute.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -486,7 +484,7 @@ describe("Collage", () => {
   });
 
   it("creates a 6-image grid (6-grid-3x2) with mixed formats", async () => {
-    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const WEBP = readFixture(fixtures.image.base.webp50);
     const { body, contentType } = createMultipartPayload([
       { name: "f1", filename: "a.png", contentType: "image/png", content: PNG },
       { name: "f2", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -777,7 +775,7 @@ describe("Collage", () => {
   });
 
   it("handles HEIC input images", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body, contentType } = createMultipartPayload([
       { name: "f1", filename: "a.heic", contentType: "image/heic", content: HEIC },
       { name: "f2", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -1088,7 +1086,7 @@ describe("Collage", () => {
   // ── Branch coverage: 1x1 tiny image input ───────────────────────────
 
   it("handles 1x1 pixel input images", async () => {
-    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const TINY = readFixture(fixtures.image.edge.px1);
     const { body, contentType } = createMultipartPayload([
       { name: "f1", filename: "tiny1.png", contentType: "image/png", content: TINY },
       { name: "f2", filename: "tiny2.png", contentType: "image/png", content: TINY },
@@ -1155,7 +1153,7 @@ describe("Collage", () => {
   // ── Branch coverage: large file handling ────────────────────────────
 
   it("handles a large content image", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const { body, contentType } = createMultipartPayload([
       { name: "f1", filename: "large.jpg", contentType: "image/jpeg", content: LARGE },
       { name: "f2", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -1430,7 +1428,7 @@ describe("Collage", () => {
   // ── Branch coverage: HEIF content format input ─────────────────────
 
   it("handles portrait HEIC input images", { timeout: 120_000 }, async () => {
-    const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
+    const HEIC_PORTRAIT = readFixture(fixtures.image.portraitHeic);
     const { body, contentType } = createMultipartPayload([
       { name: "f1", filename: "a.heic", contentType: "image/heic", content: HEIC_PORTRAIT },
       { name: "f2", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -1458,7 +1456,7 @@ describe("Collage", () => {
   // ── HEIF format input ─────────────────────────────────────────────
 
   it("handles HEIF input images", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const HEIF = readFixture(fixtures.image.motorcycle);
     const { body, contentType } = createMultipartPayload([
       { name: "f1", filename: "a.heif", contentType: "image/heif", content: HEIF },
       { name: "f2", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -1487,7 +1485,7 @@ describe("Collage", () => {
   // ── Animated GIF input ────────────────────────────────────────────
 
   it("handles animated GIF input images", async () => {
-    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const GIF = readFixture(fixtures.image.animated.gif);
     const { body, contentType } = createMultipartPayload([
       { name: "f1", filename: "a.gif", contentType: "image/gif", content: GIF },
       { name: "f2", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -1516,7 +1514,7 @@ describe("Collage", () => {
   // ── SVG input ─────────────────────────────────────────────────────
 
   it("handles SVG input images in collage", async () => {
-    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const SVG = readFixture(fixtures.image.base.svg100);
     const { body, contentType } = createMultipartPayload([
       { name: "f1", filename: "icon.svg", contentType: "image/svg+xml", content: SVG },
       { name: "f2", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -1925,7 +1923,7 @@ describe("Collage", () => {
   // ── AVIF format input ─────────────────────────────────────────────
 
   it("handles AVIF input images in collage", async () => {
-    const AVIF = readFileSync(join(FIXTURES, "formats", "sample.avif"));
+    const AVIF = readFixture(fixtures.image.formats("avif"));
     const { body, contentType } = createMultipartPayload([
       { name: "f1", filename: "a.avif", contentType: "image/avif", content: AVIF },
       { name: "f2", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
@@ -1954,7 +1952,7 @@ describe("Collage", () => {
   // ── SVGZ input ───────────────────────────────────────────────────
 
   it("handles SVGZ (compressed SVG) input images", async () => {
-    const SVGZ = readFileSync(join(FIXTURES, "formats", "sample.svgz"));
+    const SVGZ = readFixture(fixtures.image.formats("svgz"));
     const { body, contentType } = createMultipartPayload([
       { name: "f1", filename: "icon.svgz", contentType: "image/svg+xml", content: SVGZ },
       { name: "f2", filename: "b.jpg", contentType: "image/jpeg", content: JPG },

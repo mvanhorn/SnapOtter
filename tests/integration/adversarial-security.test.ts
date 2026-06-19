@@ -14,19 +14,17 @@
  *   - adversarial-matrix.test.ts (memory pressure, parameter boundaries, pipelines)
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
 // ---------------------------------------------------------------------------
 // Fixtures
 // ---------------------------------------------------------------------------
-const FIXTURES = join(__dirname, "..", "fixtures");
-const PNG_200x150 = readFileSync(join(FIXTURES, "test-200x150.png"));
-const SVG_XXE_FILE = readFileSync(join(FIXTURES, "security", "svg-xxe-file-read.svg"));
-const SVG_XXE_SSRF = readFileSync(join(FIXTURES, "security", "svg-xxe-ssrf.svg"));
+const PNG_200x150 = readFixture(fixtures.image.base.png200);
+const SVG_XXE_FILE = readFixture(fixtures.security.svgXxeFile);
+const SVG_XXE_SSRF = readFixture(fixtures.security.svgXxeSsrf);
 
 // ---------------------------------------------------------------------------
 // Shared state

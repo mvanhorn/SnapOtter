@@ -2,15 +2,14 @@
 // Requires pandoc (and weasyprint for the pdf case). Skips locally
 // (pandoc absent on dev Macs); the Docker compose smoke is the real proof.
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { pandocAvailable } from "@snapotter/doc-engine";
 import AdmZip from "adm-zip";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { pythonWith } from "../helpers/python-gate.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const EPUB = readFileSync(join(__dirname, "..", "fixtures", "documents", "tiny.epub"));
+const EPUB = readFixture(fixtures.document.tiny("epub"));
 
 /** Build a minimal valid epub in memory containing a remote image reference. */
 function buildRemoteRefEpub(): Buffer {

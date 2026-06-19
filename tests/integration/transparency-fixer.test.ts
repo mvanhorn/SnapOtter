@@ -7,20 +7,18 @@
  * the sidecar.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const FAKE_TRANSPARENCY = readFileSync(join(FIXTURES, "test-fake-transparency.png"));
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
-const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
-const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
-const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
-const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+const FAKE_TRANSPARENCY = readFixture(fixtures.image.transparent);
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
+const WEBP = readFixture(fixtures.image.base.webp50);
+const SVG = readFixture(fixtures.image.base.svg100);
+const HEIC = readFixture(fixtures.image.base.heic200);
+const TINY = readFixture(fixtures.image.edge.px1);
 
 const TOOL_URL = "/api/v1/tools/transparency-fixer";
 
@@ -306,7 +304,7 @@ describe("PNG Transparency Fixer - Watermark removal settings", () => {
 // ═══════════════════════════════════════════════════════════════════════════
 describe("PNG Transparency Fixer - Large file", () => {
   it("handles stress-large.jpg input", async () => {
-    const LARGE = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const LARGE = readFixture(fixtures.image.stressLarge);
     const res = await postTransparencyFixer(LARGE, "stress-large.jpg", {});
     expect([200, 202, 501]).toContain(res.statusCode);
   }, 120_000);
@@ -353,7 +351,7 @@ describe("PNG Transparency Fixer - Authentication", () => {
 // ═══════════════════════════════════════════════════════════════════════════
 describe("PNG Transparency Fixer - HEIF input", () => {
   it("accepts HEIF (sample.heif) input", { timeout: 120_000 }, async () => {
-    const HEIF = readFileSync(join(FIXTURES, "formats", "sample.heif"));
+    const HEIF = readFixture(fixtures.image.formats("heif"));
     const res = await postTransparencyFixer(HEIF, "sample.heif", {});
     expect([200, 202, 422, 501]).toContain(res.statusCode);
   });

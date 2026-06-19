@@ -9,15 +9,13 @@
  * the tests gracefully handle the 422 response.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { fixtures, readFixture } from "../fixtures/index.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
-const FIXTURES = join(__dirname, "..", "fixtures");
-const EXIF_JPG = readFileSync(join(FIXTURES, "test-with-exif.jpg"));
-const PNG = readFileSync(join(FIXTURES, "test-200x150.png"));
-const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+const EXIF_JPG = readFixture(fixtures.image.exifGps);
+const PNG = readFixture(fixtures.image.base.png200);
+const JPG = readFixture(fixtures.image.base.jpg100);
 
 let testApp: TestApp;
 let app: TestApp["app"];
@@ -499,7 +497,7 @@ describe("Error handling", () => {
 // ── HEIC handling ──────────────────────────────────────────────
 describe("HEIC format handling", () => {
   it("generates preview for HEIC output", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const res = await postTool({ artist: "HEIC Author" }, HEIC, "test.heic", "image/heic");
     // 422 when exiftool is not installed or heic decode fails
     if (res.statusCode === 422 || res.statusCode === 400) return;
@@ -561,7 +559,7 @@ describe("Comprehensive field writing", () => {
 // ── HEIC format handling (extended) ──────────────────────────────
 describe("HEIC format handling (extended)", () => {
   it("edits metadata on HEIC input with GPS coordinates", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const res = await postTool(
       {
         artist: "HEIC GPS Test",
@@ -579,7 +577,7 @@ describe("HEIC format handling (extended)", () => {
   });
 
   it("edits metadata on HEIC and verifies preview generation", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const res = await postTool(
       { copyright: "HEIC Preview Test" },
       HEIC,
@@ -597,7 +595,7 @@ describe("HEIC format handling (extended)", () => {
 // ── Large file handling ──────────────────────────────────────────
 describe("Large file handling", () => {
   it("edits metadata on a large stress image", async () => {
-    const large = readFileSync(join(FIXTURES, "content", "stress-large.jpg"));
+    const large = readFixture(fixtures.image.stressLarge);
     const res = await postTool(
       { artist: "Large File Test", copyright: "2026 Test" },
       large,
@@ -614,7 +612,7 @@ describe("Large file handling", () => {
 // ── Tiny file handling ───────────────────────────────────────────
 describe("Tiny file handling", () => {
   it("edits metadata on a 1x1 pixel image", async () => {
-    const tiny = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const tiny = readFixture(fixtures.image.edge.px1);
     const res = await postTool({ artist: "Tiny Author" }, tiny, "tiny.png", "image/png");
     if (res.statusCode === 422) return;
     expect(res.statusCode).toBe(200);
@@ -624,7 +622,7 @@ describe("Tiny file handling", () => {
 // ── WebP format handling ─────────────────────────────────────────
 describe("WebP format handling", () => {
   it("edits metadata on WebP file", async () => {
-    const webp = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const webp = readFixture(fixtures.image.base.webp50);
     const res = await postTool(
       { artist: "WebP Author", title: "WebP Title" },
       webp,
@@ -706,7 +704,7 @@ describe("Field removal edge cases", () => {
 // ── Inspect endpoint edge cases ──────────────────────────────────
 describe("Inspect endpoint edge cases", () => {
   it("inspect handles WebP input", async () => {
-    const webp = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const webp = readFixture(fixtures.image.base.webp50);
     const { body: payload, contentType } = createMultipartPayload([
       {
         name: "file",
@@ -752,7 +750,7 @@ describe("Inspect endpoint edge cases", () => {
   });
 
   it("inspect returns correct filename for HEIC input", { timeout: 120_000 }, async () => {
-    const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
+    const HEIC = readFixture(fixtures.image.base.heic200);
     const { body: payload, contentType } = createMultipartPayload([
       {
         name: "file",
