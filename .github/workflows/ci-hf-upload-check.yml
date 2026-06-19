@@ -1,7 +1,9 @@
 name: HF Upload Check
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/ci-hf-check-marker']
 
 permissions: {}
 
@@ -23,7 +25,7 @@ jobs:
             --repo-type model
           echo "UPLOAD_OK"
 
-      - name: Verify anonymous download (no token)
+      - name: Verify anonymous download
         run: |
           curl -fsSL \
             "https://huggingface.co/deepsafe/feature-bundles/resolve/main/.ci-checks/upload-check.txt" \
