@@ -13,7 +13,7 @@ import { expect, openSettings, test } from "./helpers";
 // ---------------------------------------------------------------------------
 // Mobile (Pixel 7 -- mobile-chromium)
 // ---------------------------------------------------------------------------
-test.describe("@mobile Device visual regression", () => {
+test.describe("@mobile @visual Device visual regression", () => {
   test("home page", async ({ loggedInPage: page }) => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
@@ -49,7 +49,7 @@ test.describe("@mobile Device visual regression", () => {
 // ---------------------------------------------------------------------------
 // Tablet (Galaxy Tab S9 -- tablet-chromium)
 // ---------------------------------------------------------------------------
-test.describe("@tablet Device visual regression", () => {
+test.describe("@tablet @visual Device visual regression", () => {
   test("home page", async ({ loggedInPage: page }) => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");

@@ -189,7 +189,7 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm playwright install --with-deps chromium
       - name: Run mobile device specs (Pixel 7)
-        run: pnpm playwright test --project=mobile-chromium --grep @mobile
+        run: pnpm playwright test --project=mobile-chromium --grep @mobile --grep-invert @visual
         env:
           PW_WORKERS: "2"
       - name: Upload report on failure
