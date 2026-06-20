@@ -1,9 +1,7 @@
 import { Check, Copy, Download, Search } from "lucide-react";
 import { useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
-import { useTranslation } from "@/contexts/i18n-context";
 import { formatHeaders } from "@/lib/api";
-import { format } from "@/lib/format";
 import { copyToClipboard } from "@/lib/utils";
 import { useFileStore } from "@/stores/file-store";
 
@@ -108,7 +106,6 @@ function scanOneFile(
 }
 
 export function BarcodeReadSettings() {
-  const { t } = useTranslation();
   const { files, processing, error, setProcessing, setError } = useFileStore();
 
   const [tryHarder, setTryHarder] = useState(false);

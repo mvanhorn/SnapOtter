@@ -108,7 +108,7 @@ export async function registerSaml(app: FastifyInstance): Promise<void> {
       return redirectToLogin(reply, "saml_auth_failed");
     }
 
-    if (!profile || !profile.nameID) {
+    if (!profile?.nameID) {
       request.log.warn("SAML callback: no profile or nameID in assertion");
       authAttempts.inc({ method: "saml", result: "failure" });
       await audit("SAML_LOGIN_FAILED", { reason: "missing_profile" });

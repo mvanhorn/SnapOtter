@@ -1161,7 +1161,8 @@ export async function registerPipelineRoutes(app: FastifyInstance): Promise<void
     // Append results from object storage in original upload order
     try {
       for (const entry of successEntries) {
-        const stream = await getObjectStream(entry.outputRef!);
+        if (!entry.outputRef) continue;
+        const stream = await getObjectStream(entry.outputRef);
         archive.append(stream, { name: entry.filename });
       }
 

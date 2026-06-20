@@ -326,7 +326,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
 
       const audit = auditFromRequest(request);
 
-      if (!user || !user.passwordHash) {
+      if (!user?.passwordHash) {
         authAttempts.inc({ method: "password", result: "failure" });
         await audit("LOGIN_FAILED", {
           username: sanitizeAuditInput(body.username),

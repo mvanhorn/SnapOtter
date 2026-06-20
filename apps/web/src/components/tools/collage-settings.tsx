@@ -1,7 +1,6 @@
 import { Download, Loader2 } from "lucide-react";
 import { useCallback } from "react";
 import { CollapsibleSection } from "@/components/common/collapsible-section";
-import { useTranslation } from "@/contexts/i18n-context";
 import { formatHeaders } from "@/lib/api";
 import {
   COLLAGE_TEMPLATES,
@@ -38,7 +37,6 @@ const BG_PRESETS = [
 ];
 
 export function CollageSettings() {
-  const { t } = useTranslation();
   const store = useCollageStore();
   const {
     images,
