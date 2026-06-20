@@ -45,9 +45,9 @@ describe("API docs", () => {
       url: "/api/v1/openapi.yaml",
     });
     const body = res.body;
-    expect(body).toContain("/api/v1/tools/resize");
-    expect(body).toContain("/api/v1/tools/compress");
-    expect(body).toContain("/api/v1/tools/remove-background");
-    expect(body).toContain("/api/v1/tools/ocr");
+    expect(body).toContain("/api/v1/tools/image/resize");
+    expect(body).toContain("/api/v1/tools/image/compress");
+    expect(body).toContain("/api/v1/tools/image/remove-background");
+    expect(body).toContain("/api/v1/tools/image/ocr");
   });
 });
