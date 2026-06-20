@@ -1,5 +1,5 @@
 /**
- * Integration tests for the histogram tool (/api/v1/tools/histogram).
+ * Integration tests for the histogram tool (/api/v1/tools/image/histogram).
  *
  * Covers PNG output, bins + stats payload, backward-compat mean/max fields,
  * and channel accuracy with a pure-red fixture.
@@ -37,7 +37,7 @@ describe("Histogram", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/histogram",
+      url: "/api/v1/tools/image/histogram",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -99,7 +99,7 @@ describe("Histogram", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/histogram",
+      url: "/api/v1/tools/image/histogram",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

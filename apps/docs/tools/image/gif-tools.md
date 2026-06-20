@@ -4,7 +4,7 @@ Resize, optimize, change speed, reverse, extract frames, and rotate animated GIF
 
 ## API Endpoint
 
-`POST /api/v1/tools/gif-tools`
+`POST /api/v1/tools/image/gif-tools`
 
 ## Parameters
 
@@ -60,7 +60,7 @@ Resize, optimize, change speed, reverse, extract frames, and rotate animated GIF
 ### Resize
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/gif-tools \
+curl -X POST http://localhost:1349/api/v1/tools/image/gif-tools \
   -F "file=@animation.gif" \
   -F 'settings={"mode":"resize","percentage":50}'
 ```
@@ -68,7 +68,7 @@ curl -X POST http://localhost:1349/api/v1/tools/gif-tools \
 ### Optimize
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/gif-tools \
+curl -X POST http://localhost:1349/api/v1/tools/image/gif-tools \
   -F "file=@large.gif" \
   -F 'settings={"mode":"optimize","colors":128,"effort":9}'
 ```
@@ -76,7 +76,7 @@ curl -X POST http://localhost:1349/api/v1/tools/gif-tools \
 ### Speed Up
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/gif-tools \
+curl -X POST http://localhost:1349/api/v1/tools/image/gif-tools \
   -F "file=@animation.gif" \
   -F 'settings={"mode":"speed","speedFactor":2.0}'
 ```
@@ -84,7 +84,7 @@ curl -X POST http://localhost:1349/api/v1/tools/gif-tools \
 ### Extract Single Frame
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/gif-tools \
+curl -X POST http://localhost:1349/api/v1/tools/image/gif-tools \
   -F "file=@animation.gif" \
   -F 'settings={"mode":"extract","extractMode":"single","frameNumber":5,"extractFormat":"png"}'
 ```
@@ -102,14 +102,14 @@ curl -X POST http://localhost:1349/api/v1/tools/gif-tools \
 
 ## Info Sub-Route
 
-`POST /api/v1/tools/gif-tools/info`
+`POST /api/v1/tools/image/gif-tools/info`
 
 Returns metadata about an animated GIF without processing it.
 
 ### Info Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/gif-tools/info \
+curl -X POST http://localhost:1349/api/v1/tools/image/gif-tools/info \
   -F "file=@animation.gif"
 ```
 

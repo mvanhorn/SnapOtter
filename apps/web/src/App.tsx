@@ -240,7 +240,7 @@ export function App() {
                   <Route path="/privacy" element={<PrivacyPolicyPage />} />
                   <Route path="/analytics-consent" element={<AnalyticsConsentPage />} />
                   <Route path="/editor" element={<EditorPage />} />
-                  <Route path="/:modality/:toolId" element={<ToolPage />} />
+                  <Route path="/:section/:toolId" element={<ToolPage />} />
                   <Route path="/" element={<HomePage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>

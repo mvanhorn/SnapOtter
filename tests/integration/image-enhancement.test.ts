@@ -57,7 +57,7 @@ async function postTool(
   const { body: payload, contentType } = makePayload(settings, buffer, filename, ct);
   return app.inject({
     method: "POST",
-    url: "/api/v1/tools/image-enhancement",
+    url: "/api/v1/tools/image/image-enhancement",
     payload,
     headers: {
       "content-type": contentType,
@@ -262,7 +262,7 @@ describe("Analyze endpoint", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/analyze",
+      url: "/api/v1/tools/image/image-enhancement/analyze",
       payload,
       headers: {
         "content-type": contentType,
@@ -282,7 +282,7 @@ describe("Analyze endpoint", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/analyze",
+      url: "/api/v1/tools/image/image-enhancement/analyze",
       payload,
       headers: {
         "content-type": contentType,
@@ -351,7 +351,7 @@ describe("Analyze endpoint details", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/analyze",
+      url: "/api/v1/tools/image/image-enhancement/analyze",
       payload,
       headers: {
         "content-type": contentType,
@@ -371,7 +371,7 @@ describe("Analyze endpoint details", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/analyze",
+      url: "/api/v1/tools/image/image-enhancement/analyze",
       payload,
       headers: {
         "content-type": contentType,
@@ -434,7 +434,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement",
+      url: "/api/v1/tools/image/image-enhancement",
       payload,
       headers: {
         "content-type": contentType,
@@ -466,7 +466,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement",
+      url: "/api/v1/tools/image/image-enhancement",
       payload,
       headers: {
         "content-type": contentType,
@@ -485,7 +485,7 @@ describe("Analyze endpoint HEIC handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/analyze",
+      url: "/api/v1/tools/image/image-enhancement/analyze",
       payload,
       headers: {
         "content-type": contentType,
@@ -514,7 +514,7 @@ describe("Analyze endpoint invalid image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/analyze",
+      url: "/api/v1/tools/image/image-enhancement/analyze",
       payload,
       headers: {
         "content-type": contentType,
@@ -537,7 +537,7 @@ describe("Analyze endpoint invalid image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/analyze",
+      url: "/api/v1/tools/image/image-enhancement/analyze",
       payload,
       headers: {
         "content-type": contentType,
@@ -719,7 +719,7 @@ describe("Authentication", () => {
     const { body: payload, contentType } = makePayload({ mode: "auto" });
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement",
+      url: "/api/v1/tools/image/image-enhancement",
       payload,
       headers: { "content-type": contentType },
     });
@@ -921,7 +921,7 @@ describe("Analyze endpoint format coverage", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/analyze",
+      url: "/api/v1/tools/image/image-enhancement/analyze",
       payload,
       headers: {
         "content-type": contentType,
@@ -947,7 +947,7 @@ describe("Analyze endpoint format coverage", () => {
       ]);
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/image-enhancement/analyze",
+        url: "/api/v1/tools/image/image-enhancement/analyze",
         payload,
         headers: {
           "content-type": contentType,
@@ -1201,7 +1201,7 @@ describe("Batch processing", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/batch",
+      url: "/api/v1/tools/image/image-enhancement/batch",
       payload,
       headers: {
         "content-type": contentType,
@@ -1231,7 +1231,7 @@ describe("Batch processing", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/batch",
+      url: "/api/v1/tools/image/image-enhancement/batch",
       payload,
       headers: {
         "content-type": contentType,
@@ -1251,7 +1251,7 @@ describe("Analyze endpoint response structure", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/analyze",
+      url: "/api/v1/tools/image/image-enhancement/analyze",
       payload,
       headers: {
         "content-type": contentType,
@@ -1311,7 +1311,7 @@ describe("Low-light image analysis", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/analyze",
+      url: "/api/v1/tools/image/image-enhancement/analyze",
       payload,
       headers: {
         "content-type": contentType,

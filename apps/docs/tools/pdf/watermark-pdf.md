@@ -8,7 +8,7 @@ Stamp a text watermark on every page of a PDF with configurable position, size, 
 
 ## API Endpoint
 
-`POST /api/v1/tools/watermark-pdf`
+`POST /api/v1/tools/pdf/watermark-pdf`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -31,7 +31,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/watermark-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/watermark-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"text": "CONFIDENTIAL", "position": "c", "opacity": 0.2, "rotation": 45}'

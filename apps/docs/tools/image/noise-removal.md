@@ -8,7 +8,7 @@ AI-powered noise and grain removal with multi-tier quality options, using the Py
 
 ## API Endpoint
 
-`POST /api/v1/tools/noise-removal`
+`POST /api/v1/tools/image/noise-removal`
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
@@ -29,7 +29,7 @@ AI-powered noise and grain removal with multi-tier quality options, using the Py
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/noise-removal \
+curl -X POST http://localhost:1349/api/v1/tools/image/noise-removal \
   -F "file=@noisy-photo.jpg" \
   -F 'settings={"tier":"quality","strength":60,"detailPreservation":70,"colorNoise":40}'
 ```

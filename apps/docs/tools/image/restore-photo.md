@@ -4,7 +4,7 @@ Fix scratches, tears, and damage on old photos using a multi-step AI pipeline. C
 
 ## API Endpoint
 
-`POST /api/v1/tools/restore-photo`
+`POST /api/v1/tools/image/restore-photo`
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
@@ -26,7 +26,7 @@ Fix scratches, tears, and damage on old photos using a multi-step AI pipeline. C
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/restore-photo \
+curl -X POST http://localhost:1349/api/v1/tools/image/restore-photo \
   -F "file=@damaged-old-photo.jpg" \
   -F 'settings={"scratchRemoval":true,"faceEnhancement":true,"fidelity":0.6,"colorize":true}'
 ```

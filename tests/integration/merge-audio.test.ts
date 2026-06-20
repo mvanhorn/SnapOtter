@@ -29,7 +29,7 @@ describe.skipIf(!ffmpegAvailable())("merge-audio (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/merge-audio",
+      url: "/api/v1/tools/audio/merge-audio",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -58,7 +58,7 @@ describe.skipIf(!ffmpegAvailable())("merge-audio (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/merge-audio",
+      url: "/api/v1/tools/audio/merge-audio",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

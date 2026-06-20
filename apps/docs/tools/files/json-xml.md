@@ -8,7 +8,7 @@ Convert between JSON and XML formats in both directions. Upload a JSON file to g
 
 ## API Endpoint
 
-`POST /api/v1/tools/json-xml`
+`POST /api/v1/tools/files/json-xml`
 
 Accepts multipart form data with a JSON or XML file and a JSON `settings` field.
 
@@ -23,7 +23,7 @@ Accepts multipart form data with a JSON or XML file and a JSON `settings` field.
 JSON to XML:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/json-xml \
+curl -X POST http://localhost:1349/api/v1/tools/files/json-xml \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@config.json" \
   -F 'settings={"pretty": true}'
@@ -32,7 +32,7 @@ curl -X POST http://localhost:1349/api/v1/tools/json-xml \
 XML to JSON:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/json-xml \
+curl -X POST http://localhost:1349/api/v1/tools/files/json-xml \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@config.xml" \
   -F 'settings={"pretty": true}'

@@ -37,7 +37,7 @@ async function runTool(settings: Record<string, unknown>) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/aspect-pad",
+    url: "/api/v1/tools/video/aspect-pad",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

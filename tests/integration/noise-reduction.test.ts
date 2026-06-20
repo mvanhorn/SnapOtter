@@ -26,7 +26,7 @@ async function runTool(settings: Record<string, unknown>) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/noise-reduction",
+    url: "/api/v1/tools/audio/noise-reduction",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

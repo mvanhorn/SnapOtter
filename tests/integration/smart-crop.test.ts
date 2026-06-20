@@ -1,5 +1,5 @@
 /**
- * Integration tests for the smart-crop tool (/api/v1/tools/smart-crop).
+ * Integration tests for the smart-crop tool (/api/v1/tools/image/smart-crop).
  *
  * Smart crop has three modes:
  *   - subject (Sharp attention/entropy strategy)
@@ -48,7 +48,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -67,7 +67,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -100,7 +100,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -139,7 +139,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -161,7 +161,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -200,7 +200,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -223,7 +223,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -251,7 +251,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -288,7 +288,7 @@ describe("Smart Crop", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/smart-crop",
+        url: "/api/v1/tools/image/smart-crop",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -309,7 +309,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -329,7 +329,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -350,7 +350,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -374,7 +374,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -395,7 +395,7 @@ describe("Smart Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: { "content-type": contentType },
       body,
     });

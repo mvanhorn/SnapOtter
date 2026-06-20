@@ -27,7 +27,7 @@ describe.skipIf(!ffmpegAvailable())("extract-subtitles (requires ffmpeg)", () =>
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/extract-subtitles",
+      url: "/api/v1/tools/video/extract-subtitles",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -50,7 +50,7 @@ describe.skipIf(!ffmpegAvailable())("extract-subtitles (requires ffmpeg)", () =>
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/extract-subtitles",
+      url: "/api/v1/tools/video/extract-subtitles",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

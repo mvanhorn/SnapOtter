@@ -4,7 +4,7 @@ Convert SVG files to raster image formats (PNG, JPEG, WebP, AVIF, TIFF, GIF, HEI
 
 ## API Endpoint
 
-`POST /api/v1/tools/svg-to-raster`
+`POST /api/v1/tools/image/svg-to-raster`
 
 ## Parameters
 
@@ -20,7 +20,7 @@ Convert SVG files to raster image formats (PNG, JPEG, WebP, AVIF, TIFF, GIF, HEI
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/svg-to-raster \
+curl -X POST http://localhost:1349/api/v1/tools/image/svg-to-raster \
   -F "file=@logo.svg" \
   -F 'settings={"width":1024,"dpi":300,"outputFormat":"png","backgroundColor":"#FFFFFF"}'
 ```
@@ -39,7 +39,7 @@ curl -X POST http://localhost:1349/api/v1/tools/svg-to-raster \
 
 ## Batch Endpoint
 
-`POST /api/v1/tools/svg-to-raster/batch`
+`POST /api/v1/tools/image/svg-to-raster/batch`
 
 Convert multiple SVG files in one request. Returns a ZIP archive.
 
@@ -52,7 +52,7 @@ Convert multiple SVG files in one request. Returns a ZIP archive.
 ### Batch Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/svg-to-raster/batch \
+curl -X POST http://localhost:1349/api/v1/tools/image/svg-to-raster/batch \
   -F "file=@icon1.svg" \
   -F "file=@icon2.svg" \
   -F "file=@icon3.svg" \

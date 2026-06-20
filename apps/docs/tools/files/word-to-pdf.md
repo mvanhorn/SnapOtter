@@ -8,7 +8,7 @@ Convert Word documents, OpenDocument text, RTF, or plain text files to PDF.
 
 ## API Endpoint
 
-`POST /api/v1/tools/word-to-pdf`
+`POST /api/v1/tools/files/word-to-pdf`
 
 Accepts multipart form data with a Word/ODT/RTF/TXT file.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload a document and it will be conve
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/word-to-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/files/word-to-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@report.docx"
 ```

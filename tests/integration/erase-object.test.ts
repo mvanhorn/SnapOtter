@@ -1,5 +1,5 @@
 /**
- * Integration tests for the erase-object AI tool (/api/v1/tools/erase-object).
+ * Integration tests for the erase-object AI tool (/api/v1/tools/image/erase-object).
  *
  * This tool requires BOTH an image and a mask file. The Python sidecar may not
  * be running, so processing tests accept both 200 (sidecar available) and
@@ -43,7 +43,7 @@ describe("erase-object", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/erase-object",
+      url: "/api/v1/tools/image/erase-object",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -59,7 +59,7 @@ describe("erase-object", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/erase-object",
+      url: "/api/v1/tools/image/erase-object",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -82,7 +82,7 @@ describe("erase-object", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/erase-object",
+      url: "/api/v1/tools/image/erase-object",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -99,7 +99,7 @@ describe("erase-object", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/erase-object",
+      url: "/api/v1/tools/image/erase-object",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -118,7 +118,7 @@ describe("erase-object", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/erase-object",
+        url: "/api/v1/tools/image/erase-object",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -136,7 +136,7 @@ describe("erase-object", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/erase-object",
+      url: "/api/v1/tools/image/erase-object",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -153,7 +153,7 @@ describe("erase-object", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/erase-object",
+      url: "/api/v1/tools/image/erase-object",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -173,7 +173,7 @@ describe("erase-object", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/erase-object",
+      url: "/api/v1/tools/image/erase-object",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -195,7 +195,7 @@ describe("erase-object", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/erase-object",
+      url: "/api/v1/tools/image/erase-object",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -212,7 +212,7 @@ describe("erase-object", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/erase-object",
+      url: "/api/v1/tools/image/erase-object",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -228,7 +228,7 @@ describe("erase-object", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/erase-object",
+      url: "/api/v1/tools/image/erase-object",
       headers: { "content-type": contentType },
       body,
     });
@@ -245,7 +245,7 @@ describe("erase-object", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/erase-object",
+      url: "/api/v1/tools/image/erase-object",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -262,7 +262,7 @@ describe("erase-object", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/erase-object",
+        url: "/api/v1/tools/image/erase-object",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });

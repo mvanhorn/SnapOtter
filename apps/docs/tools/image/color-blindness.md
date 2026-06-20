@@ -8,7 +8,7 @@ Simulate color vision deficiency (CVD) to preview how images appear to people wi
 
 ## API Endpoint
 
-`POST /api/v1/tools/color-blindness`
+`POST /api/v1/tools/image/color-blindness`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -34,7 +34,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/color-blindness \
+curl -X POST http://localhost:1349/api/v1/tools/image/color-blindness \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@design.png" \
   -F 'settings={"simulationType": "deuteranopia"}'

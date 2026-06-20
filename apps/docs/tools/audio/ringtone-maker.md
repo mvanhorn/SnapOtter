@@ -8,7 +8,7 @@ Create a ringtone clip (.m4r) from any audio file by selecting a start time and 
 
 ## API Endpoint
 
-`POST /api/v1/tools/ringtone-maker`
+`POST /api/v1/tools/audio/ringtone-maker`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/ringtone-maker \
+curl -X POST http://localhost:1349/api/v1/tools/audio/ringtone-maker \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"startS": 15, "durationS": 20}'

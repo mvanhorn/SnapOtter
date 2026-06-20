@@ -1,4 +1,5 @@
 // apps/web/src/pages/editor-page.tsx
+import { apiToolPath } from "@snapotter/shared";
 import { Monitor } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { CanvasResizeDialog } from "@/components/editor/common/canvas-resize-dialog";
@@ -106,7 +107,7 @@ export function EditorPage() {
           const formData = new FormData();
           formData.append("file", file);
           formData.append("settings", JSON.stringify({ format: "png" }));
-          const res = await fetch("/api/v1/tools/convert", { method: "POST", body: formData });
+          const res = await fetch(apiToolPath("convert"), { method: "POST", body: formData });
           if (!res.ok) throw new Error("Server decode failed");
           const json = await res.json();
           if (json.downloadUrl) {

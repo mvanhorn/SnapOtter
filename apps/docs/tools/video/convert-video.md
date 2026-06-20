@@ -8,7 +8,7 @@ Convert videos between MP4, MOV, and WebM formats with configurable quality pres
 
 ## API Endpoint
 
-`POST /api/v1/tools/convert-video`
+`POST /api/v1/tools/video/convert-video`
 
 Accepts multipart form data with a video file and a JSON `settings` field. This is an async endpoint - it returns `202 Accepted` immediately and progress is streamed via SSE at `GET /api/v1/jobs/{jobId}/progress`.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with a video file and a JSON `settings` field. This 
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/convert-video \
+curl -X POST http://localhost:1349/api/v1/tools/video/convert-video \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"format": "webm", "quality": "balanced"}'

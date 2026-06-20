@@ -32,7 +32,7 @@ async function runTool(filename: string, content: Buffer) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/html-to-pdf",
+    url: "/api/v1/tools/files/html-to-pdf",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

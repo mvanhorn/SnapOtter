@@ -20,7 +20,7 @@ async function runTool(filename: string, content: Buffer, settings: Record<strin
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/xml-to-csv",
+    url: "/api/v1/tools/files/xml-to-csv",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

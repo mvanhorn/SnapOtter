@@ -39,7 +39,7 @@ describe("Tool async window (sync-wait path)", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -111,7 +111,7 @@ describe("Tool async window (sync-wait path)", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -156,7 +156,7 @@ describe("EXIF auto-orientation in factory path", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compress",
+      url: "/api/v1/tools/image/compress",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

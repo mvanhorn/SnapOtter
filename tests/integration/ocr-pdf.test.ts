@@ -1,5 +1,5 @@
 /**
- * Integration tests for the ocr-pdf tool (/api/v1/tools/ocr-pdf).
+ * Integration tests for the ocr-pdf tool (/api/v1/tools/pdf/ocr-pdf).
  *
  * The OCR bundle (PaddleOCR / Tesseract) is 3-4 GB and not installed locally
  * or in any verification environment this wave. The 501 gate is always hit.
@@ -46,7 +46,7 @@ describe("ocr-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr-pdf",
+      url: "/api/v1/tools/pdf/ocr-pdf",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -77,7 +77,7 @@ describe("ocr-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr-pdf",
+      url: "/api/v1/tools/pdf/ocr-pdf",
       headers: { "content-type": contentType },
       body,
     });
@@ -103,7 +103,7 @@ describe("ocr-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr-pdf",
+      url: "/api/v1/tools/pdf/ocr-pdf",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -139,7 +139,7 @@ describe("ocr-pdf", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/ocr-pdf",
+        url: "/api/v1/tools/pdf/ocr-pdf",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,

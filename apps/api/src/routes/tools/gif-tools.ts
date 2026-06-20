@@ -98,7 +98,7 @@ const settingsSchema = z.object({
 
 export function registerGifTools(app: FastifyInstance) {
   // ── Metadata endpoint ───────────────────────────────────────────
-  app.post("/api/v1/tools/gif-tools/info", async (request: FastifyRequest, reply: FastifyReply) => {
+  app.post("/api/v1/tools/image/gif-tools/info", async (request: FastifyRequest, reply: FastifyReply) => {
     let fileBuffer: Buffer | null = null;
 
     try {

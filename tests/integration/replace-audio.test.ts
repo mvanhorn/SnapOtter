@@ -29,7 +29,7 @@ describe.skipIf(!ffmpegAvailable())("replace-audio (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/replace-audio",
+      url: "/api/v1/tools/video/replace-audio",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -63,7 +63,7 @@ describe.skipIf(!ffmpegAvailable())("replace-audio (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/replace-audio",
+      url: "/api/v1/tools/video/replace-audio",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -83,7 +83,7 @@ describe.skipIf(!ffmpegAvailable())("replace-audio (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/replace-audio",
+      url: "/api/v1/tools/video/replace-audio",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

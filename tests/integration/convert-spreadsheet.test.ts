@@ -30,7 +30,7 @@ async function runTool(filename: string, content: Buffer, settings: Record<strin
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/convert-spreadsheet",
+    url: "/api/v1/tools/files/convert-spreadsheet",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });
@@ -90,7 +90,7 @@ it("rejects missing format with 400", async () => {
   ]);
   const res = await testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/convert-spreadsheet",
+    url: "/api/v1/tools/files/convert-spreadsheet",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

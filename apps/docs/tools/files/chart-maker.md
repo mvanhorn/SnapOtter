@@ -8,7 +8,7 @@ Create bar, line, or pie charts from CSV or JSON data. Returns a PNG image of th
 
 ## API Endpoint
 
-`POST /api/v1/tools/chart-maker`
+`POST /api/v1/tools/files/chart-maker`
 
 Accepts multipart form data with a CSV or JSON file and a JSON `settings` field.
 
@@ -24,7 +24,7 @@ Accepts multipart form data with a CSV or JSON file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/chart-maker \
+curl -X POST http://localhost:1349/api/v1/tools/files/chart-maker \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@sales.csv" \
   -F 'settings={"kind": "line", "title": "Monthly Sales", "width": 960, "height": 540}'

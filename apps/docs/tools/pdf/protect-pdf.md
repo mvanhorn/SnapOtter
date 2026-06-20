@@ -8,7 +8,7 @@ Add password protection to a PDF using AES-256 encryption.
 
 ## API Endpoint
 
-`POST /api/v1/tools/protect-pdf`
+`POST /api/v1/tools/pdf/protect-pdf`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/protect-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/protect-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"userPassword": "s3cret", "ownerPassword": "0wn3r"}'

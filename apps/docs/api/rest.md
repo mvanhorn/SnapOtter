@@ -25,7 +25,7 @@ curl -X POST http://localhost:1349/api/auth/login \
 # Returns: {"token":"<session-token>"}
 
 # Use token
-curl http://localhost:1349/api/v1/tools/resize \
+curl http://localhost:1349/api/v1/tools/image/resize \
   -H "Authorization: Bearer <session-token>"
 ```
 
@@ -42,7 +42,7 @@ curl -X POST http://localhost:1349/api/v1/api-keys \
 # Returns: {"key":"si_<96 hex chars>","id":"...","name":"my-script"}
 
 # Use the key
-curl http://localhost:1349/api/v1/tools/resize \
+curl http://localhost:1349/api/v1/tools/image/resize \
   -H "Authorization: Bearer si_<your-key>"
 ```
 
@@ -87,18 +87,20 @@ Every tool follows the same pattern:
 
 ```bash
 # Single file
-curl -X POST http://localhost:1349/api/v1/tools/<toolId> \
+curl -X POST http://localhost:1349/api/v1/tools/<section>/<toolId> \
   -H "Authorization: Bearer <token>" \
   -F "file=@input.jpg" \
   -F 'settings={"width":800,"height":600}'
 
 # Batch (returns ZIP)
-curl -X POST http://localhost:1349/api/v1/tools/<toolId>/batch \
+curl -X POST http://localhost:1349/api/v1/tools/<section>/<toolId>/batch \
   -H "Authorization: Bearer <token>" \
   -F "files=@a.jpg" \
   -F "files=@b.jpg" \
   -F 'settings={...}'
 ```
+
+`<section>` is one of `image`, `video`, `audio`, `pdf`, or `files`.
 
 - Upload is `multipart/form-data`.
 - `settings` is a JSON string with tool-specific options.
@@ -331,7 +333,7 @@ All AI tools run on your hardware (CPU or NVIDIA GPU). No internet required.
 
 Capture a webpage as an image. Unlike other tools, this endpoint accepts `application/json` instead of multipart form data (no file upload needed).
 
-**Endpoint:** `POST /api/v1/tools/html-to-image`
+**Endpoint:** `POST /api/v1/tools/image/html-to-image`
 
 **Content-Type:** `application/json`
 
@@ -348,7 +350,7 @@ Capture a webpage as an image. Unlike other tools, this endpoint accepts `applic
 **Example:**
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/html-to-image \
+curl -X POST http://localhost:1349/api/v1/tools/image/html-to-image \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://snapotter.com", "format": "png", "devicePreset": "desktop"}'
@@ -367,28 +369,28 @@ curl -X POST http://localhost:1349/api/v1/tools/html-to-image \
 
 ### Tool Sub-Routes
 
-Some tools expose additional endpoints beyond the standard `POST /api/v1/tools/<toolId>`:
+Some tools expose additional endpoints beyond the standard `POST /api/v1/tools/<section>/<toolId>`:
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `POST` | `/api/v1/tools/remove-background/effects` | Apply background effects (color/gradient/blur/shadow) without re-running AI. Uses cached mask from initial removal. |
-| `POST` | `/api/v1/tools/edit-metadata/inspect` | Read existing EXIF/IPTC/XMP metadata from an image |
-| `POST` | `/api/v1/tools/strip-metadata/inspect` | Inspect metadata fields before stripping |
-| `POST` | `/api/v1/tools/passport-photo/analyze` | Phase 1: AI face detection + background removal. Returns face landmarks and cached data. |
-| `POST` | `/api/v1/tools/passport-photo/generate` | Phase 2: Crop, resize, and tile using cached analysis. No AI re-run. |
-| `POST` | `/api/v1/tools/gif-tools/info` | Get GIF metadata (frame count, dimensions, duration) |
-| `POST` | `/api/v1/tools/pdf-to-image/info` | Get PDF metadata (page count, dimensions) |
-| `POST` | `/api/v1/tools/pdf-to-image/preview` | Generate a preview of a specific PDF page |
-| `POST` | `/api/v1/tools/svg-to-raster/batch` | Batch convert multiple SVGs to raster |
-| `POST` | `/api/v1/tools/image-enhancement/analyze` | Analyze image quality and return enhancement recommendations |
-| `POST` | `/api/v1/tools/optimize-for-web/preview` | Lightweight preview for live parameter tuning. Returns optimized image with size headers. |
+| `POST` | `/api/v1/tools/image/remove-background/effects` | Apply background effects (color/gradient/blur/shadow) without re-running AI. Uses cached mask from initial removal. |
+| `POST` | `/api/v1/tools/image/edit-metadata/inspect` | Read existing EXIF/IPTC/XMP metadata from an image |
+| `POST` | `/api/v1/tools/image/strip-metadata/inspect` | Inspect metadata fields before stripping |
+| `POST` | `/api/v1/tools/image/passport-photo/analyze` | Phase 1: AI face detection + background removal. Returns face landmarks and cached data. |
+| `POST` | `/api/v1/tools/image/passport-photo/generate` | Phase 2: Crop, resize, and tile using cached analysis. No AI re-run. |
+| `POST` | `/api/v1/tools/image/gif-tools/info` | Get GIF metadata (frame count, dimensions, duration) |
+| `POST` | `/api/v1/tools/pdf/pdf-to-image/info` | Get PDF metadata (page count, dimensions) |
+| `POST` | `/api/v1/tools/pdf/pdf-to-image/preview` | Generate a preview of a specific PDF page |
+| `POST` | `/api/v1/tools/image/svg-to-raster/batch` | Batch convert multiple SVGs to raster |
+| `POST` | `/api/v1/tools/image/image-enhancement/analyze` | Analyze image quality and return enhancement recommendations |
+| `POST` | `/api/v1/tools/image/optimize-for-web/preview` | Lightweight preview for live parameter tuning. Returns optimized image with size headers. |
 
 ## Batch Processing
 
 Apply any tool to multiple files at once. Returns a ZIP archive.
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/compress/batch \
+curl -X POST http://localhost:1349/api/v1/tools/image/compress/batch \
   -H "Authorization: Bearer <token>" \
   -F "files=@a.jpg" \
   -F "files=@b.jpg" \

@@ -8,7 +8,7 @@ View, edit, or strip audio metadata tags such as title, artist, and album (ID3 a
 
 ## API Endpoint
 
-`POST /api/v1/tools/audio-metadata`
+`POST /api/v1/tools/audio/audio-metadata`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -26,7 +26,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 Edit metadata tags:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/audio-metadata \
+curl -X POST http://localhost:1349/api/v1/tools/audio/audio-metadata \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"title": "My Song", "artist": "Artist Name", "album": "Album Name"}'
@@ -35,7 +35,7 @@ curl -X POST http://localhost:1349/api/v1/tools/audio-metadata \
 Strip all metadata:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/audio-metadata \
+curl -X POST http://localhost:1349/api/v1/tools/audio/audio-metadata \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"strip": true}'

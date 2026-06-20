@@ -46,7 +46,7 @@ describe("Zero-byte / empty file uploads", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -65,7 +65,7 @@ describe("Zero-byte / empty file uploads", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -86,7 +86,7 @@ describe("1x1 pixel image handling", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -102,7 +102,7 @@ describe("1x1 pixel image handling", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/crop",
+      url: "/api/v1/tools/image/crop",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -119,7 +119,7 @@ describe("1x1 pixel image handling", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/rotate",
+      url: "/api/v1/tools/image/rotate",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -145,7 +145,7 @@ describe("Wrong file extension (magic byte detection)", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -168,7 +168,7 @@ describe("Extreme filenames", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -184,7 +184,7 @@ describe("Extreme filenames", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -205,7 +205,7 @@ describe("Extreme filenames", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -226,7 +226,7 @@ describe("Extreme filenames", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -251,7 +251,7 @@ describe("Settings field edge cases", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -270,7 +270,7 @@ describe("Settings field edge cases", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -288,7 +288,7 @@ describe("Settings field edge cases", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -308,7 +308,7 @@ describe("Settings field edge cases", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -330,7 +330,7 @@ describe("1x1 pixel image through additional tools", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compress",
+      url: "/api/v1/tools/image/compress",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -345,7 +345,7 @@ describe("1x1 pixel image through additional tools", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/info",
+      url: "/api/v1/tools/image/info",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -365,7 +365,7 @@ describe("1x1 pixel image through additional tools", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/convert",
+      url: "/api/v1/tools/image/convert",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -395,7 +395,7 @@ describe("Unicode and special filenames", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -418,7 +418,7 @@ describe("Unicode and special filenames", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -439,7 +439,7 @@ describe("Unicode and special filenames", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -456,7 +456,7 @@ describe("Unicode and special filenames", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -478,7 +478,7 @@ describe("Unicode and special filenames", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -503,7 +503,7 @@ describe("Unicode and special filenames", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -525,7 +525,7 @@ describe("Unicode and special filenames", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -538,14 +538,14 @@ describe("Unicode and special filenames", () => {
 // ZERO-BYTE FILES — ADDITIONAL TOOLS
 // ═══════════════════════════════════════════════════════════════════════════
 describe("Zero-byte file to info and border tools", () => {
-  it("rejects a zero-byte file to /api/v1/tools/info with 400", async () => {
+  it("rejects a zero-byte file to /api/v1/tools/image/info with 400", async () => {
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "empty.png", content: Buffer.alloc(0), contentType: "image/png" },
     ]);
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/info",
+      url: "/api/v1/tools/image/info",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -555,7 +555,7 @@ describe("Zero-byte file to info and border tools", () => {
     expect(json.error).toBeDefined();
   });
 
-  it("rejects a zero-byte file to /api/v1/tools/sharpening with 400", async () => {
+  it("rejects a zero-byte file to /api/v1/tools/image/sharpening with 400", async () => {
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "empty.png", content: Buffer.alloc(0), contentType: "image/png" },
       { name: "settings", content: JSON.stringify({ method: "adaptive" }) },
@@ -563,7 +563,7 @@ describe("Zero-byte file to info and border tools", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/sharpening",
+      url: "/api/v1/tools/image/sharpening",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -586,7 +586,7 @@ describe("1x1 pixel image through rotate with flip", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/rotate",
+      url: "/api/v1/tools/image/rotate",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -603,7 +603,7 @@ describe("1x1 pixel image through rotate with flip", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/rotate",
+      url: "/api/v1/tools/image/rotate",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -623,7 +623,7 @@ describe("Missing file part in multipart request", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -674,7 +674,7 @@ describe("Wrong extension — additional format mismatches", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -698,7 +698,7 @@ describe("Wrong extension — additional format mismatches", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -722,7 +722,7 @@ describe("Settings with extreme values", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -746,7 +746,7 @@ describe("Settings with extreme values", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -769,7 +769,7 @@ describe("Settings with extreme values", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });

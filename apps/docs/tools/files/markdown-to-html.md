@@ -8,7 +8,7 @@ Convert a Markdown file to a standalone HTML page. Remote images referenced in t
 
 ## API Endpoint
 
-`POST /api/v1/tools/markdown-to-html`
+`POST /api/v1/tools/files/markdown-to-html`
 
 Accepts multipart form data with a Markdown file.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload a Markdown file and it will be 
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/markdown-to-html \
+curl -X POST http://localhost:1349/api/v1/tools/files/markdown-to-html \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@notes.md"
 ```

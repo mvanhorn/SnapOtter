@@ -1,5 +1,5 @@
 /**
- * Integration tests for the red-eye-removal tool (/api/v1/tools/red-eye-removal).
+ * Integration tests for the red-eye-removal tool (/api/v1/tools/image/red-eye-removal).
  *
  * This tool requires the Python sidecar (MediaPipe face-detection bundle).
  * Tests accept both 200 (sidecar running) and 501 (not installed) for the
@@ -43,7 +43,7 @@ describe("Red Eye Removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/red-eye-removal",
+      url: "/api/v1/tools/image/red-eye-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -62,7 +62,7 @@ describe("Red Eye Removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/red-eye-removal",
+      url: "/api/v1/tools/image/red-eye-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -95,7 +95,7 @@ describe("Red Eye Removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/red-eye-removal",
+      url: "/api/v1/tools/image/red-eye-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -117,7 +117,7 @@ describe("Red Eye Removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/red-eye-removal",
+      url: "/api/v1/tools/image/red-eye-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -136,7 +136,7 @@ describe("Red Eye Removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/red-eye-removal",
+      url: "/api/v1/tools/image/red-eye-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -158,7 +158,7 @@ describe("Red Eye Removal", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/red-eye-removal",
+        url: "/api/v1/tools/image/red-eye-removal",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -179,7 +179,7 @@ describe("Red Eye Removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/red-eye-removal",
+      url: "/api/v1/tools/image/red-eye-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -200,7 +200,7 @@ describe("Red Eye Removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/red-eye-removal",
+      url: "/api/v1/tools/image/red-eye-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -224,7 +224,7 @@ describe("Red Eye Removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/red-eye-removal",
+      url: "/api/v1/tools/image/red-eye-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -250,7 +250,7 @@ describe("Red Eye Removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/red-eye-removal",
+      url: "/api/v1/tools/image/red-eye-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -276,7 +276,7 @@ describe("Red Eye Removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/red-eye-removal",
+      url: "/api/v1/tools/image/red-eye-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -302,7 +302,7 @@ describe("Red Eye Removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/red-eye-removal",
+      url: "/api/v1/tools/image/red-eye-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -325,7 +325,7 @@ describe("Red Eye Removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/red-eye-removal",
+      url: "/api/v1/tools/image/red-eye-removal",
       headers: { "content-type": contentType },
       body,
     });

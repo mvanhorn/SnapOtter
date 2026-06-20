@@ -79,7 +79,7 @@ function buildOverlaySvg(
  * Read barcodes (all 1D + 2D types) from uploaded images using zxing-wasm.
  */
 export function registerBarcodeRead(app: FastifyInstance) {
-  app.post("/api/v1/tools/barcode-read", async (request: FastifyRequest, reply: FastifyReply) => {
+  app.post("/api/v1/tools/image/barcode-read", async (request: FastifyRequest, reply: FastifyReply) => {
     let fileBuffer: Buffer | null = null;
     let filename = "image";
     let settingsRaw: string | null = null;

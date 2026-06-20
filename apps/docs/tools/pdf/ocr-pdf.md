@@ -8,7 +8,7 @@ Extract text from PDF documents using AI-powered optical character recognition. 
 
 ## API Endpoint
 
-`POST /api/v1/tools/ocr-pdf`
+`POST /api/v1/tools/pdf/ocr-pdf`
 
 Accepts multipart form data with a PDF file and an optional JSON `settings` field.
 
@@ -23,7 +23,7 @@ Accepts multipart form data with a PDF file and an optional JSON `settings` fiel
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/ocr-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/ocr-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@scanned.pdf" \
   -F 'settings={"quality": "best", "language": "en", "pages": "1-5"}'

@@ -8,7 +8,7 @@ Blur the background of an image while keeping the subject sharp. The AI model is
 
 ## API Endpoint
 
-`POST /api/v1/tools/blur-background`
+`POST /api/v1/tools/image/blur-background`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -23,7 +23,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/blur-background \
+curl -X POST http://localhost:1349/api/v1/tools/image/blur-background \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"intensity": 75, "feather": 3}'

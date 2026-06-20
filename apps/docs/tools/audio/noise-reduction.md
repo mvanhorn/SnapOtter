@@ -8,7 +8,7 @@ Reduce background noise in an audio file using FFT-based denoising with selectab
 
 ## API Endpoint
 
-`POST /api/v1/tools/noise-reduction`
+`POST /api/v1/tools/audio/noise-reduction`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/noise-reduction \
+curl -X POST http://localhost:1349/api/v1/tools/audio/noise-reduction \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"strength": "strong"}'

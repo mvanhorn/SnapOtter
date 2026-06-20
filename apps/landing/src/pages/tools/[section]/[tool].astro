@@ -1,5 +1,5 @@
 ---
-import { CATEGORIES, PYTHON_SIDECAR_TOOLS, TOOLS } from "@snapotter/shared";
+import { CATEGORIES, PYTHON_SIDECAR_TOOLS, SECTIONS, TOOLS, toolSection } from "@snapotter/shared";
 import * as lucideIcons from "lucide";
 import Footer from "@/components/Footer.astro";
 import JsonLd from "@/components/JsonLd.astro";
@@ -8,10 +8,17 @@ import { TOOL_SEO } from "@/data/tool-seo";
 import Base from "@/layouts/Base.astro";
 
 export function getStaticPaths() {
-  return TOOLS.map((tool) => ({ params: { slug: tool.id }, props: { tool } }));
+  return TOOLS.map((tool) => ({
+    params: { section: toolSection(tool), tool: tool.id },
+    props: { tool },
+  }));
 }
 
 const { tool } = Astro.props;
+
+const section = toolSection(tool);
+const sectionInfo = SECTIONS.find((s) => s.id === section);
+const sectionName = sectionInfo?.name ?? section;
 
 const categoryMap = new Map(CATEGORIES.map((c) => [c.id, c]));
 const category = categoryMap.get(tool.category);
@@ -47,8 +54,14 @@ const breadcrumbJsonLd = {
     {
       "@type": "ListItem",
       position: 3,
+      name: sectionName,
+      item: `https://snapotter.com/tools/${section}/`,
+    },
+    {
+      "@type": "ListItem",
+      position: 4,
       name: tool.name,
-      item: `https://snapotter.com/tools/${tool.id}`,
+      item: `https://snapotter.com/tools/${section}/${tool.id}/`,
     },
   ],
 };
@@ -63,7 +76,7 @@ const softwareJsonLd = {
   browserRequirements: "Requires JavaScript",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   license: "https://www.gnu.org/licenses/agpl-3.0.en.html",
-  url: `https://snapotter.com/tools/${tool.id}`,
+  url: `https://snapotter.com/tools/${toolSection(tool)}/${tool.id}/`,
   ...(seo?.features && { featureList: seo.features }),
   isPartOf: { "@type": "SoftwareApplication", name: "SnapOtter", url: "https://snapotter.com" },
 };
@@ -144,7 +157,7 @@ const allJsonLd = [
 <Base
   title={title}
   description={description}
-  canonical={`https://snapotter.com/tools/${tool.id}`}
+  canonical={`https://snapotter.com/tools/${toolSection(tool)}/${tool.id}/`}
 >
   <Fragment slot="head">
     <JsonLd data={allJsonLd} />
@@ -162,6 +175,10 @@ const allJsonLd = [
         <li aria-hidden="true">/</li>
         <li>
           <a href="/tools" class="transition-colors hover:text-foreground">Tools</a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li>
+          <a href={`/tools/${section}/`} class="transition-colors hover:text-foreground">{sectionName}</a>
         </li>
         <li aria-hidden="true">/</li>
         <li class="font-medium text-foreground">{tool.name}</li>
@@ -351,7 +368,7 @@ const allJsonLd = [
                 const relColor = relCat?.color ?? "#737373";
                 return (
                   <a
-                    href={`/tools/${t.id}`}
+                    href={`/tools/${toolSection(t)}/${t.id}/`}
                     class="group flex flex-col rounded-xl border border-border bg-surface p-5 transition-all hover:border-primary hover:shadow-md"
                   >
                     <svg

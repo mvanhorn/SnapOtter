@@ -8,7 +8,7 @@ Convert a video clip into an animated WebP image with configurable frame rate, w
 
 ## API Endpoint
 
-`POST /api/v1/tools/video-to-webp`
+`POST /api/v1/tools/video/video-to-webp`
 
 Accepts multipart form data with a video file and a JSON `settings` field.
 
@@ -24,7 +24,7 @@ Accepts multipart form data with a video file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/video-to-webp \
+curl -X POST http://localhost:1349/api/v1/tools/video/video-to-webp \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"fps": 15, "width": 640, "quality": 80}'

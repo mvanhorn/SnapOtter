@@ -4,7 +4,7 @@ Restore and enhance faces in images using AI models (GFPGAN/CodeFormer).
 
 ## API Endpoint
 
-`POST /api/v1/tools/enhance-faces`
+`POST /api/v1/tools/image/enhance-faces`
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
@@ -23,7 +23,7 @@ Restore and enhance faces in images using AI models (GFPGAN/CodeFormer).
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/enhance-faces \
+curl -X POST http://localhost:1349/api/v1/tools/image/enhance-faces \
   -F "file=@portrait.jpg" \
   -F 'settings={"model":"codeformer","strength":0.7,"onlyCenterFace":false}'
 ```

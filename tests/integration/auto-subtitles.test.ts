@@ -1,5 +1,5 @@
 /**
- * Integration tests for the auto-subtitles tool (/api/v1/tools/auto-subtitles).
+ * Integration tests for the auto-subtitles tool (/api/v1/tools/video/auto-subtitles).
  *
  * The transcription bundle (faster-whisper) is not installed locally, so the
  * 501 gate is always hit. Validation paths (bad settings) fire after the 501
@@ -46,7 +46,7 @@ describe("auto-subtitles", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/auto-subtitles",
+      url: "/api/v1/tools/video/auto-subtitles",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -80,7 +80,7 @@ describe("auto-subtitles", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/auto-subtitles",
+      url: "/api/v1/tools/video/auto-subtitles",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -107,7 +107,7 @@ describe("auto-subtitles", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/auto-subtitles",
+      url: "/api/v1/tools/video/auto-subtitles",
       headers: { "content-type": contentType },
       body,
     });
@@ -137,7 +137,7 @@ describe("auto-subtitles", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/auto-subtitles",
+        url: "/api/v1/tools/video/auto-subtitles",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -167,7 +167,7 @@ describe("auto-subtitles", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/auto-subtitles",
+        url: "/api/v1/tools/video/auto-subtitles",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,

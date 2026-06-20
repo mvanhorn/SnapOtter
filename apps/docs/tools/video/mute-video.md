@@ -8,7 +8,7 @@ Remove the audio track from a video, leaving only the visual stream.
 
 ## API Endpoint
 
-`POST /api/v1/tools/mute-video`
+`POST /api/v1/tools/video/mute-video`
 
 Accepts multipart form data with a video file. This tool has no configurable settings.
 
@@ -19,7 +19,7 @@ This tool has no parameters. It strips the audio track from the uploaded video.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/mute-video \
+curl -X POST http://localhost:1349/api/v1/tools/video/mute-video \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4"
 ```

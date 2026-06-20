@@ -66,8 +66,8 @@ export default defineConfig({
 
 - Base URL: \`http://localhost:1349\`
 - Auth: Session token via \`POST /api/auth/login\` or API key (\`Authorization: Bearer si_...\`)
-- Tools: \`POST /api/v1/tools/{toolId}\` (multipart: file + settings JSON)
-- Batch: \`POST /api/v1/tools/{toolId}/batch\` (multiple files, returns ZIP)
+- Tools: \`POST /api/v1/tools/{section}/{toolId}\` (multipart: file + settings JSON)
+- Batch: \`POST /api/v1/tools/{section}/{toolId}/batch\` (multiple files, returns ZIP)
 - Pipelines: \`POST /api/v1/pipeline/execute\` (chain tools sequentially)
 - Interactive API docs on running instance: \`/api/docs\`
 - OpenAPI spec on running instance: \`/api/v1/openapi.yaml\`
@@ -294,18 +294,13 @@ export default defineConfig({
             ],
           },
           {
-            text: "PDF & Documents",
+            text: "PDF",
             items: [
               { text: "PDF to Image", link: "/tools/pdf/pdf-to-image" },
               { text: "Merge PDFs", link: "/tools/pdf/merge-pdf" },
               { text: "Split PDF", link: "/tools/pdf/split-pdf" },
               { text: "Compress PDF", link: "/tools/pdf/compress-pdf" },
               { text: "Rotate PDF", link: "/tools/pdf/rotate-pdf" },
-              { text: "Convert Document", link: "/tools/pdf/convert-document" },
-              { text: "Convert Presentation", link: "/tools/pdf/convert-presentation" },
-              { text: "Convert Spreadsheet", link: "/tools/pdf/convert-spreadsheet" },
-              { text: "Excel to PDF", link: "/tools/pdf/excel-to-pdf" },
-              { text: "Word to PDF", link: "/tools/pdf/word-to-pdf" },
               { text: "Extract Pages", link: "/tools/pdf/extract-pages" },
               { text: "Remove Pages", link: "/tools/pdf/remove-pages" },
               { text: "Organize PDF", link: "/tools/pdf/organize-pdf" },
@@ -325,29 +320,34 @@ export default defineConfig({
               { text: "PDF to Text", link: "/tools/pdf/pdf-to-text" },
               { text: "PDF to Word", link: "/tools/pdf/pdf-to-word" },
               { text: "PDF Metadata", link: "/tools/pdf/pdf-metadata" },
-              { text: "PowerPoint to PDF", link: "/tools/pdf/powerpoint-to-pdf" },
-              { text: "HTML to PDF", link: "/tools/pdf/html-to-pdf" },
-              { text: "Markdown to Word", link: "/tools/pdf/markdown-to-docx" },
-              { text: "Markdown to HTML", link: "/tools/pdf/markdown-to-html" },
-              { text: "Markdown to PDF", link: "/tools/pdf/markdown-to-pdf" },
-              { text: "Convert EPUB", link: "/tools/pdf/epub-convert" },
-              { text: "Convert to EPUB", link: "/tools/pdf/to-epub" },
               { text: "PDF OCR", link: "/tools/pdf/ocr-pdf" },
             ],
           },
           {
-            text: "Data",
+            text: "Files",
             items: [
-              { text: "Chart Maker", link: "/tools/data/chart-maker" },
-              { text: "CSV to Excel", link: "/tools/data/csv-excel" },
-              { text: "CSV to JSON", link: "/tools/data/csv-json" },
-              { text: "JSON to XML", link: "/tools/data/json-xml" },
-              { text: "Split CSV", link: "/tools/data/split-csv" },
-              { text: "Merge CSVs", link: "/tools/data/merge-csvs" },
-              { text: "YAML / JSON", link: "/tools/data/yaml-json" },
-              { text: "XML to CSV", link: "/tools/data/xml-to-csv" },
-              { text: "Create ZIP", link: "/tools/data/create-zip" },
-              { text: "Extract ZIP", link: "/tools/data/extract-zip" },
+              { text: "Convert Document", link: "/tools/files/convert-document" },
+              { text: "Convert Presentation", link: "/tools/files/convert-presentation" },
+              { text: "Convert Spreadsheet", link: "/tools/files/convert-spreadsheet" },
+              { text: "Excel to PDF", link: "/tools/files/excel-to-pdf" },
+              { text: "Word to PDF", link: "/tools/files/word-to-pdf" },
+              { text: "PowerPoint to PDF", link: "/tools/files/powerpoint-to-pdf" },
+              { text: "HTML to PDF", link: "/tools/files/html-to-pdf" },
+              { text: "Markdown to Word", link: "/tools/files/markdown-to-docx" },
+              { text: "Markdown to HTML", link: "/tools/files/markdown-to-html" },
+              { text: "Markdown to PDF", link: "/tools/files/markdown-to-pdf" },
+              { text: "Convert EPUB", link: "/tools/files/epub-convert" },
+              { text: "Convert to EPUB", link: "/tools/files/to-epub" },
+              { text: "Chart Maker", link: "/tools/files/chart-maker" },
+              { text: "CSV to Excel", link: "/tools/files/csv-excel" },
+              { text: "CSV to JSON", link: "/tools/files/csv-json" },
+              { text: "JSON to XML", link: "/tools/files/json-xml" },
+              { text: "Split CSV", link: "/tools/files/split-csv" },
+              { text: "Merge CSVs", link: "/tools/files/merge-csvs" },
+              { text: "YAML / JSON", link: "/tools/files/yaml-json" },
+              { text: "XML to CSV", link: "/tools/files/xml-to-csv" },
+              { text: "Create ZIP", link: "/tools/files/create-zip" },
+              { text: "Extract ZIP", link: "/tools/files/extract-zip" },
             ],
           },
         ],

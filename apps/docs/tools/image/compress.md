@@ -8,7 +8,7 @@ Reduce image file size by specifying a quality level or a target file size in ki
 
 ## API Endpoint
 
-`POST /api/v1/tools/compress`
+`POST /api/v1/tools/image/compress`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -25,7 +25,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 Compress to quality 60:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/compress \
+curl -X POST http://localhost:1349/api/v1/tools/image/compress \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"mode": "quality", "quality": 60}'
@@ -34,7 +34,7 @@ curl -X POST http://localhost:1349/api/v1/tools/compress \
 Compress to target size of 200 KB:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/compress \
+curl -X POST http://localhost:1349/api/v1/tools/image/compress \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"mode": "targetSize", "targetSizeKb": 200}'

@@ -4,7 +4,7 @@ Vectorize raster images into SVG using tracing algorithms. Supports black-and-wh
 
 ## API Endpoint
 
-`POST /api/v1/tools/vectorize`
+`POST /api/v1/tools/image/vectorize`
 
 ## Parameters
 
@@ -22,7 +22,7 @@ Vectorize raster images into SVG using tracing algorithms. Supports black-and-wh
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/vectorize \
+curl -X POST http://localhost:1349/api/v1/tools/image/vectorize \
   -F "file=@logo.png" \
   -F 'settings={"colorMode":"bw","threshold":128,"filterSpeckle":4,"pathMode":"spline"}'
 ```
@@ -30,7 +30,7 @@ curl -X POST http://localhost:1349/api/v1/tools/vectorize \
 ### Color Vectorization
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/vectorize \
+curl -X POST http://localhost:1349/api/v1/tools/image/vectorize \
   -F "file=@illustration.png" \
   -F 'settings={"colorMode":"color","colorPrecision":8,"layerDifference":6,"filterSpeckle":4}'
 ```

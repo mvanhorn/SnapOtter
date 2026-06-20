@@ -139,7 +139,7 @@ Every file you process can be saved to your **Files** library. SnapOtter tracks 
 Every tool is accessible via HTTP:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/resize \
+curl -X POST http://localhost:1349/api/v1/tools/image/resize \
   -H "Authorization: Bearer si_<your-api-key>" \
   -F "file=@photo.jpg" \
   -F 'settings={"width":800,"height":600,"fit":"cover"}'

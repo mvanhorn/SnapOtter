@@ -8,7 +8,7 @@ Permanently remove specified text occurrences from a PDF using verified true red
 
 ## API Endpoint
 
-`POST /api/v1/tools/redact-pdf`
+`POST /api/v1/tools/pdf/redact-pdf`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/redact-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/redact-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@contract.pdf" \
   -F 'settings={"terms": ["John Doe", "555-0123"], "caseSensitive": false}'

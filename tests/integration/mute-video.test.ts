@@ -26,7 +26,7 @@ describe.skipIf(!ffmpegAvailable())("mute-video (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/mute-video",
+      url: "/api/v1/tools/video/mute-video",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -48,7 +48,7 @@ describe.skipIf(!ffmpegAvailable())("mute-video (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/mute-video",
+      url: "/api/v1/tools/video/mute-video",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

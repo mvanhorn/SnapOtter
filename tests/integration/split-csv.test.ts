@@ -26,7 +26,7 @@ async function runTool(settings: Record<string, unknown>) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/split-csv",
+    url: "/api/v1/tools/files/split-csv",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });
@@ -73,7 +73,7 @@ describe("split-csv (pure JS, no skipIf)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/split-csv",
+      url: "/api/v1/tools/files/split-csv",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": tsvCt },
       body: tsvBody,
     });

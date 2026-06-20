@@ -8,7 +8,7 @@ Convert Word documents, Markdown, HTML, or plain text files into the EPUB e-book
 
 ## API Endpoint
 
-`POST /api/v1/tools/to-epub`
+`POST /api/v1/tools/files/to-epub`
 
 Accepts multipart form data with a Word/Markdown/HTML/TXT file.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload a document and it will be conve
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/to-epub \
+curl -X POST http://localhost:1349/api/v1/tools/files/to-epub \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@manuscript.docx"
 ```

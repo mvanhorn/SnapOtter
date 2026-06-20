@@ -26,7 +26,7 @@ async function runTool(settings: Record<string, unknown>, file = WAV, filename =
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/convert-audio",
+    url: "/api/v1/tools/audio/convert-audio",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

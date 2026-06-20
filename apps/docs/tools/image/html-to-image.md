@@ -8,7 +8,7 @@ Capture a webpage URL or raw HTML content as a screenshot image. Supports device
 
 ## API Endpoint
 
-`POST /api/v1/tools/html-to-image`
+`POST /api/v1/tools/image/html-to-image`
 
 Accepts a **JSON body** (not multipart). No file upload is needed.
 
@@ -41,7 +41,7 @@ Either `url` or `html` must be provided, but not both.
 Capture a webpage:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/html-to-image \
+curl -X POST http://localhost:1349/api/v1/tools/image/html-to-image \
   -H "Authorization: Bearer si_your-api-key" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com", "format": "png", "fullPage": true, "devicePreset": "desktop"}'
@@ -50,7 +50,7 @@ curl -X POST http://localhost:1349/api/v1/tools/html-to-image \
 Render HTML content:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/html-to-image \
+curl -X POST http://localhost:1349/api/v1/tools/image/html-to-image \
   -H "Authorization: Bearer si_your-api-key" \
   -H "Content-Type: application/json" \
   -d '{"html": "<div style=\"padding: 20px; background: #f0f0f0;\"><h1>Hello</h1></div>", "format": "png"}'

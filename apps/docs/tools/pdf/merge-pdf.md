@@ -8,7 +8,7 @@ Combine two or more PDF files into a single document, preserving the page order 
 
 ## API Endpoint
 
-`POST /api/v1/tools/merge-pdf`
+`POST /api/v1/tools/pdf/merge-pdf`
 
 Accepts multipart form data with two or more PDF files. No `settings` field is required.
 
@@ -24,7 +24,7 @@ This tool has no settings parameters. Simply upload two or more PDF files.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/merge-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/merge-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document1.pdf" \
   -F "file=@document2.pdf" \

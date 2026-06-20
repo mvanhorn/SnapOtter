@@ -4,7 +4,7 @@ Fix fake transparent PNGs in one click. Uses AI matting (BiRefNet HR Matting mod
 
 ## API Endpoint
 
-`POST /api/v1/tools/transparency-fixer`
+`POST /api/v1/tools/image/transparency-fixer`
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
@@ -22,7 +22,7 @@ Fix fake transparent PNGs in one click. Uses AI matting (BiRefNet HR Matting mod
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/transparency-fixer \
+curl -X POST http://localhost:1349/api/v1/tools/image/transparency-fixer \
   -F "file=@fake-transparent.png" \
   -F 'settings={"defringe":40,"outputFormat":"png"}'
 ```

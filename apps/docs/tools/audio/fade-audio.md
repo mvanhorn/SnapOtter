@@ -8,7 +8,7 @@ Add fade-in and fade-out effects to the beginning and end of an audio file.
 
 ## API Endpoint
 
-`POST /api/v1/tools/fade-audio`
+`POST /api/v1/tools/audio/fade-audio`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/fade-audio \
+curl -X POST http://localhost:1349/api/v1/tools/audio/fade-audio \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"fadeInS": 2, "fadeOutS": 3}'

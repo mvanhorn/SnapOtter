@@ -8,7 +8,7 @@ Add styled text to images with optional drop shadow and semi-transparent backgro
 
 ## API Endpoint
 
-`POST /api/v1/tools/text-overlay`
+`POST /api/v1/tools/image/text-overlay`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -27,7 +27,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/text-overlay \
+curl -X POST http://localhost:1349/api/v1/tools/image/text-overlay \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"text": "Hello World", "fontSize": 64, "color": "#FFFFFF", "position": "bottom", "shadow": true}'
@@ -36,7 +36,7 @@ curl -X POST http://localhost:1349/api/v1/tools/text-overlay \
 With a background box:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/text-overlay \
+curl -X POST http://localhost:1349/api/v1/tools/image/text-overlay \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"text": "Caption", "fontSize": 36, "position": "bottom", "backgroundBox": true, "backgroundColor": "#000000"}'

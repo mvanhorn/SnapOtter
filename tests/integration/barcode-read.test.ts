@@ -1,5 +1,5 @@
 /**
- * Integration tests for the barcode-read tool (/api/v1/tools/barcode-read).
+ * Integration tests for the barcode-read tool (/api/v1/tools/image/barcode-read).
  *
  * Covers barcode/QR code detection from images, annotated image generation,
  * graceful handling of images without barcodes, and input validation.
@@ -33,7 +33,7 @@ beforeAll(async () => {
   // Generate a QR code to use as a reliable fixture
   const genRes = await app.inject({
     method: "POST",
-    url: "/api/v1/tools/qr-generate",
+    url: "/api/v1/tools/image/qr-generate",
     headers: {
       authorization: `Bearer ${adminToken}`,
       "content-type": "application/json",
@@ -60,7 +60,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -88,7 +88,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -119,7 +119,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -154,7 +154,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -178,7 +178,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -206,7 +206,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -227,7 +227,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -247,7 +247,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: { "content-type": contentType },
       body,
     });
@@ -265,7 +265,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -287,7 +287,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -311,7 +311,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -335,7 +335,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -357,7 +357,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -378,7 +378,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -407,7 +407,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -428,7 +428,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -447,7 +447,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -468,7 +468,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -492,7 +492,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -518,7 +518,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -541,7 +541,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -564,7 +564,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -594,7 +594,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -637,7 +637,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -663,7 +663,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -690,7 +690,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -714,7 +714,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -739,7 +739,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -765,7 +765,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -788,7 +788,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -815,7 +815,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -839,7 +839,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -863,7 +863,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -887,7 +887,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -907,7 +907,7 @@ describe("Barcode Read", () => {
     // Generate a QR code SVG via qr-generate
     const genRes = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -931,7 +931,7 @@ describe("Barcode Read", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/barcode-read",
+          url: "/api/v1/tools/image/barcode-read",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -953,7 +953,7 @@ describe("Barcode Read", () => {
     const testText = "barcode-read-verification-test-12345";
     const genRes = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -973,7 +973,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -999,7 +999,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1024,7 +1024,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1048,7 +1048,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1087,7 +1087,7 @@ describe("Barcode Read", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/barcode-read",
+      url: "/api/v1/tools/image/barcode-read",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

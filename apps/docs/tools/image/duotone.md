@@ -8,7 +8,7 @@ Apply a two-color duotone effect to an image. The image is converted to grayscal
 
 ## API Endpoint
 
-`POST /api/v1/tools/duotone`
+`POST /api/v1/tools/image/duotone`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -23,7 +23,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/duotone \
+curl -X POST http://localhost:1349/api/v1/tools/image/duotone \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"shadow": "#0f172a", "highlight": "#f97316", "intensity": 80}'

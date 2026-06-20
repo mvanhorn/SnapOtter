@@ -312,7 +312,7 @@ test.describe("Repeated Operations Performance", () => {
       "/convert",
       "/compress",
       "/sharpening",
-      "/adjust-colors",
+      "/image/adjust-colors",
       "/strip-metadata",
       "/bulk-rename",
       "/favicon",
@@ -841,7 +841,7 @@ test.describe("Memory and Stability - Extended", () => {
       "/watermark",
       "/border",
       "/sharpening",
-      "/adjust-colors",
+      "/image/adjust-colors",
     ];
 
     const errors: string[] = [];
@@ -874,7 +874,7 @@ test.describe("Memory and Stability - Extended", () => {
       "/convert",
       "/compress",
       "/sharpening",
-      "/adjust-colors",
+      "/image/adjust-colors",
       "/strip-metadata",
       "/bulk-rename",
       "/favicon",
@@ -920,7 +920,7 @@ test.describe("Memory Stability - Heap Measurement", () => {
       "/watermark",
       "/border",
       "/sharpening",
-      "/adjust-colors",
+      "/image/adjust-colors",
     ];
 
     // Warm up and take baseline
@@ -1046,7 +1046,7 @@ test.describe("Memory Stability - Heap Measurement", () => {
       "/convert",
       "/compress",
       "/sharpening",
-      "/adjust-colors",
+      "/image/adjust-colors",
       "/strip-metadata",
       "/bulk-rename",
       "/favicon",

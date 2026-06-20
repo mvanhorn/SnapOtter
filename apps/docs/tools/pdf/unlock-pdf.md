@@ -8,7 +8,7 @@ Remove password protection from an encrypted PDF by providing the correct passwo
 
 ## API Endpoint
 
-`POST /api/v1/tools/unlock-pdf`
+`POST /api/v1/tools/pdf/unlock-pdf`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/unlock-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/unlock-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"password": "s3cret"}'

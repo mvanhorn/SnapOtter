@@ -8,7 +8,7 @@ Mux a subtitle file into the video container as a soft subtitle track that viewe
 
 ## API Endpoint
 
-`POST /api/v1/tools/embed-subtitles`
+`POST /api/v1/tools/video/embed-subtitles`
 
 Accepts multipart form data with a video file and a subtitle file, plus a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a video file and a subtitle file, plus a JSON `
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/embed-subtitles \
+curl -X POST http://localhost:1349/api/v1/tools/video/embed-subtitles \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F "file=@subtitles.srt" \

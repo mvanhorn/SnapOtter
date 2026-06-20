@@ -8,7 +8,7 @@ Resize images by specifying exact pixel dimensions, a percentage scale factor, o
 
 ## API Endpoint
 
-`POST /api/v1/tools/resize`
+`POST /api/v1/tools/image/resize`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -35,7 +35,7 @@ At least one of `width`, `height`, or `percentage` must be provided.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/resize \
+curl -X POST http://localhost:1349/api/v1/tools/image/resize \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"width": 800, "height": 600, "fit": "contain"}'
@@ -44,7 +44,7 @@ curl -X POST http://localhost:1349/api/v1/tools/resize \
 Resize by percentage:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/resize \
+curl -X POST http://localhost:1349/api/v1/tools/image/resize \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"percentage": 50}'

@@ -8,7 +8,7 @@ Crop images by defining a rectangular region using position and size. Supports b
 
 ## API Endpoint
 
-`POST /api/v1/tools/crop`
+`POST /api/v1/tools/image/crop`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -25,7 +25,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/crop \
+curl -X POST http://localhost:1349/api/v1/tools/image/crop \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"left": 100, "top": 50, "width": 800, "height": 600}'
@@ -34,7 +34,7 @@ curl -X POST http://localhost:1349/api/v1/tools/crop \
 Crop using percentage values:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/crop \
+curl -X POST http://localhost:1349/api/v1/tools/image/crop \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"left": 10, "top": 10, "width": 80, "height": 80, "unit": "percent"}'

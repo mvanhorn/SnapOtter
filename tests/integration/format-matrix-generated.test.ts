@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { TOOLS } from "@snapotter/shared";
+import { apiToolPath, TOOLS } from "@snapotter/shared";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { getRegisteredToolIds, getToolConfig } from "../../apps/api/src/routes/tool-factory.js";
@@ -93,7 +93,7 @@ describe("tool x format matrix (generated)", () => {
         ]);
         const res = await testApp.app.inject({
           method: "POST",
-          url: `/api/v1/tools/${toolId}`,
+          url: apiToolPath(toolId),
           headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
           body,
         });

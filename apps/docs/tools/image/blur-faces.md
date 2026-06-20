@@ -4,7 +4,7 @@ Auto-detect and blur faces in images using AI-powered face detection (MediaPipe)
 
 ## API Endpoint
 
-`POST /api/v1/tools/blur-faces`
+`POST /api/v1/tools/image/blur-faces`
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
@@ -21,7 +21,7 @@ Auto-detect and blur faces in images using AI-powered face detection (MediaPipe)
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/blur-faces \
+curl -X POST http://localhost:1349/api/v1/tools/image/blur-faces \
   -F "file=@group-photo.jpg" \
   -F 'settings={"blurRadius":40,"sensitivity":0.3}'
 ```

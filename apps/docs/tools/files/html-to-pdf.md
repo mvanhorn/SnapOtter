@@ -8,7 +8,7 @@ Convert an HTML file to a styled PDF document. Remote resources (external images
 
 ## API Endpoint
 
-`POST /api/v1/tools/html-to-pdf`
+`POST /api/v1/tools/files/html-to-pdf`
 
 Accepts multipart form data with an HTML file.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload an HTML file and it will be con
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/html-to-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/files/html-to-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@page.html"
 ```

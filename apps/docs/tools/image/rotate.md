@@ -8,7 +8,7 @@ Rotate images by an arbitrary angle and/or flip them horizontally or vertically.
 
 ## API Endpoint
 
-`POST /api/v1/tools/rotate`
+`POST /api/v1/tools/image/rotate`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -25,7 +25,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 Rotate 90 degrees clockwise:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/rotate \
+curl -X POST http://localhost:1349/api/v1/tools/image/rotate \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"angle": 90}'
@@ -34,7 +34,7 @@ curl -X POST http://localhost:1349/api/v1/tools/rotate \
 Flip horizontally:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/rotate \
+curl -X POST http://localhost:1349/api/v1/tools/image/rotate \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"horizontal": true}'
@@ -43,7 +43,7 @@ curl -X POST http://localhost:1349/api/v1/tools/rotate \
 Rotate and flip together:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/rotate \
+curl -X POST http://localhost:1349/api/v1/tools/image/rotate \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"angle": 45, "vertical": true}'

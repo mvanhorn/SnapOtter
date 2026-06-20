@@ -106,7 +106,7 @@ export function CollageSettings() {
         jobId: string;
       }>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/v1/tools/collage");
+        xhr.open("POST", "/api/v1/tools/image/collage");
 
         const headers = formatHeaders();
         headers.forEach((value, key) => {

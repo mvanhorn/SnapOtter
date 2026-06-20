@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { TOOLS } from "@snapotter/shared";
+import { apiToolPath, TOOLS } from "@snapotter/shared";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { TOOL_DISPLAY_MODES } from "../../apps/web/src/lib/tool-display-modes.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
@@ -63,7 +63,7 @@ describe("hostile input matrix", () => {
     const started = Date.now();
     const res = await testApp.app.inject({
       method: "POST",
-      url: `/api/v1/tools/${toolId}`,
+      url: apiToolPath(toolId),
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

@@ -8,7 +8,7 @@ Split an audio file into segments by fixed time intervals, equal parts, or autom
 
 ## API Endpoint
 
-`POST /api/v1/tools/split-audio`
+`POST /api/v1/tools/audio/split-audio`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -27,7 +27,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 Split into 30-second segments:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/split-audio \
+curl -X POST http://localhost:1349/api/v1/tools/audio/split-audio \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"mode": "time", "segmentS": 30}'
@@ -36,7 +36,7 @@ curl -X POST http://localhost:1349/api/v1/tools/split-audio \
 Split by silence detection:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/split-audio \
+curl -X POST http://localhost:1349/api/v1/tools/audio/split-audio \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"mode": "silence", "thresholdDb": -35, "minSilenceS": 0.5}'

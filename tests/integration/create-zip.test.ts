@@ -27,7 +27,7 @@ describe("create-zip (pure JS, no skipIf)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/create-zip",
+      url: "/api/v1/tools/files/create-zip",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -54,7 +54,7 @@ describe("create-zip (pure JS, no skipIf)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/create-zip",
+      url: "/api/v1/tools/files/create-zip",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

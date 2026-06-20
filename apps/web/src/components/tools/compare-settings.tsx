@@ -24,7 +24,7 @@ export function CompareSettings() {
       formData.append("file", files[0]);
       formData.append("file", secondFile);
 
-      const res = await fetch("/api/v1/tools/compare", {
+      const res = await fetch("/api/v1/tools/image/compare", {
         method: "POST",
         headers: formatHeaders(),
         body: formData,

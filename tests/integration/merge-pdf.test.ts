@@ -29,7 +29,7 @@ describe.skipIf(!qpdfAvailable())("merge-pdf (requires qpdf)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/merge-pdf",
+      url: "/api/v1/tools/pdf/merge-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -63,7 +63,7 @@ describe.skipIf(!qpdfAvailable())("merge-pdf (requires qpdf)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/merge-pdf",
+      url: "/api/v1/tools/pdf/merge-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

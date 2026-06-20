@@ -1,5 +1,5 @@
 /**
- * Integration tests for the qr-generate tool (/api/v1/tools/qr-generate).
+ * Integration tests for the qr-generate tool (/api/v1/tools/image/qr-generate).
  *
  * Covers QR code generation from text/URL input, custom size and colors,
  * error correction levels, download verification, and input validation.
@@ -27,7 +27,7 @@ describe("QR Generate", () => {
   it("generates a QR code from a URL string", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -48,7 +48,7 @@ describe("QR Generate", () => {
   it("generates a downloadable PNG image", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -77,7 +77,7 @@ describe("QR Generate", () => {
   it("respects the custom size parameter", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -104,7 +104,7 @@ describe("QR Generate", () => {
   it("uses default size of 400 when not specified", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -130,7 +130,7 @@ describe("QR Generate", () => {
   it("accepts custom foreground and background colors", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -152,7 +152,7 @@ describe("QR Generate", () => {
     for (const level of ["L", "M", "Q", "H"]) {
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/qr-generate",
+        url: "/api/v1/tools/image/qr-generate",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": "application/json",
@@ -170,7 +170,7 @@ describe("QR Generate", () => {
   it("returns all expected fields in the response", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -195,7 +195,7 @@ describe("QR Generate", () => {
   it("rejects requests without text", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -211,7 +211,7 @@ describe("QR Generate", () => {
   it("rejects empty text", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -225,7 +225,7 @@ describe("QR Generate", () => {
   it("rejects invalid color format", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -244,7 +244,7 @@ describe("QR Generate", () => {
   it("rejects size below minimum", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -261,7 +261,7 @@ describe("QR Generate", () => {
   it("rejects size above maximum", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -278,7 +278,7 @@ describe("QR Generate", () => {
   it("rejects invalid error correction level", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -295,7 +295,7 @@ describe("QR Generate", () => {
   it("rejects unauthenticated requests", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: { "content-type": "application/json" },
       payload: { text: "test" },
     });
@@ -308,7 +308,7 @@ describe("QR Generate", () => {
   it("generates QR code for a long URL", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -326,7 +326,7 @@ describe("QR Generate", () => {
   it("generates QR code for multiline text", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -342,7 +342,7 @@ describe("QR Generate", () => {
   it("generates QR code for special characters", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -360,7 +360,7 @@ describe("QR Generate", () => {
   it("generates minimum allowed size QR code", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -388,7 +388,7 @@ describe("QR Generate", () => {
   it("generates QR with white foreground on black background", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -409,7 +409,7 @@ describe("QR Generate", () => {
     const longText = "A".repeat(2000);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -429,7 +429,7 @@ describe("QR Generate", () => {
     const tooLong = "A".repeat(2001);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -445,7 +445,7 @@ describe("QR Generate", () => {
   it("generates QR code at large size (2000)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -464,7 +464,7 @@ describe("QR Generate", () => {
   it("generates QR with transparent background (3-char hex)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -486,7 +486,7 @@ describe("QR Generate", () => {
   it("higher error correction produces equal or larger QR", async () => {
     const resL = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -500,7 +500,7 @@ describe("QR Generate", () => {
 
     const resH = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -526,7 +526,7 @@ describe("QR Generate", () => {
   it("generates QR code for Unicode text", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -546,7 +546,7 @@ describe("QR Generate", () => {
   it("generates QR code for a single character", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -566,7 +566,7 @@ describe("QR Generate", () => {
   it("generates QR code with identical foreground and background colors", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -587,7 +587,7 @@ describe("QR Generate", () => {
   it("generates QR code at maximum allowed size (10000)", { timeout: 180_000 }, async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -608,7 +608,7 @@ describe("QR Generate", () => {
   it("accepts lowercase hex colors", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -628,7 +628,7 @@ describe("QR Generate", () => {
   it("accepts mixed case hex colors", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -648,7 +648,7 @@ describe("QR Generate", () => {
   it("downloaded QR code has the exact requested size", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -677,7 +677,7 @@ describe("QR Generate", () => {
   it("rejects invalid background color format", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -696,7 +696,7 @@ describe("QR Generate", () => {
   it("generates QR code for WiFi connection string", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -717,7 +717,7 @@ describe("QR Generate", () => {
   it("generates QR code for mailto link", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -737,7 +737,7 @@ describe("QR Generate", () => {
   it("generates QR code for numeric-only text", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -757,7 +757,7 @@ describe("QR Generate", () => {
   it("generates QR code at exactly minimum size (100)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -786,7 +786,7 @@ describe("QR Generate", () => {
   it("rejects size of 99 (just below minimum)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -803,7 +803,7 @@ describe("QR Generate", () => {
   it("rejects size of 10001 (just above maximum)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -822,7 +822,7 @@ describe("QR Generate", () => {
   it("uses default error correction level M when not specified", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -842,7 +842,7 @@ describe("QR Generate", () => {
   it("uses default black/white colors when not specified", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -870,7 +870,7 @@ describe("QR Generate", () => {
     for (const level of ["L", "M", "Q", "H"] as const) {
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/qr-generate",
+        url: "/api/v1/tools/image/qr-generate",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": "application/json",
@@ -901,7 +901,7 @@ describe("QR Generate", () => {
   it("rejects numeric text value (must be string)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -919,7 +919,7 @@ describe("QR Generate", () => {
   it("rejects 8-character hex color (with alpha)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -938,7 +938,7 @@ describe("QR Generate", () => {
   it("generates QR code for whitespace-only text", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -959,7 +959,7 @@ describe("QR Generate", () => {
   it("generates QR with all parameters specified", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -993,7 +993,7 @@ describe("QR Generate", () => {
   it("rejects request without content-type header", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
       },
@@ -1009,7 +1009,7 @@ describe("QR Generate", () => {
   it("download URL is accessible without auth token", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1036,7 +1036,7 @@ describe("QR Generate", () => {
   it("generates QR code for URL with encoded characters", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1067,7 +1067,7 @@ describe("QR Generate", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1088,7 +1088,7 @@ describe("QR Generate", () => {
   it("generates QR code for tel: URI", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1108,7 +1108,7 @@ describe("QR Generate", () => {
   it("QR with custom colors contains correct foreground color", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1148,7 +1148,7 @@ describe("QR Generate", () => {
   it("higher EC level produces larger or equal processedSize", async () => {
     const resL = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1162,7 +1162,7 @@ describe("QR Generate", () => {
 
     const resH = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1188,7 +1188,7 @@ describe("QR Generate", () => {
   it("generates QR code for geo location", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1209,7 +1209,7 @@ describe("QR Generate", () => {
     const jsonText = JSON.stringify({ key: "value", nested: { a: 1 } });
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1237,7 +1237,7 @@ describe("QR Generate", () => {
 
     const resNoLogo = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1251,7 +1251,7 @@ describe("QR Generate", () => {
 
     const resWithLogo = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1282,7 +1282,7 @@ describe("QR Generate", () => {
   it("rejects invalid logo base64 data", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1301,7 +1301,7 @@ describe("QR Generate", () => {
   it("rejects malformed logo data URI format", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/qr-generate",
+      url: "/api/v1/tools/image/qr-generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -1321,7 +1321,7 @@ describe("QR Generate", () => {
     for (const size of [150, 300, 500]) {
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/qr-generate",
+        url: "/api/v1/tools/image/qr-generate",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": "application/json",

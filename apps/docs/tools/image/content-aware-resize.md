@@ -4,7 +4,7 @@ Seam carving resize that intelligently removes or adds pixels along paths of lea
 
 ## API Endpoint
 
-`POST /api/v1/tools/content-aware-resize`
+`POST /api/v1/tools/image/content-aware-resize`
 
 **Processing:** Synchronous (returns result directly)
 
@@ -27,7 +27,7 @@ At least one of `width`, `height`, or `square` must be specified.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/content-aware-resize \
+curl -X POST http://localhost:1349/api/v1/tools/image/content-aware-resize \
   -F "file=@landscape.jpg" \
   -F 'settings={"width":800,"protectFaces":true}'
 ```

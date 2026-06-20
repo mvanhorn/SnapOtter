@@ -42,7 +42,7 @@ describe.skipIf(!ffmpegAvailable())("video-loudnorm (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/video-loudnorm",
+      url: "/api/v1/tools/video/video-loudnorm",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -62,7 +62,7 @@ describe.skipIf(!ffmpegAvailable())("video-loudnorm (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/video-loudnorm",
+      url: "/api/v1/tools/video/video-loudnorm",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

@@ -8,7 +8,7 @@ Replace pixels matching a source color with a target color, or make them transpa
 
 ## API Endpoint
 
-`POST /api/v1/tools/replace-color`
+`POST /api/v1/tools/image/replace-color`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -24,7 +24,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/replace-color \
+curl -X POST http://localhost:1349/api/v1/tools/image/replace-color \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"sourceColor": "#FF0000", "targetColor": "#0000FF", "tolerance": 40}'
@@ -33,7 +33,7 @@ curl -X POST http://localhost:1349/api/v1/tools/replace-color \
 Make a green background transparent:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/replace-color \
+curl -X POST http://localhost:1349/api/v1/tools/image/replace-color \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@greenscreen.png" \
   -F 'settings={"sourceColor": "#00FF00", "makeTransparent": true, "tolerance": 50}'

@@ -8,7 +8,7 @@ Apply a pixelation effect to an entire image or a specific rectangular region. U
 
 ## API Endpoint
 
-`POST /api/v1/tools/pixelate`
+`POST /api/v1/tools/image/pixelate`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -33,7 +33,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 Pixelate the full image:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/pixelate \
+curl -X POST http://localhost:1349/api/v1/tools/image/pixelate \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"blockSize": 20}'
@@ -42,7 +42,7 @@ curl -X POST http://localhost:1349/api/v1/tools/pixelate \
 Pixelate a specific region:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/pixelate \
+curl -X POST http://localhost:1349/api/v1/tools/image/pixelate \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"blockSize": 16, "region": {"left": 100, "top": 50, "width": 200, "height": 150}}'

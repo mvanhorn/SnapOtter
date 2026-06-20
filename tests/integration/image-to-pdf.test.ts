@@ -38,7 +38,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -59,7 +59,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -87,7 +87,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -105,7 +105,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -121,7 +121,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -137,7 +137,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -152,7 +152,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -170,7 +170,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -186,7 +186,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -204,7 +204,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -225,7 +225,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -246,7 +246,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -283,7 +283,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -304,7 +304,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -325,7 +325,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -349,7 +349,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -368,7 +368,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -391,7 +391,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -435,7 +435,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -458,7 +458,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -479,7 +479,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -498,7 +498,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -518,7 +518,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -538,7 +538,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -559,7 +559,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -580,7 +580,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -601,7 +601,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -628,7 +628,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -656,7 +656,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -676,7 +676,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { "content-type": contentType },
       body,
     });
@@ -700,7 +700,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -729,7 +729,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -753,7 +753,7 @@ describe("image-to-pdf", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/image-to-pdf",
+        url: "/api/v1/tools/image/image-to-pdf",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -777,7 +777,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -799,7 +799,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -821,7 +821,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -847,7 +847,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -867,7 +867,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -889,7 +889,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -907,7 +907,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -927,7 +927,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -948,7 +948,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -972,7 +972,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -990,7 +990,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1015,7 +1015,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1055,7 +1055,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1081,7 +1081,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1107,7 +1107,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1135,7 +1135,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1168,7 +1168,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1194,7 +1194,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1223,7 +1223,7 @@ describe("image-to-pdf", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-pdf",
+      url: "/api/v1/tools/image/image-to-pdf",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

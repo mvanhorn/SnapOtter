@@ -54,7 +54,7 @@ async function postTool(
   const { body: payload, contentType } = makePayload(settings, buffer, filename, ct);
   return app.inject({
     method: "POST",
-    url: "/api/v1/tools/edit-metadata",
+    url: "/api/v1/tools/image/edit-metadata",
     payload,
     headers: {
       "content-type": contentType,
@@ -289,7 +289,7 @@ describe("Inspect endpoint", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/edit-metadata/inspect",
+      url: "/api/v1/tools/image/edit-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -314,7 +314,7 @@ describe("Inspect endpoint", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/edit-metadata/inspect",
+      url: "/api/v1/tools/image/edit-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -333,7 +333,7 @@ describe("Inspect endpoint", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/edit-metadata/inspect",
+      url: "/api/v1/tools/image/edit-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -371,7 +371,7 @@ describe("Write then inspect round-trip", () => {
     ]);
     const inspectRes = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/edit-metadata/inspect",
+      url: "/api/v1/tools/image/edit-metadata/inspect",
       payload: inspectPayload,
       headers: {
         "content-type": inspectCt,
@@ -393,7 +393,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/edit-metadata",
+      url: "/api/v1/tools/image/edit-metadata",
       payload,
       headers: {
         "content-type": contentType,
@@ -415,7 +415,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/edit-metadata",
+      url: "/api/v1/tools/image/edit-metadata",
       payload,
       headers: {
         "content-type": contentType,
@@ -437,7 +437,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/edit-metadata",
+      url: "/api/v1/tools/image/edit-metadata",
       payload,
       headers: {
         "content-type": contentType,
@@ -461,7 +461,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/edit-metadata",
+      url: "/api/v1/tools/image/edit-metadata",
       payload,
       headers: {
         "content-type": contentType,
@@ -485,7 +485,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/edit-metadata",
+      url: "/api/v1/tools/image/edit-metadata",
       payload,
       headers: {
         "content-type": contentType,
@@ -717,7 +717,7 @@ describe("Inspect endpoint edge cases", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/edit-metadata/inspect",
+      url: "/api/v1/tools/image/edit-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -741,7 +741,7 @@ describe("Inspect endpoint edge cases", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/edit-metadata/inspect",
+      url: "/api/v1/tools/image/edit-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -763,7 +763,7 @@ describe("Inspect endpoint edge cases", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/edit-metadata/inspect",
+      url: "/api/v1/tools/image/edit-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,

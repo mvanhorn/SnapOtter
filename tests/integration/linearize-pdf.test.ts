@@ -26,7 +26,7 @@ async function runTool() {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/linearize-pdf",
+    url: "/api/v1/tools/pdf/linearize-pdf",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

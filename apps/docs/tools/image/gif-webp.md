@@ -8,7 +8,7 @@ Convert animated GIF files to WebP and vice versa, preserving all frames and ani
 
 ## API Endpoint
 
-`POST /api/v1/tools/gif-webp`
+`POST /api/v1/tools/image/gif-webp`
 
 Accepts multipart form data with a GIF or WebP file and a JSON `settings` field.
 
@@ -23,7 +23,7 @@ Accepts multipart form data with a GIF or WebP file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/gif-webp \
+curl -X POST http://localhost:1349/api/v1/tools/image/gif-webp \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@animation.gif" \
   -F 'settings={"quality": 85, "resizePercent": 50}'

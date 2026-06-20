@@ -8,7 +8,7 @@ Bundle multiple files of any type into a single ZIP archive. Duplicate filenames
 
 ## API Endpoint
 
-`POST /api/v1/tools/create-zip`
+`POST /api/v1/tools/files/create-zip`
 
 Accepts multipart form data with two or more files. No settings field is required.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload 2--50 files of any type to bund
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/create-zip \
+curl -X POST http://localhost:1349/api/v1/tools/files/create-zip \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@report.pdf" \
   -F "file=@data.csv" \

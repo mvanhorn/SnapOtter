@@ -18,6 +18,7 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { apiToolPath } from "@snapotter/shared";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
@@ -89,7 +90,7 @@ function postTool(
   const { body, contentType } = createMultipartPayload(fields);
   return app.inject({
     method: "POST",
-    url: `/api/v1/tools/${toolId}`,
+    url: apiToolPath(toolId),
     headers: {
       "content-type": contentType,
       authorization: `Bearer ${adminToken}`,
@@ -111,7 +112,7 @@ function postBatch(
   const { body, contentType } = createMultipartPayload(fields);
   return app.inject({
     method: "POST",
-    url: `/api/v1/tools/${toolId}/batch`,
+    url: `${apiToolPath(toolId)}/batch`,
     headers: {
       "content-type": contentType,
       authorization: `Bearer ${adminToken}`,
@@ -157,7 +158,7 @@ function buildToolRequest(
   ]);
   return {
     method: "POST" as const,
-    url: `/api/v1/tools/${toolId}`,
+    url: apiToolPath(toolId),
     headers: {
       "content-type": contentType,
       authorization: `Bearer ${adminToken}`,
@@ -666,7 +667,7 @@ describe("HTTP method mismatches on tool endpoints", () => {
   it("returns 404 for GET request to tool endpoint", async () => {
     const res = await app.inject({
       method: "GET",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { authorization: `Bearer ${adminToken}` },
     });
 
@@ -686,7 +687,7 @@ describe("HTTP method mismatches on tool endpoints", () => {
 
     const res = await app.inject({
       method: "PUT",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -700,7 +701,7 @@ describe("HTTP method mismatches on tool endpoints", () => {
   it("returns 404 for DELETE request to tool endpoint", async () => {
     const res = await app.inject({
       method: "DELETE",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { authorization: `Bearer ${adminToken}` },
     });
 
@@ -710,7 +711,7 @@ describe("HTTP method mismatches on tool endpoints", () => {
   it("returns 404 for PATCH request to tool endpoint", async () => {
     const res = await app.inject({
       method: "PATCH",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         "content-type": "application/json",
         authorization: `Bearer ${adminToken}`,
@@ -1286,7 +1287,7 @@ describe("Non-multipart content types to tool endpoint", () => {
   it("rejects JSON body sent to tool endpoint", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         "content-type": "application/json",
         authorization: `Bearer ${adminToken}`,
@@ -1301,7 +1302,7 @@ describe("Non-multipart content types to tool endpoint", () => {
   it("rejects plain text body sent to tool endpoint", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         "content-type": "text/plain",
         authorization: `Bearer ${adminToken}`,

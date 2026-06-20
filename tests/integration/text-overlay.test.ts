@@ -37,7 +37,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -57,7 +57,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -81,7 +81,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -100,7 +100,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -123,7 +123,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -142,7 +142,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -157,7 +157,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -173,7 +173,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -191,7 +191,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -207,7 +207,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -226,7 +226,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -247,7 +247,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -276,7 +276,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -299,7 +299,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -318,7 +318,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -345,7 +345,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -368,7 +368,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -387,7 +387,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -406,7 +406,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -426,7 +426,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { "content-type": contentType },
       body,
     });
@@ -453,7 +453,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -476,7 +476,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -497,7 +497,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -522,7 +522,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -544,7 +544,7 @@ describe("text-overlay", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/text-overlay",
+        url: "/api/v1/tools/image/text-overlay",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -567,7 +567,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -588,7 +588,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -608,7 +608,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -638,7 +638,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -659,7 +659,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -679,7 +679,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -697,7 +697,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -723,7 +723,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -746,7 +746,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -767,7 +767,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -798,7 +798,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -818,7 +818,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -836,7 +836,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -866,7 +866,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -896,7 +896,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -917,7 +917,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -943,7 +943,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -964,7 +964,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -995,7 +995,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1018,7 +1018,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1039,7 +1039,7 @@ describe("text-overlay", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/text-overlay",
+      url: "/api/v1/tools/image/text-overlay",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

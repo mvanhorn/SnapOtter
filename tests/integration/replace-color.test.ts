@@ -59,7 +59,7 @@ async function postTool(
   const { body: payload, contentType } = makePayload(settings, buffer, filename, ct);
   return app.inject({
     method: "POST",
-    url: "/api/v1/tools/replace-color",
+    url: "/api/v1/tools/image/replace-color",
     payload,
     headers: {
       "content-type": contentType,
@@ -185,7 +185,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/replace-color",
+      url: "/api/v1/tools/image/replace-color",
       payload,
       headers: {
         "content-type": contentType,
@@ -329,7 +329,7 @@ describe("Authentication", () => {
     });
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/replace-color",
+      url: "/api/v1/tools/image/replace-color",
       payload,
       headers: { "content-type": contentType },
     });
@@ -621,7 +621,7 @@ describe("Invalid settings JSON", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/replace-color",
+      url: "/api/v1/tools/image/replace-color",
       payload,
       headers: {
         "content-type": contentType,

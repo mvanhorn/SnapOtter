@@ -8,7 +8,7 @@ Speed up or slow down a video with an option to preserve audio pitch.
 
 ## API Endpoint
 
-`POST /api/v1/tools/video-speed`
+`POST /api/v1/tools/video/video-speed`
 
 Accepts multipart form data with a video file and a JSON `settings` field.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with a video file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/video-speed \
+curl -X POST http://localhost:1349/api/v1/tools/video/video-speed \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"factor": 0.5, "keepPitch": true}'

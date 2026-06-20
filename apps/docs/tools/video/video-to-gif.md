@@ -8,7 +8,7 @@ Turn a video clip into an animated GIF with configurable frame rate, width, star
 
 ## API Endpoint
 
-`POST /api/v1/tools/video-to-gif`
+`POST /api/v1/tools/video/video-to-gif`
 
 Accepts multipart form data with a video file and a JSON `settings` field. This is an async endpoint - it returns `202 Accepted` immediately and progress is streamed via SSE at `GET /api/v1/jobs/{jobId}/progress`.
 
@@ -24,7 +24,7 @@ Accepts multipart form data with a video file and a JSON `settings` field. This 
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/video-to-gif \
+curl -X POST http://localhost:1349/api/v1/tools/video/video-to-gif \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"fps": 15, "width": 320, "startS": 2, "durationS": 8}'

@@ -8,7 +8,7 @@ Generate a complete set of favicon and app icon files from a source image. Produ
 
 ## API Endpoint
 
-`POST /api/v1/tools/favicon`
+`POST /api/v1/tools/image/favicon`
 
 Accepts multipart form data with one or more image files and an optional JSON `settings` field.
 
@@ -43,7 +43,7 @@ For each input image, the following files are produced:
 Single source image with rounded corners and padding:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/favicon \
+curl -X POST http://localhost:1349/api/v1/tools/image/favicon \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@logo.png" \
   -F 'settings={"padding": 10, "radius": 20, "themeColor": "#0a0a0a"}'
@@ -52,7 +52,7 @@ curl -X POST http://localhost:1349/api/v1/tools/favicon \
 Multiple source images (each gets its own set in a subfolder):
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/favicon \
+curl -X POST http://localhost:1349/api/v1/tools/image/favicon \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@logo-light.png" \
   -F "file=@logo-dark.png"

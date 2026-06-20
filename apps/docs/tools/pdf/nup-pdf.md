@@ -8,7 +8,7 @@ Arrange multiple pages per sheet to save paper when printing, such as 2-up or 4-
 
 ## API Endpoint
 
-`POST /api/v1/tools/nup-pdf`
+`POST /api/v1/tools/pdf/nup-pdf`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/nup-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/nup-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"perSheet": 4}'

@@ -8,7 +8,7 @@ Reverse an audio file so it plays backwards.
 
 ## API Endpoint
 
-`POST /api/v1/tools/reverse-audio`
+`POST /api/v1/tools/audio/reverse-audio`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. The entire audio file is reversed.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/reverse-audio \
+curl -X POST http://localhost:1349/api/v1/tools/audio/reverse-audio \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3"
 ```

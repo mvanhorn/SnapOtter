@@ -18,6 +18,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { apiToolPath } from "@snapotter/shared";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
@@ -110,7 +111,7 @@ async function callToolWithFile(
 
   return app.inject({
     method: "POST",
-    url: `/api/v1/tools/${toolId}`,
+    url: apiToolPath(toolId),
     headers: {
       authorization: `Bearer ${adminToken}`,
       "content-type": contentType,
@@ -1267,7 +1268,7 @@ describe("Exotic formats with multi-file tools", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/compose",
+        url: "/api/v1/tools/image/compose",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body: payload,
       });
@@ -1295,7 +1296,7 @@ describe("Exotic formats with multi-file tools", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/stitch",
+        url: "/api/v1/tools/image/stitch",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body: payload,
       });
@@ -1323,7 +1324,7 @@ describe("Exotic formats with multi-file tools", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/collage",
+        url: "/api/v1/tools/image/collage",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body: payload,
       });

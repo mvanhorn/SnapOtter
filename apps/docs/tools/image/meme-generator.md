@@ -8,7 +8,7 @@ Create memes using built-in templates or custom images. Add text with classic me
 
 ## API Endpoint
 
-`POST /api/v1/tools/meme-generator`
+`POST /api/v1/tools/image/meme-generator`
 
 Accepts either:
 - **Multipart form data** with an image file and a JSON `settings` field (custom image mode)
@@ -52,7 +52,7 @@ Each entry in the `textBoxes` array should have:
 Custom image with top and bottom text:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/meme-generator \
+curl -X POST http://localhost:1349/api/v1/tools/image/meme-generator \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"textLayout": "top-bottom", "textBoxes": [{"id": "top", "text": "When the code works"}, {"id": "bottom", "text": "On the first try"}], "fontFamily": "anton", "allCaps": true}'
@@ -61,7 +61,7 @@ curl -X POST http://localhost:1349/api/v1/tools/meme-generator \
 Using a built-in template (JSON body, no file upload):
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/meme-generator \
+curl -X POST http://localhost:1349/api/v1/tools/image/meme-generator \
   -H "Authorization: Bearer si_your-api-key" \
   -H "Content-Type: application/json" \
   -d '{"templateId": "drake", "textBoxes": [{"id": "top", "text": "Manual testing"}, {"id": "bottom", "text": "Automated tests"}]}'

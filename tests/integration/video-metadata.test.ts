@@ -27,7 +27,7 @@ describe.skipIf(!ffmpegAvailable())("video-metadata (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/video-metadata",
+      url: "/api/v1/tools/video/video-metadata",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

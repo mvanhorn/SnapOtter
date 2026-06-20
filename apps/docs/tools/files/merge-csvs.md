@@ -8,7 +8,7 @@ Combine multiple CSV or TSV files with matching columns into a single merged fil
 
 ## API Endpoint
 
-`POST /api/v1/tools/merge-csvs`
+`POST /api/v1/tools/files/merge-csvs`
 
 Accepts multipart form data with two or more CSV files. No settings field is required.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload 2--20 CSV or TSV files with mat
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/merge-csvs \
+curl -X POST http://localhost:1349/api/v1/tools/files/merge-csvs \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@january.csv" \
   -F "file=@february.csv" \

@@ -27,6 +27,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { apiToolPath } from "@snapotter/shared";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
@@ -256,7 +257,7 @@ async function callTool(toolId: string, fmt: FormatDef, settings: Record<string,
 
   return app.inject({
     method: "POST",
-    url: `/api/v1/tools/${toolId}`,
+    url: apiToolPath(toolId),
     headers: {
       authorization: `Bearer ${adminToken}`,
       "content-type": contentType,
@@ -551,7 +552,7 @@ describe("Strip-metadata across all 16 primary formats", () => {
 
           const res = await app.inject({
             method: "POST",
-            url: "/api/v1/tools/strip-metadata/inspect",
+            url: "/api/v1/tools/image/strip-metadata/inspect",
             headers: {
               authorization: `Bearer ${adminToken}`,
               "content-type": contentType,
@@ -685,7 +686,7 @@ describe("Image enhancement across all 16 primary formats", () => {
 
           const res = await app.inject({
             method: "POST",
-            url: "/api/v1/tools/image-enhancement/analyze",
+            url: "/api/v1/tools/image/image-enhancement/analyze",
             headers: {
               authorization: `Bearer ${adminToken}`,
               "content-type": contentType,
@@ -782,7 +783,7 @@ describe("Chained operations: resize then compress (core formats)", () => {
 
       const compressRes = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/compress",
+        url: "/api/v1/tools/image/compress",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": compressCt,
@@ -839,7 +840,7 @@ describe("Convert round-trip: format -> WebP -> PNG (core formats)", () => {
 
       const toPngRes = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/convert",
+        url: "/api/v1/tools/image/convert",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": toPngCt,

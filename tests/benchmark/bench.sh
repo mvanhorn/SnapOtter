@@ -277,7 +277,7 @@ for concurrency in 1 3 5 10 20; do
 
   for i in $(seq 1 "$concurrency"); do
     (
-      result=$(curl -s -X POST "${BASE_URL}/api/v1/tools/resize" \
+      result=$(curl -s -X POST "${BASE_URL}/api/v1/tools/image/resize" \
         -H "Authorization: Bearer ${TOKEN}" \
         -F "file=@${L}" \
         -F 'settings={"width":800}' \

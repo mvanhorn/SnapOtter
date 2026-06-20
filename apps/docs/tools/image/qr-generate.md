@@ -8,7 +8,7 @@ Generate QR code images from text or URLs with configurable size, error correcti
 
 ## API Endpoint
 
-`POST /api/v1/tools/qr-generate`
+`POST /api/v1/tools/image/qr-generate`
 
 Accepts a **JSON body** (not multipart). No file upload is needed.
 
@@ -35,7 +35,7 @@ Accepts a **JSON body** (not multipart). No file upload is needed.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/qr-generate \
+curl -X POST http://localhost:1349/api/v1/tools/image/qr-generate \
   -H "Authorization: Bearer si_your-api-key" \
   -H "Content-Type: application/json" \
   -d '{"text": "https://snapotter.com", "size": 500, "errorCorrection": "H"}'
@@ -44,7 +44,7 @@ curl -X POST http://localhost:1349/api/v1/tools/qr-generate \
 Branded QR code with custom colors:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/qr-generate \
+curl -X POST http://localhost:1349/api/v1/tools/image/qr-generate \
   -H "Authorization: Bearer si_your-api-key" \
   -H "Content-Type: application/json" \
   -d '{"text": "Hello World", "size": 300, "foreground": "#1a365d", "background": "#f7fafc"}'

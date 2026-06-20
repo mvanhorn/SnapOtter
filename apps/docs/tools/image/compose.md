@@ -8,7 +8,7 @@ Layer an overlay image on top of a base image with configurable position, opacit
 
 ## API Endpoint
 
-`POST /api/v1/tools/compose`
+`POST /api/v1/tools/image/compose`
 
 Accepts multipart form data with **two** image files and a JSON `settings` field.
 
@@ -46,7 +46,7 @@ Accepts multipart form data with **two** image files and a JSON `settings` field
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/compose \
+curl -X POST http://localhost:1349/api/v1/tools/image/compose \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@background.jpg" \
   -F "overlay=@graphic.png" \
@@ -56,7 +56,7 @@ curl -X POST http://localhost:1349/api/v1/tools/compose \
 Using multiply blend mode:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/compose \
+curl -X POST http://localhost:1349/api/v1/tools/image/compose \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F "overlay=@texture.jpg" \

@@ -26,7 +26,7 @@ async function runTool(settings: Record<string, unknown>) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/watermark-video",
+    url: "/api/v1/tools/video/watermark-video",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

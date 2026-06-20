@@ -2,8 +2,8 @@
  * Integration tests for the passport-photo AI tool.
  *
  * Two-phase flow:
- *   Phase 1: POST /api/v1/tools/passport-photo/analyze (face detection + bg removal)
- *   Phase 2: POST /api/v1/tools/passport-photo/generate (crop/resize, JSON body)
+ *   Phase 1: POST /api/v1/tools/image/passport-photo/analyze (face detection + bg removal)
+ *   Phase 2: POST /api/v1/tools/image/passport-photo/generate (crop/resize, JSON body)
  *
  * The Python sidecar may not be running, so processing tests accept both
  * 200 (sidecar available) and 501 (feature not installed). Validation paths
@@ -44,7 +44,7 @@ describe("passport-photo/analyze", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/passport-photo/analyze",
+      url: "/api/v1/tools/image/passport-photo/analyze",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -60,7 +60,7 @@ describe("passport-photo/analyze", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/passport-photo/analyze",
+      url: "/api/v1/tools/image/passport-photo/analyze",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -86,7 +86,7 @@ describe("passport-photo/analyze", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/passport-photo/analyze",
+        url: "/api/v1/tools/image/passport-photo/analyze",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -103,7 +103,7 @@ describe("passport-photo/analyze", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/passport-photo/analyze",
+      url: "/api/v1/tools/image/passport-photo/analyze",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -120,7 +120,7 @@ describe("passport-photo/analyze", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/passport-photo/analyze",
+      url: "/api/v1/tools/image/passport-photo/analyze",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -140,7 +140,7 @@ describe("passport-photo/analyze", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/passport-photo/analyze",
+      url: "/api/v1/tools/image/passport-photo/analyze",
       headers: { "content-type": contentType },
       body,
     });
@@ -155,7 +155,7 @@ describe("passport-photo/generate", () => {
   it("rejects missing required fields (400)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/passport-photo/generate",
+      url: "/api/v1/tools/image/passport-photo/generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -171,7 +171,7 @@ describe("passport-photo/generate", () => {
   it("rejects unknown country code without custom dimensions (400)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/passport-photo/generate",
+      url: "/api/v1/tools/image/passport-photo/generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -202,7 +202,7 @@ describe("passport-photo/generate", () => {
   it("rejects invalid dpi value (400)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/passport-photo/generate",
+      url: "/api/v1/tools/image/passport-photo/generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -233,7 +233,7 @@ describe("passport-photo/generate", () => {
   it("rejects invalid zoom value (400)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/passport-photo/generate",
+      url: "/api/v1/tools/image/passport-photo/generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -264,7 +264,7 @@ describe("passport-photo/generate", () => {
   it("rejects unauthenticated requests to generate (401)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/passport-photo/generate",
+      url: "/api/v1/tools/image/passport-photo/generate",
       headers: { "content-type": "application/json" },
       payload: {
         jobId: "test-job",
@@ -291,7 +291,7 @@ describe("passport-photo/generate", () => {
   it("rejects missing landmarks fields (400)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/passport-photo/generate",
+      url: "/api/v1/tools/image/passport-photo/generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -315,7 +315,7 @@ describe("passport-photo/generate", () => {
   it("returns 422 when jobId workspace does not exist", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/passport-photo/generate",
+      url: "/api/v1/tools/image/passport-photo/generate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",

@@ -8,7 +8,7 @@ Raise or lower the pitch of an audio file by a number of semitones without chang
 
 ## API Endpoint
 
-`POST /api/v1/tools/pitch-shift`
+`POST /api/v1/tools/audio/pitch-shift`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/pitch-shift \
+curl -X POST http://localhost:1349/api/v1/tools/audio/pitch-shift \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"semitones": -5}'

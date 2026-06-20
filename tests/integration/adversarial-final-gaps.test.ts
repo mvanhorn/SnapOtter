@@ -18,6 +18,7 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { apiToolPath } from "@snapotter/shared";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
@@ -62,7 +63,7 @@ function postTool(
   const { body, contentType } = createMultipartPayload(fields);
   return app.inject({
     method: "POST",
-    url: `/api/v1/tools/${toolId}`,
+    url: apiToolPath(toolId),
     headers: {
       "content-type": contentType,
       authorization: `Bearer ${adminToken}`,
@@ -84,7 +85,7 @@ function postBatch(
   const { body, contentType } = createMultipartPayload(fields);
   return app.inject({
     method: "POST",
-    url: `/api/v1/tools/${toolId}/batch`,
+    url: `${apiToolPath(toolId)}/batch`,
     headers: {
       "content-type": contentType,
       authorization: `Bearer ${adminToken}`,
@@ -131,7 +132,7 @@ function buildToolRequest(
   ]);
   return {
     method: "POST" as const,
-    url: `/api/v1/tools/${toolId}`,
+    url: apiToolPath(toolId),
     headers: {
       "content-type": contentType,
       authorization: `Bearer ${adminToken}`,
@@ -1005,7 +1006,7 @@ describe("Simultaneous batch + single + pipeline with output verification", () =
     ]);
     const batchReq = app.inject({
       method: "POST",
-      url: "/api/v1/tools/compress/batch",
+      url: "/api/v1/tools/image/compress/batch",
       headers: {
         "content-type": batchPayload.contentType,
         authorization: `Bearer ${adminToken}`,
@@ -1103,7 +1104,7 @@ describe("Simultaneous batch + single + pipeline with output verification", () =
       reqs.push(
         app.inject({
           method: "POST",
-          url: "/api/v1/tools/resize/batch",
+          url: "/api/v1/tools/image/resize/batch",
           headers: {
             "content-type": payload.contentType,
             authorization: `Bearer ${adminToken}`,

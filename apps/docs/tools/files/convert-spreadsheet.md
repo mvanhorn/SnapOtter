@@ -8,7 +8,7 @@ Convert spreadsheets between Excel (XLSX), OpenDocument Spreadsheet (ODS), and C
 
 ## API Endpoint
 
-`POST /api/v1/tools/convert-spreadsheet`
+`POST /api/v1/tools/files/convert-spreadsheet`
 
 Accepts multipart form data with an Excel/ODS/CSV file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with an Excel/ODS/CSV file and a JSON `settings` fie
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/convert-spreadsheet \
+curl -X POST http://localhost:1349/api/v1/tools/files/convert-spreadsheet \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@data.xlsx" \
   -F 'settings={"format": "csv"}'

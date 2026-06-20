@@ -8,7 +8,7 @@ Impose pages for duplex printing so the printed sheets can be folded into a book
 
 ## API Endpoint
 
-`POST /api/v1/tools/booklet-pdf`
+`POST /api/v1/tools/pdf/booklet-pdf`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/booklet-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/booklet-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"perSheet": 2}'

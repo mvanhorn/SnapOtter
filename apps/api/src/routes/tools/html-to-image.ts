@@ -34,7 +34,7 @@ const settingsSchema = z
 
 export function registerHtmlToImage(app: FastifyInstance) {
   app.post(
-    "/api/v1/tools/html-to-image",
+    "/api/v1/tools/image/html-to-image",
     {
       config: {
         rateLimit: { max: 120, timeWindow: "1 hour" },

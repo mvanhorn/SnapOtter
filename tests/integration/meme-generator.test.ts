@@ -1,5 +1,5 @@
 /**
- * Integration tests for the meme-generator tool (/api/v1/tools/meme-generator).
+ * Integration tests for the meme-generator tool (/api/v1/tools/image/meme-generator).
  *
  * Supports two input modes:
  * 1. Template mode: JSON body with templateId (no file upload)
@@ -72,7 +72,7 @@ describe("Meme Generator", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -108,7 +108,7 @@ describe("Meme Generator", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -128,7 +128,7 @@ describe("Meme Generator", () => {
   it("invalid templateId returns 400", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -149,7 +149,7 @@ describe("Meme Generator", () => {
   it("neither templateId nor file returns 400", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -169,7 +169,7 @@ describe("Meme Generator", () => {
   it("empty text boxes returns 200 (image without text)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -201,7 +201,7 @@ describe("Meme Generator", () => {
     it(`font family "${font}" returns 200`, async () => {
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/meme-generator",
+        url: "/api/v1/tools/image/meme-generator",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": "application/json",
@@ -255,7 +255,7 @@ describe("Meme Generator", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/meme-generator",
+        url: "/api/v1/tools/image/meme-generator",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -275,7 +275,7 @@ describe("Meme Generator", () => {
   it("rejects unauthenticated requests", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         "content-type": "application/json",
       },
@@ -292,7 +292,7 @@ describe("Meme Generator", () => {
   it("returns all expected fields in template mode response", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -336,7 +336,7 @@ describe("Meme Generator", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -354,7 +354,7 @@ describe("Meme Generator", () => {
   it("accepts custom fontSize parameter", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -376,7 +376,7 @@ describe("Meme Generator", () => {
   it("accepts custom textColor and strokeColor", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -401,7 +401,7 @@ describe("Meme Generator", () => {
   it("accepts text alignment left", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -422,7 +422,7 @@ describe("Meme Generator", () => {
   it("accepts text alignment right", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -444,7 +444,7 @@ describe("Meme Generator", () => {
   it("accepts allCaps=false (lowercase text)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -466,7 +466,7 @@ describe("Meme Generator", () => {
   it("accepts roboto font family", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -493,7 +493,7 @@ describe("Meme Generator", () => {
   it("rejects invalid font family", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -527,7 +527,7 @@ describe("Meme Generator", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -542,7 +542,7 @@ describe("Meme Generator", () => {
   it("handles special characters in meme text", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -576,7 +576,7 @@ describe("Meme Generator", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -595,7 +595,7 @@ describe("Meme Generator", () => {
   it("accepts minimum fontSize (8)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -616,7 +616,7 @@ describe("Meme Generator", () => {
   it("accepts maximum fontSize (200)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -637,7 +637,7 @@ describe("Meme Generator", () => {
   it("rejects fontSize below minimum (7)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -655,7 +655,7 @@ describe("Meme Generator", () => {
   it("rejects fontSize above maximum (201)", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",

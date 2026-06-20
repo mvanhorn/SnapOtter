@@ -59,7 +59,7 @@ describe("New format support", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/convert",
+        url: "/api/v1/tools/image/convert",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -98,7 +98,7 @@ describe("New format support", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/convert",
+      url: "/api/v1/tools/image/convert",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -135,7 +135,7 @@ describe("New format support", () => {
       ]);
       return app.inject({
         method: "POST",
-        url: "/api/v1/tools/convert",
+        url: "/api/v1/tools/image/convert",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -190,7 +190,7 @@ describe("New format support", () => {
           ]);
           const res = await app.inject({
             method: "POST",
-            url: "/api/v1/tools/convert",
+            url: "/api/v1/tools/image/convert",
             headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
             body,
           });
@@ -232,7 +232,7 @@ describe("New format support", () => {
         ]);
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/resize",
+          url: "/api/v1/tools/image/resize",
           headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
           body,
         });

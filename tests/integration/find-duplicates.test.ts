@@ -1,5 +1,5 @@
 /**
- * Integration tests for the find-duplicates tool (/api/v1/tools/find-duplicates).
+ * Integration tests for the find-duplicates tool (/api/v1/tools/image/find-duplicates).
  *
  * Covers duplicate detection with identical images, detection of unique images,
  * threshold tuning, response structure, and input validation.
@@ -41,7 +41,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -75,7 +75,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -101,7 +101,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -128,7 +128,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -152,7 +152,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -175,7 +175,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -208,7 +208,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -229,7 +229,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: { "content-type": contentType },
       body,
     });
@@ -249,7 +249,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -276,7 +276,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -302,7 +302,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -327,7 +327,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -357,7 +357,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -390,7 +390,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -422,7 +422,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -444,7 +444,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -469,7 +469,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -487,7 +487,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -513,7 +513,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -547,7 +547,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -584,7 +584,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -609,7 +609,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -645,7 +645,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -671,7 +671,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -697,7 +697,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -723,7 +723,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -757,7 +757,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -785,7 +785,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -813,7 +813,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -840,7 +840,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -865,7 +865,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -892,7 +892,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -920,7 +920,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -946,7 +946,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -978,7 +978,7 @@ describe("Find Duplicates", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/find-duplicates",
+        url: "/api/v1/tools/image/find-duplicates",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1006,7 +1006,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1031,7 +1031,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1057,7 +1057,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1090,7 +1090,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1127,7 +1127,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1163,7 +1163,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1184,7 +1184,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1210,7 +1210,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1238,7 +1238,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1264,7 +1264,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1291,7 +1291,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1321,7 +1321,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1354,7 +1354,7 @@ describe("Find Duplicates", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/find-duplicates",
+      url: "/api/v1/tools/image/find-duplicates",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

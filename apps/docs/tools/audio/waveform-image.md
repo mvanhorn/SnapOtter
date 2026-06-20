@@ -8,7 +8,7 @@ Generate a waveform visualization as a PNG image from an audio file, with config
 
 ## API Endpoint
 
-`POST /api/v1/tools/waveform-image`
+`POST /api/v1/tools/audio/waveform-image`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -23,7 +23,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/waveform-image \
+curl -X POST http://localhost:1349/api/v1/tools/audio/waveform-image \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"width": 1920, "height": 400, "color": "#e07832"}'

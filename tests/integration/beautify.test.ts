@@ -1,5 +1,5 @@
 /**
- * Integration tests for the beautify tool (/api/v1/tools/beautify).
+ * Integration tests for the beautify tool (/api/v1/tools/image/beautify).
  *
  * Beautify adds polished backgrounds, shadows, device frames, watermarks,
  * and social media sizing to screenshots. Tests exercise all background types,
@@ -52,7 +52,7 @@ describe("Beautify", () => {
       { name: "settings", content: JSON.stringify({}) },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -73,7 +73,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -96,7 +96,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -118,7 +118,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -134,7 +134,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -164,7 +164,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -191,7 +191,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -222,7 +222,7 @@ describe("Beautify", () => {
         },
       ]);
 
-      const res = await post("/api/v1/tools/beautify", payload);
+      const res = await post("/api/v1/tools/image/beautify", payload);
       expect(res.statusCode).toBe(200);
 
       const result = JSON.parse(res.body);
@@ -255,7 +255,7 @@ describe("Beautify", () => {
         },
       ]);
 
-      const res = await post("/api/v1/tools/beautify", payload);
+      const res = await post("/api/v1/tools/image/beautify", payload);
       expect(res.statusCode).toBe(200);
 
       const result = JSON.parse(res.body);
@@ -279,7 +279,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -307,7 +307,7 @@ describe("Beautify", () => {
         },
       ]);
 
-      const res = await post("/api/v1/tools/beautify", payload);
+      const res = await post("/api/v1/tools/image/beautify", payload);
       expect(res.statusCode).toBe(200);
 
       const result = JSON.parse(res.body);
@@ -341,7 +341,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -359,7 +359,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -375,7 +375,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -393,7 +393,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -405,7 +405,7 @@ describe("Beautify", () => {
   it("missing file returns 400", async () => {
     const payload = createMultipartPayload([{ name: "settings", content: JSON.stringify({}) }]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
 
     const result = JSON.parse(res.body);
@@ -421,7 +421,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
 
     const result = JSON.parse(res.body);
@@ -439,7 +439,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -461,7 +461,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -483,7 +483,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -504,7 +504,7 @@ describe("Beautify", () => {
         },
       ]);
 
-      const res = await post("/api/v1/tools/beautify", payload);
+      const res = await post("/api/v1/tools/image/beautify", payload);
       expect(res.statusCode).toBe(200);
 
       const result = JSON.parse(res.body);
@@ -536,7 +536,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -556,7 +556,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -593,7 +593,7 @@ describe("Beautify", () => {
         },
       ]);
 
-      const res = await post("/api/v1/tools/beautify", payload);
+      const res = await post("/api/v1/tools/image/beautify", payload);
       expect(res.statusCode).toBe(200);
 
       const result = JSON.parse(res.body);
@@ -619,7 +619,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -646,7 +646,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -668,7 +668,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -702,7 +702,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -731,7 +731,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -753,7 +753,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -779,7 +779,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -802,7 +802,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
   });
 
@@ -822,7 +822,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
   });
 
@@ -839,7 +839,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -860,7 +860,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -880,7 +880,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -898,7 +898,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
   });
 
@@ -911,7 +911,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
   });
 
@@ -924,7 +924,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
   });
 
@@ -937,7 +937,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
   });
 
@@ -950,7 +950,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
   });
 
@@ -966,7 +966,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
   });
 
@@ -985,7 +985,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
   });
 
@@ -995,7 +995,7 @@ describe("Beautify", () => {
       { name: "settings", content: "{not valid json" },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
   });
 
@@ -1016,7 +1016,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -1053,7 +1053,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -1082,7 +1082,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
 
     const result = JSON.parse(res.body);
@@ -1112,7 +1112,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect([200, 422]).toContain(res.statusCode);
     if (res.statusCode === 200) {
       const result = JSON.parse(res.body);
@@ -1135,7 +1135,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
     expect(result.processedSize).toBeGreaterThan(0);
@@ -1157,7 +1157,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
     expect(result.processedSize).toBeGreaterThan(0);
@@ -1170,7 +1170,7 @@ describe("Beautify", () => {
       { name: "settings", content: JSON.stringify({}) },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
   });
 
@@ -1183,7 +1183,7 @@ describe("Beautify", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/beautify",
+      url: "/api/v1/tools/image/beautify",
       headers: { "content-type": payload.contentType },
       body: payload.body,
     });
@@ -1198,7 +1198,7 @@ describe("Beautify", () => {
       { name: "settings", content: JSON.stringify({}) },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
     expect(result).toHaveProperty("jobId");
@@ -1227,7 +1227,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
     expect(result.downloadUrl).toBeDefined();
@@ -1243,7 +1243,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
   });
 
@@ -1257,7 +1257,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(400);
   });
 
@@ -1275,7 +1275,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
   });
 
@@ -1292,7 +1292,7 @@ describe("Beautify", () => {
       },
     ]);
 
-    const res = await post("/api/v1/tools/beautify", payload);
+    const res = await post("/api/v1/tools/image/beautify", payload);
     expect(res.statusCode).toBe(200);
   });
 });

@@ -74,7 +74,7 @@ describe("Batch progress tracking", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -99,7 +99,7 @@ describe("Batch progress tracking", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -123,7 +123,7 @@ describe("Batch progress tracking", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -160,7 +160,7 @@ describe("Batch progress tracking", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -196,7 +196,7 @@ describe("Batch progress tracking", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -300,7 +300,7 @@ describe("Job DB record structure", () => {
 
     await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,

@@ -8,7 +8,7 @@ Convert an animated GIF into a compact MP4 or WebM video file.
 
 ## API Endpoint
 
-`POST /api/v1/tools/gif-to-video`
+`POST /api/v1/tools/video/gif-to-video`
 
 Accepts multipart form data with a GIF file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a GIF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/gif-to-video \
+curl -X POST http://localhost:1349/api/v1/tools/video/gif-to-video \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@animation.gif" \
   -F 'settings={"format": "mp4"}'

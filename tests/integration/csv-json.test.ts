@@ -26,7 +26,7 @@ async function runTool(filename: string, content: Buffer, settings: Record<strin
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/csv-json",
+    url: "/api/v1/tools/files/csv-json",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

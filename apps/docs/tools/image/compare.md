@@ -8,7 +8,7 @@ Upload two images to compute a pixel-level difference map and a numerical simila
 
 ## API Endpoint
 
-`POST /api/v1/tools/compare`
+`POST /api/v1/tools/image/compare`
 
 Accepts multipart form data with **two** image files. No settings field is needed.
 
@@ -24,7 +24,7 @@ This tool has no configurable parameters. Upload exactly two image files.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/compare \
+curl -X POST http://localhost:1349/api/v1/tools/image/compare \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@original.jpg" \
   -F "file=@modified.jpg"

@@ -8,7 +8,7 @@ Increase or decrease the volume of an audio file by applying a fixed gain in dec
 
 ## API Endpoint
 
-`POST /api/v1/tools/volume-adjust`
+`POST /api/v1/tools/audio/volume-adjust`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/volume-adjust \
+curl -X POST http://localhost:1349/api/v1/tools/audio/volume-adjust \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"gainDb": 6}'

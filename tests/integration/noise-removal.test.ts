@@ -1,5 +1,5 @@
 /**
- * Integration tests for the noise-removal AI tool (/api/v1/tools/noise-removal).
+ * Integration tests for the noise-removal AI tool (/api/v1/tools/image/noise-removal).
  *
  * The Python sidecar may not be running, so processing tests accept both
  * 200 (sidecar available) and 501 (feature not installed). Validation paths
@@ -41,7 +41,7 @@ describe("noise-removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -56,7 +56,7 @@ describe("noise-removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -80,7 +80,7 @@ describe("noise-removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -99,7 +99,7 @@ describe("noise-removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -118,7 +118,7 @@ describe("noise-removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -144,7 +144,7 @@ describe("noise-removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -163,7 +163,7 @@ describe("noise-removal", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/noise-removal",
+        url: "/api/v1/tools/image/noise-removal",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -181,7 +181,7 @@ describe("noise-removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -198,7 +198,7 @@ describe("noise-removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -219,7 +219,7 @@ describe("noise-removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -238,7 +238,7 @@ describe("noise-removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -257,7 +257,7 @@ describe("noise-removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -273,7 +273,7 @@ describe("noise-removal", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: { "content-type": contentType },
       body,
     });

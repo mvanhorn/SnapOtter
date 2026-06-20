@@ -8,7 +8,7 @@ Change the frame rate of a video to a target value between 1 and 120 fps.
 
 ## API Endpoint
 
-`POST /api/v1/tools/change-fps`
+`POST /api/v1/tools/video/change-fps`
 
 Accepts multipart form data with a video file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a video file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/change-fps \
+curl -X POST http://localhost:1349/api/v1/tools/video/change-fps \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"fps": 24}'

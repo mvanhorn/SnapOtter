@@ -8,7 +8,7 @@ Extract a range of pages into a new PDF, or split a document into chunks of N pa
 
 ## API Endpoint
 
-`POST /api/v1/tools/split-pdf`
+`POST /api/v1/tools/pdf/split-pdf`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -25,7 +25,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 Extract specific pages:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/split-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/split-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"mode": "range", "range": "1-5,8"}'
@@ -34,7 +34,7 @@ curl -X POST http://localhost:1349/api/v1/tools/split-pdf \
 Split into chunks of 10 pages:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/split-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/split-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"mode": "every", "everyN": 10}'

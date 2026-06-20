@@ -48,7 +48,7 @@ describe("ZIP response format", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -72,7 +72,7 @@ describe("ZIP response format", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -98,7 +98,7 @@ describe("Filename deduplication in batch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -127,7 +127,7 @@ describe("X-File-Results header", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -152,7 +152,7 @@ describe("X-File-Results header", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -178,7 +178,7 @@ describe("X-File-Results header", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -208,7 +208,7 @@ describe("X-File-Results header", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -235,7 +235,7 @@ describe("ClientJobId passthrough", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -255,7 +255,7 @@ describe("ClientJobId passthrough", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -299,7 +299,7 @@ describe("Batch error handling", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -322,7 +322,7 @@ describe("Batch error handling", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -341,7 +341,7 @@ describe("Batch error handling", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -365,7 +365,7 @@ describe("Mixed format batch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -389,7 +389,7 @@ describe("Batch with default settings", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/strip-metadata/batch",
+      url: "/api/v1/tools/image/strip-metadata/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -439,7 +439,7 @@ describe("Exotic format batch processing", () => {
     ]);
     return app.inject({
       method: "POST",
-      url: "/api/v1/tools/compress/batch",
+      url: "/api/v1/tools/image/compress/batch",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -485,7 +485,7 @@ describe("Exotic format batch processing", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compress/batch",
+      url: "/api/v1/tools/image/compress/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -516,7 +516,7 @@ describe("Batch preserves upload order", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -555,7 +555,7 @@ describe("Legacy batch SSE wire parity", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize/batch",
+      url: "/api/v1/tools/image/resize/batch",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,
@@ -601,7 +601,7 @@ describe.skipIf(!ffmpegAvailable())("Non-image modality batch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/rotate-video/batch",
+      url: "/api/v1/tools/video/rotate-video/batch",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });

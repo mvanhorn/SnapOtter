@@ -1,5 +1,5 @@
 /**
- * Integration tests for the compare tool (/api/v1/tools/compare).
+ * Integration tests for the compare tool (/api/v1/tools/image/compare).
  *
  * Covers identical-image comparison, different-image comparison,
  * similarity score, diff image generation, and input validation.
@@ -39,7 +39,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -66,7 +66,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -90,7 +90,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -122,7 +122,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -146,7 +146,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -175,7 +175,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -193,7 +193,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -214,7 +214,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: { "content-type": contentType },
       body,
     });
@@ -232,7 +232,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -256,7 +256,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -279,7 +279,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -302,7 +302,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -323,7 +323,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -349,7 +349,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -372,7 +372,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -396,7 +396,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -420,7 +420,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -448,7 +448,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -473,7 +473,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -498,7 +498,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -522,7 +522,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -550,7 +550,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -582,7 +582,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -607,7 +607,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -633,7 +633,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -659,7 +659,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -684,7 +684,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -709,7 +709,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -735,7 +735,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -762,7 +762,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -786,7 +786,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -814,7 +814,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -840,7 +840,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -866,7 +866,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -894,7 +894,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -919,7 +919,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -942,7 +942,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -974,7 +974,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -999,7 +999,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1026,7 +1026,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1056,7 +1056,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1082,7 +1082,7 @@ describe("Compare", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compare",
+      url: "/api/v1/tools/image/compare",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

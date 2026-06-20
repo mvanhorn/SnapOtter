@@ -117,14 +117,6 @@ export const DOCUMENT_INPUTS = [
 ];
 export const FILE_INPUTS = [".csv", ".json", ".xml", ".yaml", ".yml", ".zip"];
 
-export const MODALITY_URL_SLUG: Record<Modality, string> = {
-  image: "image",
-  video: "video",
-  audio: "audio",
-  document: "document",
-  file: "data",
-};
-
 export function detectModalityFromMime(mime: string): Modality {
   if (mime.startsWith("image/")) return "image";
   if (mime.startsWith("video/")) return "video";

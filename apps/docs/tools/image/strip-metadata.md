@@ -10,13 +10,13 @@ Remove EXIF, GPS, ICC color profiles, and XMP metadata from images. Useful for p
 
 ### Strip Metadata
 
-`POST /api/v1/tools/strip-metadata`
+`POST /api/v1/tools/image/strip-metadata`
 
 Processes the image and returns a cleaned version with selected metadata removed.
 
 ### Inspect Metadata
 
-`POST /api/v1/tools/strip-metadata/inspect`
+`POST /api/v1/tools/image/strip-metadata/inspect`
 
 Returns the parsed metadata as JSON without modifying the image. Useful for previewing what metadata exists before stripping.
 
@@ -37,7 +37,7 @@ When `stripAll` is `true`, it overrides the individual flags and removes everyth
 Strip all metadata:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/strip-metadata \
+curl -X POST http://localhost:1349/api/v1/tools/image/strip-metadata \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"stripAll": true}'
@@ -46,7 +46,7 @@ curl -X POST http://localhost:1349/api/v1/tools/strip-metadata \
 Strip only GPS data (keep camera info and color profile):
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/strip-metadata \
+curl -X POST http://localhost:1349/api/v1/tools/image/strip-metadata \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"stripAll": false, "stripGps": true}'
@@ -55,7 +55,7 @@ curl -X POST http://localhost:1349/api/v1/tools/strip-metadata \
 Inspect metadata without modifying:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/strip-metadata/inspect \
+curl -X POST http://localhost:1349/api/v1/tools/image/strip-metadata/inspect \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg"
 ```

@@ -8,7 +8,7 @@ Convert PowerPoint or OpenDocument presentations to PDF, with one slide per page
 
 ## API Endpoint
 
-`POST /api/v1/tools/powerpoint-to-pdf`
+`POST /api/v1/tools/files/powerpoint-to-pdf`
 
 Accepts multipart form data with a PowerPoint/ODP file.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload a presentation and it will be c
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/powerpoint-to-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/files/powerpoint-to-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@slides.pptx"
 ```

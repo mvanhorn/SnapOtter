@@ -8,7 +8,7 @@ Crop all pages of a PDF by applying a uniform margin, trimming content from each
 
 ## API Endpoint
 
-`POST /api/v1/tools/crop-pdf`
+`POST /api/v1/tools/pdf/crop-pdf`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/crop-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/crop-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"margin": 50}'

@@ -25,7 +25,7 @@ async function runTool(settings: Record<string, unknown>) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/normalize-audio",
+    url: "/api/v1/tools/audio/normalize-audio",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

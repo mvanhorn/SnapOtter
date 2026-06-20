@@ -8,7 +8,7 @@ Reduce camera shake in handheld footage using FFmpeg's two-pass vidstab stabiliz
 
 ## API Endpoint
 
-`POST /api/v1/tools/stabilize-video`
+`POST /api/v1/tools/video/stabilize-video`
 
 Accepts multipart form data with a video file and a JSON `settings` field. This is an async endpoint - it returns `202 Accepted` immediately and progress is streamed via SSE at `GET /api/v1/jobs/{jobId}/progress`.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a video file and a JSON `settings` field. This 
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/stabilize-video \
+curl -X POST http://localhost:1349/api/v1/tools/video/stabilize-video \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"smoothing": 30}'

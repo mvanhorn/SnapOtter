@@ -30,7 +30,7 @@ async function runTool(filename: string, content: Buffer) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/markdown-to-docx",
+    url: "/api/v1/tools/files/markdown-to-docx",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });
@@ -65,7 +65,7 @@ it("rejects unsupported file types with 415", async () => {
   ]);
   const res = await testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/markdown-to-docx",
+    url: "/api/v1/tools/files/markdown-to-docx",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

@@ -18,6 +18,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { apiToolPath } from "@snapotter/shared";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
@@ -517,7 +518,7 @@ describe("Cross-format matrix", () => {
 
             const res = await app.inject({
               method: "POST",
-              url: `/api/v1/tools/${tool.id}`,
+              url: apiToolPath(tool.id),
               headers: {
                 authorization: `Bearer ${adminToken}`,
                 "content-type": contentType,
@@ -639,7 +640,7 @@ describe("Multipage TIFF handling", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: `/api/v1/tools/${tool.id}`,
+        url: apiToolPath(tool.id),
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -720,7 +721,7 @@ describe("Cross-format conversion matrix", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/convert",
+          url: "/api/v1/tools/image/convert",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -765,7 +766,7 @@ describe("Exotic format error resilience", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: `/api/v1/tools/${tool.id}`,
+          url: apiToolPath(tool.id),
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -816,7 +817,7 @@ describe("Image enhancement analysis across formats", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/image-enhancement/analyze",
+        url: "/api/v1/tools/image/image-enhancement/analyze",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -853,7 +854,7 @@ describe("Image enhancement analysis across formats", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/image-enhancement/analyze",
+        url: "/api/v1/tools/image/image-enhancement/analyze",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -899,7 +900,7 @@ describe("Strip-metadata inspection across formats", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/strip-metadata/inspect",
+        url: "/api/v1/tools/image/strip-metadata/inspect",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -966,7 +967,7 @@ describe("Watermark-image cross-format matrix", () => {
 
           const res = await app.inject({
             method: "POST",
-            url: "/api/v1/tools/watermark-image",
+            url: "/api/v1/tools/image/watermark-image",
             headers: {
               authorization: `Bearer ${adminToken}`,
               "content-type": contentType,
@@ -1036,7 +1037,7 @@ describe("Watermark-image cross-format matrix", () => {
 
           const res = await app.inject({
             method: "POST",
-            url: "/api/v1/tools/watermark-image",
+            url: "/api/v1/tools/image/watermark-image",
             headers: {
               authorization: `Bearer ${adminToken}`,
               "content-type": contentType,
@@ -1105,7 +1106,7 @@ describe("Watermark-image cross-format matrix", () => {
 
           const res = await app.inject({
             method: "POST",
-            url: "/api/v1/tools/watermark-image",
+            url: "/api/v1/tools/image/watermark-image",
             headers: {
               authorization: `Bearer ${adminToken}`,
               "content-type": contentType,
@@ -1161,7 +1162,7 @@ describe("Image-to-PDF cross-format matrix", () => {
 
           const res = await app.inject({
             method: "POST",
-            url: "/api/v1/tools/image-to-pdf",
+            url: "/api/v1/tools/image/image-to-pdf",
             headers: {
               authorization: `Bearer ${adminToken}`,
               "content-type": contentType,
@@ -1233,7 +1234,7 @@ describe("Image-to-PDF cross-format matrix", () => {
 
           const res = await app.inject({
             method: "POST",
-            url: "/api/v1/tools/image-to-pdf",
+            url: "/api/v1/tools/image/image-to-pdf",
             headers: {
               authorization: `Bearer ${adminToken}`,
               "content-type": contentType,
@@ -1292,7 +1293,7 @@ describe("Image-to-PDF cross-format matrix", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/image-to-pdf",
+          url: "/api/v1/tools/image/image-to-pdf",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -1331,7 +1332,7 @@ describe("Image-to-PDF cross-format matrix", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/image-to-pdf",
+        url: "/api/v1/tools/image/image-to-pdf",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1377,7 +1378,7 @@ describe("Image-to-PDF cross-format matrix", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/image-to-pdf",
+          url: "/api/v1/tools/image/image-to-pdf",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -1439,7 +1440,7 @@ describe("Watermark-image exotic format error resilience", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/watermark-image",
+          url: "/api/v1/tools/image/watermark-image",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -1490,7 +1491,7 @@ describe("Watermark-image exotic format error resilience", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/watermark-image",
+          url: "/api/v1/tools/image/watermark-image",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,

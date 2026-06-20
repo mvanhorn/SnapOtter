@@ -8,7 +8,7 @@ Extract individual frames from a video and download them as a ZIP archive of PNG
 
 ## API Endpoint
 
-`POST /api/v1/tools/video-to-frames`
+`POST /api/v1/tools/video/video-to-frames`
 
 Accepts multipart form data with a video file and a JSON `settings` field.
 
@@ -26,7 +26,7 @@ Accepts multipart form data with a video file and a JSON `settings` field.
 Extract every 30th frame as JPG:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/video-to-frames \
+curl -X POST http://localhost:1349/api/v1/tools/video/video-to-frames \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"mode": "nth", "n": 30, "format": "jpg"}'
@@ -35,7 +35,7 @@ curl -X POST http://localhost:1349/api/v1/tools/video-to-frames \
 Extract frames at specific timestamps:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/video-to-frames \
+curl -X POST http://localhost:1349/api/v1/tools/video/video-to-frames \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"mode": "timestamps", "timestamps": "1.5,5,12.3"}'

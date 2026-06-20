@@ -8,7 +8,7 @@ Cut a clip out of a video by specifying start and end times in seconds, with an 
 
 ## API Endpoint
 
-`POST /api/v1/tools/trim-video`
+`POST /api/v1/tools/video/trim-video`
 
 Accepts multipart form data with a video file and a JSON `settings` field.
 
@@ -23,7 +23,7 @@ Accepts multipart form data with a video file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/trim-video \
+curl -X POST http://localhost:1349/api/v1/tools/video/trim-video \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"startS": 5, "endS": 30, "precise": true}'

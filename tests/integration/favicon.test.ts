@@ -56,7 +56,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -87,7 +87,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -108,7 +108,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -130,7 +130,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -152,7 +152,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -172,7 +172,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -191,7 +191,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -220,7 +220,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -245,7 +245,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -266,7 +266,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -286,7 +286,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -320,7 +320,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -343,7 +343,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -362,7 +362,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -380,7 +380,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -401,7 +401,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -441,7 +441,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -470,7 +470,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -497,7 +497,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -524,7 +524,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -544,7 +544,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -565,7 +565,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { "content-type": contentType },
       body,
     });
@@ -582,7 +582,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -608,7 +608,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -630,7 +630,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -651,7 +651,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -674,7 +674,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -695,7 +695,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -729,7 +729,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -753,7 +753,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -781,7 +781,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -806,7 +806,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -827,7 +827,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -869,7 +869,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -900,7 +900,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -935,7 +935,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -960,7 +960,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -983,7 +983,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1009,7 +1009,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1033,7 +1033,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1056,7 +1056,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1097,7 +1097,7 @@ describe("favicon", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/favicon",
+      url: "/api/v1/tools/image/favicon",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

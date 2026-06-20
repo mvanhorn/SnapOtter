@@ -8,7 +8,7 @@ Convert speech to text using AI-powered transcription (faster-whisper). Supports
 
 ## API Endpoint
 
-`POST /api/v1/tools/transcribe-audio`
+`POST /api/v1/tools/audio/transcribe-audio`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/transcribe-audio \
+curl -X POST http://localhost:1349/api/v1/tools/audio/transcribe-audio \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"language": "en", "outputFormat": "srt"}'

@@ -32,7 +32,7 @@ function postTool(
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/audio-channels",
+    url: "/api/v1/tools/audio/audio-channels",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

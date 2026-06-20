@@ -8,7 +8,7 @@ Convert between CSV and JSON formats in both directions. Upload a CSV or TSV fil
 
 ## API Endpoint
 
-`POST /api/v1/tools/csv-json`
+`POST /api/v1/tools/files/csv-json`
 
 Accepts multipart form data with a CSV, TSV, or JSON file and a JSON `settings` field.
 
@@ -23,7 +23,7 @@ Accepts multipart form data with a CSV, TSV, or JSON file and a JSON `settings` 
 CSV to JSON:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/csv-json \
+curl -X POST http://localhost:1349/api/v1/tools/files/csv-json \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@users.csv" \
   -F 'settings={"pretty": true}'
@@ -32,7 +32,7 @@ curl -X POST http://localhost:1349/api/v1/tools/csv-json \
 JSON to CSV:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/csv-json \
+curl -X POST http://localhost:1349/api/v1/tools/files/csv-json \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@users.json" \
   -F 'settings={}'

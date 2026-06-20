@@ -8,7 +8,7 @@ Combine two or more audio files into a single sequential track, concatenated in 
 
 ## API Endpoint
 
-`POST /api/v1/tools/merge-audio`
+`POST /api/v1/tools/audio/merge-audio`
 
 Accepts multipart form data with multiple audio files and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with multiple audio files and a JSON `settings` fiel
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/merge-audio \
+curl -X POST http://localhost:1349/api/v1/tools/audio/merge-audio \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@intro.mp3" \
   -F "file=@main.mp3" \

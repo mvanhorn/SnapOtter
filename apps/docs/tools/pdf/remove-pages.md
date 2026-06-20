@@ -8,7 +8,7 @@ Delete specific pages from a PDF, keeping all remaining pages intact.
 
 ## API Endpoint
 
-`POST /api/v1/tools/remove-pages`
+`POST /api/v1/tools/pdf/remove-pages`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/remove-pages \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/remove-pages \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"pages": "3,5-7"}'

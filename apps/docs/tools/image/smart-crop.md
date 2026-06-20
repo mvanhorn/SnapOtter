@@ -4,7 +4,7 @@ Smart subject-aware, face-aware, or trim-based cropping. Uses Sharp's attention/
 
 ## API Endpoint
 
-`POST /api/v1/tools/smart-crop`
+`POST /api/v1/tools/image/smart-crop`
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
@@ -31,7 +31,7 @@ Smart subject-aware, face-aware, or trim-based cropping. Uses Sharp's attention/
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/smart-crop \
+curl -X POST http://localhost:1349/api/v1/tools/image/smart-crop \
   -F "file=@portrait.jpg" \
   -F 'settings={"mode":"face","width":1080,"height":1080,"facePreset":"head-shoulders"}'
 ```

@@ -8,7 +8,7 @@ Replace the background of an image with a solid color or gradient. The AI model 
 
 ## API Endpoint
 
-`POST /api/v1/tools/background-replace`
+`POST /api/v1/tools/image/background-replace`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -27,7 +27,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/background-replace \
+curl -X POST http://localhost:1349/api/v1/tools/image/background-replace \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"backgroundType": "color", "color": "#2563eb", "feather": 2}'

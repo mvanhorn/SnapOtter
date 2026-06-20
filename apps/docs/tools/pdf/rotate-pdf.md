@@ -8,7 +8,7 @@ Rotate all or selected pages in a PDF by a specified angle.
 
 ## API Endpoint
 
-`POST /api/v1/tools/rotate-pdf`
+`POST /api/v1/tools/pdf/rotate-pdf`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/rotate-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/rotate-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"angle": 90, "range": "1-3"}'

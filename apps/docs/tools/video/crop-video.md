@@ -8,7 +8,7 @@ Crop a rectangular region out of a video by specifying the region's size and pos
 
 ## API Endpoint
 
-`POST /api/v1/tools/crop-video`
+`POST /api/v1/tools/video/crop-video`
 
 Accepts multipart form data with a video file and a JSON `settings` field.
 
@@ -24,7 +24,7 @@ Accepts multipart form data with a video file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/crop-video \
+curl -X POST http://localhost:1349/api/v1/tools/video/crop-video \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"width": 640, "height": 480, "x": 100, "y": 50}'

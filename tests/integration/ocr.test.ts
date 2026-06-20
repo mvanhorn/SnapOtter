@@ -1,5 +1,5 @@
 /**
- * Integration tests for the OCR AI tool (/api/v1/tools/ocr).
+ * Integration tests for the OCR AI tool (/api/v1/tools/image/ocr).
  *
  * The Python sidecar may not be running, so processing tests accept both
  * 200 (sidecar available) and 501 (feature not installed). Validation paths
@@ -41,7 +41,7 @@ describe("ocr", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr",
+      url: "/api/v1/tools/image/ocr",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -56,7 +56,7 @@ describe("ocr", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr",
+      url: "/api/v1/tools/image/ocr",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -81,7 +81,7 @@ describe("ocr", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr",
+      url: "/api/v1/tools/image/ocr",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -100,7 +100,7 @@ describe("ocr", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr",
+      url: "/api/v1/tools/image/ocr",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -119,7 +119,7 @@ describe("ocr", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr",
+      url: "/api/v1/tools/image/ocr",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -138,7 +138,7 @@ describe("ocr", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr",
+      url: "/api/v1/tools/image/ocr",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -157,7 +157,7 @@ describe("ocr", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/ocr",
+        url: "/api/v1/tools/image/ocr",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -175,7 +175,7 @@ describe("ocr", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr",
+      url: "/api/v1/tools/image/ocr",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -192,7 +192,7 @@ describe("ocr", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr",
+      url: "/api/v1/tools/image/ocr",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -213,7 +213,7 @@ describe("ocr", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr",
+      url: "/api/v1/tools/image/ocr",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -232,7 +232,7 @@ describe("ocr", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr",
+      url: "/api/v1/tools/image/ocr",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -251,7 +251,7 @@ describe("ocr", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr",
+      url: "/api/v1/tools/image/ocr",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -267,7 +267,7 @@ describe("ocr", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/ocr",
+      url: "/api/v1/tools/image/ocr",
       headers: { "content-type": contentType },
       body,
     });

@@ -29,7 +29,7 @@ describe.skipIf(!ffmpegAvailable())("images-to-video (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/images-to-video",
+      url: "/api/v1/tools/video/images-to-video",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -66,7 +66,7 @@ describe.skipIf(!ffmpegAvailable())("images-to-video (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/images-to-video",
+      url: "/api/v1/tools/video/images-to-video",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

@@ -62,9 +62,9 @@ test.describe("Navigation", () => {
   });
 
   test("clicking a tool on home page navigates to tool page", async ({ loggedInPage: page }) => {
-    // Routes are /:modality/:toolId (App.tsx line 243).
+    // Routes are /:section/:toolId (App.tsx line 243).
     // Resize route = /image/resize (constants.ts: route "/resize" + modality "image",
-    // post-processed at line 1793 with MODALITY_URL_SLUG prefix).
+    // section prefix added via toolSection() in the route post-processing loop).
     await page.goto("/");
 
     // Click on Resize tool

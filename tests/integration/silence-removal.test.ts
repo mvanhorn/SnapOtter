@@ -26,7 +26,7 @@ async function runTool(settings: Record<string, unknown>) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/silence-removal",
+    url: "/api/v1/tools/audio/silence-removal",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

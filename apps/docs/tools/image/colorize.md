@@ -4,7 +4,7 @@ Convert black-and-white or grayscale photos to full color using AI (DDColor mode
 
 ## API Endpoint
 
-`POST /api/v1/tools/colorize`
+`POST /api/v1/tools/image/colorize`
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
@@ -21,7 +21,7 @@ Convert black-and-white or grayscale photos to full color using AI (DDColor mode
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/colorize \
+curl -X POST http://localhost:1349/api/v1/tools/image/colorize \
   -F "file=@old-bw-photo.jpg" \
   -F 'settings={"intensity":0.9,"model":"auto"}'
 ```

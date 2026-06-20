@@ -1,5 +1,5 @@
 /**
- * Integration tests for the remove-background tool (/api/v1/tools/remove-background).
+ * Integration tests for the remove-background tool (/api/v1/tools/image/remove-background).
  *
  * This tool requires the Python sidecar (rembg). Tests accept both 200
  * (sidecar running) and 501 (not installed) for the processing path while
@@ -44,7 +44,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -63,7 +63,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -96,7 +96,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -125,7 +125,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -152,7 +152,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -171,7 +171,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -193,7 +193,7 @@ describe("Remove Background", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/remove-background",
+        url: "/api/v1/tools/image/remove-background",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -214,7 +214,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -232,7 +232,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background/effects",
+      url: "/api/v1/tools/image/remove-background/effects",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -252,7 +252,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background/effects",
+      url: "/api/v1/tools/image/remove-background/effects",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -275,7 +275,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background/effects",
+      url: "/api/v1/tools/image/remove-background/effects",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -297,7 +297,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -320,7 +320,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -346,7 +346,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -372,7 +372,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -398,7 +398,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -420,7 +420,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -442,7 +442,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -468,7 +468,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -491,7 +491,7 @@ describe("Remove Background", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-background",
+      url: "/api/v1/tools/image/remove-background",
       headers: { "content-type": contentType },
       body,
     });

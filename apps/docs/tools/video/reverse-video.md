@@ -8,7 +8,7 @@ Play a video clip backwards. The audio track is also reversed.
 
 ## API Endpoint
 
-`POST /api/v1/tools/reverse-video`
+`POST /api/v1/tools/video/reverse-video`
 
 Accepts multipart form data with a video file. This tool has no configurable settings.
 
@@ -19,7 +19,7 @@ This tool has no parameters. It reverses the entire video.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/reverse-video \
+curl -X POST http://localhost:1349/api/v1/tools/video/reverse-video \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4"
 ```

@@ -8,6 +8,7 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { apiToolPath } from "@snapotter/shared";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
@@ -53,7 +54,7 @@ async function postTool(
   const { body: payload, contentType } = makePayload(settings, buffer, filename, ct);
   return app.inject({
     method: "POST",
-    url: `/api/v1/tools/${toolId}`,
+    url: apiToolPath(toolId),
     payload,
     headers: {
       "content-type": contentType,
@@ -236,7 +237,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/adjust-colors",
+      url: "/api/v1/tools/image/adjust-colors",
       payload,
       headers: {
         "content-type": contentType,
@@ -489,7 +490,7 @@ describe("Authentication", () => {
     const { body: payload, contentType } = makePayload({ brightness: 30 });
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/adjust-colors",
+      url: "/api/v1/tools/image/adjust-colors",
       payload,
       headers: { "content-type": contentType },
     });
@@ -737,7 +738,7 @@ describe("Invalid settings JSON", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/adjust-colors",
+      url: "/api/v1/tools/image/adjust-colors",
       payload: badPayload,
       headers: {
         "content-type": badCt,

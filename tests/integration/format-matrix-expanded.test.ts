@@ -256,7 +256,7 @@ describe("Color-blindness simulation cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/color-blindness",
+          url: "/api/v1/tools/image/color-blindness",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -324,7 +324,7 @@ describe("Beautify cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/beautify",
+          url: "/api/v1/tools/image/beautify",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -391,7 +391,7 @@ describe("Edit-metadata cross-format", () => {
 
           const res = await app.inject({
             method: "POST",
-            url: "/api/v1/tools/edit-metadata",
+            url: "/api/v1/tools/image/edit-metadata",
             headers: {
               authorization: `Bearer ${adminToken}`,
               "content-type": contentType,
@@ -444,7 +444,7 @@ describe("Edit-metadata cross-format", () => {
 
           const res = await app.inject({
             method: "POST",
-            url: "/api/v1/tools/edit-metadata/inspect",
+            url: "/api/v1/tools/image/edit-metadata/inspect",
             headers: {
               authorization: `Bearer ${adminToken}`,
               "content-type": contentType,
@@ -503,7 +503,7 @@ describe("Vectorize cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/vectorize",
+          url: "/api/v1/tools/image/vectorize",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -564,7 +564,7 @@ describe("Split cross-format", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/split",
+        url: "/api/v1/tools/image/split",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -604,7 +604,7 @@ describe("Split cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/split",
+          url: "/api/v1/tools/image/split",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -645,7 +645,7 @@ describe("Favicon cross-format", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/favicon",
+        url: "/api/v1/tools/image/favicon",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -705,7 +705,7 @@ describe("Meme-generator cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/meme-generator",
+          url: "/api/v1/tools/image/meme-generator",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -767,7 +767,7 @@ describe("Barcode-read cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/barcode-read",
+          url: "/api/v1/tools/image/barcode-read",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -831,7 +831,7 @@ describe("SVG-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -872,7 +872,7 @@ describe("SVG-to-raster", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster",
+        url: "/api/v1/tools/image/svg-to-raster",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -914,7 +914,7 @@ describe("SVG-to-raster", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster",
+        url: "/api/v1/tools/image/svg-to-raster",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -975,7 +975,7 @@ describe("Compose cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/compose",
+          url: "/api/v1/tools/image/compose",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -1030,7 +1030,7 @@ describe("Compose cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/compose",
+          url: "/api/v1/tools/image/compose",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -1091,7 +1091,7 @@ describe("Compose cross-format", () => {
 
           const res = await app.inject({
             method: "POST",
-            url: "/api/v1/tools/compose",
+            url: "/api/v1/tools/image/compose",
             headers: {
               authorization: `Bearer ${adminToken}`,
               "content-type": contentType,
@@ -1142,7 +1142,7 @@ describe("Compare cross-format", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/compare",
+        url: "/api/v1/tools/image/compare",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1191,7 +1191,7 @@ describe("Compare cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/compare",
+          url: "/api/v1/tools/image/compare",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -1252,7 +1252,7 @@ describe("Collage cross-format", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/collage",
+        url: "/api/v1/tools/image/collage",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1306,7 +1306,7 @@ describe("Collage cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/collage",
+          url: "/api/v1/tools/image/collage",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -1366,7 +1366,7 @@ describe("Stitch cross-format", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/stitch",
+        url: "/api/v1/tools/image/stitch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1420,7 +1420,7 @@ describe("Stitch cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/stitch",
+          url: "/api/v1/tools/image/stitch",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -1468,7 +1468,7 @@ describe("Transparency-fixer cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/transparency-fixer",
+          url: "/api/v1/tools/image/transparency-fixer",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -1538,7 +1538,7 @@ describe("Color-blindness simulation types", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/color-blindness",
+        url: "/api/v1/tools/image/color-blindness",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1585,7 +1585,7 @@ describe("Vectorize color modes", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1624,7 +1624,7 @@ describe("Vectorize color modes", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1684,7 +1684,7 @@ describe("Compose blend modes", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/compose",
+        url: "/api/v1/tools/image/compose",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1749,7 +1749,7 @@ describe("Stitch direction modes", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/stitch",
+        url: "/api/v1/tools/image/stitch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1804,7 +1804,7 @@ describe("Find-duplicates cross-format", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/find-duplicates",
+        url: "/api/v1/tools/image/find-duplicates",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1856,7 +1856,7 @@ describe("Find-duplicates cross-format", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/find-duplicates",
+          url: "/api/v1/tools/image/find-duplicates",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -1879,26 +1879,26 @@ describe("Find-duplicates cross-format", () => {
 // ---------------------------------------------------------------------------
 describe("Missing file returns 400 for expanded tools", () => {
   const TOOL_ENDPOINTS = [
-    { url: "/api/v1/tools/color-blindness", settings: { simulationType: "deuteranomaly" } },
-    { url: "/api/v1/tools/beautify", settings: { padding: 20 } },
-    { url: "/api/v1/tools/edit-metadata", settings: { title: "test" } },
-    { url: "/api/v1/tools/vectorize", settings: { colorMode: "bw" } },
-    { url: "/api/v1/tools/split", settings: { columns: 2, rows: 2 } },
-    { url: "/api/v1/tools/favicon", settings: {} },
+    { url: "/api/v1/tools/image/color-blindness", settings: { simulationType: "deuteranomaly" } },
+    { url: "/api/v1/tools/image/beautify", settings: { padding: 20 } },
+    { url: "/api/v1/tools/image/edit-metadata", settings: { title: "test" } },
+    { url: "/api/v1/tools/image/vectorize", settings: { colorMode: "bw" } },
+    { url: "/api/v1/tools/image/split", settings: { columns: 2, rows: 2 } },
+    { url: "/api/v1/tools/image/favicon", settings: {} },
     {
-      url: "/api/v1/tools/meme-generator",
+      url: "/api/v1/tools/image/meme-generator",
       settings: {
         textLayout: "top-bottom",
         textBoxes: [{ id: "top", text: "TEST" }],
       },
     },
-    { url: "/api/v1/tools/barcode-read", settings: { tryHarder: true } },
-    { url: "/api/v1/tools/svg-to-raster", settings: { outputFormat: "png" } },
-    { url: "/api/v1/tools/compose", settings: { x: 0, y: 0 } },
-    { url: "/api/v1/tools/compare", settings: {} },
-    { url: "/api/v1/tools/collage", settings: { templateId: "2-h-equal" } },
-    { url: "/api/v1/tools/stitch", settings: { direction: "horizontal" } },
-    { url: "/api/v1/tools/find-duplicates", settings: { threshold: 8 } },
+    { url: "/api/v1/tools/image/barcode-read", settings: { tryHarder: true } },
+    { url: "/api/v1/tools/image/svg-to-raster", settings: { outputFormat: "png" } },
+    { url: "/api/v1/tools/image/compose", settings: { x: 0, y: 0 } },
+    { url: "/api/v1/tools/image/compare", settings: {} },
+    { url: "/api/v1/tools/image/collage", settings: { templateId: "2-h-equal" } },
+    { url: "/api/v1/tools/image/stitch", settings: { direction: "horizontal" } },
+    { url: "/api/v1/tools/image/find-duplicates", settings: { threshold: 8 } },
   ];
 
   for (const { url, settings } of TOOL_ENDPOINTS) {
@@ -1936,21 +1936,21 @@ describe("Missing file returns 400 for expanded tools", () => {
 // ---------------------------------------------------------------------------
 describe("Unauthenticated requests return 401 for expanded tools", () => {
   const TOOL_ENDPOINTS = [
-    "/api/v1/tools/color-blindness",
-    "/api/v1/tools/beautify",
-    "/api/v1/tools/edit-metadata",
-    "/api/v1/tools/vectorize",
-    "/api/v1/tools/split",
-    "/api/v1/tools/favicon",
-    "/api/v1/tools/meme-generator",
-    "/api/v1/tools/barcode-read",
-    "/api/v1/tools/svg-to-raster",
-    "/api/v1/tools/compose",
-    "/api/v1/tools/compare",
-    "/api/v1/tools/collage",
-    "/api/v1/tools/stitch",
-    "/api/v1/tools/find-duplicates",
-    "/api/v1/tools/transparency-fixer",
+    "/api/v1/tools/image/color-blindness",
+    "/api/v1/tools/image/beautify",
+    "/api/v1/tools/image/edit-metadata",
+    "/api/v1/tools/image/vectorize",
+    "/api/v1/tools/image/split",
+    "/api/v1/tools/image/favicon",
+    "/api/v1/tools/image/meme-generator",
+    "/api/v1/tools/image/barcode-read",
+    "/api/v1/tools/image/svg-to-raster",
+    "/api/v1/tools/image/compose",
+    "/api/v1/tools/image/compare",
+    "/api/v1/tools/image/collage",
+    "/api/v1/tools/image/stitch",
+    "/api/v1/tools/image/find-duplicates",
+    "/api/v1/tools/image/transparency-fixer",
   ];
 
   for (const url of TOOL_ENDPOINTS) {

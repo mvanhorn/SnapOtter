@@ -25,7 +25,7 @@ async function runTool() {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/pdfa-convert",
+    url: "/api/v1/tools/pdf/pdfa-convert",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

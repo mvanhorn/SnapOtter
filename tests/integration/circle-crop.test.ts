@@ -1,5 +1,5 @@
 /**
- * Integration tests for the circle-crop tool (/api/v1/tools/circle-crop).
+ * Integration tests for the circle-crop tool (/api/v1/tools/image/circle-crop).
  *
  * Covers circular masking, PNG output, corner alpha transparency,
  * and center pixel opacity.
@@ -37,7 +37,7 @@ describe("Circle Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/circle-crop",
+      url: "/api/v1/tools/image/circle-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -69,7 +69,7 @@ describe("Circle Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/circle-crop",
+      url: "/api/v1/tools/image/circle-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -103,7 +103,7 @@ describe("Circle Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/circle-crop",
+      url: "/api/v1/tools/image/circle-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -139,7 +139,7 @@ describe("Circle Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/circle-crop",
+      url: "/api/v1/tools/image/circle-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -179,7 +179,7 @@ describe("Circle Crop", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/circle-crop",
+      url: "/api/v1/tools/image/circle-crop",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

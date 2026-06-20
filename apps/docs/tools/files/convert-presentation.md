@@ -8,7 +8,7 @@ Convert presentations between PowerPoint (PPTX) and OpenDocument Presentation (O
 
 ## API Endpoint
 
-`POST /api/v1/tools/convert-presentation`
+`POST /api/v1/tools/files/convert-presentation`
 
 Accepts multipart form data with a PowerPoint/ODP file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a PowerPoint/ODP file and a JSON `settings` fie
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/convert-presentation \
+curl -X POST http://localhost:1349/api/v1/tools/files/convert-presentation \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@slides.pptx" \
   -F 'settings={"format": "odp"}'

@@ -8,7 +8,7 @@ Add "Page N of M" page numbers to every page of a PDF.
 
 ## API Endpoint
 
-`POST /api/v1/tools/pdf-page-numbers`
+`POST /api/v1/tools/pdf/pdf-page-numbers`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -27,7 +27,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/pdf-page-numbers \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/pdf-page-numbers \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"position": "bc", "fontSize": 12}'

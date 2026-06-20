@@ -235,13 +235,13 @@ Two-phase workflow: analyze (detect face + remove background) then generate (cro
 
 ### Phase 1: Analyze
 
-`POST /api/v1/tools/passport-photo/analyze`
+`POST /api/v1/tools/image/passport-photo/analyze`
 
 Accepts an image file (multipart). Returns face landmark data, a base64 preview, and image dimensions.
 
 ### Phase 2: Generate
 
-`POST /api/v1/tools/passport-photo/generate`
+`POST /api/v1/tools/image/passport-photo/generate`
 
 Accepts a JSON body with the Phase 1 results plus generation settings:
 
@@ -370,7 +370,7 @@ Fixes "fake transparent" PNGs where the background was removed but left behind f
 | `removeWatermark` | boolean | `false` | Apply watermark removal pre-processing (median filter) |
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/transparency-fixer \
+curl -X POST http://localhost:1349/api/v1/tools/image/transparency-fixer \
   -H "Authorization: Bearer <token>" \
   -F "file=@fake-transparent.png" \
   -F 'settings={"defringe":30,"outputFormat":"png"}'
@@ -401,7 +401,7 @@ Analyzes the image and applies automatic corrections for exposure, contrast, whi
 | `corrections.denoise` | boolean | `true` | Apply denoising |
 | `deepEnhance` | boolean | `false` | Enable AI noise removal via SCUNet (requires `upscale-enhance` bundle) |
 
-An additional analysis endpoint is available at `POST /api/v1/tools/image-enhancement/analyze` which returns the detected corrections without applying them.
+An additional analysis endpoint is available at `POST /api/v1/tools/image/image-enhancement/analyze` which returns the detected corrections without applying them.
 
 ### Content-Aware Resize (Seam Carving)
 

@@ -57,7 +57,7 @@ async function runTool(settings: Record<string, unknown>) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/remove-pages",
+    url: "/api/v1/tools/pdf/remove-pages",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });
@@ -111,7 +111,7 @@ describe.skipIf(!qpdfAvailable())("remove-pages (requires qpdf)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/remove-pages",
+      url: "/api/v1/tools/pdf/remove-pages",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body: reqBody,
     });

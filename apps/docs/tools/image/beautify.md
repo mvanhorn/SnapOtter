@@ -4,7 +4,7 @@ Add gradient backgrounds, device frames, shadows, watermarks, and social media s
 
 ## API Endpoint
 
-`POST /api/v1/tools/beautify`
+`POST /api/v1/tools/image/beautify`
 
 ## Parameters
 
@@ -33,7 +33,7 @@ Add gradient backgrounds, device frames, shadows, watermarks, and social media s
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/beautify \
+curl -X POST http://localhost:1349/api/v1/tools/image/beautify \
   -F "file=@screenshot.png" \
   -F 'settings={"backgroundType":"linear-gradient","gradientStops":[{"color":"#667eea","position":0},{"color":"#764ba2","position":100}],"gradientAngle":135,"padding":64,"borderRadius":12,"shadowPreset":"medium","frame":"macos-dark","socialPreset":"twitter"}'
 ```
@@ -41,7 +41,7 @@ curl -X POST http://localhost:1349/api/v1/tools/beautify \
 ### With Background Image
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/beautify \
+curl -X POST http://localhost:1349/api/v1/tools/image/beautify \
   -F "file=@screenshot.png" \
   -F "backgroundImage=@bg-texture.jpg" \
   -F 'settings={"backgroundType":"image","padding":80,"borderRadius":16,"shadowPreset":"dramatic"}'

@@ -8,7 +8,7 @@ Swap the audio track of a video with an audio file. Upload both a video and an a
 
 ## API Endpoint
 
-`POST /api/v1/tools/replace-audio`
+`POST /api/v1/tools/video/replace-audio`
 
 Accepts multipart form data with exactly two files: a video file followed by an audio file.
 
@@ -19,7 +19,7 @@ This tool has no settings parameters. Upload a video file and an audio file as t
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/replace-audio \
+curl -X POST http://localhost:1349/api/v1/tools/video/replace-audio \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F "file=@voiceover.mp3"

@@ -8,7 +8,7 @@ Convert audio between mono and stereo layouts, or swap the left and right channe
 
 ## API Endpoint
 
-`POST /api/v1/tools/audio-channels`
+`POST /api/v1/tools/audio/audio-channels`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/audio-channels \
+curl -X POST http://localhost:1349/api/v1/tools/audio/audio-channels \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"mode": "stereo-to-mono"}'

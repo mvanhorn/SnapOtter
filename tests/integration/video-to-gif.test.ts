@@ -38,7 +38,7 @@ describe.skipIf(!ffmpegAvailable())("video-to-gif (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/video-to-gif",
+      url: "/api/v1/tools/video/video-to-gif",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

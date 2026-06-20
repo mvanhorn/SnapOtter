@@ -8,7 +8,7 @@ Convert all colors in a PDF to grayscale, producing a black-and-white version of
 
 ## API Endpoint
 
-`POST /api/v1/tools/grayscale-pdf`
+`POST /api/v1/tools/pdf/grayscale-pdf`
 
 Accepts multipart form data with a PDF file. No `settings` field is required.
 
@@ -19,7 +19,7 @@ This tool has no settings parameters. Upload the PDF file directly.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/grayscale-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/grayscale-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf"
 ```

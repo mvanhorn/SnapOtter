@@ -19,6 +19,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { apiToolPath } from "@snapotter/shared";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
@@ -340,9 +341,9 @@ const ACCEPTABLE_AI_CODES = [200, 202, 400, 422, 501];
  */
 function getToolUrl(toolId: string): string {
   if (toolId === "passport-photo") {
-    return "/api/v1/tools/passport-photo/analyze";
+    return `${apiToolPath("passport-photo")}/analyze`;
   }
-  return `/api/v1/tools/${toolId}`;
+  return apiToolPath(toolId);
 }
 
 /**
@@ -664,7 +665,7 @@ describe("Erase-object missing mask returns 400", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/erase-object",
+      url: "/api/v1/tools/image/erase-object",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -705,7 +706,7 @@ describe("Content-aware-resize without dimensions returns 400", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

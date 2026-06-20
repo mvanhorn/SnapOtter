@@ -8,7 +8,7 @@ Pad an image to a target aspect ratio by adding a solid color, transparent, or b
 
 ## API Endpoint
 
-`POST /api/v1/tools/image-pad`
+`POST /api/v1/tools/image/image-pad`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -26,7 +26,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/image-pad \
+curl -X POST http://localhost:1349/api/v1/tools/image/image-pad \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"target": "16:9", "background": "blur", "padding": 5}'

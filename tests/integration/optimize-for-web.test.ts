@@ -54,7 +54,7 @@ async function postTool(
   const { body: payload, contentType } = makePayload(settings, buffer, filename, ct);
   return app.inject({
     method: "POST",
-    url: "/api/v1/tools/optimize-for-web",
+    url: "/api/v1/tools/image/optimize-for-web",
     payload,
     headers: {
       "content-type": contentType,
@@ -245,7 +245,7 @@ describe("Preview endpoint", () => {
     const { body: payload, contentType } = makePayload({ format: "webp", quality: 60 });
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/preview",
+      url: "/api/v1/tools/image/optimize-for-web/preview",
       payload,
       headers: {
         "content-type": contentType,
@@ -269,7 +269,7 @@ describe("Preview endpoint", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/preview",
+      url: "/api/v1/tools/image/optimize-for-web/preview",
       payload,
       headers: {
         "content-type": contentType,
@@ -400,7 +400,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web",
+      url: "/api/v1/tools/image/optimize-for-web",
       payload,
       headers: {
         "content-type": contentType,
@@ -442,7 +442,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web",
+      url: "/api/v1/tools/image/optimize-for-web",
       payload,
       headers: {
         "content-type": contentType,
@@ -462,7 +462,7 @@ describe("Preview endpoint SVG handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/preview",
+      url: "/api/v1/tools/image/optimize-for-web/preview",
       payload,
       headers: {
         "content-type": contentType,
@@ -485,7 +485,7 @@ describe("Preview endpoint HEIC handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/preview",
+      url: "/api/v1/tools/image/optimize-for-web/preview",
       payload,
       headers: {
         "content-type": contentType,
@@ -509,7 +509,7 @@ describe("Preview endpoint validation", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/preview",
+      url: "/api/v1/tools/image/optimize-for-web/preview",
       payload,
       headers: {
         "content-type": contentType,
@@ -528,7 +528,7 @@ describe("Preview endpoint validation", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/preview",
+      url: "/api/v1/tools/image/optimize-for-web/preview",
       payload,
       headers: {
         "content-type": contentType,
@@ -552,7 +552,7 @@ describe("Preview endpoint validation", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/preview",
+      url: "/api/v1/tools/image/optimize-for-web/preview",
       payload,
       headers: {
         "content-type": contentType,
@@ -570,7 +570,7 @@ describe("Preview endpoint validation", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/preview",
+      url: "/api/v1/tools/image/optimize-for-web/preview",
       payload,
       headers: {
         "content-type": contentType,
@@ -588,7 +588,7 @@ describe("Preview endpoint validation", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/preview",
+      url: "/api/v1/tools/image/optimize-for-web/preview",
       payload,
       headers: {
         "content-type": contentType,
@@ -669,7 +669,7 @@ describe("Preview endpoint format variations", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/preview",
+      url: "/api/v1/tools/image/optimize-for-web/preview",
       payload,
       headers: {
         "content-type": contentType,
@@ -690,7 +690,7 @@ describe("Preview endpoint format variations", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/preview",
+      url: "/api/v1/tools/image/optimize-for-web/preview",
       payload,
       headers: {
         "content-type": contentType,
@@ -710,7 +710,7 @@ describe("Preview endpoint format variations", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/preview",
+      url: "/api/v1/tools/image/optimize-for-web/preview",
       payload,
       headers: {
         "content-type": contentType,
@@ -729,7 +729,7 @@ describe("Authentication", () => {
     const { body: payload, contentType } = makePayload({ format: "webp" });
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web",
+      url: "/api/v1/tools/image/optimize-for-web",
       payload,
       headers: { "content-type": contentType },
     });
@@ -1002,7 +1002,7 @@ describe("Batch processing", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/batch",
+      url: "/api/v1/tools/image/optimize-for-web/batch",
       payload,
       headers: {
         "content-type": contentType,
@@ -1033,7 +1033,7 @@ describe("Batch processing", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/optimize-for-web/batch",
+      url: "/api/v1/tools/image/optimize-for-web/batch",
       payload,
       headers: {
         "content-type": contentType,

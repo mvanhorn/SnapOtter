@@ -1,5 +1,5 @@
 /**
- * Integration tests for the compose tool (/api/v1/tools/compose).
+ * Integration tests for the compose tool (/api/v1/tools/image/compose).
  *
  * Compose overlays one image on top of another with position, opacity,
  * and blend mode controls. It uses field names "file" for the base image
@@ -40,7 +40,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -73,7 +73,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -105,7 +105,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -127,7 +127,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -149,7 +149,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -177,7 +177,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -201,7 +201,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -222,7 +222,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -244,7 +244,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -266,7 +266,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -286,7 +286,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: { "content-type": contentType },
       body,
     });
@@ -305,7 +305,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -327,7 +327,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -347,7 +347,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -367,7 +367,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -387,7 +387,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -407,7 +407,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -427,7 +427,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -448,7 +448,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -478,7 +478,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -498,7 +498,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -519,7 +519,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -542,7 +542,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -565,7 +565,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -588,7 +588,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -610,7 +610,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -630,7 +630,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -656,7 +656,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -682,7 +682,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -707,7 +707,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -731,7 +731,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -763,7 +763,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -788,7 +788,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -810,7 +810,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -834,7 +834,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -856,7 +856,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -881,7 +881,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -905,7 +905,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -936,7 +936,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -960,7 +960,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -997,7 +997,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1022,7 +1022,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1049,7 +1049,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1075,7 +1075,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1102,7 +1102,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1127,7 +1127,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1152,7 +1152,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1183,7 +1183,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1208,7 +1208,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1234,7 +1234,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1265,7 +1265,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1292,7 +1292,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1319,7 +1319,7 @@ describe("Compose", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compose",
+      url: "/api/v1/tools/image/compose",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

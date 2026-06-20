@@ -25,7 +25,7 @@ async function runTool() {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/grayscale-pdf",
+    url: "/api/v1/tools/pdf/grayscale-pdf",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

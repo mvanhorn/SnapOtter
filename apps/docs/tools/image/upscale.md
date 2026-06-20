@@ -4,7 +4,7 @@ AI super-resolution enhancement using Real-ESRGAN. Upscales images 2x-4x while p
 
 ## API Endpoint
 
-`POST /api/v1/tools/upscale`
+`POST /api/v1/tools/image/upscale`
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
@@ -25,7 +25,7 @@ AI super-resolution enhancement using Real-ESRGAN. Upscales images 2x-4x while p
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/upscale \
+curl -X POST http://localhost:1349/api/v1/tools/image/upscale \
   -F "file=@photo.jpg" \
   -F 'settings={"scale":4,"model":"auto","faceEnhance":true,"format":"png"}'
 ```

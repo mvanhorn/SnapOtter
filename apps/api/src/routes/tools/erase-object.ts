@@ -33,7 +33,7 @@ const settingsSchema = z.object({
  * via getObjectBuffer(data.inputRefs[1]) inside the handler.
  */
 export function registerEraseObject(app: FastifyInstance) {
-  app.post("/api/v1/tools/erase-object", async (request: FastifyRequest, reply: FastifyReply) => {
+  app.post("/api/v1/tools/image/erase-object", async (request: FastifyRequest, reply: FastifyReply) => {
     const toolId = "erase-object";
     if (!isToolInstalled(toolId)) {
       const bundle = getBundleForTool(toolId);

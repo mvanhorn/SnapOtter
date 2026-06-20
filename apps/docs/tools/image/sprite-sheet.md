@@ -8,7 +8,7 @@ Combine multiple images into a single sprite sheet grid. Each image is resized t
 
 ## API Endpoint
 
-`POST /api/v1/tools/sprite-sheet`
+`POST /api/v1/tools/image/sprite-sheet`
 
 Accepts multipart form data with two or more image files and a JSON `settings` field.
 
@@ -25,7 +25,7 @@ Accepts multipart form data with two or more image files and a JSON `settings` f
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/sprite-sheet \
+curl -X POST http://localhost:1349/api/v1/tools/image/sprite-sheet \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@frame1.png" \
   -F "file=@frame2.png" \

@@ -150,7 +150,7 @@ for batch_size in 3 5; do
   output_file=$(mktemp)
   cid=$(get_container_id)
 
-  curl_args=(-s -X POST "${BASE_URL}/api/v1/tools/remove-background" -H "Authorization: Bearer ${TOKEN}")
+  curl_args=(-s -X POST "${BASE_URL}/api/v1/tools/image/remove-background" -H "Authorization: Bearer ${TOKEN}")
   for i in $(seq 1 "$batch_size"); do
     curl_args+=(-F "file=@${P}")
   done

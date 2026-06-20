@@ -130,7 +130,7 @@ describe("ExifTool security: internal path stripping", () => {
   });
 
   it("does not strip non-sensitive paths", () => {
-    const msg = "Use /api/v1/tools/convert endpoint";
+    const msg = "Use /api/v1/tools/image/convert endpoint";
     expect(stripInternalPaths(msg)).toBe(msg);
   });
 });

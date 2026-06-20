@@ -8,7 +8,7 @@ Extract all readable plain text from a PDF document into a text file.
 
 ## API Endpoint
 
-`POST /api/v1/tools/pdf-to-text`
+`POST /api/v1/tools/pdf/pdf-to-text`
 
 Accepts multipart form data with a PDF file.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload a PDF and its text content will
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/pdf-to-text \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/pdf-to-text \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@report.pdf"
 ```

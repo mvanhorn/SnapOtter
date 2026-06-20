@@ -37,7 +37,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -68,7 +68,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -92,7 +92,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -112,7 +112,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -131,7 +131,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -149,7 +149,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -166,7 +166,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -184,7 +184,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -203,7 +203,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -223,7 +223,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -243,7 +243,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -263,7 +263,7 @@ describe("image-to-base64", () => {
       ]);
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/image-to-base64",
+        url: "/api/v1/tools/image/image-to-base64",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -284,7 +284,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -305,7 +305,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -327,7 +327,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -348,7 +348,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -372,7 +372,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -389,7 +389,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -409,7 +409,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -431,7 +431,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -454,7 +454,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -476,7 +476,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -499,7 +499,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -520,7 +520,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -543,7 +543,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -565,7 +565,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -585,7 +585,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -607,7 +607,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -627,7 +627,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -653,7 +653,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -680,7 +680,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -701,7 +701,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { "content-type": contentType },
       body,
     });
@@ -723,7 +723,7 @@ describe("image-to-base64", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/image-to-base64",
+        url: "/api/v1/tools/image/image-to-base64",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -745,7 +745,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -765,7 +765,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -785,7 +785,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -804,7 +804,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -826,7 +826,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -849,7 +849,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -873,7 +873,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -894,7 +894,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -912,7 +912,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -935,7 +935,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -959,7 +959,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -980,7 +980,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1007,7 +1007,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1033,7 +1033,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1056,7 +1056,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1077,7 +1077,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1098,7 +1098,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1118,7 +1118,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1138,7 +1138,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1158,7 +1158,7 @@ describe("image-to-base64", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-to-base64",
+      url: "/api/v1/tools/image/image-to-base64",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

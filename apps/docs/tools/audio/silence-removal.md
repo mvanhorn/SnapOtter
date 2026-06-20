@@ -8,7 +8,7 @@ Detect and remove silent sections from an audio file based on a configurable thr
 
 ## API Endpoint
 
-`POST /api/v1/tools/silence-removal`
+`POST /api/v1/tools/audio/silence-removal`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/silence-removal \
+curl -X POST http://localhost:1349/api/v1/tools/audio/silence-removal \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"thresholdDb": -45, "minSilenceS": 1}'

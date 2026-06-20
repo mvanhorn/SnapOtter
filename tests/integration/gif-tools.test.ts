@@ -43,7 +43,7 @@ function makePayload(settings: Record<string, unknown>, buffer?: Buffer, filenam
 }
 
 // ── Metadata endpoint ─────────────────────────────────────────────
-describe("POST /api/v1/tools/gif-tools/info", () => {
+describe("POST /api/v1/tools/image/gif-tools/info", () => {
   it("returns metadata for an animated GIF", async () => {
     const { body: payload, contentType } = createMultipartPayload([
       {
@@ -56,7 +56,7 @@ describe("POST /api/v1/tools/gif-tools/info", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools/info",
+      url: "/api/v1/tools/image/gif-tools/info",
       payload,
       headers: {
         "content-type": contentType,
@@ -87,7 +87,7 @@ describe("POST /api/v1/tools/gif-tools/info", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools/info",
+      url: "/api/v1/tools/image/gif-tools/info",
       payload,
       headers: {
         "content-type": contentType,
@@ -111,7 +111,7 @@ describe("Resize mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -133,7 +133,7 @@ describe("Resize mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -159,7 +159,7 @@ describe("Optimize mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -183,7 +183,7 @@ describe("Speed mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -216,7 +216,7 @@ describe("Reverse mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -250,7 +250,7 @@ describe("Extract mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -272,7 +272,7 @@ describe("Extract mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -296,7 +296,7 @@ describe("Extract mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -320,7 +320,7 @@ describe("Rotate mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -341,7 +341,7 @@ describe("Rotate mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -360,7 +360,7 @@ describe("Rotate mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -379,7 +379,7 @@ describe("Rotate mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -398,7 +398,7 @@ describe("Rotate mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -419,7 +419,7 @@ describe("Rotate mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -441,7 +441,7 @@ describe("Rotate mode", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -463,7 +463,7 @@ describe("Reverse mode with speed adjustment", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -487,7 +487,7 @@ describe("Reverse mode with speed adjustment", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -511,7 +511,7 @@ describe("Extract mode additional tests", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -535,7 +535,7 @@ describe("Extract mode additional tests", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -559,7 +559,7 @@ describe("Speed mode edge cases", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -593,7 +593,7 @@ describe("Resize mode edge cases", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -613,7 +613,7 @@ describe("Resize mode edge cases", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -631,7 +631,7 @@ describe("Resize mode edge cases", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -652,7 +652,7 @@ describe("Metadata endpoint edge cases", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools/info",
+      url: "/api/v1/tools/image/gif-tools/info",
       payload,
       headers: {
         "content-type": contentType,
@@ -674,7 +674,7 @@ describe("Loop count", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -695,7 +695,7 @@ describe("Validation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -714,7 +714,7 @@ describe("Validation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -732,7 +732,7 @@ describe("Validation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -752,7 +752,7 @@ describe("Validation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -768,7 +768,7 @@ describe("Validation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: { "content-type": contentType },
     });
@@ -787,7 +787,7 @@ describe("Response structure", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -818,7 +818,7 @@ describe("Optimize mode parameter variations", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -838,7 +838,7 @@ describe("Optimize mode parameter variations", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -857,7 +857,7 @@ describe("Optimize mode parameter variations", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -879,7 +879,7 @@ describe("Speed mode boundary values", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -898,7 +898,7 @@ describe("Speed mode boundary values", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -922,7 +922,7 @@ describe("Extract format edge cases", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -942,7 +942,7 @@ describe("Extract format edge cases", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -968,7 +968,7 @@ describe("Content animated GIF (animated-simpsons.gif)", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -989,7 +989,7 @@ describe("Content animated GIF (animated-simpsons.gif)", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools/info",
+      url: "/api/v1/tools/image/gif-tools/info",
       payload,
       headers: {
         "content-type": contentType,
@@ -1018,7 +1018,7 @@ describe("Rotate angle validation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -1037,7 +1037,7 @@ describe("Rotate angle validation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,
@@ -1059,7 +1059,7 @@ describe("Resize output dimension verification", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/gif-tools",
+      url: "/api/v1/tools/image/gif-tools",
       payload,
       headers: {
         "content-type": contentType,

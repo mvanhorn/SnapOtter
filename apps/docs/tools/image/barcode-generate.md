@@ -8,7 +8,7 @@ Generate barcode images from text input. Supports Code 128, EAN-13, UPC-A, Code 
 
 ## API Endpoint
 
-`POST /api/v1/tools/barcode-generate`
+`POST /api/v1/tools/image/barcode-generate`
 
 Accepts an `application/json` body (not multipart). The barcode is generated from the provided text, not from an uploaded file.
 
@@ -24,7 +24,7 @@ Accepts an `application/json` body (not multipart). The barcode is generated fro
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/barcode-generate \
+curl -X POST http://localhost:1349/api/v1/tools/image/barcode-generate \
   -H "Authorization: Bearer si_your-api-key" \
   -H "Content-Type: application/json" \
   -d '{"text": "5901234123457", "type": "ean13", "scale": 4}'

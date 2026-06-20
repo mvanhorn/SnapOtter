@@ -26,7 +26,7 @@ async function runTool(settings: Record<string, unknown>) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/volume-adjust",
+    url: "/api/v1/tools/audio/volume-adjust",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

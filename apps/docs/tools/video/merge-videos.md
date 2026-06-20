@@ -8,7 +8,7 @@ Join multiple video clips into a single MP4 file. All inputs are normalized to t
 
 ## API Endpoint
 
-`POST /api/v1/tools/merge-videos`
+`POST /api/v1/tools/video/merge-videos`
 
 Accepts multipart form data with two or more video files. This is an async endpoint - it returns `202 Accepted` immediately and progress is streamed via SSE at `GET /api/v1/jobs/{jobId}/progress`.
 
@@ -19,7 +19,7 @@ This tool has no settings parameters. Upload 2-10 video files as multiple `file`
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/merge-videos \
+curl -X POST http://localhost:1349/api/v1/tools/video/merge-videos \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@intro.mp4" \
   -F "file=@main.mp4" \

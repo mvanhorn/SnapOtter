@@ -1,5 +1,5 @@
 /**
- * Integration tests for the rotate tool (/api/v1/tools/rotate).
+ * Integration tests for the rotate tool (/api/v1/tools/image/rotate).
  *
  * This is a Sharp-based tool (no AI sidecar). All processing tests should
  * return 200. Output dimensions are verified by downloading the result and
@@ -46,7 +46,7 @@ async function rotateAndMeta(
 
   const res = await app.inject({
     method: "POST",
-    url: "/api/v1/tools/rotate",
+    url: "/api/v1/tools/image/rotate",
     headers: {
       authorization: `Bearer ${adminToken}`,
       "content-type": contentType,
@@ -79,7 +79,7 @@ describe("Rotate", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/rotate",
+      url: "/api/v1/tools/image/rotate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -170,7 +170,7 @@ describe("Rotate", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/rotate",
+      url: "/api/v1/tools/image/rotate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -198,7 +198,7 @@ describe("Rotate", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/rotate",
+      url: "/api/v1/tools/image/rotate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -219,7 +219,7 @@ describe("Rotate", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/rotate",
+      url: "/api/v1/tools/image/rotate",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -240,7 +240,7 @@ describe("Rotate", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/rotate",
+      url: "/api/v1/tools/image/rotate",
       headers: { "content-type": contentType },
       body,
     });

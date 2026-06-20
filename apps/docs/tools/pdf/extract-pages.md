@@ -8,7 +8,7 @@ Pull selected pages from a PDF into a new, smaller document.
 
 ## API Endpoint
 
-`POST /api/v1/tools/extract-pages`
+`POST /api/v1/tools/pdf/extract-pages`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/extract-pages \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/extract-pages \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"range": "1-5,8,10-z"}'

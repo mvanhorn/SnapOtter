@@ -8,7 +8,7 @@ Cut a section out of an audio file by specifying start and end times in seconds.
 
 ## API Endpoint
 
-`POST /api/v1/tools/trim-audio`
+`POST /api/v1/tools/audio/trim-audio`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/trim-audio \
+curl -X POST http://localhost:1349/api/v1/tools/audio/trim-audio \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"startS": 10, "endS": 45}'

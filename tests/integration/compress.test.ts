@@ -56,7 +56,7 @@ async function postTool(
   const { body: payload, contentType } = makePayload(settings, buffer ?? largeJpg, filename, ct);
   return app.inject({
     method: "POST",
-    url: "/api/v1/tools/compress",
+    url: "/api/v1/tools/image/compress",
     payload,
     headers: {
       "content-type": contentType,
@@ -251,7 +251,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/compress",
+      url: "/api/v1/tools/image/compress",
       payload,
       headers: {
         "content-type": contentType,

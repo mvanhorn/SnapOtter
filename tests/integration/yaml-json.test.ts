@@ -24,7 +24,7 @@ async function runTool(filename: string, content: Buffer, settings: Record<strin
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/yaml-json",
+    url: "/api/v1/tools/files/yaml-json",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

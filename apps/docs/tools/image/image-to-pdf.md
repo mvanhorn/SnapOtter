@@ -8,7 +8,7 @@ Combine one or more images into a PDF document. Supports multiple page sizes, or
 
 ## API Endpoint
 
-`POST /api/v1/tools/image-to-pdf`
+`POST /api/v1/tools/image/image-to-pdf`
 
 Accepts multipart form data with one or more image files and a JSON `settings` field.
 
@@ -36,7 +36,7 @@ Minimum target size is 50 KB.
 Basic multi-image PDF:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/image-to-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/image/image-to-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@page1.jpg" \
   -F "file=@page2.jpg" \
@@ -47,7 +47,7 @@ curl -X POST http://localhost:1349/api/v1/tools/image-to-pdf \
 With file size target:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/image-to-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/image/image-to-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@scan1.jpg" \
   -F "file=@scan2.jpg" \
@@ -57,7 +57,7 @@ curl -X POST http://localhost:1349/api/v1/tools/image-to-pdf \
 One PDF per image:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/image-to-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/image/image-to-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo1.jpg" \
   -F "file=@photo2.jpg" \

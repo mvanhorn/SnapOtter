@@ -8,7 +8,7 @@ Permanently render (hard-code) subtitles from an SRT, VTT, or ASS file onto ever
 
 ## API Endpoint
 
-`POST /api/v1/tools/burn-subtitles`
+`POST /api/v1/tools/video/burn-subtitles`
 
 Accepts multipart form data with a video file and a subtitle file. This is an async endpoint - it returns `202 Accepted` immediately and progress is streamed via SSE at `GET /api/v1/jobs/{jobId}/progress`.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a video file and a subtitle file. This is an as
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/burn-subtitles \
+curl -X POST http://localhost:1349/api/v1/tools/video/burn-subtitles \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F "file=@subtitles.srt" \

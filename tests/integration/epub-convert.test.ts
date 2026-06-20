@@ -82,7 +82,7 @@ async function runTool(filename: string, content: Buffer, settings: Record<strin
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/epub-convert",
+    url: "/api/v1/tools/files/epub-convert",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

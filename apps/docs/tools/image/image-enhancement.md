@@ -4,7 +4,7 @@ One-click auto-improve with smart analysis. Analyzes the image and applies expos
 
 ## API Endpoint
 
-`POST /api/v1/tools/image-enhancement`
+`POST /api/v1/tools/image/image-enhancement`
 
 **Processing:** Synchronous (uses `createToolRoute` factory, returns result directly)
 
@@ -34,7 +34,7 @@ One-click auto-improve with smart analysis. Analyzes the image and applies expos
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/image-enhancement \
+curl -X POST http://localhost:1349/api/v1/tools/image/image-enhancement \
   -F "file=@photo.jpg" \
   -F 'settings={"mode":"portrait","intensity":70,"corrections":{"exposure":true,"contrast":true,"sharpness":false}}'
 ```
@@ -52,7 +52,7 @@ curl -X POST http://localhost:1349/api/v1/tools/image-enhancement \
 
 ## Analyze Endpoint
 
-`POST /api/v1/tools/image-enhancement/analyze`
+`POST /api/v1/tools/image/image-enhancement/analyze`
 
 Analyzes an image and returns correction recommendations without applying them.
 
@@ -65,7 +65,7 @@ Analyzes an image and returns correction recommendations without applying them.
 ### Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/image-enhancement/analyze \
+curl -X POST http://localhost:1349/api/v1/tools/image/image-enhancement/analyze \
   -F "file=@photo.jpg"
 ```
 

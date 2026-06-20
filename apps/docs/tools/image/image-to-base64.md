@@ -8,7 +8,7 @@ Convert one or more images to base64-encoded strings and data URIs. Supports opt
 
 ## API Endpoint
 
-`POST /api/v1/tools/image-to-base64`
+`POST /api/v1/tools/image/image-to-base64`
 
 Accepts multipart form data with one or more image files and an optional JSON `settings` field.
 
@@ -24,7 +24,7 @@ Accepts multipart form data with one or more image files and an optional JSON `s
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/image-to-base64 \
+curl -X POST http://localhost:1349/api/v1/tools/image/image-to-base64 \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@icon.png" \
   -F 'settings={"outputFormat": "webp", "quality": 80, "maxWidth": 200}'
@@ -33,7 +33,7 @@ curl -X POST http://localhost:1349/api/v1/tools/image-to-base64 \
 Multiple files:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/image-to-base64 \
+curl -X POST http://localhost:1349/api/v1/tools/image/image-to-base64 \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@icon1.png" \
   -F "file=@icon2.png" \

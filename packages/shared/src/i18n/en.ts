@@ -2453,6 +2453,8 @@ export const en = {
     all: "All",
     documents: "PDF",
     data: "Data",
+    pdf: "PDF",
+    files: "Files",
     toolCount: "{count} tools",
     heading: "SnapOtter Tools",
   },

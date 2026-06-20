@@ -67,7 +67,7 @@ describe.skipIf(!ffmpegAvailable())("merge-videos (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/merge-videos",
+      url: "/api/v1/tools/video/merge-videos",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -105,7 +105,7 @@ describe.skipIf(!ffmpegAvailable())("merge-videos (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/merge-videos",
+      url: "/api/v1/tools/video/merge-videos",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

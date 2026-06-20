@@ -90,7 +90,7 @@ run_batch_bench() {
 
   output_file=$(mktemp)
 
-  local curl_args=(-s --max-time 180 -X POST "${BASE_URL}/api/v1/tools/resize")
+  local curl_args=(-s --max-time 180 -X POST "${BASE_URL}/api/v1/tools/image/resize")
 
   for i in $(seq 1 "$count"); do
     curl_args+=(-F "file=@${F}/test-200x150.png")

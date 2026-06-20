@@ -69,7 +69,7 @@ describe.skipIf(!ffmpegAvailable())("burn-subtitles (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/burn-subtitles",
+      url: "/api/v1/tools/video/burn-subtitles",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -92,7 +92,7 @@ describe.skipIf(!ffmpegAvailable())("burn-subtitles (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/burn-subtitles",
+      url: "/api/v1/tools/video/burn-subtitles",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -115,7 +115,7 @@ describe.skipIf(!ffmpegAvailable())("burn-subtitles (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/burn-subtitles",
+      url: "/api/v1/tools/video/burn-subtitles",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

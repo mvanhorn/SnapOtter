@@ -65,7 +65,7 @@ registerAiJobHandler("blur-faces", async (input, data, ctx) => {
 
 /** Face detection and blurring route. */
 export function registerBlurFaces(app: FastifyInstance) {
-  app.post("/api/v1/tools/blur-faces", async (request: FastifyRequest, reply: FastifyReply) => {
+  app.post("/api/v1/tools/image/blur-faces", async (request: FastifyRequest, reply: FastifyReply) => {
     const toolId = "blur-faces";
     if (!isToolInstalled(toolId)) {
       const bundle = getBundleForTool(toolId);

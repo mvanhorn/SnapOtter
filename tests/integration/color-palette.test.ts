@@ -40,7 +40,7 @@ describe("Color extraction", () => {
     const { body: payload, contentType } = makeFilePayload(PNG, "test.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -61,7 +61,7 @@ describe("Color extraction", () => {
     const { body: payload, contentType } = makeFilePayload(PNG, "test.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -88,7 +88,7 @@ describe("Solid color image", () => {
     const { body: payload, contentType } = makeFilePayload(redBuffer, "red.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -109,7 +109,7 @@ describe("Multiple input formats", () => {
     const { body: payload, contentType } = makeFilePayload(JPG, "test.jpg", "image/jpeg");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -125,7 +125,7 @@ describe("Multiple input formats", () => {
     const { body: payload, contentType } = makeFilePayload(WEBP, "test.webp", "image/webp");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -146,7 +146,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -163,7 +163,7 @@ describe("Error handling", () => {
     const { body: payload, contentType } = makeFilePayload(badBuffer, "bad.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -183,7 +183,7 @@ describe("Multipart error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -203,7 +203,7 @@ describe("HEIC input", () => {
     const { body: payload, contentType } = makeFilePayload(HEIC, "photo.heic", "image/heic");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -247,7 +247,7 @@ describe("Multi-color extraction", () => {
     const { body: payload, contentType } = makeFilePayload(halfBuffer, "bicolor.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -267,7 +267,7 @@ describe("Edge size inputs", () => {
     const { body: payload, contentType } = makeFilePayload(TINY, "tiny.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -284,7 +284,7 @@ describe("Edge size inputs", () => {
     const { body: payload, contentType } = makeFilePayload(LARGE, "large.jpg", "image/jpeg");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -304,7 +304,7 @@ describe("Authentication", () => {
     const { body: payload, contentType } = makeFilePayload(PNG, "test.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -340,7 +340,7 @@ describe("Gradient image palette", () => {
     );
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -366,7 +366,7 @@ describe("Solid white image", () => {
     const { body: payload, contentType } = makeFilePayload(whiteBuffer, "white.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -388,7 +388,7 @@ describe("HEIF input", () => {
     const { body: payload, contentType } = makeFilePayload(HEIF, "photo.heif", "image/heif");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -408,7 +408,7 @@ describe("Animated GIF input", () => {
     const { body: payload, contentType } = makeFilePayload(GIF, "anim.gif", "image/gif");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -428,7 +428,7 @@ describe("SVG input", () => {
     const { body: payload, contentType } = makeFilePayload(SVG, "icon.svg", "image/svg+xml");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -448,7 +448,7 @@ describe("TIFF input", () => {
     const { body: payload, contentType } = makeFilePayload(TIFF, "test.tiff", "image/tiff");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -469,7 +469,7 @@ describe("Real photo palette", () => {
     const { body: payload, contentType } = makeFilePayload(PHOTO, "photo.jpg", "image/jpeg");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -499,7 +499,7 @@ describe("Solid black image", () => {
     const { body: payload, contentType } = makeFilePayload(blackBuffer, "black.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -519,7 +519,7 @@ describe("Color count bounds", () => {
     const { body: payload, contentType } = makeFilePayload(PNG, "test.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -541,7 +541,7 @@ describe("AVIF input", () => {
     const { body: payload, contentType } = makeFilePayload(AVIF, "test.avif", "image/avif");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -560,7 +560,7 @@ describe("Filename tracking", () => {
     const { body: payload, contentType } = makeFilePayload(PNG, "my-image-2024.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -580,7 +580,7 @@ describe("Color uniqueness", () => {
     const { body: payload, contentType } = makeFilePayload(PHOTO, "photo.jpg", "image/jpeg");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -601,7 +601,7 @@ describe("SVG logo input", () => {
     const { body: payload, contentType } = makeFilePayload(SVG_LOGO, "logo.svg", "image/svg+xml");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -646,7 +646,7 @@ describe("Three-color image", () => {
     const { body: payload, contentType } = makeFilePayload(tricolorBuffer, "tri.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -665,7 +665,7 @@ describe("No settings field", () => {
     const { body: payload, contentType } = makeFilePayload(PNG, "test.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -686,7 +686,7 @@ describe("BMP input", () => {
     const { body: payload, contentType } = makeFilePayload(BMP, "test.bmp", "image/bmp");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -709,7 +709,7 @@ describe("Portrait image palette", () => {
     const { body: payload, contentType } = makeFilePayload(BW, "bw.jpg", "image/jpeg");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -730,7 +730,7 @@ describe("Cross-format WebP input", () => {
     const { body: payload, contentType } = makeFilePayload(CHAT, "chat.webp", "image/webp");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -753,7 +753,7 @@ describe("Settings: custom count", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -778,7 +778,7 @@ describe("Settings: RGB format", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -804,7 +804,7 @@ describe("Settings: HSL format", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,
@@ -826,7 +826,7 @@ describe("Response shape: hex array", () => {
     const { body: payload, contentType } = makeFilePayload(PNG, "test.png", "image/png");
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/color-palette",
+      url: "/api/v1/tools/image/color-palette",
       payload,
       headers: {
         "content-type": contentType,

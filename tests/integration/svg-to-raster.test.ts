@@ -38,7 +38,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -58,7 +58,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -86,7 +86,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -110,7 +110,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -138,7 +138,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -163,7 +163,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -179,7 +179,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -194,7 +194,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -212,7 +212,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -230,7 +230,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -248,7 +248,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -278,13 +278,13 @@ describe("svg-to-raster", () => {
 
     const res72 = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": ct72 },
       body: body72,
     });
     const res600 = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": ct600 },
       body: body600,
     });
@@ -318,7 +318,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -336,7 +336,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -356,7 +356,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -380,7 +380,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -405,7 +405,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -425,7 +425,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -459,7 +459,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -484,7 +484,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -504,7 +504,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -524,7 +524,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -540,7 +540,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -558,7 +558,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { "content-type": contentType },
       body,
     });
@@ -578,7 +578,7 @@ describe("svg-to-raster", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster/batch",
+        url: "/api/v1/tools/image/svg-to-raster/batch",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -594,7 +594,7 @@ describe("svg-to-raster", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster/batch",
+        url: "/api/v1/tools/image/svg-to-raster/batch",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -613,7 +613,7 @@ describe("svg-to-raster", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster/batch",
+        url: "/api/v1/tools/image/svg-to-raster/batch",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -631,7 +631,7 @@ describe("svg-to-raster", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster/batch",
+        url: "/api/v1/tools/image/svg-to-raster/batch",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -651,7 +651,7 @@ describe("svg-to-raster", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster/batch",
+        url: "/api/v1/tools/image/svg-to-raster/batch",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -671,7 +671,7 @@ describe("svg-to-raster", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster/batch",
+        url: "/api/v1/tools/image/svg-to-raster/batch",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -688,7 +688,7 @@ describe("svg-to-raster", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster/batch",
+        url: "/api/v1/tools/image/svg-to-raster/batch",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -704,7 +704,7 @@ describe("svg-to-raster", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster/batch",
+        url: "/api/v1/tools/image/svg-to-raster/batch",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -725,7 +725,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -759,7 +759,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -794,7 +794,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -818,7 +818,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -846,7 +846,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster/batch",
+      url: "/api/v1/tools/image/svg-to-raster/batch",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -871,7 +871,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster/batch",
+      url: "/api/v1/tools/image/svg-to-raster/batch",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -894,7 +894,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -913,7 +913,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -931,7 +931,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -949,7 +949,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -969,7 +969,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -987,7 +987,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1006,7 +1006,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster/batch",
+      url: "/api/v1/tools/image/svg-to-raster/batch",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1029,7 +1029,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster/batch",
+      url: "/api/v1/tools/image/svg-to-raster/batch",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1050,7 +1050,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1071,7 +1071,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1098,7 +1098,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1120,7 +1120,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1142,7 +1142,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1171,7 +1171,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1191,7 +1191,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1209,7 +1209,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1229,7 +1229,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1249,7 +1249,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1271,7 +1271,7 @@ describe("svg-to-raster", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster/batch",
+      url: "/api/v1/tools/image/svg-to-raster/batch",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

@@ -4,7 +4,7 @@ Expand the canvas of an image with AI-powered fill (outpainting). Extends the im
 
 ## API Endpoint
 
-`POST /api/v1/tools/ai-canvas-expand`
+`POST /api/v1/tools/image/ai-canvas-expand`
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
@@ -28,7 +28,7 @@ At least one extend direction must be greater than 0.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/ai-canvas-expand \
+curl -X POST http://localhost:1349/api/v1/tools/image/ai-canvas-expand \
   -F "file=@photo.jpg" \
   -F 'settings={"extendTop":200,"extendBottom":200,"extendLeft":100,"extendRight":100,"tier":"balanced"}'
 ```

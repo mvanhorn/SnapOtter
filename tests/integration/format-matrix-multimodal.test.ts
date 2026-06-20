@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { extname, join } from "node:path";
-import { TOOL_BUNDLE_MAP, TOOLS } from "@snapotter/shared";
+import { apiToolPath, TOOL_BUNDLE_MAP, TOOLS } from "@snapotter/shared";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { defaultSettingsFor } from "../helpers/tool-default-settings.js";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
@@ -211,7 +211,7 @@ describe("multi-modality tool x format matrix", () => {
           const { body, contentType } = createMultipartPayload(fields);
           const res = await testApp.app.inject({
             method: "POST",
-            url: `/api/v1/tools/${toolId}`,
+            url: apiToolPath(toolId),
             headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
             body,
           });

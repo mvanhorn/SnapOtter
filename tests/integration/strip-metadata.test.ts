@@ -51,7 +51,7 @@ async function postTool(
   const { body: payload, contentType } = makePayload(settings, buffer, filename, ct);
   return app.inject({
     method: "POST",
-    url: "/api/v1/tools/strip-metadata",
+    url: "/api/v1/tools/image/strip-metadata",
     payload,
     headers: {
       "content-type": contentType,
@@ -158,7 +158,7 @@ describe("Inspect endpoint", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/strip-metadata/inspect",
+      url: "/api/v1/tools/image/strip-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -179,7 +179,7 @@ describe("Inspect endpoint", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/strip-metadata/inspect",
+      url: "/api/v1/tools/image/strip-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -379,7 +379,7 @@ describe("Inspect endpoint edge cases", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/strip-metadata/inspect",
+      url: "/api/v1/tools/image/strip-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -403,7 +403,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/strip-metadata",
+      url: "/api/v1/tools/image/strip-metadata",
       payload,
       headers: {
         "content-type": contentType,
@@ -420,7 +420,7 @@ describe("Error handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/strip-metadata",
+      url: "/api/v1/tools/image/strip-metadata",
       payload,
       headers: {
         "content-type": contentType,
@@ -475,7 +475,7 @@ describe("Inspect endpoint: ICC and XMP parsing", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/strip-metadata/inspect",
+      url: "/api/v1/tools/image/strip-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -501,7 +501,7 @@ describe("Inspect endpoint: ICC and XMP parsing", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/strip-metadata/inspect",
+      url: "/api/v1/tools/image/strip-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -529,7 +529,7 @@ describe("Inspect endpoint: ICC and XMP parsing", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/strip-metadata/inspect",
+      url: "/api/v1/tools/image/strip-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -557,7 +557,7 @@ describe("Inspect endpoint: ICC and XMP parsing", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/strip-metadata/inspect",
+      url: "/api/v1/tools/image/strip-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -583,7 +583,7 @@ describe("Inspect endpoint: ICC and XMP parsing", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/strip-metadata/inspect",
+      url: "/api/v1/tools/image/strip-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,
@@ -661,7 +661,7 @@ describe("Tiny file handling", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/strip-metadata/inspect",
+      url: "/api/v1/tools/image/strip-metadata/inspect",
       payload,
       headers: {
         "content-type": contentType,

@@ -2,7 +2,7 @@
  * Comprehensive format conversion tests.
  *
  * Verifies that every supported input format can be converted to every
- * supported output format via the /api/v1/tools/convert endpoint.
+ * supported output format via the /api/v1/tools/image/convert endpoint.
  * Also tests SVG-to-raster via the dedicated endpoint.
  */
 
@@ -115,7 +115,7 @@ afterAll(async () => {
 }, 10_000);
 
 // ---------------------------------------------------------------------------
-// Raster-to-raster conversions via /api/v1/tools/convert
+// Raster-to-raster conversions via /api/v1/tools/image/convert
 // ---------------------------------------------------------------------------
 describe("Format conversion matrix", () => {
   const rasterInputs = ["png", "jpg", "webp", "avif", "tiff", "gif", "heic"];
@@ -136,7 +136,7 @@ describe("Format conversion matrix", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: "/api/v1/tools/convert",
+          url: "/api/v1/tools/image/convert",
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -158,7 +158,7 @@ describe("Format conversion matrix", () => {
 });
 
 // ---------------------------------------------------------------------------
-// SVG-to-raster conversions via /api/v1/tools/convert
+// SVG-to-raster conversions via /api/v1/tools/image/convert
 // ---------------------------------------------------------------------------
 describe("SVG via convert tool", () => {
   for (const outputFmt of OUTPUT_FORMATS) {
@@ -176,7 +176,7 @@ describe("SVG via convert tool", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/convert",
+        url: "/api/v1/tools/image/convert",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -214,7 +214,7 @@ describe("SVG via dedicated svg-to-raster endpoint", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster",
+        url: "/api/v1/tools/image/svg-to-raster",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -253,7 +253,7 @@ describe("SVG via dedicated svg-to-raster endpoint", () => {
       ]);
       return app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster",
+        url: "/api/v1/tools/image/svg-to-raster",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -292,7 +292,7 @@ describe("SVG via dedicated svg-to-raster endpoint", () => {
       ]);
       return app.inject({
         method: "POST",
-        url: "/api/v1/tools/svg-to-raster",
+        url: "/api/v1/tools/image/svg-to-raster",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -330,7 +330,7 @@ describe("SVG via dedicated svg-to-raster endpoint", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/svg-to-raster",
+      url: "/api/v1/tools/image/svg-to-raster",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -346,7 +346,7 @@ describe("SVG via dedicated svg-to-raster endpoint", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Animated format preservation via /api/v1/tools/convert
+// Animated format preservation via /api/v1/tools/image/convert
 // ---------------------------------------------------------------------------
 describe("Animated format preservation", () => {
   it("preserves animation when converting animated GIF to WebP", async () => {
@@ -363,7 +363,7 @@ describe("Animated format preservation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/convert",
+      url: "/api/v1/tools/image/convert",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -403,7 +403,7 @@ describe("Animated format preservation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/convert",
+      url: "/api/v1/tools/image/convert",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

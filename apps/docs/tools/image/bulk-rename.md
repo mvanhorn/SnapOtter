@@ -8,7 +8,7 @@ Rename multiple files using a pattern template with placeholders for index, padd
 
 ## API Endpoint
 
-`POST /api/v1/tools/bulk-rename`
+`POST /api/v1/tools/image/bulk-rename`
 
 Accepts multipart form data with multiple files and a JSON `settings` field.
 
@@ -32,7 +32,7 @@ The original file extension is always preserved.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/bulk-rename \
+curl -X POST http://localhost:1349/api/v1/tools/image/bulk-rename \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo1.jpg" \
   -F "file=@photo2.jpg" \
@@ -45,7 +45,7 @@ This produces: `vacation-1.jpg`, `vacation-2.jpg`, `vacation-3.jpg`
 Using original filename:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/bulk-rename \
+curl -X POST http://localhost:1349/api/v1/tools/image/bulk-rename \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@IMG_001.jpg" \
   -F "file=@IMG_002.jpg" \

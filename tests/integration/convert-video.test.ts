@@ -25,7 +25,7 @@ async function runTool(settings: Record<string, unknown>) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/convert-video",
+    url: "/api/v1/tools/video/convert-video",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });
@@ -81,7 +81,7 @@ describe.skipIf(!ffmpegAvailable())("convert-video (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/convert-video",
+      url: "/api/v1/tools/video/convert-video",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

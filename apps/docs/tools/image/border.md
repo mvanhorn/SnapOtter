@@ -4,7 +4,7 @@ Add borders, padding, rounded corners, and drop shadows to images. The tool appl
 
 ## API Endpoint
 
-`POST /api/v1/tools/border`
+`POST /api/v1/tools/image/border`
 
 ## Parameters
 
@@ -25,7 +25,7 @@ Add borders, padding, rounded corners, and drop shadows to images. The tool appl
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/border \
+curl -X POST http://localhost:1349/api/v1/tools/image/border \
   -F "file=@photo.jpg" \
   -F 'settings={"borderWidth":20,"borderColor":"#333333","cornerRadius":16,"shadow":true,"shadowBlur":25,"shadowOpacity":50}'
 ```

@@ -8,7 +8,7 @@ Shrink video file size using configurable compression strength and optional reso
 
 ## API Endpoint
 
-`POST /api/v1/tools/compress-video`
+`POST /api/v1/tools/video/compress-video`
 
 Accepts multipart form data with a video file and a JSON `settings` field. This is an async endpoint - it returns `202 Accepted` immediately and progress is streamed via SSE at `GET /api/v1/jobs/{jobId}/progress`.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with a video file and a JSON `settings` field. This 
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/compress-video \
+curl -X POST http://localhost:1349/api/v1/tools/video/compress-video \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"quality": "strong", "resolution": "720p"}'

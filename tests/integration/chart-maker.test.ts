@@ -1,5 +1,5 @@
 /**
- * Integration tests for the chart-maker tool (/api/v1/tools/chart-maker).
+ * Integration tests for the chart-maker tool (/api/v1/tools/files/chart-maker).
  *
  * Factory FILE tool that consumes CSV/JSON and renders hand-rolled SVG
  * rasterized to PNG via sharp. Tests cover bar/line/pie kinds, CSV and JSON
@@ -49,7 +49,7 @@ describe("Chart Maker", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/chart-maker",
+      url: "/api/v1/tools/files/chart-maker",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -81,7 +81,7 @@ describe("Chart Maker", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/chart-maker",
+      url: "/api/v1/tools/files/chart-maker",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -105,7 +105,7 @@ describe("Chart Maker", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/chart-maker",
+      url: "/api/v1/tools/files/chart-maker",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -127,7 +127,7 @@ describe("Chart Maker", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/chart-maker",
+      url: "/api/v1/tools/files/chart-maker",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -145,7 +145,7 @@ describe("Chart Maker", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/chart-maker",
+      url: "/api/v1/tools/files/chart-maker",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -165,7 +165,7 @@ describe("Chart Maker", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/chart-maker",
+      url: "/api/v1/tools/files/chart-maker",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -189,7 +189,7 @@ describe("Chart Maker", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/chart-maker",
+      url: "/api/v1/tools/files/chart-maker",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -210,7 +210,7 @@ describe("Chart Maker", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/chart-maker",
+      url: "/api/v1/tools/files/chart-maker",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -236,7 +236,7 @@ describe("Chart Maker", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/chart-maker",
+      url: "/api/v1/tools/files/chart-maker",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -254,7 +254,7 @@ describe("Chart Maker", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/chart-maker",
+      url: "/api/v1/tools/files/chart-maker",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -271,7 +271,7 @@ describe("Chart Maker", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/chart-maker",
+      url: "/api/v1/tools/files/chart-maker",
       headers: { "content-type": contentType },
       body,
     });

@@ -7,7 +7,7 @@
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { TOOLS } from "@snapotter/shared";
+import { apiToolPath, TOOLS } from "@snapotter/shared";
 import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { db, schema } from "../../apps/api/src/db/index.js";
@@ -122,7 +122,7 @@ describe("Factory multi-input (maxInputs)", () => {
 
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/multi-concat",
+      url: apiToolPath("multi-concat"),
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -163,7 +163,7 @@ describe("Factory multi-input (maxInputs)", () => {
 
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -187,7 +187,7 @@ describe("Factory multi-input (maxInputs)", () => {
 
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/multi-concat",
+      url: apiToolPath("multi-concat"),
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -211,7 +211,7 @@ describe("Factory multi-input (maxInputs)", () => {
 
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/multi-validate",
+      url: apiToolPath("multi-validate"),
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

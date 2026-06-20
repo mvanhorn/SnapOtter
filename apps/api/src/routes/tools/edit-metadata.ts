@@ -68,7 +68,7 @@ const BROWSER_PREVIEWABLE = new Set([
 export function registerEditMetadata(app: FastifyInstance) {
   // Inspect endpoint - returns parsed metadata via ExifTool
   app.post(
-    "/api/v1/tools/edit-metadata/inspect",
+    "/api/v1/tools/image/edit-metadata/inspect",
     async (request: FastifyRequest, reply: FastifyReply) => {
       let fileBuffer: Buffer | null = null;
       let filename = "image";
@@ -109,7 +109,7 @@ export function registerEditMetadata(app: FastifyInstance) {
   );
 
   // Edit endpoint - writes metadata in-place using ExifTool (no pixel re-encoding)
-  app.post("/api/v1/tools/edit-metadata", async (request: FastifyRequest, reply: FastifyReply) => {
+  app.post("/api/v1/tools/image/edit-metadata", async (request: FastifyRequest, reply: FastifyReply) => {
     let fileBuffer: Buffer | null = null;
     let filename = "image";
     let settingsRaw: string | null = null;

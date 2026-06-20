@@ -99,7 +99,7 @@ function scanOneFile(
     xhr.onerror = () => reject(new Error("Network error"));
     xhr.ontimeout = () => reject(new Error("Request timed out"));
 
-    xhr.open("POST", "/api/v1/tools/barcode-read");
+    xhr.open("POST", "/api/v1/tools/image/barcode-read");
     for (const [key, value] of formatHeaders()) {
       xhr.setRequestHeader(key, value);
     }

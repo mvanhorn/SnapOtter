@@ -8,7 +8,7 @@ Rotate a video by 90, 180, or 270 degrees, or flip it horizontally or vertically
 
 ## API Endpoint
 
-`POST /api/v1/tools/rotate-video`
+`POST /api/v1/tools/video/rotate-video`
 
 Accepts multipart form data with a video file and a JSON `settings` field.
 
@@ -29,7 +29,7 @@ Accepts multipart form data with a video file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/rotate-video \
+curl -X POST http://localhost:1349/api/v1/tools/video/rotate-video \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"transform": "cw90"}'

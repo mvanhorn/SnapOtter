@@ -8,7 +8,7 @@ Extract text from images using AI-powered optical character recognition. Support
 
 ## API Endpoint
 
-`POST /api/v1/tools/ocr`
+`POST /api/v1/tools/image/ocr`
 
 **Processing:** Synchronous (returns extracted text directly, though progress is reported via SSE if a `clientJobId` is provided)
 
@@ -27,7 +27,7 @@ Extract text from images using AI-powered optical character recognition. Support
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/ocr \
+curl -X POST http://localhost:1349/api/v1/tools/image/ocr \
   -F "file=@document.png" \
   -F 'settings={"quality":"best","language":"en","enhance":true}'
 ```

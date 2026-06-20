@@ -35,7 +35,7 @@ async function runTool(
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/change-fps",
+    url: "/api/v1/tools/video/change-fps",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

@@ -1,5 +1,5 @@
 /**
- * Integration tests for the bulk-rename tool (/api/v1/tools/bulk-rename).
+ * Integration tests for the bulk-rename tool (/api/v1/tools/image/bulk-rename).
  *
  * Covers pattern-based renaming with {{index}}, {{padded}}, {{original}}
  * placeholders, custom start index, ZIP response format, and input validation.
@@ -52,7 +52,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -80,7 +80,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -105,7 +105,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -132,7 +132,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -156,7 +156,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -179,7 +179,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -207,7 +207,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -228,7 +228,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: { "content-type": contentType },
       body,
     });
@@ -250,7 +250,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -275,7 +275,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -309,7 +309,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -335,7 +335,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -359,7 +359,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -382,7 +382,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -403,7 +403,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -424,7 +424,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -451,7 +451,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -475,7 +475,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -498,7 +498,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -530,7 +530,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -557,7 +557,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -581,7 +581,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -604,7 +604,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -629,7 +629,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -653,7 +653,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -681,7 +681,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -704,7 +704,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -727,7 +727,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -756,7 +756,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -789,7 +789,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -814,7 +814,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -841,7 +841,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -872,7 +872,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -902,7 +902,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -927,7 +927,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -953,7 +953,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -977,7 +977,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1002,7 +1002,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1028,7 +1028,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1050,7 +1050,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1073,7 +1073,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1097,7 +1097,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1130,7 +1130,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1168,7 +1168,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1192,7 +1192,7 @@ describe("Bulk Rename", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/bulk-rename",
+      url: "/api/v1/tools/image/bulk-rename",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

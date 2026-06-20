@@ -8,7 +8,7 @@ Extract the embedded subtitle track from a video container and download it as an
 
 ## API Endpoint
 
-`POST /api/v1/tools/extract-subtitles`
+`POST /api/v1/tools/video/extract-subtitles`
 
 Accepts multipart form data with a video file. This tool has no configurable settings.
 
@@ -19,7 +19,7 @@ This tool has no parameters. It extracts the first subtitle track found in the v
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/extract-subtitles \
+curl -X POST http://localhost:1349/api/v1/tools/video/extract-subtitles \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4"
 ```

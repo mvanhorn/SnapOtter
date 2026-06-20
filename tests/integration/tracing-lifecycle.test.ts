@@ -70,7 +70,7 @@ describe("tracing lifecycle", () => {
     trace.setGlobalTracerProvider(provider);
 
     const tracer = trace.getTracer("test");
-    const httpSpan = tracer.startSpan("HTTP POST /api/v1/tools/resize");
+    const httpSpan = tracer.startSpan("HTTP POST /api/v1/tools/image/resize");
     const httpCtx = trace.setSpan(ROOT_CONTEXT, httpSpan);
     const httpTraceId = httpSpan.spanContext().traceId;
 
@@ -97,7 +97,7 @@ describe("tracing lifecycle", () => {
 
     const spans = exporter.getFinishedSpans();
     const names = spans.map((s) => s.name);
-    expect(names).toContain("HTTP POST /api/v1/tools/resize");
+    expect(names).toContain("HTTP POST /api/v1/tools/image/resize");
     expect(names).toContain("job.process");
     expect(names).toContain("tool.process");
 

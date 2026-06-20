@@ -8,7 +8,7 @@ Add a text watermark overlay to images. Supports single placement at corners/cen
 
 ## API Endpoint
 
-`POST /api/v1/tools/watermark-text`
+`POST /api/v1/tools/image/watermark-text`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -26,7 +26,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/watermark-text \
+curl -X POST http://localhost:1349/api/v1/tools/image/watermark-text \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"text": "SAMPLE", "fontSize": 64, "opacity": 30, "position": "center", "rotation": -30}'
@@ -35,7 +35,7 @@ curl -X POST http://localhost:1349/api/v1/tools/watermark-text \
 Tiled watermark across the entire image:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/watermark-text \
+curl -X POST http://localhost:1349/api/v1/tools/image/watermark-text \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"text": "DRAFT", "fontSize": 36, "opacity": 20, "position": "tiled", "rotation": -45}'

@@ -42,7 +42,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -61,7 +61,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -80,7 +80,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -101,7 +101,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -127,7 +127,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -152,7 +152,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -186,7 +186,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -211,7 +211,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -240,7 +240,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -262,7 +262,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -281,7 +281,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -307,7 +307,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -331,7 +331,7 @@ describe("Content-Aware Resize", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/content-aware-resize",
+        url: "/api/v1/tools/image/content-aware-resize",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -361,7 +361,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -387,7 +387,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -418,7 +418,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -439,7 +439,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -463,7 +463,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -493,7 +493,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -515,7 +515,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -538,7 +538,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -560,7 +560,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -579,7 +579,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -598,7 +598,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -620,7 +620,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -638,7 +638,7 @@ describe("Content-Aware Resize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/content-aware-resize",
+      url: "/api/v1/tools/image/content-aware-resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

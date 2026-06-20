@@ -8,7 +8,7 @@ Scan uploaded images for all types of barcodes and QR codes. Returns decoded tex
 
 ## API Endpoint
 
-`POST /api/v1/tools/barcode-read`
+`POST /api/v1/tools/image/barcode-read`
 
 Accepts multipart form data with an image file and an optional JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with an image file and an optional JSON `settings` f
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/barcode-read \
+curl -X POST http://localhost:1349/api/v1/tools/image/barcode-read \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@receipt.jpg" \
   -F 'settings={"tryHarder": true}'

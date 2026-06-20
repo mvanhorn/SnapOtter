@@ -8,7 +8,7 @@ Upload multiple images to detect duplicates and near-duplicates using perceptual
 
 ## API Endpoint
 
-`POST /api/v1/tools/find-duplicates`
+`POST /api/v1/tools/image/find-duplicates`
 
 Accepts multipart form data with multiple image files and an optional JSON `settings` field.
 
@@ -25,7 +25,7 @@ Upload at least 2 image files in the multipart request (all using the `file` fie
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/find-duplicates \
+curl -X POST http://localhost:1349/api/v1/tools/image/find-duplicates \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo1.jpg" \
   -F "file=@photo2.jpg" \

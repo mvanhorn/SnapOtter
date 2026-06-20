@@ -26,7 +26,7 @@ async function runTool(pdfBuffer: Buffer, filename = "test-3page.pdf") {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/repair-pdf",
+    url: "/api/v1/tools/pdf/repair-pdf",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

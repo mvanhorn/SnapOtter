@@ -38,7 +38,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -58,7 +58,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -85,7 +85,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -109,7 +109,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -125,7 +125,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -141,7 +141,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -166,7 +166,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -182,7 +182,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -199,7 +199,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -217,7 +217,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -233,7 +233,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -258,14 +258,14 @@ describe("vectorize", () => {
 
     const res1 = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": ct1 },
       body: body1,
     });
 
     const res2 = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": ct2 },
       body: body2,
     });
@@ -294,7 +294,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -311,7 +311,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -329,7 +329,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -353,14 +353,14 @@ describe("vectorize", () => {
 
     const res1 = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": ct1 },
       body: body1,
     });
 
     const res2 = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": ct2 },
       body: body2,
     });
@@ -382,7 +382,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { "content-type": contentType },
       body,
     });
@@ -399,7 +399,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -420,7 +420,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -436,7 +436,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -456,7 +456,7 @@ describe("vectorize", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/vectorize",
+        url: "/api/v1/tools/image/vectorize",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -487,7 +487,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -508,7 +508,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -533,7 +533,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -554,7 +554,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -583,7 +583,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -602,7 +602,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -627,7 +627,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -650,7 +650,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -671,7 +671,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -692,7 +692,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -711,7 +711,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -735,7 +735,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -759,7 +759,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -780,7 +780,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -798,7 +798,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -816,7 +816,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -832,7 +832,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -850,7 +850,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -871,7 +871,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -890,7 +890,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -906,7 +906,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -927,7 +927,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -945,7 +945,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -974,7 +974,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1004,7 +1004,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1037,7 +1037,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1064,7 +1064,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1088,7 +1088,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1108,7 +1108,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1129,7 +1129,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1145,7 +1145,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1163,7 +1163,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1179,7 +1179,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1196,7 +1196,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1223,7 +1223,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1251,7 +1251,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1279,7 +1279,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1314,13 +1314,13 @@ describe("vectorize", () => {
 
     const resBw = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": ctBw },
       body: bodyBw,
     });
     const resColor = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": ctColor },
       body: bodyColor,
     });
@@ -1345,7 +1345,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1375,7 +1375,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1407,7 +1407,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1436,7 +1436,7 @@ describe("vectorize", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vectorize",
+      url: "/api/v1/tools/image/vectorize",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

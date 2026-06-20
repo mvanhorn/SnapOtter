@@ -8,7 +8,7 @@ Split a large CSV or TSV file into smaller files by row count. Returns a ZIP arc
 
 ## API Endpoint
 
-`POST /api/v1/tools/split-csv`
+`POST /api/v1/tools/files/split-csv`
 
 Accepts multipart form data with a CSV file and a JSON `settings` field.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with a CSV file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/split-csv \
+curl -X POST http://localhost:1349/api/v1/tools/files/split-csv \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@large-dataset.csv" \
   -F 'settings={"rowsPerFile": 500, "keepHeader": true}'

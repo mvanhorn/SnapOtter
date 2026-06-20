@@ -8,7 +8,7 @@ Reorder pages in a PDF by specifying the desired page sequence.
 
 ## API Endpoint
 
-`POST /api/v1/tools/organize-pdf`
+`POST /api/v1/tools/pdf/organize-pdf`
 
 Accepts multipart form data with a PDF file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a PDF file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/organize-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/organize-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf" \
   -F 'settings={"order": "3,1,2,5-z"}'

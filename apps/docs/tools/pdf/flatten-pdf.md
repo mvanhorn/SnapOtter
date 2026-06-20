@@ -8,7 +8,7 @@ Bake interactive form fields and annotations into the page content, producing a 
 
 ## API Endpoint
 
-`POST /api/v1/tools/flatten-pdf`
+`POST /api/v1/tools/pdf/flatten-pdf`
 
 Accepts multipart form data with a PDF file.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload a PDF and all forms and annotat
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/flatten-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/flatten-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@form.pdf"
 ```

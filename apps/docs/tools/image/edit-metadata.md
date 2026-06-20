@@ -10,13 +10,13 @@ Edit image metadata fields including EXIF, IPTC, GPS coordinates, dates, and key
 
 ### Edit Metadata
 
-`POST /api/v1/tools/edit-metadata`
+`POST /api/v1/tools/image/edit-metadata`
 
 Writes metadata fields to the image and returns the modified file.
 
 ### Inspect Metadata
 
-`POST /api/v1/tools/edit-metadata/inspect`
+`POST /api/v1/tools/image/edit-metadata/inspect`
 
 Returns the full metadata from the image via ExifTool as JSON. Does not modify the image.
 
@@ -52,7 +52,7 @@ Returns the full metadata from the image via ExifTool as JSON. Does not modify t
 Set author and copyright:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/edit-metadata \
+curl -X POST http://localhost:1349/api/v1/tools/image/edit-metadata \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"author": "Jane Smith", "copyright": "2024 Jane Smith"}'
@@ -61,7 +61,7 @@ curl -X POST http://localhost:1349/api/v1/tools/edit-metadata \
 Set GPS coordinates:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/edit-metadata \
+curl -X POST http://localhost:1349/api/v1/tools/image/edit-metadata \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"gpsLatitude": 48.8566, "gpsLongitude": 2.3522, "gpsAltitude": 35}'
@@ -70,7 +70,7 @@ curl -X POST http://localhost:1349/api/v1/tools/edit-metadata \
 Remove GPS and add keywords:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/edit-metadata \
+curl -X POST http://localhost:1349/api/v1/tools/image/edit-metadata \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"clearGps": true, "keywords": ["landscape", "sunset"], "keywordsMode": "add"}'
@@ -79,7 +79,7 @@ curl -X POST http://localhost:1349/api/v1/tools/edit-metadata \
 Inspect metadata:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/edit-metadata/inspect \
+curl -X POST http://localhost:1349/api/v1/tools/image/edit-metadata/inspect \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg"
 ```

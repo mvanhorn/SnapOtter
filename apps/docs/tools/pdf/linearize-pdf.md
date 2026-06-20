@@ -8,7 +8,7 @@ Linearize a PDF so it can be progressively downloaded and displayed in web brows
 
 ## API Endpoint
 
-`POST /api/v1/tools/linearize-pdf`
+`POST /api/v1/tools/pdf/linearize-pdf`
 
 Accepts multipart form data with a PDF file. No `settings` field is required.
 
@@ -19,7 +19,7 @@ This tool has no settings parameters. Upload the PDF file directly.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/linearize-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/linearize-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf"
 ```

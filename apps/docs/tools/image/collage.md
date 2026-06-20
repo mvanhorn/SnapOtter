@@ -4,7 +4,7 @@ Combine multiple images into beautiful grid collages with 25+ templates. Support
 
 ## API Endpoint
 
-`POST /api/v1/tools/collage`
+`POST /api/v1/tools/image/collage`
 
 ## Parameters
 
@@ -55,7 +55,7 @@ Combine multiple images into beautiful grid collages with 25+ templates. Support
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/collage \
+curl -X POST http://localhost:1349/api/v1/tools/image/collage \
   -F "file=@photo1.jpg" \
   -F "file=@photo2.jpg" \
   -F "file=@photo3.jpg" \

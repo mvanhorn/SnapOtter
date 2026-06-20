@@ -9,6 +9,7 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { apiToolPath } from "@snapotter/shared";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
@@ -758,7 +759,7 @@ describe("File upload/download", () => {
 // ═══════════════════════════════════════════════════════════════════════════
 describe("Tool processing", () => {
   // ── Resize ─────────────────────────────────────────────────────
-  describe("POST /api/v1/tools/resize", () => {
+  describe("POST /api/v1/tools/image/resize", () => {
     it("resizes an image successfully", async () => {
       const { body: payload, contentType } = createMultipartPayload([
         { name: "file", filename: "resize-me.png", contentType: "image/png", content: PNG_200x150 },
@@ -767,7 +768,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize",
+        url: "/api/v1/tools/image/resize",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -790,7 +791,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize",
+        url: "/api/v1/tools/image/resize",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -808,7 +809,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize",
+        url: "/api/v1/tools/image/resize",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -825,7 +826,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize",
+        url: "/api/v1/tools/image/resize",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -844,7 +845,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize",
+        url: "/api/v1/tools/image/resize",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -863,7 +864,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize",
+        url: "/api/v1/tools/image/resize",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -881,7 +882,7 @@ describe("Tool processing", () => {
 
       const resizeRes = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize",
+        url: "/api/v1/tools/image/resize",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -899,7 +900,7 @@ describe("Tool processing", () => {
   });
 
   // ── Crop ───────────────────────────────────────────────────────
-  describe("POST /api/v1/tools/crop", () => {
+  describe("POST /api/v1/tools/image/crop", () => {
     it("crops an image successfully", async () => {
       const { body: payload, contentType } = createMultipartPayload([
         { name: "file", filename: "crop.png", contentType: "image/png", content: PNG_200x150 },
@@ -908,7 +909,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/crop",
+        url: "/api/v1/tools/image/crop",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -928,7 +929,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/crop",
+        url: "/api/v1/tools/image/crop",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -949,7 +950,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/crop",
+        url: "/api/v1/tools/image/crop",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -962,7 +963,7 @@ describe("Tool processing", () => {
   });
 
   // ── Convert ────────────────────────────────────────────────────
-  describe("POST /api/v1/tools/convert", () => {
+  describe("POST /api/v1/tools/image/convert", () => {
     it("converts PNG to JPEG", async () => {
       const { body: payload, contentType } = createMultipartPayload([
         { name: "file", filename: "convert.png", contentType: "image/png", content: PNG_200x150 },
@@ -971,7 +972,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/convert",
+        url: "/api/v1/tools/image/convert",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -991,7 +992,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/convert",
+        url: "/api/v1/tools/image/convert",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1009,7 +1010,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/convert",
+        url: "/api/v1/tools/image/convert",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1027,7 +1028,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/convert",
+        url: "/api/v1/tools/image/convert",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1039,7 +1040,7 @@ describe("Tool processing", () => {
   });
 
   // ── Rotate ─────────────────────────────────────────────────────
-  describe("POST /api/v1/tools/rotate", () => {
+  describe("POST /api/v1/tools/image/rotate", () => {
     it("rotates 90 degrees", async () => {
       const { body: payload, contentType } = createMultipartPayload([
         { name: "file", filename: "rotate.png", contentType: "image/png", content: PNG_200x150 },
@@ -1048,7 +1049,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/rotate",
+        url: "/api/v1/tools/image/rotate",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1066,7 +1067,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/rotate",
+        url: "/api/v1/tools/image/rotate",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1084,7 +1085,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/rotate",
+        url: "/api/v1/tools/image/rotate",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1125,7 +1126,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize",
+        url: "/api/v1/tools/image/resize",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1143,7 +1144,7 @@ describe("Tool processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize",
+        url: "/api/v1/tools/image/resize",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -1299,7 +1300,7 @@ describe("Auth middleware", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType },
       payload,
     });
@@ -1631,7 +1632,7 @@ describe("API Keys", () => {
 // ═══════════════════════════════════════════════════════════════════════════
 // STITCH
 // ═══════════════════════════════════════════════════════════════════════════
-describe("POST /api/v1/tools/stitch", () => {
+describe("POST /api/v1/tools/image/stitch", () => {
   it("stitches two images horizontally with default settings", async () => {
     const { body: payload, contentType } = createMultipartPayload([
       { name: "file", filename: "a.png", contentType: "image/png", content: PNG_200x150 },
@@ -1641,7 +1642,7 @@ describe("POST /api/v1/tools/stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1665,7 +1666,7 @@ describe("POST /api/v1/tools/stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1685,7 +1686,7 @@ describe("POST /api/v1/tools/stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1706,7 +1707,7 @@ describe("POST /api/v1/tools/stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1726,7 +1727,7 @@ describe("POST /api/v1/tools/stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1746,7 +1747,7 @@ describe("POST /api/v1/tools/stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1768,7 +1769,7 @@ describe("POST /api/v1/tools/stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1791,7 +1792,7 @@ describe("POST /api/v1/tools/stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1811,7 +1812,7 @@ describe("POST /api/v1/tools/stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1831,7 +1832,7 @@ describe("POST /api/v1/tools/stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1851,7 +1852,7 @@ describe("POST /api/v1/tools/stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1871,7 +1872,7 @@ describe("POST /api/v1/tools/stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -2772,7 +2773,7 @@ describe("Pipeline", () => {
 // OCR API
 // ═══════════════════════════════════════════════════════════════════════════
 describe("OCR API", () => {
-  describe("POST /api/v1/tools/ocr", () => {
+  describe("POST /api/v1/tools/image/ocr", () => {
     it("accepts quality param and returns text without engine field", async () => {
       const { body: payload, contentType } = createMultipartPayload([
         { name: "file", filename: "ocr-test.png", contentType: "image/png", content: PNG_200x150 },
@@ -2781,7 +2782,7 @@ describe("OCR API", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/ocr",
+        url: "/api/v1/tools/image/ocr",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -2814,7 +2815,7 @@ describe("OCR API", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/ocr",
+        url: "/api/v1/tools/image/ocr",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -2839,7 +2840,7 @@ describe("OCR API", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/ocr",
+        url: "/api/v1/tools/image/ocr",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -2860,7 +2861,7 @@ describe("OCR API", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/ocr",
+        url: "/api/v1/tools/image/ocr",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -2878,7 +2879,7 @@ describe("OCR API", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/ocr",
+        url: "/api/v1/tools/image/ocr",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -2895,7 +2896,7 @@ describe("OCR API", () => {
 // BATCH PROCESSING
 // ═══════════════════════════════════════════════════════════════════════════
 describe("Batch processing", () => {
-  describe("POST /api/v1/tools/:toolId/batch", () => {
+  describe("POST /api/v1/tools/:section/:toolId/batch", () => {
     it("processes multiple images in a batch and returns ZIP", async () => {
       const { body: payload, contentType } = createMultipartPayload([
         { name: "file", filename: "a.png", contentType: "image/png", content: PNG_1x1 },
@@ -2905,7 +2906,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize/batch",
+        url: "/api/v1/tools/image/resize/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -2943,7 +2944,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize/batch",
+        url: "/api/v1/tools/image/resize/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -2962,7 +2963,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/convert/batch",
+        url: "/api/v1/tools/image/convert/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -2982,7 +2983,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/compress/batch",
+        url: "/api/v1/tools/image/compress/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3002,7 +3003,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/strip-metadata/batch",
+        url: "/api/v1/tools/image/strip-metadata/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3022,7 +3023,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/rotate/batch",
+        url: "/api/v1/tools/image/rotate/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3041,7 +3042,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/convert/batch",
+        url: "/api/v1/tools/image/convert/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3059,7 +3060,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize/batch",
+        url: "/api/v1/tools/image/resize/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3077,7 +3078,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/strip-metadata/batch",
+        url: "/api/v1/tools/image/strip-metadata/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3097,7 +3098,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize/batch",
+        url: "/api/v1/tools/image/resize/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3119,7 +3120,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize/batch",
+        url: "/api/v1/tools/image/resize/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3141,7 +3142,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize/batch",
+        url: "/api/v1/tools/image/resize/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3162,7 +3163,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize/batch",
+        url: "/api/v1/tools/image/resize/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3182,7 +3183,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize/batch",
+        url: "/api/v1/tools/image/resize/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3210,7 +3211,7 @@ describe("Batch processing", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize/batch",
+        url: "/api/v1/tools/image/resize/batch",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3239,7 +3240,7 @@ describe("Batch processing", () => {
 
         const res = await app.inject({
           method: "POST",
-          url: `/api/v1/tools/${toolId}/batch`,
+          url: `${apiToolPath(toolId)}/batch`,
           headers: {
             authorization: `Bearer ${adminToken}`,
             "content-type": contentType,
@@ -3269,7 +3270,7 @@ describe("Smart crop format preservation", () => {
     ]);
     return app.inject({
       method: "POST",
-      url: "/api/v1/tools/smart-crop",
+      url: "/api/v1/tools/image/smart-crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3380,7 +3381,7 @@ describe("Crop format preservation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/crop",
+      url: "/api/v1/tools/image/crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3407,7 +3408,7 @@ describe("Crop format preservation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/crop",
+      url: "/api/v1/tools/image/crop",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3439,7 +3440,7 @@ describe("Color adjustments format preservation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/adjust-colors",
+      url: "/api/v1/tools/image/adjust-colors",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3466,7 +3467,7 @@ describe("Color adjustments format preservation", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/adjust-colors",
+      url: "/api/v1/tools/image/adjust-colors",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3551,7 +3552,7 @@ describe("Edge cases & adversarial inputs", () => {
 
       return app.inject({
         method: "POST",
-        url: "/api/v1/tools/resize",
+        url: "/api/v1/tools/image/resize",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": contentType,
@@ -3575,7 +3576,7 @@ describe("Edge cases & adversarial inputs", () => {
   it("rejects a JSON body on multipart-only endpoint", async () => {
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": "application/json",
@@ -3593,7 +3594,7 @@ describe("Edge cases & adversarial inputs", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3612,7 +3613,7 @@ describe("Edge cases & adversarial inputs", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3646,7 +3647,7 @@ describe("Edge cases & adversarial inputs", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3666,7 +3667,7 @@ describe("Edge cases & adversarial inputs", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3725,7 +3726,7 @@ describe("Workspace integrity", () => {
 
     const toolRes = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3780,14 +3781,14 @@ describe("Workspace integrity", () => {
 // EDIT METADATA
 // ═══════════════════════════════════════════════════════════════════════════
 describe("Edit metadata", () => {
-  describe("POST /api/v1/tools/edit-metadata/inspect", () => {
+  describe("POST /api/v1/tools/image/edit-metadata/inspect", () => {
     it("returns parsed EXIF for JPEG with metadata", async () => {
       const { body: payload, contentType } = createMultipartPayload([
         { name: "file", filename: "exif.jpg", contentType: "image/jpeg", content: EXIF_JPG },
       ]);
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/edit-metadata/inspect",
+        url: "/api/v1/tools/image/edit-metadata/inspect",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         payload,
       });
@@ -3807,7 +3808,7 @@ describe("Edit metadata", () => {
       ]);
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/edit-metadata/inspect",
+        url: "/api/v1/tools/image/edit-metadata/inspect",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         payload,
       });
@@ -3820,7 +3821,7 @@ describe("Edit metadata", () => {
     it("rejects request with no file", async () => {
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/edit-metadata/inspect",
+        url: "/api/v1/tools/image/edit-metadata/inspect",
         headers: {
           authorization: `Bearer ${adminToken}`,
           "content-type": "multipart/form-data; boundary=---test",
@@ -3831,7 +3832,7 @@ describe("Edit metadata", () => {
     });
   });
 
-  describe("POST /api/v1/tools/edit-metadata", () => {
+  describe("POST /api/v1/tools/image/edit-metadata", () => {
     it("writes metadata and returns downloadable file", async () => {
       const { body: payload, contentType } = createMultipartPayload([
         { name: "file", filename: "edit.jpg", contentType: "image/jpeg", content: EXIF_JPG },
@@ -3839,7 +3840,7 @@ describe("Edit metadata", () => {
       ]);
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/edit-metadata",
+        url: "/api/v1/tools/image/edit-metadata",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         payload,
       });
@@ -3858,7 +3859,7 @@ describe("Edit metadata", () => {
       ]);
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/edit-metadata",
+        url: "/api/v1/tools/image/edit-metadata",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         payload,
       });
@@ -3873,7 +3874,7 @@ describe("Edit metadata", () => {
       ]);
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/edit-metadata",
+        url: "/api/v1/tools/image/edit-metadata",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         payload,
       });
@@ -3884,7 +3885,7 @@ describe("Edit metadata", () => {
 });
 
 describe("Image Enhancement", () => {
-  it("POST /api/v1/tools/image-enhancement processes an image", async () => {
+  it("POST /api/v1/tools/image/image-enhancement processes an image", async () => {
     const { body: payload, contentType } = createMultipartPayload([
       { name: "file", filename: "test.png", contentType: "image/png", content: PNG_200x150 },
       {
@@ -3905,7 +3906,7 @@ describe("Image Enhancement", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement",
+      url: "/api/v1/tools/image/image-enhancement",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3919,13 +3920,13 @@ describe("Image Enhancement", () => {
     expect(body.processedSize).toBeGreaterThan(0);
   });
 
-  it("POST /api/v1/tools/image-enhancement/analyze returns analysis data", async () => {
+  it("POST /api/v1/tools/image/image-enhancement/analyze returns analysis data", async () => {
     const { body: payload, contentType } = createMultipartPayload([
       { name: "file", filename: "test.png", contentType: "image/png", content: PNG_200x150 },
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement/analyze",
+      url: "/api/v1/tools/image/image-enhancement/analyze",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3954,7 +3955,7 @@ describe("Image Enhancement", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement",
+      url: "/api/v1/tools/image/image-enhancement",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3976,7 +3977,7 @@ describe("Image Enhancement", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/image-enhancement",
+      url: "/api/v1/tools/image/image-enhancement",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -3991,7 +3992,7 @@ describe("Image Enhancement", () => {
 // NOISE REMOVAL
 // ═══════════════════════════════════════════════════════════════════════════
 describe("Noise Removal", () => {
-  it("POST /api/v1/tools/noise-removal processes with quick tier", async () => {
+  it("POST /api/v1/tools/image/noise-removal processes with quick tier", async () => {
     const { body: payload, contentType } = createMultipartPayload([
       { name: "file", filename: "noisy.png", contentType: "image/png", content: PNG_200x150 },
       {
@@ -4001,7 +4002,7 @@ describe("Noise Removal", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -4026,7 +4027,7 @@ describe("Noise Removal", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -4047,7 +4048,7 @@ describe("Noise Removal", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -4068,7 +4069,7 @@ describe("Noise Removal", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -4085,7 +4086,7 @@ describe("Noise Removal", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/noise-removal",
+      url: "/api/v1/tools/image/noise-removal",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

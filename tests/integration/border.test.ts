@@ -1,5 +1,5 @@
 /**
- * Integration tests for the border tool (/api/v1/tools/border).
+ * Integration tests for the border tool (/api/v1/tools/image/border).
  *
  * Covers solid-color borders, padding, corner radius, shadow, dimension
  * verification, and input validation.
@@ -41,7 +41,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -67,7 +67,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -110,7 +110,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -147,7 +147,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -190,7 +190,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -224,7 +224,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -253,7 +253,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -287,7 +287,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -311,7 +311,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -335,7 +335,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -356,7 +356,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { "content-type": contentType },
       body,
     });
@@ -377,7 +377,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -406,7 +406,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -444,7 +444,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -476,7 +476,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -507,7 +507,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -533,7 +533,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -563,7 +563,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -585,7 +585,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -607,7 +607,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -629,7 +629,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -650,7 +650,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -675,7 +675,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -714,7 +714,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -748,7 +748,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -779,7 +779,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -808,7 +808,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -839,7 +839,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -863,7 +863,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -883,7 +883,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -902,7 +902,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -922,7 +922,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -944,7 +944,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -979,7 +979,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1017,7 +1017,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1041,7 +1041,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1064,7 +1064,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1089,7 +1089,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1119,7 +1119,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1149,7 +1149,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1177,7 +1177,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1216,7 +1216,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1239,7 +1239,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1270,7 +1270,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1301,7 +1301,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1333,7 +1333,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1365,7 +1365,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1397,7 +1397,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1429,7 +1429,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1452,7 +1452,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1473,7 +1473,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1501,7 +1501,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1538,7 +1538,7 @@ describe("Border", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/border",
+      url: "/api/v1/tools/image/border",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

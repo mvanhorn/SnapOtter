@@ -8,7 +8,7 @@ Even out audio loudness to broadcast standard levels using EBU R128 normalizatio
 
 ## API Endpoint
 
-`POST /api/v1/tools/normalize-audio`
+`POST /api/v1/tools/audio/normalize-audio`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. It applies EBU R128 loudness normaliza
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/normalize-audio \
+curl -X POST http://localhost:1349/api/v1/tools/audio/normalize-audio \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3"
 ```

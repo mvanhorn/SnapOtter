@@ -8,7 +8,7 @@ Convert Excel, OpenDocument, or CSV spreadsheets to PDF. Wide sheets may paginat
 
 ## API Endpoint
 
-`POST /api/v1/tools/excel-to-pdf`
+`POST /api/v1/tools/files/excel-to-pdf`
 
 Accepts multipart form data with an Excel/ODS/CSV file.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload a spreadsheet and it will be co
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/excel-to-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/files/excel-to-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@budget.xlsx"
 ```

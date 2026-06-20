@@ -90,7 +90,7 @@ registerAiJobHandler("auto-subtitles", async (input, data, ctx) => {
 });
 
 export function registerAutoSubtitles(app: FastifyInstance) {
-  app.post("/api/v1/tools/auto-subtitles", async (request: FastifyRequest, reply: FastifyReply) => {
+  app.post("/api/v1/tools/video/auto-subtitles", async (request: FastifyRequest, reply: FastifyReply) => {
     const toolId = "auto-subtitles";
     if (!isToolInstalled(toolId)) {
       const bundle = getBundleForTool(toolId);

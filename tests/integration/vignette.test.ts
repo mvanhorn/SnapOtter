@@ -1,5 +1,5 @@
 /**
- * Integration tests for the vignette tool (/api/v1/tools/vignette).
+ * Integration tests for the vignette tool (/api/v1/tools/image/vignette).
  *
  * Covers vignette application, corner-darker-than-source assertion,
  * dimension preservation, and schema validation.
@@ -37,7 +37,7 @@ describe("Vignette", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vignette",
+      url: "/api/v1/tools/image/vignette",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -69,7 +69,7 @@ describe("Vignette", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vignette",
+      url: "/api/v1/tools/image/vignette",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -107,7 +107,7 @@ describe("Vignette", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vignette",
+      url: "/api/v1/tools/image/vignette",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -145,7 +145,7 @@ describe("Vignette", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vignette",
+      url: "/api/v1/tools/image/vignette",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -176,7 +176,7 @@ describe("Vignette", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/vignette",
+      url: "/api/v1/tools/image/vignette",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

@@ -4,7 +4,7 @@ Remove unwanted objects from images using AI inpainting (LaMa model). Accepts an
 
 ## API Endpoint
 
-`POST /api/v1/tools/erase-object`
+`POST /api/v1/tools/image/erase-object`
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
@@ -22,7 +22,7 @@ Remove unwanted objects from images using AI inpainting (LaMa model). Accepts an
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/erase-object \
+curl -X POST http://localhost:1349/api/v1/tools/image/erase-object \
   -F "file=@photo.jpg" \
   -F "mask=@mask.png" \
   -F "format=png" \

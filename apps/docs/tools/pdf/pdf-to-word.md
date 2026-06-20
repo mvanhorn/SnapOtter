@@ -8,7 +8,7 @@ Convert a text-based PDF to a Word document (DOCX). Best suited for PDFs with se
 
 ## API Endpoint
 
-`POST /api/v1/tools/pdf-to-word`
+`POST /api/v1/tools/pdf/pdf-to-word`
 
 Accepts multipart form data with a PDF file.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload a PDF and it will be converted 
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/pdf-to-word \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/pdf-to-word \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@report.pdf"
 ```

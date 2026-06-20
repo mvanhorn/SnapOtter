@@ -1,5 +1,5 @@
 /**
- * Integration tests for the stitch tool (/api/v1/tools/stitch).
+ * Integration tests for the stitch tool (/api/v1/tools/image/stitch).
  *
  * Stitch joins multiple images horizontally, vertically, or in a grid.
  * It requires at least 2 images and accepts them via any file field name
@@ -43,7 +43,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -81,7 +81,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -116,7 +116,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -156,7 +156,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -187,7 +187,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -226,7 +226,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -264,7 +264,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -300,7 +300,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -334,7 +334,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -357,7 +357,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -380,7 +380,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -405,7 +405,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -425,7 +425,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: { "content-type": contentType },
       body,
     });
@@ -447,7 +447,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -480,7 +480,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -512,7 +512,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -544,7 +544,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -576,7 +576,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -612,7 +612,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -641,7 +641,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -671,7 +671,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -710,7 +710,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -741,7 +741,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -772,7 +772,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -807,7 +807,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -845,7 +845,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -874,7 +874,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -908,7 +908,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -940,7 +940,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -969,7 +969,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1001,7 +1001,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1021,7 +1021,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1049,7 +1049,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1076,7 +1076,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1111,7 +1111,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1153,7 +1153,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1193,7 +1193,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1231,7 +1231,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1269,7 +1269,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1303,7 +1303,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1331,7 +1331,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1358,7 +1358,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1383,7 +1383,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1408,7 +1408,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1444,7 +1444,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1472,7 +1472,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1500,7 +1500,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1529,7 +1529,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1558,7 +1558,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1587,7 +1587,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1622,7 +1622,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1664,7 +1664,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1696,7 +1696,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1732,7 +1732,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1766,7 +1766,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1808,7 +1808,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1845,7 +1845,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1874,7 +1874,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1906,7 +1906,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1945,7 +1945,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1976,7 +1976,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -2007,7 +2007,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -2044,7 +2044,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -2082,7 +2082,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -2112,7 +2112,7 @@ describe("Stitch", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/stitch",
+      url: "/api/v1/tools/image/stitch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

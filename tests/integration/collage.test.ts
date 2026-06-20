@@ -1,5 +1,5 @@
 /**
- * Integration tests for the collage tool (/api/v1/tools/collage).
+ * Integration tests for the collage tool (/api/v1/tools/image/collage).
  *
  * Collage accepts multiple images (any field name, type === "file") and
  * arranges them in a template-based grid layout. It uses a custom route
@@ -43,7 +43,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -69,7 +69,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -96,7 +96,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -121,7 +121,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -146,7 +146,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -171,7 +171,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -208,7 +208,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -240,7 +240,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -269,7 +269,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -301,7 +301,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -325,7 +325,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -349,7 +349,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -371,7 +371,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -393,7 +393,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: { "content-type": contentType },
       body,
     });
@@ -416,7 +416,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -443,7 +443,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -471,7 +471,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -502,7 +502,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -533,7 +533,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -563,7 +563,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -598,7 +598,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -635,7 +635,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -666,7 +666,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -691,7 +691,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -725,7 +725,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -763,7 +763,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -789,7 +789,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -814,7 +814,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -836,7 +836,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -864,7 +864,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -899,7 +899,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -941,7 +941,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -974,7 +974,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1001,7 +1001,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1033,7 +1033,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1065,7 +1065,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1100,7 +1100,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1132,7 +1132,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1167,7 +1167,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1194,7 +1194,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1222,7 +1222,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1250,7 +1250,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1278,7 +1278,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1306,7 +1306,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1332,7 +1332,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1356,7 +1356,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1380,7 +1380,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1405,7 +1405,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1442,7 +1442,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1470,7 +1470,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1499,7 +1499,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1528,7 +1528,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1558,7 +1558,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1586,7 +1586,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1614,7 +1614,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1646,7 +1646,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1678,7 +1678,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1710,7 +1710,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1742,7 +1742,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1774,7 +1774,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1806,7 +1806,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1838,7 +1838,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1870,7 +1870,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1908,7 +1908,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1937,7 +1937,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1966,7 +1966,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -2000,7 +2000,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -2029,7 +2029,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -2060,7 +2060,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -2091,7 +2091,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -2118,7 +2118,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -2157,7 +2157,7 @@ describe("Collage", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/collage",
+      url: "/api/v1/tools/image/collage",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

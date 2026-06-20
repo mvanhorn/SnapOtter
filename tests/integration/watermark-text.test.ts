@@ -37,7 +37,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -57,7 +57,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -89,7 +89,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -110,7 +110,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -129,7 +129,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -144,7 +144,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -160,7 +160,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -178,7 +178,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -194,7 +194,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -213,7 +213,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -242,7 +242,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -263,7 +263,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -286,7 +286,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -313,7 +313,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -332,7 +332,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -359,7 +359,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -380,7 +380,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -399,7 +399,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -418,7 +418,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -438,7 +438,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { "content-type": contentType },
       body,
     });
@@ -459,7 +459,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -487,7 +487,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -510,7 +510,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -532,7 +532,7 @@ describe("watermark-text", () => {
 
       const res = await app.inject({
         method: "POST",
-        url: "/api/v1/tools/watermark-text",
+        url: "/api/v1/tools/image/watermark-text",
         headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
         body,
       });
@@ -555,7 +555,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -576,7 +576,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -599,7 +599,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -622,7 +622,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -643,7 +643,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -664,7 +664,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -683,7 +683,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -706,7 +706,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -734,7 +734,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -755,7 +755,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -776,7 +776,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -803,7 +803,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -832,7 +832,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -852,7 +852,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -870,7 +870,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -896,7 +896,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -917,7 +917,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -945,7 +945,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -964,7 +964,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -987,7 +987,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1005,7 +1005,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -1026,7 +1026,7 @@ describe("watermark-text", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/watermark-text",
+      url: "/api/v1/tools/image/watermark-text",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

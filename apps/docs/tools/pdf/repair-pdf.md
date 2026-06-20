@@ -8,7 +8,7 @@ Attempt to repair a damaged or corrupted PDF by reconstructing its internal stru
 
 ## API Endpoint
 
-`POST /api/v1/tools/repair-pdf`
+`POST /api/v1/tools/pdf/repair-pdf`
 
 Accepts multipart form data with a PDF file. No `settings` field is required.
 
@@ -19,7 +19,7 @@ This tool has no settings parameters. Upload the damaged PDF file directly.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/repair-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/repair-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@damaged.pdf"
 ```

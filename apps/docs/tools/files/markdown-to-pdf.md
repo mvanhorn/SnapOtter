@@ -8,7 +8,7 @@ Convert a Markdown file to a styled PDF document. Remote resources are disabled 
 
 ## API Endpoint
 
-`POST /api/v1/tools/markdown-to-pdf`
+`POST /api/v1/tools/files/markdown-to-pdf`
 
 Accepts multipart form data with a Markdown file.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload a Markdown file and it will be 
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/markdown-to-pdf \
+curl -X POST http://localhost:1349/api/v1/tools/files/markdown-to-pdf \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.md"
 ```

@@ -8,7 +8,7 @@ Speed up or slow down audio playback by applying a speed multiplier.
 
 ## API Endpoint
 
-`POST /api/v1/tools/audio-speed`
+`POST /api/v1/tools/audio/audio-speed`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/audio-speed \
+curl -X POST http://localhost:1349/api/v1/tools/audio/audio-speed \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"factor": 2}'

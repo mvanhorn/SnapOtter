@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { apiToolPath } from "@snapotter/shared";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
 
@@ -1185,7 +1186,7 @@ describe("settings variation matrix", () => {
 
           const res = await testApp.app.inject({
             method: "POST",
-            url: `/api/v1/tools/${toolId}`,
+            url: apiToolPath(toolId),
             headers: {
               "content-type": contentType,
               authorization: `Bearer ${token}`,

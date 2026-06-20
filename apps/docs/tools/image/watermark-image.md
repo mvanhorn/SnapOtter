@@ -8,7 +8,7 @@ Overlay a logo or secondary image as a watermark on a base image. The watermark 
 
 ## API Endpoint
 
-`POST /api/v1/tools/watermark-image`
+`POST /api/v1/tools/image/watermark-image`
 
 Accepts multipart form data with **two** image files and a JSON `settings` field.
 
@@ -30,7 +30,7 @@ Accepts multipart form data with **two** image files and a JSON `settings` field
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/watermark-image \
+curl -X POST http://localhost:1349/api/v1/tools/image/watermark-image \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F "watermark=@logo.png" \

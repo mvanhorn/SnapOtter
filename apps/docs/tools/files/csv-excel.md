@@ -8,7 +8,7 @@ Convert between CSV and Excel (XLSX) formats in both directions. Upload a CSV or
 
 ## API Endpoint
 
-`POST /api/v1/tools/csv-excel`
+`POST /api/v1/tools/files/csv-excel`
 
 Accepts multipart form data with a CSV, TSV, or XLSX file and a JSON `settings` field.
 
@@ -23,7 +23,7 @@ Accepts multipart form data with a CSV, TSV, or XLSX file and a JSON `settings` 
 CSV to Excel:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/csv-excel \
+curl -X POST http://localhost:1349/api/v1/tools/files/csv-excel \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@data.csv" \
   -F 'settings={"sheet": 1}'
@@ -32,7 +32,7 @@ curl -X POST http://localhost:1349/api/v1/tools/csv-excel \
 Excel to CSV:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/csv-excel \
+curl -X POST http://localhost:1349/api/v1/tools/files/csv-excel \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@report.xlsx" \
   -F 'settings={"sheet": 2}'

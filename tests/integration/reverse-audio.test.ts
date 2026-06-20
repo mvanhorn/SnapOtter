@@ -26,7 +26,7 @@ async function runTool(settings: Record<string, unknown>) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/reverse-audio",
+    url: "/api/v1/tools/audio/reverse-audio",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

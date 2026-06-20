@@ -30,7 +30,7 @@ const settingsSchema = z.object({
  * images from text input, not from uploaded files.
  */
 export function registerQrGenerate(app: FastifyInstance) {
-  app.post("/api/v1/tools/qr-generate", async (request: FastifyRequest, reply: FastifyReply) => {
+  app.post("/api/v1/tools/image/qr-generate", async (request: FastifyRequest, reply: FastifyReply) => {
     let body: unknown;
     try {
       body = request.body;

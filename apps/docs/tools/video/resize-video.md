@@ -8,7 +8,7 @@ Scale a video to a new resolution using custom pixel dimensions or a standard pr
 
 ## API Endpoint
 
-`POST /api/v1/tools/resize-video`
+`POST /api/v1/tools/video/resize-video`
 
 Accepts multipart form data with a video file and a JSON `settings` field.
 
@@ -25,7 +25,7 @@ When `preset` is `"custom"`, at least one of `width` or `height` must be provide
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/resize-video \
+curl -X POST http://localhost:1349/api/v1/tools/video/resize-video \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"preset": "720p"}'
@@ -34,7 +34,7 @@ curl -X POST http://localhost:1349/api/v1/tools/resize-video \
 Resize to custom dimensions:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/resize-video \
+curl -X POST http://localhost:1349/api/v1/tools/video/resize-video \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"width": 1280, "height": 720}'

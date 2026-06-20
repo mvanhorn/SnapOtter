@@ -69,7 +69,7 @@ registerAiJobHandler("noise-removal", async (input, data, ctx) => {
  * Uses the Python sidecar for multi-tier denoising.
  */
 export function registerNoiseRemoval(app: FastifyInstance) {
-  app.post("/api/v1/tools/noise-removal", async (request: FastifyRequest, reply: FastifyReply) => {
+  app.post("/api/v1/tools/image/noise-removal", async (request: FastifyRequest, reply: FastifyReply) => {
     const toolId = "noise-removal";
     if (!isToolInstalled(toolId)) {
       const bundle = getBundleForTool(toolId);

@@ -58,7 +58,7 @@ registerAiJobHandler("enhance-faces", async (input, data, ctx) => {
 
 /** Face enhancement route using GFPGAN/CodeFormer. */
 export function registerEnhanceFaces(app: FastifyInstance) {
-  app.post("/api/v1/tools/enhance-faces", async (request: FastifyRequest, reply: FastifyReply) => {
+  app.post("/api/v1/tools/image/enhance-faces", async (request: FastifyRequest, reply: FastifyReply) => {
     const toolId = "enhance-faces";
     if (!isToolInstalled(toolId)) {
       const bundle = getBundleForTool(toolId);

@@ -8,7 +8,7 @@ Convert images between formats. Supports common web formats as well as specializ
 
 ## API Endpoint
 
-`POST /api/v1/tools/convert`
+`POST /api/v1/tools/image/convert`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -45,7 +45,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 Convert to WebP:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/convert \
+curl -X POST http://localhost:1349/api/v1/tools/image/convert \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"format": "webp", "quality": 85}'
@@ -54,7 +54,7 @@ curl -X POST http://localhost:1349/api/v1/tools/convert \
 Convert to PNG (lossless):
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/convert \
+curl -X POST http://localhost:1349/api/v1/tools/image/convert \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"format": "png"}'

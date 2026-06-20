@@ -8,7 +8,7 @@ Strip metadata (creation date, GPS coordinates, camera model, software tags, etc
 
 ## API Endpoint
 
-`POST /api/v1/tools/video-metadata`
+`POST /api/v1/tools/video/video-metadata`
 
 Accepts multipart form data with a video file. This tool has no configurable settings.
 
@@ -19,7 +19,7 @@ This tool has no parameters. It strips all metadata from the video container.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/video-metadata \
+curl -X POST http://localhost:1349/api/v1/tools/video/video-metadata \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4"
 ```

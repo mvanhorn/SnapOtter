@@ -8,7 +8,7 @@ Convert documents between Word (DOCX), OpenDocument (ODT), RTF, and plain text f
 
 ## API Endpoint
 
-`POST /api/v1/tools/convert-document`
+`POST /api/v1/tools/files/convert-document`
 
 Accepts multipart form data with a Word/ODT/RTF/TXT file and a JSON `settings` field.
 
@@ -21,7 +21,7 @@ Accepts multipart form data with a Word/ODT/RTF/TXT file and a JSON `settings` f
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/convert-document \
+curl -X POST http://localhost:1349/api/v1/tools/files/convert-document \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@report.docx" \
   -F 'settings={"format": "odt"}'

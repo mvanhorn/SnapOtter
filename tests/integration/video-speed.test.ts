@@ -39,7 +39,7 @@ async function runTool(settings: Record<string, unknown>) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/video-speed",
+    url: "/api/v1/tools/video/video-speed",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

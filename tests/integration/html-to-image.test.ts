@@ -61,7 +61,7 @@ afterAll(async () => {
 function post(payload: Record<string, unknown>, token?: string) {
   return app.inject({
     method: "POST",
-    url: "/api/v1/tools/html-to-image",
+    url: "/api/v1/tools/image/html-to-image",
     headers: {
       ...(token ? { authorization: `Bearer ${token}` } : {}),
       "content-type": "application/json",

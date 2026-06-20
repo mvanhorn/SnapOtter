@@ -8,7 +8,7 @@ Advanced sharpening tool with three methods: adaptive (smart edge-aware), unshar
 
 ## API Endpoint
 
-`POST /api/v1/tools/sharpening`
+`POST /api/v1/tools/image/sharpening`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -33,7 +33,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/sharpening \
+curl -X POST http://localhost:1349/api/v1/tools/image/sharpening \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"method": "adaptive", "sigma": 1.5}'
@@ -42,7 +42,7 @@ curl -X POST http://localhost:1349/api/v1/tools/sharpening \
 Unsharp mask with threshold to protect smooth areas:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/sharpening \
+curl -X POST http://localhost:1349/api/v1/tools/image/sharpening \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"method": "unsharp-mask", "amount": 150, "radius": 1.5, "threshold": 10}'

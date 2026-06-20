@@ -8,7 +8,7 @@ Read and update PDF document metadata fields such as title, author, subject, and
 
 ## API Endpoint
 
-`POST /api/v1/tools/pdf-metadata`
+`POST /api/v1/tools/pdf/pdf-metadata`
 
 Accepts multipart form data with a PDF file and an optional JSON `settings` field.
 
@@ -26,7 +26,7 @@ All parameters are optional. Omitted fields are left unchanged.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/pdf-metadata \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/pdf-metadata \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@report.pdf" \
   -F 'settings={"title": "Q2 Report", "author": "Finance Team"}'

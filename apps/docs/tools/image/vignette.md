@@ -8,7 +8,7 @@ Add a vignette effect that darkens or tints the edges of an image. Supports adju
 
 ## API Endpoint
 
-`POST /api/v1/tools/vignette`
+`POST /api/v1/tools/image/vignette`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -27,7 +27,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/vignette \
+curl -X POST http://localhost:1349/api/v1/tools/image/vignette \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"strength": 0.7, "radius": 60, "softness": 70}'

@@ -29,7 +29,7 @@ describe.skipIf(!ffmpegAvailable())("embed-subtitles (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/embed-subtitles",
+      url: "/api/v1/tools/video/embed-subtitles",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -58,7 +58,7 @@ describe.skipIf(!ffmpegAvailable())("embed-subtitles (requires ffmpeg)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/embed-subtitles",
+      url: "/api/v1/tools/video/embed-subtitles",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

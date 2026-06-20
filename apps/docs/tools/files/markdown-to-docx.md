@@ -8,7 +8,7 @@ Convert a Markdown file to a Word document (DOCX), preserving headings, lists, c
 
 ## API Endpoint
 
-`POST /api/v1/tools/markdown-to-docx`
+`POST /api/v1/tools/files/markdown-to-docx`
 
 Accepts multipart form data with a Markdown file.
 
@@ -19,7 +19,7 @@ This tool has no configurable parameters. Upload a Markdown file and it will be 
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/markdown-to-docx \
+curl -X POST http://localhost:1349/api/v1/tools/files/markdown-to-docx \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@README.md"
 ```

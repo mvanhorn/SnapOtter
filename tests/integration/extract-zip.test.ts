@@ -52,7 +52,7 @@ async function runExtract(filename: string, content: Buffer) {
   ]);
   return testApp.app.inject({
     method: "POST",
-    url: "/api/v1/tools/extract-zip",
+    url: "/api/v1/tools/files/extract-zip",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
     body,
   });

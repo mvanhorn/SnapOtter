@@ -8,7 +8,7 @@ Burn a text watermark onto every frame of a video with configurable position, si
 
 ## API Endpoint
 
-`POST /api/v1/tools/watermark-video`
+`POST /api/v1/tools/video/watermark-video`
 
 Accepts multipart form data with a video file and a JSON `settings` field.
 
@@ -31,7 +31,7 @@ Accepts multipart form data with a video file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/watermark-video \
+curl -X POST http://localhost:1349/api/v1/tools/video/watermark-video \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"text": "PREVIEW", "position": "c", "fontSize": 48, "opacity": 0.3}'

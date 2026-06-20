@@ -1,5 +1,5 @@
 /**
- * Integration tests for the split tool (/api/v1/tools/split).
+ * Integration tests for the split tool (/api/v1/tools/image/split).
  *
  * The split tool divides an image into a grid of tiles and returns a ZIP.
  * It uses reply.hijack() to stream the ZIP directly, so responses are
@@ -42,7 +42,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -82,7 +82,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -117,7 +117,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -144,7 +144,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -176,7 +176,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -200,7 +200,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -224,7 +224,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -243,7 +243,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: { "content-type": contentType },
       body,
     });
@@ -264,7 +264,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -293,7 +293,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -324,7 +324,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -355,7 +355,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -386,7 +386,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -416,7 +416,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -445,7 +445,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -477,7 +477,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -522,7 +522,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -554,7 +554,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -585,7 +585,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -615,7 +615,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -646,7 +646,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -670,7 +670,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -689,7 +689,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -713,7 +713,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -735,7 +735,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -767,7 +767,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -799,7 +799,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -829,7 +829,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -857,7 +857,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -888,7 +888,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -919,7 +919,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -949,7 +949,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -985,7 +985,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1015,7 +1015,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1043,7 +1043,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1075,7 +1075,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1108,7 +1108,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1136,7 +1136,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1168,7 +1168,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1196,7 +1196,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1220,7 +1220,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1245,7 +1245,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1278,7 +1278,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split/batch",
+      url: "/api/v1/tools/image/split/batch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1304,7 +1304,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split/batch",
+      url: "/api/v1/tools/image/split/batch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1328,7 +1328,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split/batch",
+      url: "/api/v1/tools/image/split/batch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1350,7 +1350,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split/batch",
+      url: "/api/v1/tools/image/split/batch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1372,7 +1372,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split/batch",
+      url: "/api/v1/tools/image/split/batch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1397,7 +1397,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split/batch",
+      url: "/api/v1/tools/image/split/batch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1420,7 +1420,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split/batch",
+      url: "/api/v1/tools/image/split/batch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1442,7 +1442,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split/batch",
+      url: "/api/v1/tools/image/split/batch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1467,7 +1467,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1502,7 +1502,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1530,7 +1530,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1568,7 +1568,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split/batch",
+      url: "/api/v1/tools/image/split/batch",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1594,7 +1594,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1619,7 +1619,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1643,7 +1643,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1668,7 +1668,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1703,7 +1703,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1730,7 +1730,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,
@@ -1757,7 +1757,7 @@ describe("Split", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/split",
+      url: "/api/v1/tools/image/split",
       headers: {
         authorization: `Bearer ${adminToken}`,
         "content-type": contentType,

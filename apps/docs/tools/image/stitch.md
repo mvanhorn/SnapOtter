@@ -4,7 +4,7 @@ Join multiple images side by side, stacked vertically, or arranged in a grid. Su
 
 ## API Endpoint
 
-`POST /api/v1/tools/stitch`
+`POST /api/v1/tools/image/stitch`
 
 ## Parameters
 
@@ -24,7 +24,7 @@ Join multiple images side by side, stacked vertically, or arranged in a grid. Su
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/stitch \
+curl -X POST http://localhost:1349/api/v1/tools/image/stitch \
   -F "file=@image1.png" \
   -F "file=@image2.png" \
   -F "file=@image3.png" \

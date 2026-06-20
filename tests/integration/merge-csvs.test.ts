@@ -27,7 +27,7 @@ describe("merge-csvs (pure JS, no skipIf)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/merge-csvs",
+      url: "/api/v1/tools/files/merge-csvs",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -56,7 +56,7 @@ describe("merge-csvs (pure JS, no skipIf)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/merge-csvs",
+      url: "/api/v1/tools/files/merge-csvs",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });
@@ -73,7 +73,7 @@ describe("merge-csvs (pure JS, no skipIf)", () => {
     ]);
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/merge-csvs",
+      url: "/api/v1/tools/files/merge-csvs",
       headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
       body,
     });

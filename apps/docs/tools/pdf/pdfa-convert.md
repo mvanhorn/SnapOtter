@@ -8,7 +8,7 @@ Convert a PDF to the PDF/A-2 archival format, suitable for long-term preservatio
 
 ## API Endpoint
 
-`POST /api/v1/tools/pdfa-convert`
+`POST /api/v1/tools/pdf/pdfa-convert`
 
 Accepts multipart form data with a PDF file. No `settings` field is required.
 
@@ -19,7 +19,7 @@ This tool has no settings parameters. Upload the PDF file directly.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/pdfa-convert \
+curl -X POST http://localhost:1349/api/v1/tools/pdf/pdfa-convert \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@document.pdf"
 ```

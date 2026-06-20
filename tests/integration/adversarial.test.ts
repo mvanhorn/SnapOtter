@@ -8,6 +8,7 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { apiToolPath } from "@snapotter/shared";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildTestApp, createMultipartPayload, loginAsAdmin, type TestApp } from "./test-server.js";
@@ -48,7 +49,7 @@ function postTool(
   const { body, contentType } = createMultipartPayload(fields);
   return app.inject({
     method: "POST",
-    url: `/api/v1/tools/${toolId}`,
+    url: apiToolPath(toolId),
     headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
     body,
   });
@@ -288,7 +289,7 @@ describe("Duplicate file fields in multipart", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType, authorization: `Bearer ${adminToken}` },
       body,
     });
@@ -524,7 +525,7 @@ describe("Unauthenticated tool access", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: { "content-type": contentType },
       body,
     });
@@ -540,7 +541,7 @@ describe("Unauthenticated tool access", () => {
 
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/resize",
+      url: "/api/v1/tools/image/resize",
       headers: {
         "content-type": contentType,
         authorization: "Bearer totally-fake-token-12345",

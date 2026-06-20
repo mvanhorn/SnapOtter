@@ -8,7 +8,7 @@ Normalize video audio volume to the EBU R128 broadcast loudness standard.
 
 ## API Endpoint
 
-`POST /api/v1/tools/video-loudnorm`
+`POST /api/v1/tools/video/video-loudnorm`
 
 Accepts multipart form data with a video file. This tool has no configurable settings.
 
@@ -19,7 +19,7 @@ This tool has no parameters. It applies EBU R128 loudness normalization to the a
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/video-loudnorm \
+curl -X POST http://localhost:1349/api/v1/tools/video/video-loudnorm \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4"
 ```

@@ -8,7 +8,7 @@ Crop an image to a centered circle with transparent corners. Supports adjustable
 
 ## API Endpoint
 
-`POST /api/v1/tools/circle-crop`
+`POST /api/v1/tools/image/circle-crop`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
@@ -27,7 +27,7 @@ Accepts multipart form data with an image file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/circle-crop \
+curl -X POST http://localhost:1349/api/v1/tools/image/circle-crop \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"zoom": 1.2, "borderWidth": 4, "borderColor": "#333333"}'

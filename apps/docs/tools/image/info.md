@@ -8,7 +8,7 @@ Read-only analysis tool that returns comprehensive image metadata including dime
 
 ## API Endpoint
 
-`POST /api/v1/tools/info`
+`POST /api/v1/tools/image/info`
 
 Accepts multipart form data with an image file. No settings field is needed.
 
@@ -23,7 +23,7 @@ This tool has no configurable parameters. Simply upload the image file.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/info \
+curl -X POST http://localhost:1349/api/v1/tools/image/info \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg"
 ```

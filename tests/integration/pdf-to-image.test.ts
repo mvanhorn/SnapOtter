@@ -21,7 +21,7 @@ afterAll(async () => {
   await testApp.cleanup();
 }, 10_000);
 
-describe("POST /api/v1/tools/pdf-to-image/info", () => {
+describe("POST /api/v1/tools/pdf/pdf-to-image/info", () => {
   it("returns page count for a valid PDF", async () => {
     const { body, contentType } = createMultipartPayload([
       {
@@ -33,7 +33,7 @@ describe("POST /api/v1/tools/pdf-to-image/info", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image/info",
+      url: "/api/v1/tools/pdf/pdf-to-image/info",
       body,
       headers: {
         "content-type": contentType,
@@ -56,7 +56,7 @@ describe("POST /api/v1/tools/pdf-to-image/info", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image/info",
+      url: "/api/v1/tools/pdf/pdf-to-image/info",
       body,
       headers: {
         "content-type": contentType,
@@ -70,7 +70,7 @@ describe("POST /api/v1/tools/pdf-to-image/info", () => {
     const { body, contentType } = createMultipartPayload([{ name: "other", content: "hello" }]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image/info",
+      url: "/api/v1/tools/pdf/pdf-to-image/info",
       body,
       headers: {
         "content-type": contentType,
@@ -81,7 +81,7 @@ describe("POST /api/v1/tools/pdf-to-image/info", () => {
   });
 });
 
-describe("POST /api/v1/tools/pdf-to-image/preview", () => {
+describe("POST /api/v1/tools/pdf/pdf-to-image/preview", () => {
   it("returns thumbnails for all pages", async () => {
     const { body, contentType } = createMultipartPayload([
       {
@@ -93,7 +93,7 @@ describe("POST /api/v1/tools/pdf-to-image/preview", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image/preview",
+      url: "/api/v1/tools/pdf/pdf-to-image/preview",
       body,
       headers: {
         "content-type": contentType,
@@ -121,7 +121,7 @@ describe("POST /api/v1/tools/pdf-to-image/preview", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image/preview",
+      url: "/api/v1/tools/pdf/pdf-to-image/preview",
       body,
       headers: {
         "content-type": contentType,
@@ -132,7 +132,7 @@ describe("POST /api/v1/tools/pdf-to-image/preview", () => {
   });
 });
 
-describe("POST /api/v1/tools/pdf-to-image", () => {
+describe("POST /api/v1/tools/pdf/pdf-to-image", () => {
   it("converts a single page to PNG with per-page URLs and ZIP", async () => {
     const { body, contentType } = createMultipartPayload([
       {
@@ -148,7 +148,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -181,7 +181,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -208,7 +208,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -234,7 +234,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -263,7 +263,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -291,7 +291,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -318,7 +318,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -345,7 +345,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -370,7 +370,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -397,7 +397,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -419,7 +419,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -437,7 +437,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -462,7 +462,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -490,7 +490,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -517,7 +517,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -544,7 +544,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -571,7 +571,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -599,7 +599,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -636,7 +636,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -677,13 +677,13 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
 
     const res72 = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body: body72,
       headers: { "content-type": ct72, authorization: `Bearer ${adminToken}` },
     });
     const res300 = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body: body300,
       headers: { "content-type": ct300, authorization: `Bearer ${adminToken}` },
     });
@@ -711,7 +711,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -738,7 +738,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -763,7 +763,7 @@ describe("POST /api/v1/tools/pdf-to-image", () => {
     ]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image",
+      url: "/api/v1/tools/pdf/pdf-to-image",
       body,
       headers: {
         "content-type": contentType,
@@ -780,7 +780,7 @@ describe("Preview endpoint edge cases", () => {
     const { body, contentType } = createMultipartPayload([{ name: "other", content: "hello" }]);
     const res = await app.inject({
       method: "POST",
-      url: "/api/v1/tools/pdf-to-image/preview",
+      url: "/api/v1/tools/pdf/pdf-to-image/preview",
       body,
       headers: {
         "content-type": contentType,

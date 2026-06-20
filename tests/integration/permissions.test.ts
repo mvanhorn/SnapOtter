@@ -268,7 +268,7 @@ describe("tool and pipeline permission enforcement", () => {
 
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/rotate",
+      url: "/api/v1/tools/image/rotate",
       headers: { "content-type": contentType },
       body,
     });
@@ -291,7 +291,7 @@ describe("tool and pipeline permission enforcement", () => {
 
     const res = await testApp.app.inject({
       method: "POST",
-      url: "/api/v1/tools/rotate",
+      url: "/api/v1/tools/image/rotate",
       headers: {
         "content-type": contentType,
         authorization: `Bearer ${adminToken}`,

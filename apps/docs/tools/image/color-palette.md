@@ -8,7 +8,7 @@ Extract the dominant colors from an image and return them as hex color values. U
 
 ## API Endpoint
 
-`POST /api/v1/tools/color-palette`
+`POST /api/v1/tools/image/color-palette`
 
 Accepts multipart form data with an image file and an optional JSON `settings` field.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with an image file and an optional JSON `settings` f
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/color-palette \
+curl -X POST http://localhost:1349/api/v1/tools/image/color-palette \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"count": 6, "format": "hex"}'

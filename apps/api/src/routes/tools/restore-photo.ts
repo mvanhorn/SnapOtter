@@ -83,7 +83,7 @@ registerAiJobHandler("restore-photo", async (input, data, ctx) => {
  * optional colorization.
  */
 export function registerRestorePhoto(app: FastifyInstance) {
-  app.post("/api/v1/tools/restore-photo", async (request: FastifyRequest, reply: FastifyReply) => {
+  app.post("/api/v1/tools/image/restore-photo", async (request: FastifyRequest, reply: FastifyReply) => {
     if (!isToolInstalled("restore-photo")) {
       const bundle = getBundleForTool("restore-photo");
       return reply.status(501).send({

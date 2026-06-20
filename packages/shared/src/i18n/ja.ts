@@ -2456,6 +2456,8 @@ export const ja: TranslationKeys = {
     all: "All",
     documents: "PDF",
     data: "Data",
+    pdf: "PDF",
+    files: "Files",
     toolCount: "{count} tools",
     heading: "SnapOtter Tools",
   },

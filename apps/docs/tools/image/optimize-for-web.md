@@ -8,11 +8,11 @@ Optimize images for web delivery in a single step. Combines format conversion, q
 
 ## API Endpoint
 
-`POST /api/v1/tools/optimize-for-web`
+`POST /api/v1/tools/image/optimize-for-web`
 
 Accepts multipart form data with an image file and a JSON `settings` field.
 
-A live preview endpoint is also available at `POST /api/v1/tools/optimize-for-web/preview`, which returns the processed image directly as binary (no workspace creation) for real-time parameter tuning.
+A live preview endpoint is also available at `POST /api/v1/tools/image/optimize-for-web/preview`, which returns the processed image directly as binary (no workspace creation) for real-time parameter tuning.
 
 ## Parameters
 
@@ -28,7 +28,7 @@ A live preview endpoint is also available at `POST /api/v1/tools/optimize-for-we
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/optimize-for-web \
+curl -X POST http://localhost:1349/api/v1/tools/image/optimize-for-web \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"format": "webp", "quality": 75, "maxWidth": 1920}'
@@ -37,7 +37,7 @@ curl -X POST http://localhost:1349/api/v1/tools/optimize-for-web \
 Optimize for AVIF with aggressive compression:
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/optimize-for-web \
+curl -X POST http://localhost:1349/api/v1/tools/image/optimize-for-web \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@photo.jpg" \
   -F 'settings={"format": "avif", "quality": 50, "maxWidth": 1200, "maxHeight": 800}'
@@ -56,7 +56,7 @@ curl -X POST http://localhost:1349/api/v1/tools/optimize-for-web \
 
 ### Preview Endpoint Response
 
-The preview endpoint (`/api/v1/tools/optimize-for-web/preview`) returns the binary image directly with informational headers:
+The preview endpoint (`/api/v1/tools/image/optimize-for-web/preview`) returns the binary image directly with informational headers:
 
 - `X-Original-Size` - Original file size in bytes
 - `X-Processed-Size` - Processed file size in bytes

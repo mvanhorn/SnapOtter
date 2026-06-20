@@ -8,7 +8,7 @@ Convert audio files between common formats including MP3, WAV, OGG, FLAC, and M4
 
 ## API Endpoint
 
-`POST /api/v1/tools/convert-audio`
+`POST /api/v1/tools/audio/convert-audio`
 
 Accepts multipart form data with an audio file and a JSON `settings` field.
 
@@ -22,7 +22,7 @@ Accepts multipart form data with an audio file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/convert-audio \
+curl -X POST http://localhost:1349/api/v1/tools/audio/convert-audio \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@audio.mp3" \
   -F 'settings={"format": "flac", "bitrateKbps": 256}'

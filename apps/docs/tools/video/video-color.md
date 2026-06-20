@@ -8,7 +8,7 @@ Adjust brightness, contrast, saturation, and gamma correction on a video.
 
 ## API Endpoint
 
-`POST /api/v1/tools/video-color`
+`POST /api/v1/tools/video/video-color`
 
 Accepts multipart form data with a video file and a JSON `settings` field.
 
@@ -24,7 +24,7 @@ Accepts multipart form data with a video file and a JSON `settings` field.
 ## Example Request
 
 ```bash
-curl -X POST http://localhost:1349/api/v1/tools/video-color \
+curl -X POST http://localhost:1349/api/v1/tools/video/video-color \
   -H "Authorization: Bearer si_your-api-key" \
   -F "file=@clip.mp4" \
   -F 'settings={"brightness": 0.1, "contrast": 1.2, "saturation": 1.5}'
