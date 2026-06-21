@@ -139,13 +139,13 @@ for config in "${configs[@]}"; do
   if start_container "$cpus" "$memory"; then
     sleep 2
 
-    run_bench "$cpus" "$memory" "resize" "large" "$L" '{"width":800,"fit":"cover"}'
-    run_bench "$cpus" "$memory" "compress" "targetSize" "$L" '{"mode":"targetSize","targetSizeKb":500}'
-    run_bench "$cpus" "$memory" "convert" "avif" "$L" '{"format":"avif","quality":50}'
+    run_bench "$cpus" "$memory" "image/resize" "large" "$L" '{"width":800,"fit":"cover"}'
+    run_bench "$cpus" "$memory" "image/compress" "targetSize" "$L" '{"mode":"targetSize","targetSizeKb":500}'
+    run_bench "$cpus" "$memory" "image/convert" "avif" "$L" '{"format":"avif","quality":50}'
 
     run_batch_bench "$cpus" "$memory" 5
 
-    run_bench "$cpus" "$memory" "collage" "4img" "NONE" '' \
+    run_bench "$cpus" "$memory" "image/collage" "4img" "NONE" '' \
       || log "Collage test skipped (needs multi-file support)"
 
     cleanup
