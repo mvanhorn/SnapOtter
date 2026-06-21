@@ -1,3 +1,12 @@
 {
-  "signedContributors": []
+  "signedContributors": [
+    {
+      "name": "EnanoFurtivo",
+      "id": 31115763,
+      "comment_id": 4733478629,
+      "created_at": "2026-06-17T17:34:05Z",
+      "repoId": 1195367387,
+      "pullRequestNo": 272
+    }
+  ]
 }
