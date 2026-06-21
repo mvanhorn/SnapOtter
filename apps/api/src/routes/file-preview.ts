@@ -9,7 +9,7 @@ import { randomUUID } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { access, copyFile, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve, sep } from "node:path";
+import { basename, join, resolve, sep } from "node:path";
 import { convertDocument, sofficeAvailable } from "@snapotter/doc-engine";
 import { runFfmpeg } from "@snapotter/media-engine";
 import { eq } from "drizzle-orm";
@@ -39,8 +39,11 @@ async function ensurePreviewDir(): Promise<void> {
  * check is the authoritative path-traversal barrier for every preview path.
  */
 function resolveWithinPreviewDir(name: string): string {
+  // basename() strips any directory component, so the result can only ever be a
+  // single filename inside the preview dir; the containment check is a
+  // defense-in-depth backstop.
   const base = resolve(previewDirPath());
-  const resolved = resolve(base, name);
+  const resolved = join(base, basename(name));
   if (resolved !== base && !resolved.startsWith(base + sep)) {
     throw new Error("Preview path escapes the preview directory");
   }
