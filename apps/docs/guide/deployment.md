@@ -525,15 +525,7 @@ Semantic-release determines the version from commit history. The `latest` Docker
 
 ## Analytics
 
-SnapOtter uses anonymous analytics to improve reliability and prioritize features. No file contents, file names, or personal information are ever sent.
-
-### What is recorded
-
-- Tool usage patterns (e.g. which tools are used most, success/failure rates)
-- Error reports and performance metrics (stack traces with file paths redacted)
-- App version and browser type
-
-Analytics is powered by [PostHog](https://posthog.com) (usage) and [Sentry](https://sentry.io) (errors).
+SnapOtter includes basic analytics (tool usage patterns, error reports) to help catch bugs and improve features. Your files, file names, and personal data are never part of this. SnapOtter works normally with analytics disabled.
 
 ### Disabling analytics
 

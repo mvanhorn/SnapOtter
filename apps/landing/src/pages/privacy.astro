@@ -86,14 +86,12 @@ const breadcrumbJsonLd = {
           <h2 class="text-lg font-semibold text-foreground">Analytics</h2>
           <ul class="mt-3 list-disc space-y-2 pl-5">
             <li>
-              SnapOtter uses anonymous analytics to improve reliability and prioritize
-              features. Only tool usage patterns and error reports (without file data) are
-              recorded.
+              Basic analytics (tool usage patterns, error reports) help improve the software.
+              Your files and personal data are never included.
             </li>
-            <li>Analytics is powered by PostHog and Sentry.</li>
             <li>
-              You can disable analytics at any time by rebuilding with
-              <code class="text-xs">--build-arg SNAPOTTER_ANALYTICS=off</code>.
+              You can disable analytics at any time -- SnapOtter works normally without it.
+              Rebuild with <code class="text-xs">--build-arg SNAPOTTER_ANALYTICS=off</code>.
             </li>
           </ul>
         </section>

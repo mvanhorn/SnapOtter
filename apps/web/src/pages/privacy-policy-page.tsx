@@ -39,37 +39,13 @@ export function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-2">Product Analytics</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-2">Analytics</h2>
             <p>
-              SnapOtter uses anonymous analytics to improve reliability and prioritize features.
-            </p>
-            <p className="mt-2 font-medium">What is never sent:</p>
-            <ul className="list-disc ps-5 mt-2 space-y-1">
-              <li>Your images, PDFs, videos, or any file contents</li>
-              <li>File names or file paths</li>
-              <li>Personal information</li>
-            </ul>
-            <p className="mt-2">
-              Analytics is powered by{" "}
-              <a
-                href="https://posthog.com"
-                className="text-primary hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                PostHog
-              </a>{" "}
-              and{" "}
-              <a
-                href="https://sentry.io"
-                className="text-primary hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Sentry
-              </a>
-              . You can disable analytics at any time by rebuilding with the flag{" "}
-              <code className="text-xs bg-muted px-1 py-0.5 rounded">SNAPOTTER_ANALYTICS=off</code>.
+              SnapOtter includes basic analytics (tool usage, error reports) to help improve the
+              software. Your files, file names, and personal data are never part of this. Analytics
+              can be disabled by rebuilding with{" "}
+              <code className="text-xs bg-muted px-1 py-0.5 rounded">SNAPOTTER_ANALYTICS=off</code>{" "}
+              -- everything works normally without it.
             </p>
           </section>
 
