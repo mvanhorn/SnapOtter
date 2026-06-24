@@ -80,3 +80,6 @@ packages/image-engine/reports/
 
 # Local AI run scratch scripts
 run-ai-*.py
+
+# Local QA scratch artifacts
+.qa-maps/
