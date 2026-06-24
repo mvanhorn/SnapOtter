@@ -1,3 +1,4 @@
+import { getDistinctId } from "@/lib/analytics";
 import { useConnectionStore } from "@/stores/connection-store";
 
 const API_BASE = "/api";
@@ -60,15 +61,9 @@ export function formatHeaders(init?: HeadersInit): Headers {
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
   }
-  if (!token) {
-    try {
-      const consent = localStorage.getItem("snapotter-analytics-consent");
-      if (consent === "true" || consent === "false") {
-        headers.set("X-Analytics-Consent", consent);
-      }
-    } catch {
-      // localStorage unavailable
-    }
+  const distinctId = getDistinctId();
+  if (distinctId) {
+    headers.set("X-PostHog-Distinct-Id", distinctId);
   }
   return headers;
 }

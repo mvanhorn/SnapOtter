@@ -25,10 +25,12 @@ import { mkdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { context, propagation, ROOT_CONTEXT, SpanStatusCode, trace } from "@opentelemetry/api";
+import { ANALYTICS_BAKED, ANALYTICS_EVENTS, getBundleForTool, TOOLS } from "@snapotter/shared";
 import { type Job, UnrecoverableError, Worker } from "bullmq";
 import { eq } from "drizzle-orm";
 import { env } from "../config.js";
 import { db, schema } from "../db/index.js";
+import { captureException, trackEvent } from "../lib/analytics.js";
 import { resolveConcurrency } from "../lib/env.js";
 import { friendlyError } from "../lib/errors.js";
 import { logger } from "../lib/logger.js";
@@ -312,6 +314,22 @@ async function processToolJob(job: Job<ToolJobData>): Promise<ToolJobResult> {
       jobsTotal.inc({ pool: data.pool, status: "completed" });
       jobDuration.observe({ pool: data.pool }, durationMs / 1000);
 
+      // Analytics: emit tool_used on success
+      if (ANALYTICS_BAKED.enabled) {
+        const tool = TOOLS.find((t) => t.id === data.toolId);
+        void trackEvent(
+          ANALYTICS_EVENTS.TOOL_USED,
+          {
+            tool_id: data.toolId,
+            status: "completed",
+            duration_ms: durationMs,
+            category: tool?.category ?? "unknown",
+            is_ai_tool: getBundleForTool(data.toolId) !== null,
+          },
+          data.analyticsDistinctId,
+        );
+      }
+
       // Emit terminal progress event with legacy result payload
       const legacyResult = buildLegacyResultPayload(jobResult, jobId);
       updateSingleFileProgress({
@@ -398,6 +416,26 @@ async function processToolJob(job: Job<ToolJobData>): Promise<ToolJobResult> {
             percent: 0,
             error: friendlyError(finalError),
           });
+        }
+      }
+
+      // Analytics: emit tool_used on failure
+      if (ANALYTICS_BAKED.enabled) {
+        const tool = TOOLS.find((t) => t.id === data.toolId);
+        void trackEvent(
+          ANALYTICS_EVENTS.TOOL_USED,
+          {
+            tool_id: data.toolId,
+            status: "failed",
+            duration_ms: durationMs,
+            category: tool?.category ?? "unknown",
+            is_ai_tool: getBundleForTool(data.toolId) !== null,
+            error_code: isTimeout ? "timeout" : isCanceled ? "cancelled" : "processing",
+          },
+          data.analyticsDistinctId,
+        );
+        if (!isCanceled && !isTimeout) {
+          void captureException(err instanceof Error ? err : new Error(String(err)));
         }
       }
 
@@ -547,6 +585,7 @@ function contentTypeForFilename(name: string): string {
 
 async function processPipelineFinalize(job: Job<ToolJobData>): Promise<ToolJobResult> {
   const data = job.data;
+  const startTime = Date.now();
   const totalSteps = data.totalSteps ?? 0;
 
   const steps: Array<{ step: number; toolId: string; size: number }> = [];
@@ -606,6 +645,21 @@ async function processPipelineFinalize(job: Job<ToolJobData>): Promise<ToolJobRe
     // Batch progress (pipeline-batch only)
     if (data.parentId && data.totalFiles !== undefined) {
       await recordChildOutcome(data.parentId, data.totalFiles, data.filename, errorMsg);
+    }
+
+    // Analytics: emit pipeline_executed on failure
+    if (ANALYTICS_BAKED.enabled) {
+      void trackEvent(
+        ANALYTICS_EVENTS.PIPELINE_EXECUTED,
+        {
+          step_count: totalSteps,
+          tool_ids: steps.map((s) => s.toolId),
+          is_batch: data.kind === "batch-finalize",
+          duration_ms: Date.now() - startTime,
+          status: "failed",
+        },
+        data.analyticsDistinctId,
+      );
     }
 
     return {
@@ -675,6 +729,21 @@ async function processPipelineFinalize(job: Job<ToolJobData>): Promise<ToolJobRe
   // Batch progress (pipeline-batch only)
   if (data.parentId && data.totalFiles !== undefined) {
     await recordChildOutcome(data.parentId, data.totalFiles, outFilename);
+  }
+
+  // Analytics: emit pipeline_executed on success
+  if (ANALYTICS_BAKED.enabled) {
+    void trackEvent(
+      ANALYTICS_EVENTS.PIPELINE_EXECUTED,
+      {
+        step_count: totalSteps,
+        tool_ids: steps.map((s) => s.toolId),
+        is_batch: data.kind === "batch-finalize",
+        duration_ms: Date.now() - startTime,
+        status: "completed",
+      },
+      data.analyticsDistinctId,
+    );
   }
 
   return result;
@@ -805,6 +874,12 @@ export function startWorkers(): void {
         logger.error({ err, pool }, "Worker error");
       });
 
+      worker.on("failed", (job, err) => {
+        if (ANALYTICS_BAKED.enabled && job) {
+          void captureException(err instanceof Error ? err : new Error(String(err)));
+        }
+      });
+
       workers.push(worker);
       continue;
     }
@@ -825,6 +900,12 @@ export function startWorkers(): void {
 
     worker.on("error", (err) => {
       logger.error({ err, pool }, "Worker error");
+    });
+
+    worker.on("failed", (job, err) => {
+      if (ANALYTICS_BAKED.enabled && job) {
+        void captureException(err instanceof Error ? err : new Error(String(err)));
+      }
     });
 
     workers.push(worker);
