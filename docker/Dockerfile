@@ -322,6 +322,12 @@ COPY packages/image-engine/package.json packages/image-engine/tsconfig.json ./pa
 COPY packages/media-engine/package.json packages/media-engine/tsconfig.json ./packages/media-engine/
 COPY packages/doc-engine/package.json packages/doc-engine/tsconfig.json ./packages/doc-engine/
 COPY packages/ai/package.json packages/ai/tsconfig.json ./packages/ai/
+# packages/enterprise is required for ALL commercial features (license validation,
+# SAML/SCIM/MFA gates, S3 storage, OTel tracing gate, GDPR/audit/SIEM routes).
+# Without it, apps/api's `@snapotter/enterprise: workspace:*` link dangles and every
+# `import("@snapotter/enterprise")` throws (silently caught) -> enterprise.active=false
+# regardless of license. Manifest copied before install so pnpm wires the workspace link.
+COPY packages/enterprise/package.json packages/enterprise/tsconfig.json ./packages/enterprise/
 
 # pnpm patchedDependencies (package.json) needs the patch files present before
 # install, or `pnpm install` aborts with ENOENT on the patch.
@@ -351,11 +357,19 @@ COPY apps/api/static ./apps/api/static
 
 # Copy workspace packages source (referenced by API at runtime)
 COPY packages/shared/src ./packages/shared/src
+# The builder stage ran scripts/bake-analytics.mjs to bake the analytics config
+# (driven by SNAPOTTER_ANALYTICS). The line above re-copies the committed baked.ts
+# from the build context, which would clobber that bake and leave the API runtime
+# with analytics permanently off -- so SNAPOTTER_ANALYTICS had no effect on the API
+# (and, since the SPA reads /api/v1/config/analytics, no effect anywhere). Pull the
+# baked version from the builder so the build arg actually controls runtime analytics.
+COPY --from=builder /app/packages/shared/src/analytics/baked.ts ./packages/shared/src/analytics/baked.ts
 COPY packages/image-engine/src ./packages/image-engine/src
 COPY packages/media-engine/src ./packages/media-engine/src
 COPY packages/doc-engine/src ./packages/doc-engine/src
 COPY packages/ai/src ./packages/ai/src
 COPY packages/ai/python ./packages/ai/python
+COPY packages/enterprise/src ./packages/enterprise/src
 
 # Copy built frontend from builder stage
 COPY --from=builder /app/apps/web/dist ./apps/web/dist

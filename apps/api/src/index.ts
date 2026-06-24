@@ -188,6 +188,27 @@ try {
   // Enterprise package not available
 }
 
+// S3 storage is a licensed feature (s3_storage). packages/enterprise now ships in
+// every image, so STORAGE_MODE=s3 would otherwise function without any license check.
+// Enforce the gate at boot so an unlicensed deploy fails fast rather than silently
+// writing data to S3 it isn't entitled to use.
+if (env.STORAGE_MODE === "s3") {
+  let s3Licensed = false;
+  try {
+    const { isFeatureEnabled } = await import("@snapotter/enterprise");
+    s3Licensed = isFeatureEnabled("s3_storage");
+  } catch {
+    s3Licensed = false;
+  }
+  if (!s3Licensed) {
+    console.error(
+      "[FATAL] STORAGE_MODE=s3 requires a license that includes the s3_storage feature. " +
+        "Set a valid SNAPOTTER_LICENSE_KEY (team or enterprise plan) or use STORAGE_MODE=local.",
+    );
+    process.exit(1);
+  }
+}
+
 // Start the cooperative cancellation listener (Redis pub/sub)
 await startCancelListener();
 
@@ -624,6 +645,22 @@ if (await shouldRunStartupCleanup()) {
 
 // Start BullMQ worker pools (after route registration so the tool registry is full)
 startWorkers();
+
+// Reconcile orphaned job rows. A jobs row created without a tool_id/pool (e.g. an
+// SSE-progress placeholder for a clientJobId whose client then disconnected) is
+// never enqueued to BullMQ, so unlike a genuinely interrupted job (which BullMQ's
+// stalled-detection requeues) it would sit in 'processing'/'queued' forever --
+// inflating the per-user concurrent-job count and the upgrade-check in-flight gate.
+// Only rows with an empty tool_id are touched, so real jobs are never affected.
+void db
+  .execute(
+    sql`UPDATE jobs SET status = 'failed', error = '{"message":"Orphaned job reconciled at startup"}'::jsonb, completed_at = now() WHERE status IN ('processing','queued') AND (tool_id IS NULL OR tool_id = '')`,
+  )
+  .then((r) => {
+    const n = (r as { rowCount?: number }).rowCount ?? 0;
+    if (n > 0) app.log.info({ count: n }, "Reconciled orphaned job rows at startup");
+  })
+  .catch((err) => app.log.warn({ err }, "Orphaned-job reconciliation failed"));
 
 // Warm the per-pool QueueEvents consumers so the first synchronous tool request
 // after boot does not pay the lazy-connect cost (and cannot miss a fast job's
