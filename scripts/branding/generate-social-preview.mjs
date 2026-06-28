@@ -2,7 +2,8 @@
 // Echoes the landing hero: trust badges, the "Every file tool you need / Your files
 // never leave your network" headline, the supporting subhead, and the five modality
 // cards. Rendered from HTML with the real brand fonts via headless Chromium.
-// Run: node scripts/branding/generate-social-preview.mjs
+// Run (tsx, because it imports the shared TS catalog for live tool counts):
+//   apps/api/node_modules/.bin/tsx scripts/branding/generate-social-preview.mjs
 //
 // The same output is the canonical OG image; sync it to apps/landing/public/og-image.png
 // and apps/web/public/og-image.png (see scripts/branding/sync-og.sh).
@@ -11,6 +12,9 @@ import { rmSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "@playwright/test";
+// Relative import (not the "@snapotter/shared" specifier) so the script runs
+// from the repo root under tsx without the workspace symlink on the resolve path.
+import { TOOLS, toolSection } from "../../packages/shared/src/index.ts";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const out = resolve(repoRoot, "branding/social-preview.png");
@@ -34,41 +38,42 @@ const ICON = {
     '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/>',
 };
 
-// Mirrors CategoryCards.astro (label/blurb/color/icon). Counts are toolSection()
-// section counts (image 64, video 29, audio 17, pdf 25, files 22 = 157); refresh
-// with: tsx -e "import('@snapotter/shared')..." over toolSection (see git history).
+// Mirrors CategoryCards.astro (label/blurb/color/icon). Counts are derived live
+// from toolSection() over the shared TOOLS catalog -- same source the landing
+// cards use -- so the card never drifts as tools are added.
+const sectionCount = (section) => TOOLS.filter((t) => toolSection(t) === section).length;
 const CARDS = [
   {
     label: "Image Tools",
-    count: 64,
+    count: sectionCount("image"),
     blurb: "Resize, convert, and enhance",
     color: "#E07832",
     icon: ICON.image,
   },
   {
     label: "Video Tools",
-    count: 29,
+    count: sectionCount("video"),
     blurb: "Trim, convert, and caption",
     color: "#BE4A3C",
     icon: ICON.video,
   },
   {
     label: "Audio Tools",
-    count: 17,
+    count: sectionCount("audio"),
     blurb: "Convert, trim, and transcribe",
     color: "#2C7A75",
     icon: ICON.music,
   },
   {
     label: "PDF & Documents",
-    count: 25,
+    count: sectionCount("pdf"),
     blurb: "Merge, split, and convert",
     color: "#44568C",
     icon: ICON.fileText,
   },
   {
     label: "File Tools",
-    count: 22,
+    count: sectionCount("files"),
     blurb: "Convert and transform",
     color: "#5C8642",
     icon: ICON.database,
