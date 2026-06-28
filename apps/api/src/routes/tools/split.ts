@@ -1,8 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { extname } from "node:path";
+import type { SharpFormat } from "@snapotter/image-engine";
 import archiver from "archiver";
 import type { FastifyInstance } from "fastify";
-import sharp, { type FormatEnum } from "sharp";
+import sharp from "sharp";
 import { z } from "zod";
 import { autoOrient } from "../../lib/auto-orient.js";
 import { getSecurityHeaders } from "../../lib/csp.js";
@@ -23,8 +24,6 @@ const settingsSchema = z.object({
   outputFormat: z.enum(["original", "png", "jpg", "webp", "avif", "jxl"]).default("original"),
   quality: z.number().min(1).max(100).default(90),
 });
-
-type SharpFormat = Extract<keyof FormatEnum, string> | "avif";
 
 function resolveOutputFormat(
   outputFormat: string,
