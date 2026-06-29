@@ -242,6 +242,7 @@ RUN for i in 1 2 3; do apt-get -o Acquire::Retries=3 update && break || sleep $(
     libopenjp2-tools \
     curl \
     gosu \
+    xz-utils \
     libde265-0 \
     libimage-exiftool-perl \
     python3 python3-pip python3-venv python3-dev \
@@ -272,6 +273,42 @@ RUN for i in 1 2 3; do apt-get -o Acquire::Retries=3 update && break || sleep $(
          apt-get install -y --no-install-recommends libcublas-12-6; \
        fi \
     && rm -rf /var/lib/apt/lists/*
+
+# Embedded-mode databases: PostgreSQL 17 (PGDG, to match the Compose postgres:17
+# major for a clean data handoff) + Redis. Shipped in every image (single tag);
+# unused in external/Compose mode, ~tens of MB against the multi-GB base. They
+# enter the Trivy CVE surface and ride the existing apt-get upgrade patching.
+RUN install -d /usr/share/postgresql-common/pgdg \
+    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+         -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+    && . /etc/os-release \
+    && echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt ${VERSION_CODENAME}-pgdg main" \
+         > /etc/apt/sources.list.d/pgdg.list \
+    && for i in 1 2 3; do apt-get -o Acquire::Retries=3 update && break || sleep $((i * 15)); done \
+    && apt-get install -y --no-install-recommends postgresql-17 postgresql-client-17 redis-server \
+    && rm -rf /var/lib/apt/lists/*
+
+# s6-overlay supervises the embedded service tree (postgres + redis + app).
+# Pinned and checksum-verified against the upstream-published .sha256, consistent
+# with the repo's digest-pinning posture. For stricter supply-chain pinning,
+# replace the .sha256 fetch with a literal hash checked via
+# `echo "<hash>  <file>" | sha256sum -c -`.
+ARG S6_OVERLAY_VERSION=3.2.0.2
+RUN set -e; \
+    case "$TARGETARCH" in \
+      amd64) S6_ARCH=x86_64 ;; \
+      arm64) S6_ARCH=aarch64 ;; \
+      *) echo "unsupported TARGETARCH=$TARGETARCH" >&2; exit 1 ;; \
+    esac; \
+    cd /tmp; \
+    base="https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}"; \
+    for f in "s6-overlay-noarch.tar.xz" "s6-overlay-${S6_ARCH}.tar.xz"; do \
+      curl -fsSL -O "${base}/${f}"; \
+      curl -fsSL -O "${base}/${f}.sha256"; \
+      sha256sum -c "${f}.sha256"; \
+      tar -C / -Jxpf "${f}"; \
+    done; \
+    rm -f /tmp/s6-overlay-*
 
 # Allow ImageMagick to use Ghostscript delegate for EPS (read for decode,
 # write for the convert tool's EPS output). PS/PDF/XPS stay read-only.
@@ -440,6 +477,13 @@ ENV SENTRY_RELEASE=${SENTRY_RELEASE}
 ENV NVIDIA_VISIBLE_DEVICES=all \
     NVIDIA_DRIVER_CAPABILITIES=compute,utility
 
+# s6-overlay (embedded mode): propagate the runtime-exported environment (the
+# 127.0.0.1 URLs, resolved _FILE secrets, auth defaults) into supervised
+# services, and never time out waiting for first-boot readiness (initdb can take
+# minutes). Inert in external mode, which never invokes s6.
+ENV S6_KEEP_ENV=1 \
+    S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0
+
 # Suppress noisy ML library output in docker logs
 ENV PYTHONWARNINGS=default \
     TF_CPP_MIN_LOG_LEVEL=3 \
@@ -463,14 +507,25 @@ RUN chown -R snapotter:snapotter /app /opt/venv && \
 # entrypoint-lib.sh holds the writability helpers it sources at startup.
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY docker/entrypoint-lib.sh /usr/local/bin/entrypoint-lib.sh
+COPY docker/embedded-lib.sh /usr/local/bin/embedded-lib.sh
+COPY docker/embedded/postgres-bootstrap.sh /usr/local/bin/embedded-postgres-bootstrap.sh
 COPY docker/wait-for-postgres.mjs /app/docker/wait-for-postgres.mjs
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# s6-overlay reads its service tree from /etc/s6-overlay/s6-rc.d (embedded mode)
+COPY docker/s6/s6-rc.d /etc/s6-overlay/s6-rc.d
+RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/embedded-postgres-bootstrap.sh \
+    && chmod +x /etc/s6-overlay/s6-rc.d/postgres/run /etc/s6-overlay/s6-rc.d/redis/run \
+                /etc/s6-overlay/s6-rc.d/snapotter/run \
+                /etc/s6-overlay/s6-rc.d/postgres-init/up /etc/s6-overlay/s6-rc.d/postgres-ready/up \
+                /etc/s6-overlay/s6-rc.d/redis-ready/up
 
 EXPOSE 1349
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=180s --retries=3 \
     CMD curl -sf --max-time 5 http://localhost:1349/api/v1/health || exit 1
 
-# tini as PID 1 for zombie reaping + signal forwarding
-ENTRYPOINT ["tini", "--", "entrypoint.sh"]
+# entrypoint.sh runs as PID 1 and re-execs the right init: `tini` for external
+# mode (zombie reaping + signal forwarding for the gosu-dropped app, same end
+# state as before), or s6-overlay's /init as PID 1 for embedded mode (which
+# s6-overlay-suexec requires).
+ENTRYPOINT ["entrypoint.sh"]
 CMD ["pnpm", "--filter", "@snapotter/api", "run", "start"]
