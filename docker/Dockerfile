@@ -27,7 +27,7 @@ RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
 # Run on the native build platform to avoid QEMU crashes with esbuild on
 # Apple Silicon.  The output (HTML/CSS/JS) is architecture-agnostic so it
 # is safe to build on arm64 and copy into the amd64 production layer.
-FROM --platform=$BUILDPLATFORM node:22-bookworm@sha256:e0d149b4727ac0c20d9774e801e423d7a946a0bffced886f42cfe9cd3c67820a AS builder
+FROM --platform=$BUILDPLATFORM node:22-bookworm@sha256:c601a46abb4d2ab80a9dc3da208d50d1122642d53f17a101926ace71e5a9bf1c AS builder
 
 RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 
@@ -187,7 +187,7 @@ RUN curl -fsSL --retry 3 --retry-delay 5 "https://github.com/strukturag/libheif/
 # Stage 3: Platform-specific base images
 # Pin tags to specific major.minor for reproducible builds.
 # ============================================
-FROM node:22-bookworm@sha256:e0d149b4727ac0c20d9774e801e423d7a946a0bffced886f42cfe9cd3c67820a AS base-linux-arm64
+FROM node:22-bookworm@sha256:c601a46abb4d2ab80a9dc3da208d50d1122642d53f17a101926ace71e5a9bf1c AS base-linux-arm64
 # CUDA base must match the AI bundles' wheels (torch/paddle/onnxruntime-gpu are all
 # cu126) and the libcublas-12-6 install below. It also sets the NVIDIA_REQUIRE_CUDA
 # driver gate enforced by nvidia-container-toolkit at container start: a 12.6 base
@@ -197,7 +197,7 @@ FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04@sha256:8aef630a54bc5c5146ae5ce
 
 # Node.js donor: provides Node binaries for the CUDA amd64 image without
 # relying on NodeSource apt repos or Ubuntu mirrors (which are flaky on CI).
-FROM node:22-bookworm@sha256:e0d149b4727ac0c20d9774e801e423d7a946a0bffced886f42cfe9cd3c67820a AS node-bins
+FROM node:22-bookworm@sha256:c601a46abb4d2ab80a9dc3da208d50d1122642d53f17a101926ace71e5a9bf1c AS node-bins
 
 # ============================================
 # Stage 4: Production runtime
