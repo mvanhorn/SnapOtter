@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { detectFaceLandmarks, removeBackground } from "@snapotter/ai";
 import { FEATURE_BUNDLES, PASSPORT_SPECS, PRINT_LAYOUTS } from "@snapotter/shared";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import sharp from "sharp";
+import sharp, { type OverlayOptions } from "sharp";
 import { z } from "zod";
 import { autoOrient } from "../../lib/auto-orient.js";
 import { formatZodErrors } from "../../lib/errors.js";
@@ -90,7 +90,7 @@ async function generatePrintSheet(
     .toBuffer();
 
   // Build composite inputs
-  const composites: sharp.OverlayOptions[] = [];
+  const composites: OverlayOptions[] = [];
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       composites.push({

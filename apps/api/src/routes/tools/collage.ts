@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { FastifyInstance } from "fastify";
-import sharp from "sharp";
+import sharp, { type OverlayOptions } from "sharp";
 import { z } from "zod";
 import { autoOrient } from "../../lib/auto-orient.js";
 import { formatZodErrors } from "../../lib/errors.js";
@@ -563,7 +563,7 @@ export function registerCollage(app: FastifyInstance) {
       }
 
       const channels = bgIsTransparent ? 4 : 3;
-      const composites: sharp.OverlayOptions[] = [];
+      const composites: OverlayOptions[] = [];
       const cellSettings = settings.cells ?? [];
 
       for (let i = 0; i < cellRects.length && i < files.length; i++) {

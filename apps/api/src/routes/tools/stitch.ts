@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { FastifyInstance } from "fastify";
-import sharp from "sharp";
+import sharp, { type OverlayOptions } from "sharp";
 import { z } from "zod";
 import { env } from "../../config.js";
 import { autoOrient } from "../../lib/auto-orient.js";
@@ -168,7 +168,7 @@ export function registerStitch(app: FastifyInstance) {
 
       let canvasWidth: number;
       let canvasHeight: number;
-      const composites: sharp.OverlayOptions[] = [];
+      const composites: OverlayOptions[] = [];
 
       if (isGrid) {
         const cols = Math.min(settings.gridColumns, prepared.length);

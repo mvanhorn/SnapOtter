@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { FastifyInstance } from "fastify";
-import sharp from "sharp";
+import sharp, { type Blend } from "sharp";
 import { z } from "zod";
 import { autoOrient } from "../../lib/auto-orient.js";
 import { formatZodErrors } from "../../lib/errors.js";
@@ -142,7 +142,7 @@ export function registerCompose(app: FastifyInstance) {
             input: processedOverlay,
             top: settings.y,
             left: settings.x,
-            blend: settings.blendMode as sharp.Blend,
+            blend: settings.blendMode as Blend,
           },
         ])
         .toBuffer();

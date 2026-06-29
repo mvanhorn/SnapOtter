@@ -6,7 +6,7 @@ import { extname, join } from "node:path";
 import { promisify } from "node:util";
 import { convert } from "@snapotter/image-engine";
 import type { FastifyInstance } from "fastify";
-import sharp from "sharp";
+import sharp, { type SharpOptions } from "sharp";
 import { z } from "zod";
 import {
   encodeBmp,
@@ -120,7 +120,7 @@ export function registerConvert(app: FastifyInstance) {
       }
 
       const inputExt = extname(filename).toLowerCase().replace(".", "");
-      const sharpOpts: sharp.SharpOptions = isSvgBuffer(inputBuffer) ? { density: 300 } : {};
+      const sharpOpts: SharpOptions = isSvgBuffer(inputBuffer) ? { density: 300 } : {};
       // Preserve animation frames when both input and output are animatable formats
       if (ANIMATABLE_FORMATS.has(inputExt) && ANIMATABLE_FORMATS.has(settings.format)) {
         sharpOpts.animated = true;

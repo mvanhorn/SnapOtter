@@ -1,6 +1,6 @@
-import sharp from "sharp";
+import sharp, { type FormatEnum } from "sharp";
 
-type SharpFormat = keyof sharp.FormatEnum | "avif";
+export type SharpFormat = Extract<keyof FormatEnum, string> | "avif";
 
 export interface OutputFormat {
   format: SharpFormat;

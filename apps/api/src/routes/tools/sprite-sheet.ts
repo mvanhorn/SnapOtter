@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import sharp from "sharp";
+import sharp, { type OverlayOptions } from "sharp";
 import { z } from "zod";
 import { InputValidationError } from "../../modality/contract.js";
 import { createToolRoute } from "../tool-factory.js";
@@ -51,7 +51,7 @@ export function registerSpriteSheet(app: FastifyInstance) {
       const canvasH = rows * cellH + (rows - 1) * pad;
 
       const bg = parseHex(settings.background);
-      const composites: sharp.OverlayOptions[] = [];
+      const composites: OverlayOptions[] = [];
       const frames: Array<{
         index: number;
         left: number;

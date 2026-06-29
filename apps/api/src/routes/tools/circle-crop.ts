@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import sharp from "sharp";
+import sharp, { type OverlayOptions } from "sharp";
 import { z } from "zod";
 import { createToolRoute } from "../tool-factory.js";
 
@@ -69,7 +69,7 @@ export function registerCircleCrop(app: FastifyInstance) {
         settings.background === "transparent"
           ? { r: 0, g: 0, b: 0, alpha: 0 }
           : { ...hexToRgb(settings.background), alpha: 1 };
-      const layers: sharp.OverlayOptions[] = [];
+      const layers: OverlayOptions[] = [];
       if (bw > 0) {
         const ring = Buffer.from(
           `<svg width="${canvas}" height="${canvas}"><circle cx="${canvas / 2}" cy="${canvas / 2}" r="${d / 2 + bw}" fill="${settings.borderColor}"/></svg>`,

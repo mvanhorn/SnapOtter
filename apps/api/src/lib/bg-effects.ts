@@ -1,4 +1,4 @@
-import sharp from "sharp";
+import sharp, { type Sharp } from "sharp";
 
 export type BgOutputFormat = "png" | "webp" | "avif";
 
@@ -10,7 +10,7 @@ export const BG_FORMAT_CONTENT_TYPES: Record<BgOutputFormat, string> = {
   avif: "image/avif",
 };
 
-function toOutputFormat(pipeline: sharp.Sharp, format: BgOutputFormat): Promise<Buffer> {
+function toOutputFormat(pipeline: Sharp, format: BgOutputFormat): Promise<Buffer> {
   switch (format) {
     case "webp":
       return pipeline.webp({ lossless: true }).toBuffer();

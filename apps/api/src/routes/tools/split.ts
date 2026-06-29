@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { extname } from "node:path";
 import archiver from "archiver";
 import type { FastifyInstance } from "fastify";
-import sharp from "sharp";
+import sharp, { type FormatEnum } from "sharp";
 import { z } from "zod";
 import { autoOrient } from "../../lib/auto-orient.js";
 import { getSecurityHeaders } from "../../lib/csp.js";
@@ -24,7 +24,7 @@ const settingsSchema = z.object({
   quality: z.number().min(1).max(100).default(90),
 });
 
-type SharpFormat = keyof sharp.FormatEnum | "avif";
+type SharpFormat = Extract<keyof FormatEnum, string> | "avif";
 
 function resolveOutputFormat(
   outputFormat: string,

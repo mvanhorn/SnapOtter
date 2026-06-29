@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import sharp from "sharp";
+import sharp, { type Sharp } from "sharp";
 import { z } from "zod";
 import { createToolRoute } from "../tool-factory.js";
 
@@ -23,7 +23,7 @@ const EXT: Record<string, string> = {
   jpeg: ".jpg",
 };
 
-function encode(pipeline: sharp.Sharp, fmt: string, q: number): sharp.Sharp {
+function encode(pipeline: Sharp, fmt: string, q: number): Sharp {
   if (fmt === "jpeg") return pipeline.jpeg({ quality: q });
   if (fmt === "png") return pipeline.png();
   return pipeline.webp({ quality: q });
@@ -41,7 +41,7 @@ export function registerLqipPlaceholder(app: FastifyInstance) {
       const inputBuffer = ctx.inputs[0].buffer;
       const filename = ctx.inputs[0].filename;
 
-      let pipeline: sharp.Sharp;
+      let pipeline: Sharp;
 
       if (settings.strategy === "solid") {
         const pixel = await sharp(inputBuffer).resize(1, 1).raw().toBuffer();
