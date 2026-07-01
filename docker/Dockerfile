@@ -62,14 +62,14 @@ COPY apps/web/public ./apps/web/public
 # Bake analytics config into the shared package before building the frontend.
 # The published image ships with analytics ON; self-builders can override:
 #   docker compose build --build-arg SNAPOTTER_ANALYTICS=off
-# The real Sentry DSN + PostHog key are supplied as build args (public values,
+# The real Sentry DSN + PostHog browser config are supplied as build args (public values,
 # sourced from CI secrets in the official build); a build without them stays
 # silent, so building from source never phones home.
 ARG SNAPOTTER_ANALYTICS=on
-ARG SNAPOTTER_POSTHOG_KEY=
+ARG SNAPOTTER_POSTHOG_PROJECT_ID=
 ARG SNAPOTTER_SENTRY_DSN=
 COPY scripts/bake-analytics.mjs ./scripts/
-RUN SNAPOTTER_POSTHOG_KEY="${SNAPOTTER_POSTHOG_KEY}" \
+RUN SNAPOTTER_POSTHOG_PROJECT_ID="${SNAPOTTER_POSTHOG_PROJECT_ID}" \
     SNAPOTTER_SENTRY_DSN="${SNAPOTTER_SENTRY_DSN}" \
     node scripts/bake-analytics.mjs ${SNAPOTTER_ANALYTICS}
 
@@ -193,7 +193,7 @@ FROM node:22-bookworm@sha256:c601a46abb4d2ab80a9dc3da208d50d1122642d53f17a101926
 # driver gate enforced by nvidia-container-toolkit at container start: a 12.6 base
 # needs driver R560+, vs 12.9 which needs R575+ and fails to start on common
 # production drivers (e.g. 570.x / CUDA 12.8). Keep this at 12.6.x.
-FROM nvidia/cuda:12.9.2-cudnn-runtime-ubuntu24.04@sha256:070f8f2672df1b05b84c0409a5fd1d54ddfd646e5b9d8dee7878131271b563fc AS base-linux-amd64
+FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04@sha256:8aef630a54bc5c5146ae5ce68e6af5caa3df0fb690bb91544175c91f307e4356 AS base-linux-amd64
 
 # Node.js donor: provides Node binaries for the CUDA amd64 image without
 # relying on NodeSource apt repos or Ubuntu mirrors (which are flaky on CI).
@@ -204,14 +204,13 @@ FROM node:22-bookworm@sha256:c601a46abb4d2ab80a9dc3da208d50d1122642d53f17a101926
 # ============================================
 ARG TARGETOS
 ARG TARGETARCH
-ARG PANDOC_VERSION=3.10
 FROM base-${TARGETOS}-${TARGETARCH} AS production
 
 ARG TARGETARCH
-ARG PANDOC_VERSION
+ARG PANDOC_VERSION=3.10
 
-# Pin corepack's cache to a system-wide path so all users share the same pnpm
-# binary without downloading it on each container start.
+# Pin corepack's cache during image build. It is removed after dependency and
+# browser installation so pnpm is not part of the production runtime surface.
 ENV COREPACK_HOME=/usr/local/share/corepack
 
 # Install Node.js on amd64 by copying from the official node image.
@@ -296,6 +295,7 @@ RUN install -d /usr/share/postgresql-common/pgdg \
          > /etc/apt/sources.list.d/pgdg.list \
     && for i in 1 2 3; do apt-get -o Acquire::Retries=3 update && break || sleep $((i * 15)); done \
     && apt-get install -y --no-install-recommends postgresql-17 postgresql-client-17 redis-server \
+    && rm -f /etc/ssl/private/ssl-cert-snakeoil.key /etc/ssl/certs/ssl-cert-snakeoil.pem \
     && rm -rf /var/lib/apt/lists/*
 
 # s6-overlay supervises the embedded service tree (postgres + redis + app).
@@ -351,8 +351,9 @@ RUN ldconfig
 # Uses pre-built manylinux wheels where available; gcc/g++ above covers the rest.
 RUN --mount=type=cache,target=/root/.cache/pip \
     python3 -m venv /opt/venv && \
+    SITE_PACKAGES=$(/opt/venv/bin/python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])') && \
     /opt/venv/bin/pip install --upgrade "pip==26.1.2" && \
-    /opt/venv/bin/pip install wheel setuptools && \
+    /opt/venv/bin/pip install --upgrade "wheel==0.47.0" "setuptools==78.1.1" "jaraco.context==6.1.0" && \
     /opt/venv/bin/pip install \
         Pillow==12.2.0 \
         numpy==1.26.4 \
@@ -361,7 +362,19 @@ RUN --mount=type=cache,target=/root/.cache/pip \
         PyMuPDF==1.27.2.3 \
         weasyprint==69.0 \
         pdf2docx==0.5.13 \
-        markdown==3.10.2
+        markdown==3.10.2 && \
+    # Trivy scans setuptools' vendored dist-info metadata, so replace the
+    # vulnerable vendored copies with the fixed packages pinned above.
+    rm -rf "$SITE_PACKAGES/setuptools/_vendor/wheel" \
+        "$SITE_PACKAGES"/setuptools/_vendor/wheel-*.dist-info \
+        "$SITE_PACKAGES/setuptools/_vendor/jaraco/context.py" \
+        "$SITE_PACKAGES/setuptools/_vendor/jaraco/context" \
+        "$SITE_PACKAGES"/setuptools/_vendor/jaraco.context-*.dist-info \
+        "$SITE_PACKAGES"/setuptools/_vendor/jaraco_context-*.dist-info && \
+    cp -a "$SITE_PACKAGES/wheel" "$SITE_PACKAGES/setuptools/_vendor/wheel" && \
+    cp -a "$SITE_PACKAGES"/wheel-0.47.0.dist-info "$SITE_PACKAGES/setuptools/_vendor/" && \
+    cp -a "$SITE_PACKAGES/jaraco/context" "$SITE_PACKAGES/setuptools/_vendor/jaraco/context" && \
+    cp -a "$SITE_PACKAGES"/jaraco_context-6.1.0.dist-info "$SITE_PACKAGES/setuptools/_vendor/"
 
 # Stamp the venv so the entrypoint can detect base-package upgrades.
 # If the frozen package list changes, the hash changes, and containers
@@ -411,6 +424,42 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers
 RUN pnpm --filter @snapotter/api exec playwright install chromium --with-deps && \
     chmod -R a+rX /opt/playwright-browsers && \
     rm -rf /tmp/*
+
+# Remove build-time package managers and native build headers from the runtime
+# image after all dependency/browser installs are complete.
+RUN apt-get purge -y --auto-remove \
+        autotools-dev \
+        dpkg-dev \
+        gcc \
+        g++ \
+        python3-dev \
+        libraw-dev \
+        libopenexr-dev \
+        libcurl4-openssl-dev \
+        libdb-dev \
+        libdb5.3-dev \
+        libevent-dev \
+        libffi-dev \
+        libgcc-12-dev \
+        libgmp-dev \
+        liblzma-dev \
+        libmaxminddb-dev \
+        libwebp-dev \
+        libyaml-dev \
+        libc6-dev \
+        linux-libc-dev \
+        libpq-dev \
+        libssl-dev \
+        zlib1g-dev \
+        uuid-dev \
+        libcrypt-dev \
+        libnsl-dev \
+        libtirpc-dev \
+        rpcsvc-proto \
+    && (corepack disable pnpm || true) \
+    && rm -rf /usr/local/share/corepack /root/.cache/node/corepack /root/.cache/pip \
+    && rm -f /usr/local/bin/pnpm /usr/local/bin/pnpx \
+    && rm -rf /var/lib/apt/lists/* /tmp/*
 
 # Copy source code for API (tsx runs TS directly - no build step needed)
 COPY apps/api/src ./apps/api/src
@@ -528,6 +577,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/embedded-postgres-boots
                 /etc/s6-overlay/s6-rc.d/postgres-init/up /etc/s6-overlay/s6-rc.d/postgres-ready/up \
                 /etc/s6-overlay/s6-rc.d/redis-ready/up
 
+WORKDIR /app/apps/api
+
 EXPOSE 1349
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=180s --retries=3 \
@@ -538,4 +589,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=180s --retries=3 \
 # state as before), or s6-overlay's /init as PID 1 for embedded mode (which
 # s6-overlay-suexec requires).
 ENTRYPOINT ["entrypoint.sh"]
-CMD ["pnpm", "--filter", "@snapotter/api", "run", "start"]
+CMD ["./node_modules/.bin/tsx", "--import", "./src/tracing.ts", "--import", "./src/instrument.ts", "src/index.ts"]
