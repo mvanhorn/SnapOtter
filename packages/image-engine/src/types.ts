@@ -1,7 +1,7 @@
-import type { ChannelStats, FormatEnum, Metadata, Sharp as SharpInstance } from "sharp";
+import type { ChannelStats, Metadata, Sharp as SharpInstance } from "sharp";
 
 export type Sharp = SharpInstance;
-export type SharpFormat = Extract<keyof FormatEnum, string> | "avif";
+export type SharpFormat = Extract<Parameters<Sharp["toFormat"]>[0], string>;
 export type SharpChannelStats = ChannelStats;
 export type SharpMetadata = Metadata;
 

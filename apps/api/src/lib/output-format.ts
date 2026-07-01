@@ -1,6 +1,5 @@
-import sharp, { type FormatEnum } from "sharp";
-
-export type SharpFormat = Extract<keyof FormatEnum, string> | "avif";
+import type { SharpFormat } from "@snapotter/image-engine";
+import sharp from "sharp";
 
 export interface OutputFormat {
   format: SharpFormat;

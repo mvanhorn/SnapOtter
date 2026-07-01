@@ -16,12 +16,41 @@ import { rotate } from "../src/operations/rotate.js";
 import { saturation } from "../src/operations/saturation.js";
 import { sepia } from "../src/operations/sepia.js";
 import { stripMetadata } from "../src/operations/strip-metadata.js";
+import type { OutputFormat, Sharp, SharpFormat } from "../src/types.js";
 import { getImageInfo } from "../src/utils/metadata.js";
 import { extToMime, formatToExt, formatToMime, mimeToExt } from "../src/utils/mime.js";
 
 // Generate a 100x100 red PNG buffer for testing
 let testBuffer: Buffer;
-let testImage: () => sharp.Sharp;
+let testImage: () => Sharp;
+
+const SHARP_FORMAT_CASES = [
+  { sharpFormat: "webp", operationFormat: "webp", expectedFormat: "webp" },
+  { sharpFormat: "avif", operationFormat: "avif", expectedFormat: "avif" },
+  { sharpFormat: "png", operationFormat: "png", expectedFormat: "png" },
+  { sharpFormat: "jpeg", operationFormat: "jpg", expectedFormat: "jpeg" },
+] as const satisfies ReadonlyArray<{
+  sharpFormat: SharpFormat;
+  operationFormat: OutputFormat;
+  expectedFormat: string;
+}>;
+
+function tinyTestImage(): Sharp {
+  return sharp({
+    create: {
+      width: 4,
+      height: 4,
+      channels: 3,
+      background: { r: 255, g: 0, b: 0 },
+    },
+  });
+}
+
+async function expectOutputFormat(buffer: Buffer, expectedFormat: string): Promise<void> {
+  const meta = await sharp(buffer).metadata();
+  const format = meta.format === "heif" ? "avif" : meta.format;
+  expect(format).toBe(expectedFormat);
+}
 
 beforeAll(async () => {
   testBuffer = await sharp({
@@ -209,6 +238,26 @@ describe("compress", () => {
     const buf = await result.toBuffer();
     // Should be reasonably close to target (within 50% tolerance for small images)
     expect(buf.length).toBeLessThan(largeBuffer.length);
+  });
+});
+
+describe("sharp format compatibility", () => {
+  it.each(SHARP_FORMAT_CASES)("convert accepts $sharpFormat", async ({
+    operationFormat,
+    expectedFormat,
+  }) => {
+    const result = await convert(tinyTestImage(), { format: operationFormat });
+    const buf = await result.toBuffer();
+    await expectOutputFormat(buf, expectedFormat);
+  });
+
+  it.each(SHARP_FORMAT_CASES)("compress accepts $sharpFormat", async ({
+    operationFormat,
+    expectedFormat,
+  }) => {
+    const result = await compress(tinyTestImage(), { quality: 80, format: operationFormat });
+    const buf = await result.toBuffer();
+    await expectOutputFormat(buf, expectedFormat);
   });
 });
 
