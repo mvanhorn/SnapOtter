@@ -1,3 +1,7 @@
+import packageJson from "../../../package.json";
+
+const DEMO_APP_VERSION = packageJson.version;
+
 const PERMISSIONS = [
   "tools:use",
   "files:own",
@@ -108,11 +112,18 @@ function json(data: unknown, status = 200): Response {
   });
 }
 
-function matchRoute(url: string, method: string): Response | null {
+export function matchDemoRoute(url: string, method: string): Response | null {
   const path = new URL(url, "http://localhost").pathname;
 
   if (path === "/api/v1/config/auth" && method === "GET") {
-    return json({ authEnabled: true, oidcEnabled: false });
+    return json({
+      authEnabled: true,
+      oidcEnabled: false,
+      oidcProviderName: null,
+      samlEnabled: false,
+      samlProviderName: null,
+      ssoEnforced: false,
+    });
   }
 
   if (path === "/api/auth/login" && method === "POST") {
@@ -145,7 +156,7 @@ function matchRoute(url: string, method: string): Response | null {
   }
 
   if (path === "/api/v1/health") {
-    return json({ status: "ok", version: "1.17.0" });
+    return json({ status: "ok", version: DEMO_APP_VERSION });
   }
 
   if (path === "/api/v1/settings" && method === "GET") {
@@ -261,14 +272,14 @@ function matchRoute(url: string, method: string): Response | null {
   return null;
 }
 
-const originalFetch = window.fetch.bind(window);
-
 export function installMocks() {
+  const originalFetch = window.fetch.bind(window);
+
   window.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
     const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
     const method = init?.method?.toUpperCase() || "GET";
 
-    const mock = matchRoute(url, method);
+    const mock = matchDemoRoute(url, method);
     if (mock) return mock;
 
     return originalFetch(input, init);
@@ -288,7 +299,7 @@ export function installMocks() {
 
     send(body?: Document | XMLHttpRequestBodyInit | null) {
       if (this._url.startsWith("/api/")) {
-        const mock = matchRoute(this._url, this._method);
+        const mock = matchDemoRoute(this._url, this._method);
         if (mock) {
           setTimeout(async () => {
             const responseText = await mock.text();
