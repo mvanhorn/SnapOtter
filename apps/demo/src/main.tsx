@@ -20,7 +20,7 @@ function patchDemoErrors(root: Element) {
       if (el.dataset.demoPatch) return;
       el.dataset.demoPatch = "1";
       el.classList.remove("text-red-500");
-      el.style.color = "#3b82f6";
+      el.style.color = "var(--color-primary)";
       el.style.fontSize = "13px";
       el.style.lineHeight = "1.5";
 
