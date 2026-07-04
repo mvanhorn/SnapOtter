@@ -13,6 +13,11 @@ on:
       - "turbo.json"
       - "tsconfig.base.json"
       - ".github/actions/setup/**"
+      - "playwright.demo.config.ts"
+      - "tests/e2e-demo/**"
+      - "tests/unit/infra/demo-theme.test.ts"
+      - "tests/unit/infra/demo-mock-api.test.ts"
+      - "tests/unit/infra/deploy-demo-workflow.test.ts"
       - ".github/workflows/deploy-demo.yml"
   workflow_dispatch:
 
@@ -27,12 +32,25 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: ./.github/actions/setup
 
+      - name: Run focused demo unit tests
+        run: pnpm vitest run --config vitest.config.ts tests/unit/infra/demo-theme.test.ts tests/unit/infra/deploy-demo-workflow.test.ts tests/unit/infra/demo-mock-api.test.ts
+
+      - name: Typecheck Demo
+        run: pnpm --filter @snapotter/demo exec tsc --noEmit
+
       - name: Build Demo
         run: pnpm --filter @snapotter/demo build
+
+      - name: Install Playwright Chromium
+        run: pnpm playwright install --with-deps chromium
+
+      - name: Smoke Test Demo
+        run: pnpm playwright test --config playwright.demo.config.ts
 
       - name: Deploy to Cloudflare Pages
         run: npx wrangler pages deploy apps/demo/dist --project-name snapotter-demo --branch main --commit-dirty=true
