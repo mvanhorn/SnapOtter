@@ -415,15 +415,15 @@
       "archives": {
         "amd64-gpu": {
           "file": "v2.0.0/ocr-amd64-gpu.tar.gz",
-          "sha256": "80db475eb442899cedad3590b18f080225deaf50985224b302475fbfdf5883f6",
-          "compressedSize": 5927587552,
-          "extractedSize": 9367838720
+          "sha256": "2a00a3184f6a635f1fa9ae2a6517ad740a11f9e5ff58c098d2fd369a2bb1e16b",
+          "compressedSize": 5933794814,
+          "extractedSize": 9343914078
         },
         "arm64-cpu": {
           "file": "v2.0.0/ocr-arm64-cpu.tar.gz",
-          "sha256": "569ca2ddad50529c4887da494ca1704bbe719ddc0253a5eb76002a2d87812c60",
-          "compressedSize": 1974010780,
-          "extractedSize": 3092260263
+          "sha256": "6868c264069dcb74c6675c0b1f58dc1c9f60d9aa4459725e3dbde07a99a6a09a",
+          "compressedSize": 1984611355,
+          "extractedSize": 3103671712
         }
       },
       "packages": {
