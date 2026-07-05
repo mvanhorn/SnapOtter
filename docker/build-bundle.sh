@@ -65,6 +65,32 @@ if '${BUNDLE_ID}' not in m['bundles']:
     sys.exit(1)
 "
 
+# ── Step 0: Write pip constraints (numpy-1.x-ABI closure lock) ────────────
+# Bundle installs below can otherwise pull the latest transitive scientific
+# stack: numpy 2.x plus scipy/scikit-learn/scikit-image/pandas wheels built
+# against the numpy 2.x ABI (e.g. paddleocr[doc-parser] drags numpy 1.26.4 ->
+# 2.5.1 + scipy 1.18). The Step 4 re-pin snaps numpy back to 1.26.4 but leaves
+# those numpy-2.x wheels behind; the Step 6 diff (by dir name, not version)
+# then ships them, and once installed they strand on the numpy==1.26.4 base and
+# raise "numpy.dtype size changed" on import, crashing the dispatcher for
+# EVERY AI tool (e.g. rembg's scipy), not just this bundle. Applying the
+# manifest's constraints to every pip install keeps the whole closure on
+# numpy-1.x-ABI versions so no bundle can strand a numpy-2.x wheel.
+CONSTRAINTS_FILE="/tmp/bundle-constraints.txt"
+python3 -c "
+import json
+with open('${MANIFEST}') as f:
+    m = json.load(f)
+with open('${CONSTRAINTS_FILE}', 'w') as f:
+    f.write('\n'.join(m.get('constraints', [])) + '\n')
+"
+if [[ -s "${CONSTRAINTS_FILE}" ]] && [[ -n "$(tr -d '[:space:]' < "${CONSTRAINTS_FILE}")" ]]; then
+  export PIP_CONSTRAINT="${CONSTRAINTS_FILE}"
+  echo "  Build constraints: $(tr '\n' ' ' < "${CONSTRAINTS_FILE}")"
+else
+  echo "  No build constraints in manifest"
+fi
+
 # Clean previous build artifacts
 rm -rf "${MODELS_DIR}" "${BUILD_DIR}"
 mkdir -p "${MODELS_DIR}" "${BUILD_DIR}/site-packages" "${BUILD_DIR}/models" "${OUTPUT_DIR}"

@@ -70,6 +70,42 @@ describe("Feature manifest structure", () => {
   });
 });
 
+describe("Feature manifest: numpy-2.x-ABI closure lock (regression for OCR bundle strand)", () => {
+  // paddleocr[doc-parser] (OCR bundle) drags numpy 1.26.4 -> 2.5.1 and pulls
+  // scipy/scikit-learn/pandas wheels built against the numpy 2.x ABI. Re-pinning
+  // numpy alone leaves those stranded on the numpy==1.26.4 base, which the bundle
+  // diff ships, breaking rembg's scipy import (a dispatcher-wide AI outage) after
+  // a last-writer-wins merge. build-bundle.sh applies `constraints` to every pip
+  // install to keep the whole closure on numpy-1.x-ABI versions.
+  const constraints = (manifest.constraints ?? []) as string[];
+
+  it("manifest declares a non-empty constraints array", () => {
+    expect(manifest.constraints).toBeInstanceOf(Array);
+    expect(constraints.length).toBeGreaterThan(0);
+  });
+
+  it("constraints pin every numpy-2.x-closure package to an exact version", () => {
+    const pinned = new Map<string, string>();
+    for (const c of constraints) {
+      const m = c.match(/^([A-Za-z0-9_.-]+)==(.+)$/);
+      expect(m, `constraint "${c}" must be an exact ==pin`).not.toBeNull();
+      if (m) pinned.set(m[1].toLowerCase(), m[2]);
+    }
+    for (const pkg of ["numpy", "scipy", "scikit-learn", "scikit-image", "pandas"]) {
+      expect(pinned.has(pkg), `constraints must pin ${pkg} to a numpy-1.x-ABI version`).toBe(true);
+    }
+  });
+
+  it("constraints numpy matches basePackages numpy (single source of truth)", () => {
+    const cNumpy = constraints.find((c) => c.toLowerCase().startsWith("numpy=="));
+    const bNumpy = (manifest.basePackages as string[]).find((c) =>
+      c.toLowerCase().startsWith("numpy=="),
+    );
+    expect(cNumpy).toBeDefined();
+    expect(cNumpy).toBe(bNumpy);
+  });
+});
+
 describe("Feature manifest: mediapipe dependency (regression for #129)", () => {
   it("upscale-enhance bundle includes mediapipe for amd64", () => {
     expect(archPackagesInclude("upscale-enhance", "amd64", "mediapipe")).toBe(true);

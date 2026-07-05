@@ -171,7 +171,11 @@ case "${BUNDLE_ID}" in
     check_imports "torch onnxruntime mediapipe"
     ;;
   ocr)
-    check_imports "paddleocr paddle"
+    # scipy/scikit-learn ship inside this bundle via paddleocr's dependency
+    # closure. Importing them here (not just paddleocr) catches a numpy-2.x-ABI
+    # strand on the numpy==1.26.4 base; the "numpy.dtype size changed" class
+    # that a paddleocr-only import misses because paddle lazy-loads them.
+    check_imports "paddleocr paddle scipy sklearn"
     ;;
   transcription)
     check_imports "faster_whisper"
