@@ -10,7 +10,7 @@ SnapOtter exposes 83 dedicated conversion preset endpoints in addition to the ba
 
 `POST /api/v1/tools/<section>/<presetId>`
 
-Send `multipart/form-data` with a `file` part and optional `settings` JSON string. Fast presets return `200` with a `downloadUrl`; long-running presets return `202` and progress streams from `/api/v1/jobs/<jobId>/progress`.
+Send `multipart/form-data` with a `file` part and optional `settings` JSON string. Presets follow the response contract of the base tool. Fast presets usually return `200` with a `downloadUrl`, but can return `202` if they exceed the synchronous wait window. Video presets and long file/document presets return `202` and progress streams from `/api/v1/jobs/<jobId>/progress`. PDF-to-image presets return page download URLs plus a ZIP URL.
 
 ## Image Presets
 

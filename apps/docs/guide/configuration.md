@@ -62,7 +62,7 @@ Telemetry note: embedded mode inherits the image's analytics default like any ot
 | `MAX_MEGAPIXELS` | `0` (unlimited) | Maximum image resolution allowed in megapixels. Set to 0 for unlimited. |
 | `MAX_WORKER_THREADS` | `0` (auto) | Maximum worker threads for image processing. Set to 0 to auto-detect based on available CPU cores. |
 | `PROCESSING_TIMEOUT_S` | `0` (no limit) | Maximum processing time per request in seconds. Set to 0 for no timeout. |
-| `MAX_PIPELINE_STEPS` | `0` (no limit) | Maximum number of steps in a pipeline. Set to 0 for no limit. |
+| `MAX_PIPELINE_STEPS` | `20` | Maximum number of steps in a pipeline. Set to 0 for no limit. |
 | `MAX_CANVAS_PIXELS` | `0` (no limit) | Maximum canvas size in pixels for output images. Set to 0 for no limit. |
 | `MAX_SVG_SIZE_MB` | `0` (unlimited) | Maximum SVG file size in megabytes. Set to 0 for unlimited. |
 | `MAX_SPLIT_GRID` | `100` | Maximum grid dimension for the image split tool. |

@@ -40,4 +40,4 @@ curl -X POST http://localhost:1349/api/v1/tools/audio/normalize-audio \
 - Uses the EBU R128 loudness standard, targeting -16 LUFS.
 - Ideal for podcasts, audiobooks, and broadcast content where consistent loudness is important.
 - The source sample rate is preserved in the output.
-- Output format matches the input format.
+- Output usually keeps the input container. AAC input is written as M4A, and unsupported decode-only inputs fall back to MP3.

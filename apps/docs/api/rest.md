@@ -62,6 +62,18 @@ Keys are prefixed `si_` and stored as scrypt hashes - the raw key is shown once 
 | `POST` | `/api/auth/users/:id/reset-password` | Admin | Reset user's password |
 | `DELETE` | `/api/auth/users/:id` | Admin | Delete a user |
 | `GET` | `/api/v1/config/auth` | Public | Check if authentication is enabled (`{ authEnabled: bool }`) |
+| `POST` | `/api/auth/mfa/enroll` | Auth | Start TOTP MFA enrollment. Requires the enterprise `mfa` feature |
+| `POST` | `/api/auth/mfa/verify` | Auth | Confirm MFA enrollment with a TOTP code |
+| `POST` | `/api/auth/mfa/complete` | Public | Complete a pending MFA login challenge |
+| `POST` | `/api/auth/mfa/disable` | Auth | Disable MFA for the current user |
+| `POST` | `/api/auth/users/:id/mfa/reset` | Admin (`users:manage`) | Reset MFA for a user |
+| `GET` | `/api/auth/oidc/login` | Public | Start OIDC login when OIDC is enabled |
+| `GET` | `/api/auth/oidc/callback` | Public | OIDC authorization callback |
+| `GET` | `/api/auth/saml/metadata` | Public | SAML SP metadata XML when SAML is enabled |
+| `GET` | `/api/auth/saml/login` | Public | Start SAML login |
+| `POST` | `/api/auth/saml/callback` | Public | SAML assertion consumer service |
+
+When MFA is enabled for a user, `POST /api/auth/login` returns `{"requiresMfa":true,"mfaToken":"...","mfaRequired":true|false}` instead of a session token. Send that `mfaToken` plus a TOTP or recovery code to `/api/auth/mfa/complete`.
 
 ### Permissions
 
@@ -79,6 +91,7 @@ Keys are prefixed `si_` and stored as scrypt hashes - the raw key is shown once 
 | Method | Path | Access | Description |
 |--------|------|--------|-------------|
 | `GET` | `/api/v1/health` | Public | Basic health check. Returns `{"status":"healthy","version":"..."}` with 200, or `{"status":"unhealthy"}` with 503 if the database is unreachable. |
+| `GET` | `/api/v1/readyz` | Public | Readiness probe. Checks PostgreSQL, Redis, disk space, and S3 when configured. Returns 503 when the instance should not receive traffic. |
 | `GET` | `/api/v1/admin/health` | Admin (`system:health`) | Detailed diagnostics including uptime, storage mode, database status, queue state, and GPU availability. |
 
 ## Using Tools
@@ -104,9 +117,11 @@ curl -X POST http://localhost:1349/api/v1/tools/<section>/<toolId>/batch \
 
 - Upload is `multipart/form-data`.
 - `settings` is a JSON string with tool-specific options.
-- **Fast tools** (200) return JSON: `{"jobId":"...","downloadUrl":"/api/v1/download/<jobId>/<filename>","originalSize":1234,"processedSize":567}`. Fetch the processed file from `downloadUrl`.
-- **Long-running tools** (202) return JSON: `{"jobId":"...","async":true}`. Connect to SSE for progress, then download when complete (see [Progress Tracking](#progress-tracking)).
-- **Batch** returns a ZIP archive streamed directly (with `X-Job-Id` header).
+- `clientJobId` is an optional form field for caller-supplied progress correlation.
+- `fileId` is an optional form field referencing an existing file library item. When present, the processed output is saved as a new version and the response includes `savedFileId`.
+- **Fast tools** usually return 200 JSON: `{"jobId":"...","downloadUrl":"/api/v1/download/<jobId>/<filename>","originalSize":1234,"processedSize":567}`. Fetch the processed file from `downloadUrl`.
+- **Any queued tool** can return 202 JSON if it is long-running or exceeds the synchronous wait window: `{"jobId":"...","async":true}`. Connect to SSE for progress, then download when complete (see [Progress Tracking](#progress-tracking)).
+- **Batch** routes return a ZIP archive streamed directly (with `X-Job-Id` header) for tools registered in the generic batch registry.
 
 ## Tools Reference
 
@@ -222,14 +237,13 @@ All AI tools run on your hardware: CPU by default, or NVIDIA CUDA when a support
 | `svg-to-raster` | SVG to Raster | `format` (png/jpeg/webp/avif/tiff/gif/heif), `width`, `height`, `scale`, `dpi`, `background` |
 | `vectorize` | Image to SVG | `colorMode` (bw/color), `threshold`, `colorPrecision`, `filterSpeckle`, `pathMode` (none/polygon/spline) |
 | `gif-tools` | GIF Tools | `action` (resize/optimize/reverse/speed/extract-frames/rotate/add-text), action-specific params |
-| `pdf-to-image` | PDF to Image | `pages` (all/range), `format`, `dpi`, `quality` |
 | `gif-webp` | GIF/WebP Converter | `quality` (1-100), `lossless` (bool), `resizePercent` (10-100) |
 
 ### Video Tools
 
 | Tool ID | Name | Key settings |
 |---------|------|-------------|
-| `convert-video` | Convert Video | `format` (mp4/mov/webm), `quality` (high/balanced/small) |
+| `convert-video` | Convert Video | `format` (mp4/mov/webm/avi/mkv), `quality` (high/balanced/small) |
 | `compress-video` | Compress Video | `quality` (light/balanced/strong), `resolution` (original/1080p/720p/480p) |
 | `trim-video` | Trim Video | `startS`, `endS`, `precise` (bool, frame-accurate cut) |
 | `mute-video` | Mute Video | - |
@@ -246,7 +260,7 @@ All AI tools run on your hardware: CPU by default, or NVIDIA CUDA when a support
 | `blur-pad` | Blur Pad | `target` (16:9/9:16/1:1/4:3/3:4), `blur` (2-50) |
 | `watermark-video` | Watermark Video | `text`, `position`, `fontSize`, `opacity`, `color` |
 | `stabilize-video` | Stabilize Video | `smoothing` (5-60, in frames) |
-| `gif-to-video` | GIF to Video | `format` (mp4/webm) |
+| `gif-to-video` | GIF to Video | `format` (mp4/webm/mov) |
 | `video-to-webp` | Video to WebP | `fps`, `width`, `quality`, `loop` (bool) |
 | `video-to-frames` | Video to Frames | `mode` (all/nth/timestamps), `n`, `timestamps`, `format` (png/jpg) |
 | `merge-videos` | Merge Videos | - (multi-file, normalized to first video's resolution) |
@@ -257,7 +271,7 @@ All AI tools run on your hardware: CPU by default, or NVIDIA CUDA when a support
 | `images-to-video` | Images to Video | `secondsPerImage` (0.5-10), `resolution` (1080p/720p/square), `fps` - multi-file |
 | `video-metadata` | Clean Video Metadata | - |
 | `auto-subtitles` | Auto Subtitles (AI) | `language` (auto/en/de/fr/es/zh/ja/ko/id/th/vi), `format` (srt/vtt) |
-| `extract-audio` | Extract Audio | `format` (mp3/wav/m4a) |
+| `extract-audio` | Extract Audio | `format` (mp3/wav/m4a/ogg) |
 
 ### Audio Tools
 
@@ -322,6 +336,10 @@ All AI tools run on your hardware: CPU by default, or NVIDIA CUDA when a support
 | `epub-convert` | Convert EPUB | `format` (pdf/docx/html/md) |
 | `to-epub` | Convert to EPUB | - (accepts .docx, .md, .html, .txt) |
 | `ocr-pdf` | PDF OCR (AI) | `quality` (fast/balanced/best), `language` (auto/en/de/fr/es/zh/ja/ko), `pages` |
+| `pdf-to-image` | PDF to Image | `pages` (all/range), `format`, `dpi`, `quality` |
+| `pdf-to-jpg` | PDF to JPG | `pages`, `dpi`, `quality`, `colorMode` |
+| `pdf-to-png` | PDF to PNG | `pages`, `dpi`, `quality`, `colorMode` |
+| `pdf-to-tiff` | PDF to TIFF | `pages`, `dpi`, `quality`, `colorMode` |
 
 ### File Tools
 
@@ -335,6 +353,7 @@ All AI tools run on your hardware: CPU by default, or NVIDIA CUDA when a support
 | `merge-csvs` | Merge CSVs | - (multi-file, matching columns) |
 | `yaml-json` | YAML / JSON | - (bidirectional) |
 | `xml-to-csv` | XML to CSV | - (auto-finds repeating elements) |
+| `excel-to-csv` | Excel to CSV | dedicated conversion preset backed by `convert-spreadsheet` |
 | `create-zip` | Create ZIP | - (multi-file, 2-50 files) |
 | `extract-zip` | Extract ZIP | - (bomb-protected) |
 
@@ -391,13 +410,19 @@ Some tools expose additional endpoints beyond the standard `POST /api/v1/tools/<
 | `POST` | `/api/v1/tools/image/gif-tools/info` | Get GIF metadata (frame count, dimensions, duration) |
 | `POST` | `/api/v1/tools/pdf/pdf-to-image/info` | Get PDF metadata (page count, dimensions) |
 | `POST` | `/api/v1/tools/pdf/pdf-to-image/preview` | Generate a preview of a specific PDF page |
+| `POST` | `/api/v1/tools/pdf/pdf-to-jpg/info` | Get PDF metadata for the dedicated JPG preset |
+| `POST` | `/api/v1/tools/pdf/pdf-to-jpg/preview` | Generate a JPG preset PDF page preview |
+| `POST` | `/api/v1/tools/pdf/pdf-to-png/info` | Get PDF metadata for the dedicated PNG preset |
+| `POST` | `/api/v1/tools/pdf/pdf-to-png/preview` | Generate a PNG preset PDF page preview |
+| `POST` | `/api/v1/tools/pdf/pdf-to-tiff/info` | Get PDF metadata for the dedicated TIFF preset |
+| `POST` | `/api/v1/tools/pdf/pdf-to-tiff/preview` | Generate a TIFF preset PDF page preview |
 | `POST` | `/api/v1/tools/image/svg-to-raster/batch` | Batch convert multiple SVGs to raster |
 | `POST` | `/api/v1/tools/image/image-enhancement/analyze` | Analyze image quality and return enhancement recommendations |
 | `POST` | `/api/v1/tools/image/optimize-for-web/preview` | Lightweight preview for live parameter tuning. Returns optimized image with size headers. |
 
 ## Batch Processing
 
-Apply any tool to multiple files at once. Returns a ZIP archive.
+Apply a generic batch-enabled tool to multiple files at once. Returns a ZIP archive. Custom multi-file or multi-step routes, such as PDF signing, PDF OCR, and PDF-to-image preset routes, use their own endpoint contract instead of the generic `/batch` route.
 
 ```bash
 curl -X POST http://localhost:1349/api/v1/tools/image/compress/batch \
@@ -433,7 +458,7 @@ curl -X POST http://localhost:1349/api/v1/pipeline/batch \
   -F 'pipeline={"steps":[{"toolId":"resize","settings":{"width":800}}]}'
 ```
 
-Each step's output is the next step's input. Unlimited steps per pipeline by default (configurable via `MAX_PIPELINE_STEPS`).
+Each step's output is the next step's input. Pipelines allow 20 steps by default, configurable via `MAX_PIPELINE_STEPS`. Set `MAX_PIPELINE_STEPS=0` to remove the limit.
 
 ### Save and manage pipelines
 
@@ -446,19 +471,21 @@ Each step's output is the next step's input. Unlimited steps per pipeline by def
 
 ## Progress Tracking
 
-Long-running jobs (AI tools, batch, pipelines) emit real-time progress via Server-Sent Events:
+Long-running jobs, queued tools, batch jobs, and pipelines emit real-time progress via Server-Sent Events. The progress stream is public and keyed by job ID, so clients do not need to send an Authorization header to read it.
 
 ```bash
 # Connect to the SSE stream (jobId is in the JSON response body from the tool endpoint)
-curl -N http://localhost:1349/api/v1/jobs/<jobId>/progress \
-  -H "Authorization: Bearer <token>"
+curl -N http://localhost:1349/api/v1/jobs/<jobId>/progress
 ```
 
 Event format:
 ```
-data: {"progress":42,"status":"processing","message":"Upscaling frame 2/5"}
-data: {"progress":100,"status":"completed"}
+data: {"jobId":"...","type":"single","phase":"processing","stage":"Upscaling","percent":42}
+data: {"jobId":"...","type":"single","phase":"complete","percent":100,"result":{"downloadUrl":"/api/v1/download/..."}}
+data: {"jobId":"...","type":"batch","status":"processing","completedFiles":2,"totalFiles":5,"failedFiles":0,"errors":[]}
 ```
+
+You can request cancellation for a queued or running job with `POST /api/v1/jobs/:jobId/cancel`. The response is `{"canceled":true|false}`.
 
 ## File Library
 
@@ -476,9 +503,11 @@ Persistent file storage with version history.
 | `DELETE` | `/api/v1/files` | Bulk delete files and their version chains (body: `{ ids: [...] }`) |
 | `POST` | `/api/v1/fetch-urls` | Fetch remote URLs into the workspace for URL-based imports |
 | `POST` | `/api/v1/preview` | Generate a browser-compatible WebP preview (for HEIC/HEIF/RAW formats) |
+| `GET` | `/api/v1/files/:id/preview` | Stream a cached or generated browser-compatible preview for a saved PDF, office document, video, or audio file |
+| `POST` | `/api/v1/preview/generate` | Generate an on-demand MP4 or MP3 preview for an uploaded media file without saving it first |
 | `GET` | `/api/v1/download/:jobId/:filename` | Download a processed file from a workspace |
 
-To auto-save a tool result to the library, include `fileId` in the settings payload referencing an existing library file. The processed result will be saved as a new version.
+To auto-save a tool result to the library, include `fileId` as a multipart form field referencing an existing library file. The processed result will be saved as a new version.
 
 ## API Key Management
 
@@ -509,6 +538,15 @@ Runtime key-value configuration (read by any authenticated user, write by admin 
 
 Known keys: `disabledTools` (JSON array of tool IDs), `enableExperimentalTools` (bool string), `loginAttemptLimit` (number).
 
+## Preferences
+
+Per-user preferences are separate from instance settings. Any authenticated user can read and update their own preference map.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/preferences` | Get the current user's preferences as `{ "preferences": { ... } }` |
+| `PUT` | `/api/v1/preferences` | Upsert one or more preference keys for the current user |
+
 ## Roles
 
 Custom role management with granular permissions.
@@ -516,9 +554,9 @@ Custom role management with granular permissions.
 | Method | Path | Access | Description |
 |--------|------|--------|-------------|
 | `GET` | `/api/v1/roles` | Admin (`audit:read`) | List all roles with user counts |
-| `POST` | `/api/v1/roles` | Admin (`users:manage`) | Create a custom role (`name`, `description`, `permissions`) |
-| `PUT` | `/api/v1/roles/:id` | Admin (`users:manage`) | Update a custom role (cannot modify built-in roles) |
-| `DELETE` | `/api/v1/roles/:id` | Admin (`users:manage`) | Delete a custom role (cannot delete built-in roles; affected users revert to `user` role) |
+| `POST` | `/api/v1/roles` | Admin (`security:manage`) | Create a custom role (`name`, `description`, `permissions`) |
+| `PUT` | `/api/v1/roles/:id` | Admin (`security:manage`) | Update a custom role (cannot modify built-in roles) |
+| `DELETE` | `/api/v1/roles/:id` | Admin (`security:manage`) | Delete a custom role (cannot delete built-in roles; affected users revert to `user` role) |
 
 Available permissions (17): `tools:use`, `files:own`, `files:all`, `apikeys:own`, `apikeys:all`, `pipelines:own`, `pipelines:all`, `settings:read`, `settings:write`, `users:manage`, `teams:manage`, `features:manage`, `system:health`, `audit:read`, `compliance:manage`, `webhooks:manage`, `security:manage`.
 
@@ -537,6 +575,7 @@ Query parameters:
 | `page` | Page number (default: 1) |
 | `limit` | Entries per page (default: 50, max: 100) |
 | `action` | Filter by action type (e.g. `ROLE_CREATED`, `ROLE_DELETED`) |
+| `ip` | Filter by source IP address |
 | `from` | Filter entries after this ISO 8601 date |
 | `to` | Filter entries before this ISO 8601 date |
 
@@ -558,6 +597,71 @@ Manage AI feature bundles (install/uninstall AI model packages in the Docker env
 | `POST` | `/api/v1/admin/features/:bundleId/install` | Admin (`features:manage`) | Install a feature bundle (async, returns `jobId` for progress tracking) |
 | `POST` | `/api/v1/admin/features/:bundleId/uninstall` | Admin (`features:manage`) | Uninstall a feature bundle and clean up model files |
 | `GET` | `/api/v1/admin/features/disk-usage` | Admin (`features:manage`) | Get total disk usage of AI models |
+| `POST` | `/api/v1/admin/features/import` | Admin (`features:manage`) | Import an offline AI bundle archive |
+
+## Admin Operations
+
+Operational endpoints for observability, support, usage reporting, and backup status.
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| `GET` | `/api/v1/admin/log-level` | Admin (`settings:write`) | Read the current runtime log level |
+| `POST` | `/api/v1/admin/log-level` | Admin (`settings:write`) | Change the runtime log level (`fatal`, `error`, `warn`, `info`, `debug`, `trace`, or `silent`) |
+| `GET` | `/api/v1/metrics` | Admin (`system:health`) | Prometheus metrics in text format |
+| `GET` | `/api/v1/admin/support-bundle` | Admin (`system:health`) | Download a redacted diagnostic support bundle ZIP |
+| `GET` | `/api/v1/admin/usage` | Admin (`audit:read`) | Usage dashboard data, with optional `days` query parameter |
+| `GET` | `/api/v1/admin/backup-status` | Admin (`system:health`) | Read last backup metadata and freshness status |
+| `POST` | `/api/v1/admin/backup-status` | Admin (`system:health`) | Record a completed backup (`type`, optional `sizeBytes`, optional `notes`) |
+
+## Enterprise APIs
+
+These routes are license-gated by their related enterprise feature. They still require the listed SnapOtter permission.
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| `GET` | `/api/v1/enterprise/audit/export` | Admin (`audit:read`) | Export audit entries as JSON or CSV with filters |
+| `GET` | `/api/v1/enterprise/config/export` | Admin (`system:health`) | Export redacted instance config, custom roles, and teams |
+| `POST` | `/api/v1/enterprise/config/import` | Admin (`system:health`) | Import config, with optional dry run |
+| `GET` | `/api/v1/enterprise/ip-allowlist` | Admin (`security:manage`) | Read configured CIDR allowlist |
+| `PUT` | `/api/v1/enterprise/ip-allowlist` | Admin (`security:manage`) | Update CIDR allowlist with self-lockout prevention |
+| `GET` | `/api/v1/enterprise/legal-hold` | Admin (`compliance:manage`) | List user and team legal holds |
+| `PUT` | `/api/v1/enterprise/legal-hold` | Admin (`compliance:manage`) | Apply or release a legal hold on a user or team |
+| `POST` | `/api/v1/enterprise/scim/token` | Admin (`users:manage`) | Generate a SCIM bearer token, returned once |
+| `DELETE` | `/api/v1/enterprise/scim/token` | Admin (`users:manage`) | Revoke the current SCIM bearer token |
+| `GET` | `/api/v1/enterprise/siem/config` | Admin (`webhooks:manage`) | Read SIEM forwarding config |
+| `PUT` | `/api/v1/enterprise/siem/config` | Admin (`webhooks:manage`) | Update SIEM forwarding config |
+| `GET` | `/api/v1/enterprise/webhooks` | Admin (`webhooks:manage`) | List webhook destinations |
+| `POST` | `/api/v1/enterprise/webhooks` | Admin (`webhooks:manage`) | Create a webhook destination |
+| `PUT` | `/api/v1/enterprise/webhooks/:index` | Admin (`webhooks:manage`) | Update a webhook destination |
+| `DELETE` | `/api/v1/enterprise/webhooks/:index` | Admin (`webhooks:manage`) | Delete a webhook destination |
+| `POST` | `/api/v1/enterprise/webhooks/:index/test` | Admin (`webhooks:manage`) | Send a test webhook payload |
+| `POST` | `/api/v1/enterprise/users/:id/export` | Admin (`compliance:manage`) | Start a GDPR user export job |
+| `GET` | `/api/v1/enterprise/users/:id/export/:jobId` | Admin (`compliance:manage`) | Read GDPR export status and download URL |
+| `DELETE` | `/api/v1/enterprise/users/:id/purge` | Admin (`compliance:manage`) | Permanently purge a user's data after confirmation |
+| `DELETE` | `/api/v1/enterprise/teams/:id/purge` | Admin (`compliance:manage`) | Permanently purge a team's data after confirmation |
+| `GET` | `/api/v1/admin/version` | Admin (`system:health`) | Read app, build, Node, and schema version metadata |
+| `GET` | `/api/v1/admin/migrations/pending` | Admin (`system:health`) | Compare packaged migrations with applied migrations |
+| `GET` | `/api/v1/admin/upgrade-check` | Admin (`system:health`) | Run upgrade readiness checks |
+
+### SCIM 2.0
+
+SCIM discovery endpoints are public. User and group endpoints require the SCIM bearer token generated above.
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| `GET` | `/api/v1/scim/v2/ServiceProviderConfig` | Public | SCIM server capabilities |
+| `GET` | `/api/v1/scim/v2/Schemas` | Public | SCIM schema discovery |
+| `GET` | `/api/v1/scim/v2/ResourceTypes` | Public | SCIM resource type discovery |
+| `GET` | `/api/v1/scim/v2/Users` | SCIM token | List users, with optional SCIM filter |
+| `POST` | `/api/v1/scim/v2/Users` | SCIM token | Create a user |
+| `GET` | `/api/v1/scim/v2/Users/:id` | SCIM token | Get a user |
+| `PUT` | `/api/v1/scim/v2/Users/:id` | SCIM token | Replace a user |
+| `DELETE` | `/api/v1/scim/v2/Users/:id` | SCIM token | Soft deactivate a user |
+| `GET` | `/api/v1/scim/v2/Groups` | SCIM token | List teams as SCIM groups |
+| `POST` | `/api/v1/scim/v2/Groups` | SCIM token | Create a team |
+| `GET` | `/api/v1/scim/v2/Groups/:id` | SCIM token | Get a team |
+| `PUT` | `/api/v1/scim/v2/Groups/:id` | SCIM token | Replace a team and group membership |
+| `DELETE` | `/api/v1/scim/v2/Groups/:id` | SCIM token | Delete a team |
 
 ## Meme Templates
 
@@ -588,5 +692,7 @@ All errors return JSON:
 | 403 | Insufficient permissions |
 | 404 | Resource not found |
 | 413 | File too large (see `MAX_UPLOAD_SIZE_MB`) |
+| 422 | Processing failed after validation |
 | 429 | Rate limited (see `RATE_LIMIT_PER_MIN`) |
+| 501 | Required AI feature bundle is not installed (`FEATURE_NOT_INSTALLED`) |
 | 500 | Internal server error |

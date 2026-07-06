@@ -44,4 +44,4 @@ curl -X POST http://localhost:1349/api/v1/tools/audio/trim-audio \
 - Times are specified in seconds and can include decimals (e.g. `10.5`).
 - The `endS` value must be greater than `startS`.
 - If `endS` exceeds the audio duration, the file is trimmed to the end.
-- Output format matches the input format.
+- Output usually keeps the input container. AAC input is written as M4A, and unsupported decode-only inputs fall back to MP3.

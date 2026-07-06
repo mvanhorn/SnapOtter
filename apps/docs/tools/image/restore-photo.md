@@ -12,7 +12,7 @@ Fix scratches, tears, and damage on old photos using a multi-step AI pipeline. C
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
-**Model bundle:** `photo-restoration` (800 MB - 1 GB)
+**Model bundle:** `photo-restoration` (4-5 GB)
 
 ## Parameters
 
@@ -83,7 +83,7 @@ data: {"phase":"processing","stage":"Enhancing faces...","percent":60}
 
 ## Notes
 
-- Requires the `photo-restoration` model bundle to be installed (800 MB - 1 GB).
+- Requires the `photo-restoration` model bundle to be installed (4-5 GB).
 - The pipeline runs multiple AI steps sequentially: scratch repair, face enhancement (GFPGAN), denoising, and optionally colorization.
 - The `steps` array in the result shows which processing steps were actually executed.
 - `scratchCoverage` is an estimated percentage of the image area that had scratch damage.

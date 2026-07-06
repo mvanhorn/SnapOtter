@@ -14,7 +14,7 @@ SCIM provisioning requires an **enterprise** license with the `scim` feature. It
 
 - A running SnapOtter instance reachable at a public URL
 - An enterprise license key with the `scim` feature
-- Admin access to SnapOtter (the `users:manage` permission is required to generate a SCIM token)
+- Admin access to SnapOtter (the `users:manage` permission is required to generate or revoke a SCIM token)
 - Admin access to your identity provider's provisioning settings
 
 ## Quick start

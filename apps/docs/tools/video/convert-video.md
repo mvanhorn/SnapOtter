@@ -1,10 +1,10 @@
 ---
-description: Convert videos between MP4, MOV, and WebM.
+description: Convert videos between MP4, MOV, WebM, AVI, and MKV.
 ---
 
 # Convert Video
 
-Convert videos between MP4, MOV, and WebM formats with configurable quality presets.
+Convert videos between MP4, MOV, WebM, AVI, and MKV formats with configurable quality presets.
 
 ## API Endpoint
 
@@ -16,7 +16,7 @@ Accepts multipart form data with a video file and a JSON `settings` field. This 
 
 | Parameter | Type | Required | Default | Description |
 |-----------|------|----------|---------|-------------|
-| format | string | No | `"mp4"` | Output format: `mp4`, `mov`, `webm` |
+| format | string | No | `"mp4"` | Output format: `mp4`, `mov`, `webm`, `avi`, `mkv` |
 | quality | string | No | `"balanced"` | Quality preset: `high`, `balanced`, `small` |
 
 ## Example Request
@@ -40,5 +40,5 @@ curl -X POST http://localhost:1349/api/v1/tools/video/convert-video \
 ## Notes
 
 - The `high` quality preset produces the best visual fidelity but larger files. The `small` preset aggressively compresses for minimum file size.
-- WebM output uses VP9 encoding. MP4 and MOV use H.264.
+- WebM output uses VP9 encoding. MP4 and MOV use H.264. AVI and MKV are available for legacy or archival workflows.
 - Progress updates are available via SSE at `GET /api/v1/jobs/{jobId}/progress` until the job completes.

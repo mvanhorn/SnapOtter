@@ -42,4 +42,4 @@ curl -X POST http://localhost:1349/api/v1/tools/audio/noise-reduction \
 
 - `light` preserves more detail but removes less noise. `strong` removes more noise but may introduce subtle artifacts.
 - Best results on recordings with consistent background noise (fan hum, air conditioning, static).
-- Output format matches the input format.
+- Output usually keeps the input container. AAC input is written as M4A, and unsupported decode-only inputs fall back to MP3.

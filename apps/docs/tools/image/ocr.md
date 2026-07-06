@@ -10,9 +10,9 @@ Extract text from images using AI-powered optical character recognition. Support
 
 `POST /api/v1/tools/image/ocr`
 
-**Processing:** Synchronous (returns extracted text directly, though progress is reported via SSE if a `clientJobId` is provided)
+**Processing:** Synchronous JSON response. If `clientJobId` is provided, progress is also reported through SSE.
 
-**Model bundle:** `ocr` (3-4 GB)
+**Model bundle:** `ocr` (5-6 GB)
 
 ## Parameters
 
@@ -45,7 +45,7 @@ curl -X POST http://localhost:1349/api/v1/tools/image/ocr \
 
 ### Progress (SSE, optional)
 
-If a `clientJobId` is provided, progress events are streamed:
+If a `clientJobId` form field is provided, progress events are streamed:
 
 ```
 event: progress
@@ -54,8 +54,8 @@ data: {"phase":"processing","stage":"Recognizing text...","percent":50}
 
 ## Notes
 
-- Requires the `ocr` model bundle to be installed (3-4 GB).
-- Unlike most AI tools, OCR returns a synchronous JSON response with extracted text (not an image download URL).
+- Requires the `ocr` model bundle to be installed (5-6 GB).
+- OCR returns extracted text directly rather than an image download URL.
 - Uses a fallback chain: if a higher-quality tier crashes (e.g., PaddleOCR segfault), it automatically retries with the next lower tier.
 - If a tier returns empty text without crashing, it also falls back to the next tier.
 - Quality tiers map to engines: `fast` = Tesseract, `balanced` = PaddleOCR v5, `best` = PaddleOCR VL.

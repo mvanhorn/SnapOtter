@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { apiToolPath, TOOLS } from "@snapotter/shared";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildTestApp, type TestApp } from "../test-server";
@@ -85,6 +87,46 @@ describe("API docs", () => {
     const missing = expectedPaths.filter((path) => !paths.has(path));
 
     expect(missing, `OpenAPI missing docs metadata paths: ${missing.join(", ")}`).toEqual([]);
+  });
+
+  it("documents the surrounding non-tool API surface in the spec", async () => {
+    const res = await testApp.app.inject({
+      method: "GET",
+      url: "/api/v1/openapi.yaml",
+    });
+    const paths = openApiPathSet(res.body);
+    const expectedPaths = [
+      "/api/v1/readyz",
+      "/api/v1/jobs/{jobId}/cancel",
+      "/api/v1/preferences",
+      "/api/auth/mfa/enroll",
+      "/api/auth/oidc/login",
+      "/api/auth/saml/metadata",
+      "/api/v1/files/{id}/preview",
+      "/api/v1/preview/generate",
+      "/api/v1/admin/log-level",
+      "/api/v1/metrics",
+      "/api/v1/enterprise/scim/token",
+      "/api/v1/scim/v2/ServiceProviderConfig",
+    ];
+    const missing = expectedPaths.filter((path) => !paths.has(path));
+
+    expect(missing, `OpenAPI missing non-tool API paths: ${missing.join(", ")}`).toEqual([]);
+  });
+
+  it("keeps published docs counts aligned with the live catalog", () => {
+    const root = process.cwd();
+    const gettingStarted = readFileSync(join(root, "apps/docs/guide/getting-started.md"), "utf8");
+    const deployment = readFileSync(join(root, "apps/docs/guide/deployment.md"), "utf8");
+    const architecture = readFileSync(join(root, "apps/docs/guide/architecture.md"), "utf8");
+
+    expect(gettingStarted).toContain("| **Image** | 105 |");
+    expect(gettingStarted).toContain("| **Video** | 57 |");
+    expect(gettingStarted).toContain("| **Audio** | 27 |");
+    expect(gettingStarted).toContain("| **PDF / Document** | 42 |");
+    expect(gettingStarted).toContain("| **Files** | 10 |");
+    expect(deployment).not.toContain("All 138 non-AI tools");
+    expect(architecture).toContain("241 tool routes");
   });
 
   it("serves an LLM summary with live catalog tools", async () => {

@@ -1,6 +1,6 @@
 # SnapOtter
 
-Open-source, self-hostable file processing suite with 200+ tools across image, video, audio, PDF, and files, plus a layer-based image editor and local AI. Runs as a single container with embedded Postgres + Redis for quick start, or a Docker Compose stack for production. No external services. Dual-licensed AGPLv3 and commercial.
+Open-source, self-hostable file processing suite with 241 catalog tool routes across image, video, audio, PDF, and files, plus a layer-based image editor and local AI. Runs as a single container with embedded Postgres + Redis for quick start, or a Docker Compose stack for production. No external services. Dual-licensed AGPLv3 and commercial.
 
 All processing happens locally. Files never leave your infrastructure.
 
@@ -40,7 +40,7 @@ Then run docker compose up -d, open http://localhost:1349, and log in with admin
 
 ## Tools
 
-200+ tools across 5 modalities: image, video, audio, PDF, and files. The AI tools run locally on your hardware with no cloud APIs.
+241 catalog tool routes across 5 modalities: image, video, audio, PDF, and files. The AI tools run locally on your hardware with no cloud APIs.
 
 ### Image
 
@@ -83,10 +83,11 @@ API keys support scoped permissions that intersect with user role permissions.
 Processing a file:
   POST /api/v1/tools/:section/:toolId
   Content-Type: multipart/form-data
-  Body: file (binary), settings (JSON string)
-  Response: { jobId, downloadUrl, originalSize, processedSize }
+  Body: file (binary), settings (JSON string), optional clientJobId, optional fileId
+  Fast response: { jobId, downloadUrl, originalSize, processedSize }
+  Async response: { jobId, async: true }
 
-Long-running tools (video, audio, AI) return 202 Accepted and stream progress via SSE:
+Fast tools usually return 200, but any queued tool can return 202 if it exceeds the synchronous wait window. Long-running tools and queued jobs stream progress via SSE:
   GET /api/v1/jobs/:jobId/progress (EventSource)
 
 Pipelines (chained tool workflows):
@@ -97,6 +98,12 @@ Pipelines (chained tool workflows):
   POST /api/v1/pipeline/batch
 
 Batch processing: POST /api/v1/tools/:section/:toolId/batch (multiple files in, ZIP archive out).
+
+Surrounding APIs:
+- Auth: local login, OIDC, SAML, MFA, users, sessions, API keys
+- Files: uploads, library versions, downloads, thumbnails, previews, URL imports
+- Admin: health, readiness, metrics, log level, support bundles, usage, backup status, AI bundles
+- Enterprise: audit export, config import/export, IP allowlist, legal hold, SCIM, SIEM, webhooks, GDPR lifecycle, upgrade checks
 
 ## Tech Stack
 

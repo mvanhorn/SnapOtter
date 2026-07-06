@@ -37,11 +37,18 @@ function isPublic(op: PathOperation): boolean {
 
 function generateLlmsTxt(spec: OpenAPISpec): string {
   const lines: string[] = [];
+  const customModes: Record<string, string> = {
+    ocr: "sync-json",
+    "content-aware-resize": "sync",
+    "passport-photo": "two-phase",
+  };
   lines.push(`# ${spec.info.title}`);
   lines.push("");
   lines.push(
-    "> Self-hosted file processing API with 200+ tools across image, video, audio, document, and data. Convert, compress, edit, transcribe, OCR, and more.",
+    "> Self-hosted file processing API with 241 catalog tool routes across image, video, audio, document, and file workflows. Convert, compress, edit, transcribe, OCR, and more.",
   );
+  lines.push("");
+  lines.push("Base URL: `/api/v1`");
   lines.push("");
   lines.push("## Docs");
   lines.push("- [Interactive API Reference](/api/docs): Full interactive API documentation");
@@ -65,7 +72,7 @@ function generateLlmsTxt(spec: OpenAPISpec): string {
     const tools = TOOLS.filter((tool) => toolSection(tool) === section.id);
     lines.push(`- ${section.name} (${tools.length} tools)`);
     for (const tool of tools) {
-      const mode = tool.executionHint === "long" ? "async" : "sync";
+      const mode = customModes[tool.id] ?? (tool.executionHint === "long" ? "async" : "sync");
       lines.push(`  - ${tool.name} - ${tool.description} (${tool.id}, ${mode})`);
     }
   }
@@ -74,6 +81,41 @@ function generateLlmsTxt(spec: OpenAPISpec): string {
   lines.push("## Authentication");
   lines.push("- Session token via `POST /api/auth/login` -> `Authorization: Bearer <token>`");
   lines.push("- API key (prefixed `si_`) -> `Authorization: Bearer si_...`");
+  lines.push(
+    "- MFA login challenges return `requiresMfa` and must be completed through `/api/auth/mfa/complete`.",
+  );
+  lines.push("");
+  lines.push("## Processing Contract");
+  lines.push(
+    "- Tool requests use `multipart/form-data` with `file`, optional JSON `settings`, optional `clientJobId`, and optional `fileId`.",
+  );
+  lines.push(
+    "- Fast tools usually return `200` with `jobId`, `downloadUrl`, `originalSize`, and `processedSize`.",
+  );
+  lines.push(
+    "- Any queued tool can return `202` with `jobId` and `async: true` when it is long-running or exceeds the synchronous wait window.",
+  );
+  lines.push(
+    '- Progress streams from `GET /api/v1/jobs/:jobId/progress` as SSE frames with `type: "single"` or `type: "batch"`.',
+  );
+  lines.push(
+    "- Missing AI bundles return `501` with code `FEATURE_NOT_INSTALLED`, feature id, feature name, and estimated size.",
+  );
+  lines.push("");
+  lines.push("## Surrounding APIs");
+  lines.push("- Auth: local login, OIDC, SAML, MFA, user administration, sessions.");
+  lines.push(
+    "- Files: upload, library versions, downloads, thumbnails, file previews, URL import.",
+  );
+  lines.push(
+    "- Workflows: batch routes, pipeline execute/save/list/delete, job cancel and progress.",
+  );
+  lines.push(
+    "- Admin: health, readiness, metrics, log level, support bundle, usage, backup status, feature bundles.",
+  );
+  lines.push(
+    "- Enterprise: audit export, config import/export, IP allowlist, legal hold, SCIM, SIEM, webhooks, GDPR lifecycle, upgrade checks.",
+  );
 
   return lines.join("\n");
 }

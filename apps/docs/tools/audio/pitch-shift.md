@@ -43,4 +43,4 @@ curl -X POST http://localhost:1349/api/v1/tools/audio/pitch-shift \
 - Positive values raise the pitch; negative values lower it.
 - A shift of 12 semitones equals one octave up; -12 equals one octave down.
 - Playback duration stays the same regardless of the shift amount.
-- Output format matches the input format.
+- Output usually keeps the input container. AAC input is written as M4A, and unsupported decode-only inputs fall back to MP3.

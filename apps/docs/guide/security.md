@@ -296,7 +296,7 @@ docker run --rm -v SnapOtter-data:/data -v $(pwd)/backup:/backup \
     --exclude='ai' --exclude='venv' -C /data .
 ```
 
-AI models total up to 14 GB across all bundles. Since they are re-downloadable, exclude `/data/ai/` and `/data/venv/` from backups to save space. Only the database and user files are critical.
+AI models total up to about 24 GB across all bundles. Since they are re-downloadable, exclude `/data/ai/` and `/data/venv/` from backups to save space. Only the database and user files are critical.
 
 ## Compliance Artifacts
 

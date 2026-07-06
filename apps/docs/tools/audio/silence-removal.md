@@ -44,4 +44,4 @@ curl -X POST http://localhost:1349/api/v1/tools/audio/silence-removal \
 - A higher (less negative) threshold is more aggressive and removes quieter passages as well as true silence.
 - Increase `minSilenceS` to only strip longer pauses while keeping short natural gaps.
 - Useful for cleaning up podcast recordings, lectures, and voice memos.
-- Output format matches the input format.
+- Output usually keeps the input container. AAC input is written as M4A, and unsupported decode-only inputs fall back to MP3.

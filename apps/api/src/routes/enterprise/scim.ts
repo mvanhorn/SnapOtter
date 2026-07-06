@@ -238,7 +238,7 @@ export async function registerScimRoutes(app: FastifyInstance): Promise<void> {
     async (_request: FastifyRequest, reply: FastifyReply) => {
       return reply.send({
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"],
-        documentationUri: "https://docs.snapotter.com/enterprise/scim",
+        documentationUri: "https://docs.snapotter.com/guide/scim",
         patch: { supported: true },
         bulk: { supported: false, maxOperations: 0, maxPayloadSize: 0 },
         filter: { supported: true, maxResults: 200 },

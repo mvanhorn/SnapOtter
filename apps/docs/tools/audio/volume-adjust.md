@@ -42,4 +42,4 @@ curl -X POST http://localhost:1349/api/v1/tools/audio/volume-adjust \
 
 - Positive values increase volume; negative values decrease it.
 - Large positive gains can cause clipping. Use normalize-audio for loudness-safe leveling.
-- Output format matches the input format.
+- Output usually keeps the input container. AAC input is written as M4A, and unsupported decode-only inputs fall back to MP3.

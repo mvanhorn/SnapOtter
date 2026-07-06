@@ -111,14 +111,14 @@ pnpm dev
 
 ## What You Can Do
 
-### File Processing (200+ Tools)
+### File Processing (241 Tools)
 
 | Modality | Count | Example Tools |
 |----------|-------|---------------|
-| **Image** | 64 | Resize, Crop, Compress, Convert, Remove Background, Upscale, OCR, Watermark, Collage, Colorize, GIF Tools |
-| **Video** | 29 | Trim, Crop, Compress, Convert, Merge, Extract Audio, Auto Subtitles, Video to GIF, Resize, Stabilize |
-| **Audio** | 17 | Trim, Merge, Convert, Normalize, Noise Reduction, Transcribe, Pitch Shift, Fade, Ringtone Maker |
-| **PDF / Document** | 37 | Merge, Split, Compress, OCR, Watermark, Redact, Word to PDF, Excel to PDF, Rotate, Protect, Repair |
+| **Image** | 105 | Resize, Crop, Compress, Convert, Remove Background, Upscale, OCR, Watermark, Collage, Colorize, GIF Tools, format presets |
+| **Video** | 57 | Trim, Crop, Compress, Convert, Merge, Extract Audio, Auto Subtitles, Video to GIF, Resize, Stabilize, format presets |
+| **Audio** | 27 | Trim, Merge, Convert, Normalize, Noise Reduction, Transcribe, Pitch Shift, Fade, Ringtone Maker, format presets |
+| **PDF / Document** | 42 | Merge, Split, Compress, OCR, Watermark, Redact, Word to PDF, Excel to PDF, Rotate, Protect, Repair |
 | **Files** | 10 | CSV to JSON, JSON to XML, Merge CSVs, Split CSV, Create ZIP, Extract ZIP, Chart Maker, YAML/JSON |
 
 ### Pipelines
@@ -130,7 +130,7 @@ Chain tools into multi-step workflows and apply them to one image or a whole bat
 3. Run on a single file - or an entire batch at once.
 4. Save the pipeline for later reuse.
 
-Pipelines have unlimited steps by default.
+Pipelines allow 20 steps by default. Set `MAX_PIPELINE_STEPS=0` to make the limit unlimited.
 
 ### File Library
 

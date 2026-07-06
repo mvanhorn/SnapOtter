@@ -12,7 +12,7 @@ Restore and enhance faces in images using AI models (GFPGAN/CodeFormer).
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
-**Model bundle:** `upscale-enhance` (4-5 GB)
+**Model bundles:** `upscale-enhance` (5-6 GB) and `face-detection` (200-300 MB)
 
 ## Parameters
 
@@ -74,7 +74,7 @@ data: {"phase":"processing","stage":"Enhancing faces...","percent":60}
 
 ## Notes
 
-- Requires the `upscale-enhance` model bundle to be installed (4-5 GB).
+- Requires both the `upscale-enhance` model bundle (5-6 GB) and the `face-detection` model bundle (200-300 MB).
 - GFPGAN produces more aggressive enhancement; CodeFormer better preserves identity. `auto` selects the best model for the input.
 - Output is always PNG format for maximum quality.
 - A WebP preview is generated alongside the full-resolution output for faster frontend display.

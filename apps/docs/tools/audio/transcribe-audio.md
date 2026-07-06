@@ -43,7 +43,7 @@ Track progress via SSE at `GET /api/v1/jobs/{jobId}/progress`. When the job comp
 
 ## Notes
 
-- Requires the **transcription** feature bundle to be installed. Returns `501 Not Implemented` if the bundle is not available.
+- Requires the **transcription** feature bundle to be installed. Returns `501` with code `FEATURE_NOT_INSTALLED`, the missing `feature`, `featureName`, and `estimatedSize` if the bundle is not available.
 - Uses faster-whisper for transcription. Language `auto` detects the spoken language automatically.
 - `srt` and `vtt` formats include timestamps for each segment, suitable for subtitles.
 - `txt` format returns plain text without timestamps.

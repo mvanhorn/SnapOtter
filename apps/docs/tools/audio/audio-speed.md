@@ -42,4 +42,4 @@ curl -X POST http://localhost:1349/api/v1/tools/audio/audio-speed \
 
 - A factor of `0.25` plays at quarter speed (4x longer). A factor of `4` plays at quadruple speed (4x shorter).
 - Pitch is preserved while speed changes (time-stretch). Use pitch-shift to adjust pitch independently.
-- Output format matches the input format.
+- Output usually keeps the input container. AAC input is written as M4A, and unsupported decode-only inputs fall back to MP3.

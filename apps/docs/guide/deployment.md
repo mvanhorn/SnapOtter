@@ -228,7 +228,7 @@ These numbers come from benchmarks across a range of systems, from a modern amd6
 | Disk | ~5.5 GB (image) + data volume |
 | GPU | Not required |
 
-Every non-AI tool — image (resize, crop, convert, compress, adjust, watermark…), video (trim, mute, remux), audio (convert, normalize, trim), PDF (merge, split, compress, rotate, protect), and data/file conversions — runs on modest hardware. Most operations finish in well under a second even on a large file: a 2.7 MB image resizes in ~0.05 s and re-encodes to WebP in ~2 s.
+All 222 non-AI catalog tools - image (resize, crop, convert, compress, adjust, watermark), video (trim, mute, remux), audio (convert, normalize, trim), PDF (merge, split, compress, rotate, protect), file conversions, and dedicated conversion presets - run on modest hardware. Most operations finish in well under a second even on a large file: a 2.7 MB image resizes in ~0.05 s and re-encodes to WebP in ~2 s.
 
 The memory floor is real, from a Docker resource-limit sweep: **512 MB cannot start the stack** (even a single image resize is killed), **1 GB** handles single-file operations but a multi-file batch runs out of memory, and **2 GB / 2 cores** is the smallest configuration that handles batches comfortably.
 
@@ -248,7 +248,7 @@ deploy:
 |---|---|
 | CPU | 4 cores |
 | RAM | 4 GB |
-| Disk | 3 GB (image) + 14 GB (AI models) + workspace |
+| Disk | 3 GB (image) + 24 GB (AI models) + workspace |
 | GPU | Not required (CPU fallback) |
 
 **Installing the AI bundles is what pushes RAM to 4 GB.** With no AI installed the app idles around 360 MB; with all seven bundles installed it holds ~2.6 GB resident, because the Python AI sidecar pre-loads its models (background removal, upscaling, OCR, transcription, face detection, restoration) at startup. Non-AI installs stay light; AI installs need ≥4 GB.
@@ -268,13 +268,13 @@ AI model download sizes:
 
 | Bundle | Disk Size |
 |---|---|
-| Background removal | 3-4 GB |
-| Upscale + Face enhance + Noise removal | 4-5 GB |
+| Background removal | 4-5 GB |
+| Upscale + Face enhance + Noise removal | 5-6 GB |
 | Face detection | 200-300 MB |
 | Object eraser + Colorize | 1-2 GB |
-| OCR | 3-4 GB |
-| Photo restoration | 800 MB - 1 GB |
-| **All bundles** | **~14 GB** |
+| OCR | 5-6 GB |
+| Photo restoration | 4-5 GB |
+| **All bundles** | **~24 GB** |
 
 ```yaml
 deploy:

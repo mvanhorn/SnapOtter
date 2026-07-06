@@ -14,7 +14,7 @@ SnapOtter ships three built-in roles, 17 granular permissions, and support for c
 
 ### Creating users
 
-Admins can create users through the admin panel or the `POST /api/auth/users` endpoint. Each user has a username, role, team assignment, and an optional email address.
+Admins can create users through the admin panel or the `POST /api/auth/register` endpoint. Each user has a username, role, team assignment, and an optional email address.
 
 ### Default admin
 
@@ -90,12 +90,12 @@ All 17 permissions. Full control over the instance.
 
 ## Custom roles
 
-Admins with the `users:manage` permission can create custom roles through the admin panel or the roles API.
+Admins with the `security:manage` permission can create custom roles through the admin panel or the roles API. Listing roles requires `audit:read`.
 
 ### Creating a custom role
 
 ```bash
-curl -X POST http://localhost:13490/api/v1/roles \
+curl -X POST http://localhost:1349/api/v1/roles \
   -H "Authorization: Bearer si_..." \
   -H "Content-Type: application/json" \
   -d '{
@@ -167,7 +167,7 @@ Users can generate API keys for programmatic access. Each key uses the `si_` pre
 API keys can optionally carry a `permissions` array. When set, the effective permissions for a request are the **intersection** of the user's role permissions and the key's scoped permissions. This means an API key can never escalate beyond the user's own permissions.
 
 ```bash
-curl -X POST http://localhost:13490/api/v1/api-keys \
+curl -X POST http://localhost:1349/api/v1/api-keys \
   -H "Authorization: Bearer si_..." \
   -H "Content-Type: application/json" \
   -d '{

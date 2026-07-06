@@ -12,7 +12,7 @@ AI super-resolution enhancement using Real-ESRGAN. Upscales images 2x-4x while p
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
-**Model bundle:** `upscale-enhance` (4-5 GB)
+**Model bundle:** `upscale-enhance` (5-6 GB)
 
 ## Parameters
 
@@ -73,7 +73,7 @@ data: {"phase":"processing","stage":"Upscaling...","percent":60}
 
 ## Notes
 
-- Requires the `upscale-enhance` model bundle to be installed (4-5 GB).
+- Requires the `upscale-enhance` model bundle to be installed (5-6 GB).
 - Uses Real-ESRGAN when available; falls back to Lanczos interpolation if the AI model is unavailable.
 - The `faceEnhance` option applies GFPGAN face restoration during upscaling for better face quality.
 - For non-browser-previewable output formats (HEIC, JXL, TIFF), a WebP preview is generated alongside the main output.

@@ -43,4 +43,4 @@ curl -X POST http://localhost:1349/api/v1/tools/audio/fade-audio \
 
 - Set either value to `0` to skip that fade direction. At least one must be greater than 0.
 - The fade duration is clamped to the audio length if it exceeds it.
-- Output format matches the input format.
+- Output usually keeps the input container. AAC input is written as M4A, and unsupported decode-only inputs fall back to MP3.

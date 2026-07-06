@@ -51,7 +51,7 @@ curl -X POST http://localhost:1349/api/v1/tools/image/content-aware-resize \
 
 ## Notes
 
-- This tool returns a synchronous response (not 202 async). Processing happens inline.
+- This custom route currently returns a synchronous 200 response.
 - Uses the `caire` seam carving library for content-aware resizing.
 - Only reduces dimensions (removes seams). Cannot expand an image beyond its original size.
 - The `protectFaces` option uses AI face detection to mark face regions as high-energy, preventing seams from passing through faces.

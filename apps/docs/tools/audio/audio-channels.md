@@ -43,4 +43,4 @@ curl -X POST http://localhost:1349/api/v1/tools/audio/audio-channels \
 - `stereo-to-mono` mixes both channels into a single mono track.
 - `mono-to-stereo` duplicates the mono channel to both left and right.
 - `swap` exchanges the left and right channels of a stereo file.
-- Output format matches the input format.
+- Output usually keeps the input container. AAC input is written as M4A, and unsupported decode-only inputs fall back to MP3.

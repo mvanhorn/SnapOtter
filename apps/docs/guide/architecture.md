@@ -49,7 +49,7 @@ Shared TypeScript types, constants (like `APP_VERSION` and tool definitions), an
 
 ### API (`apps/api`)
 
-A Fastify v5 server exposing 240 tool routes across five modalities (image, video, audio, document, data) that handles:
+A Fastify v5 server exposing 241 tool routes across five modalities (image, video, audio, document, file) that handles:
 - File uploads, temporary workspace management, and persistent file storage
 - User file library with version chains (`user_files` table) - each processed result links back to its source file and records which tool was applied, with auto-generated thumbnails for the Files page
 - Tool execution (routes each tool request to the image engine or AI bridge)
@@ -58,8 +58,8 @@ A Fastify v5 server exposing 240 tool routes across five modalities (image, vide
 - User authentication, RBAC (admin/user roles with a full permission set), API key management, and rate limiting
 - Teams management - admin-only CRUD; users are assigned to a team via the `team` field on their profile
 - Runtime settings - a key-value store in the `settings` table that controls `disabledTools`, `enableExperimentalTools`, `loginAttemptLimit`, and other operational knobs without redeploying
-- Custom branding - logo upload endpoint; the uploaded image is stored at `data/branding/logo.png` and served to the frontend
-- Swagger/OpenAPI documentation at `/api/docs`
+- Custom branding and runtime preferences through database-backed settings
+- Scalar/OpenAPI documentation at `/api/docs`
 - Serving the built frontend as a SPA in production
 
 Key dependencies: Fastify, Drizzle ORM (pg-core, node-postgres), Sharp, BullMQ, ioredis, Zod for validation.

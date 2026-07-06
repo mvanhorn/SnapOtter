@@ -12,7 +12,7 @@ One-click auto-improve with smart analysis. Analyzes the image and applies expos
 
 **Processing:** Synchronous (uses `createToolRoute` factory, returns result directly)
 
-**Model bundle:** None required for basic enhancement. The `upscale-enhance` bundle (4-5 GB) is used only when `deepEnhance` is enabled (for AI noise removal via SCUNet).
+**Model bundle:** None required for basic enhancement. The `upscale-enhance` bundle (5-6 GB) is used only when `deepEnhance` is enabled (for AI noise removal via SCUNet).
 
 ## Parameters
 

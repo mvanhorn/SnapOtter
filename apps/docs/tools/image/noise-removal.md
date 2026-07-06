@@ -12,7 +12,7 @@ AI-powered noise and grain removal with multi-tier quality options, using the Py
 
 **Processing:** Asynchronous (returns 202, poll `/api/v1/jobs/{jobId}/progress` for status via SSE)
 
-**Model bundle:** `upscale-enhance` (4-5 GB)
+**Model bundle:** `upscale-enhance` (5-6 GB)
 
 ## Parameters
 
@@ -69,7 +69,7 @@ data: {"phase":"processing","stage":"Denoising...","percent":65}
 
 ## Notes
 
-- Requires the `upscale-enhance` model bundle to be installed (4-5 GB).
+- Requires the `upscale-enhance` model bundle to be installed (5-6 GB).
 - Quality tiers trade speed for quality: `quick` is fastest with basic denoising, `maximum` uses the most thorough multi-pass approach.
 - The `detailPreservation` parameter is critical for textured subjects (fabric, hair, foliage). Higher values prevent the denoiser from smoothing away fine detail.
 - When `format` is set to `"original"`, the output format matches the input file format.

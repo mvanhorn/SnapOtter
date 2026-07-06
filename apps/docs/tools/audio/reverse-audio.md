@@ -38,4 +38,4 @@ curl -X POST http://localhost:1349/api/v1/tools/audio/reverse-audio \
 ## Notes
 
 - The full audio track is reversed from end to start.
-- Output format matches the input format.
+- Output usually keeps the input container. AAC input is written as M4A, and unsupported decode-only inputs fall back to MP3.

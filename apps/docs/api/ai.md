@@ -52,9 +52,9 @@ Each AI tool requires a model bundle to be installed before use. Bundles are ins
 | `background-removal` | 4-5 GB | remove-background, passport-photo, transparency-fixer, background-replace, blur-background |
 | `face-detection` | 200-300 MB | blur-faces, red-eye-removal, smart-crop |
 | `object-eraser-colorize` | 1-2 GB | erase-object, colorize, ai-canvas-expand |
-| `upscale-enhance` | 4-5 GB | upscale, enhance-faces, noise-removal |
-| `photo-restoration` | 800 MB - 1 GB | restore-photo |
-| `ocr` | 3-4 GB | ocr, ocr-pdf |
+| `upscale-enhance` | 5-6 GB | upscale, enhance-faces, noise-removal |
+| `photo-restoration` | 4-5 GB | restore-photo |
+| `ocr` | 5-6 GB | ocr, ocr-pdf |
 | `transcription` | ~600 MB | transcribe-audio, auto-subtitles |
 
 ---
