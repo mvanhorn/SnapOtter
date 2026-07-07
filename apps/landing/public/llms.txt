@@ -69,7 +69,7 @@ SAML SSO (Okta, Azure AD, Google Workspace, any OIDC), SCIM Provisioning, Multi-
 - Docker: single container with Postgres + Redis bundled
 - Kubernetes and bare metal deployment
 - ARM and x86 architectures
-- Layer-based image editor (Konva)
+- Free layer-based image editor with brushes, shapes, filters, curves, and keyboard shortcuts
 - Open source: AGPLv3 with commercial license available
 
 ## Links
