@@ -1545,6 +1545,8 @@ export const th: TranslationKeys = {
       progressLabelBatch: "กำลังขยาย {count} ภาพ",
     },
     "erase-object": {
+      brushMode: "แปรง",
+      lassoMode: "ลาสโซ",
       brushSize: "ขนาดแปรง",
       fine: "ละเอียด",
       wide: "กว้าง",
@@ -1553,6 +1555,7 @@ export const th: TranslationKeys = {
       outputFormat: "รูปแบบเอาต์พุต",
       quality: "คุณภาพ",
       paintHint: "ระบายทับวัตถุที่ต้องการลบ กด Ctrl+Z เพื่อเลิกทำ",
+      lassoHint: "วาดวงรอบวัตถุที่ต้องการลบ กด Ctrl+Z เพื่อเลิกทำ",
       submit: "ลบวัตถุ",
       submitBatch: "ลบทั้งหมด ({count})",
       progressLabel: "กำลังลบวัตถุ",

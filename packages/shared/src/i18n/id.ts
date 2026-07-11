@@ -1565,6 +1565,8 @@ export const id: TranslationKeys = {
       progressLabelBatch: "Memperbesar {count} gambar",
     },
     "erase-object": {
+      brushMode: "Kuas",
+      lassoMode: "Laso",
       brushSize: "Ukuran Kuas",
       fine: "Halus",
       wide: "Lebar",
@@ -1573,6 +1575,8 @@ export const id: TranslationKeys = {
       outputFormat: "Format Output",
       quality: "Kualitas",
       paintHint: "Cat di atas objek yang ingin Anda hapus. Gunakan Ctrl+Z untuk undo.",
+      lassoHint:
+        "Gambar lingkaran di sekeliling objek yang ingin Anda hapus. Gunakan Ctrl+Z untuk undo.",
       submit: "Hapus Objek",
       submitBatch: "Hapus Semua ({count})",
       progressLabel: "Menghapus objek",

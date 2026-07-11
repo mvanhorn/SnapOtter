@@ -1555,6 +1555,8 @@ export const ar: TranslationKeys = {
       progressLabelBatch: "جاري تكبير {count} صورة",
     },
     "erase-object": {
+      brushMode: "فرشاة",
+      lassoMode: "لاسو",
       brushSize: "حجم الفرشاة",
       fine: "دقيق",
       wide: "عريض",
@@ -1563,6 +1565,7 @@ export const ar: TranslationKeys = {
       outputFormat: "صيغة الإخراج",
       quality: "الجودة",
       paintHint: "ارسم فوق الكائنات التي تريد إزالتها. استخدم Ctrl+Z للتراجع.",
+      lassoHint: "ارسم حلقة حول الكائن الذي تريد إزالته. استخدم Ctrl+Z للتراجع.",
       submit: "مسح الكائن",
       submitBatch: "مسح الكل ({count})",
       progressLabel: "جاري مسح الكائن",

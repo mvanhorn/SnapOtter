@@ -1579,6 +1579,8 @@ export const fr: TranslationKeys = {
       progressLabelBatch: "Agrandissement de {count} images",
     },
     "erase-object": {
+      brushMode: "Pinceau",
+      lassoMode: "Lasso",
       brushSize: "Taille du pinceau",
       fine: "Fin",
       wide: "Large",
@@ -1588,6 +1590,8 @@ export const fr: TranslationKeys = {
       quality: "Qualité",
       paintHint:
         "Peignez sur les objets que vous souhaitez supprimer. Utilisez Ctrl+Z pour annuler.",
+      lassoHint:
+        "Tracez une boucle autour de l'objet que vous souhaitez supprimer. Utilisez Ctrl+Z pour annuler.",
       submit: "Effacer l'objet",
       submitBatch: "Tout effacer ({count})",
       progressLabel: "Effacement de l'objet",
