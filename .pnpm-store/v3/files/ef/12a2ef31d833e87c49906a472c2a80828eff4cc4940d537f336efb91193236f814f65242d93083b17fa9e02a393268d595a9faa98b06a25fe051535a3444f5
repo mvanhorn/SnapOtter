@@ -1,0 +1,1 @@
+{"version":3,"file":"mongodb.d.ts","sourceRoot":"","sources":["../../../../src/orchestrion/config/mongodb.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,qBAAqB,EAAE,MAAM,iCAAiC,CAAC;AAG7E,eAAO,MAAM,aAAa,EAAE,qBAAqB,EAAO,CAAC;AAEzD,eAAO,MAAM,eAAe,IAAc,CAAC"}

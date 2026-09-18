@@ -1,4 +1,6 @@
-import { createRequire } from "node:module";
+import fs from "node:fs";
+import nodeModule from "node:module";
+import os from "node:os";
 import { join } from "node:path";
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import { RedisContainer, type StartedRedisContainer } from "@testcontainers/redis";
@@ -6,7 +8,7 @@ import { RedisContainer, type StartedRedisContainer } from "@testcontainers/redi
 // pg and drizzle-orm live in the api workspace's node_modules. Global-setup
 // files run outside Vite's transform pipeline, so vitest resolve.alias does
 // not apply. Use createRequire pointed at the api workspace instead.
-const apiRequire = createRequire(join(process.cwd(), "apps/api/package.json"));
+const apiRequire = nodeModule.createRequire(join(process.cwd(), "apps/api/package.json"));
 const pg = apiRequire("pg") as typeof import("pg");
 const { drizzle } = apiRequire(
   "drizzle-orm/node-postgres",
@@ -101,6 +103,71 @@ export async function setup(): Promise<void> {
 }
 
 export async function teardown(): Promise<void> {
-  await redisContainer?.stop();
-  await container?.stop();
+  let shutdownError: unknown;
+  try {
+    try {
+      await redisContainer?.stop();
+    } catch (err) {
+      shutdownError = err;
+    }
+    try {
+      await container?.stop();
+    } catch (err) {
+      shutdownError ??= err;
+    }
+  } finally {
+    sweepStaleTestWorkspaces();
+  }
+  if (shutdownError !== undefined) throw shutdownError;
+}
+
+// Matches per-fork-env.ts. PID 0 is excluded: kill(0, 0) signals the process group.
+const TEST_WORKSPACE_DIR_RE = /^SnapOtter-test-([1-9]\d*)_([0-9a-f]{8})$/;
+
+function errorCode(err: unknown): string | undefined {
+  return err && typeof err === "object" && "code" in err && typeof err.code === "string"
+    ? err.code
+    : undefined;
+}
+
+function isProcessAbsent(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return false;
+  } catch (err) {
+    return errorCode(err) === "ESRCH";
+  }
+}
+
+function sweepStaleTestWorkspaces(): void {
+  const tmpRoot = os.tmpdir();
+  let entries: fs.Dirent[];
+  try {
+    entries = fs.readdirSync(tmpRoot, { withFileTypes: true });
+  } catch (err) {
+    console.warn(`Failed to list test workspaces in ${tmpRoot}:`, err);
+    return;
+  }
+
+  for (const entry of entries) {
+    const match = TEST_WORKSPACE_DIR_RE.exec(entry.name);
+    if (!match) continue;
+
+    const fullPath = join(tmpRoot, entry.name);
+    try {
+      if (entry.isSymbolicLink()) continue;
+      const stat = fs.lstatSync(fullPath);
+      if (stat.isSymbolicLink() || !stat.isDirectory()) continue;
+
+      const pidText = match[1];
+      const pid = Number(pidText);
+      if (!Number.isSafeInteger(pid) || pid <= 0 || String(pid) !== pidText) continue;
+      if (!isProcessAbsent(pid)) continue;
+
+      fs.rmSync(fullPath, { recursive: true, force: true });
+    } catch (err) {
+      if (errorCode(err) === "ENOENT") continue;
+      console.warn(`Failed to remove stale test workspace ${fullPath}:`, err);
+    }
+  }
 }

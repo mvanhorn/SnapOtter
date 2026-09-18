@@ -1,0 +1,15 @@
+/**
+ * Return the standalone build of `@scalar/api-reference` as a string.
+ *
+ * This implementation reads the script from disk and is what runs during
+ * development (the playground executes the source directly via `tsx`) and in
+ * tests, where `@scalar/api-reference` is available as a workspace dependency.
+ *
+ * For the published package, the Vite build replaces this module with the
+ * script inlined as a string (see `vite.config.ts`). That is what makes the
+ * plugin bundler-safe: the output is self-contained and no longer reads the
+ * file at runtime, so it survives whatever bundler the consuming application
+ * uses (for example when bundling a Fastify app into a Docker image).
+ */
+export declare function getJavaScriptFile(): string;
+//# sourceMappingURL=getJavaScriptFile.d.ts.map

@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import pg from "pg";
@@ -10,6 +11,16 @@ import pg from "pg";
 const suffix = `${process.pid}_${crypto.randomUUID().slice(0, 8).replace(/-/g, "")}`;
 const forkDir = path.join(os.tmpdir(), `SnapOtter-test-${suffix}`);
 process.env.WORKSPACE_PATH = path.join(forkDir, "workspace");
+
+// Register before DB work so a reused worker still removes every workspace it
+// created, even if later setup fails. Must be sync: throwing would replace exit status.
+process.on("exit", () => {
+  try {
+    fs.rmSync(forkDir, { recursive: true, force: true });
+  } catch (err) {
+    console.error(`Failed to remove test workspace ${forkDir}:`, err);
+  }
+});
 
 const baseUrl = process.env.TEST_PG_BASE_URL;
 if (!baseUrl) {

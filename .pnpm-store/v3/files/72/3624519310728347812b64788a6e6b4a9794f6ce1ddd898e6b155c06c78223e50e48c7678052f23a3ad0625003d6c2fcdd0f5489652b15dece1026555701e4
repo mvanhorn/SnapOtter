@@ -1,0 +1,2 @@
+export { type AnyApiReferenceConfiguration, DEFAULT_CDN, type HtmlRenderingConfiguration, getConfiguration, getScriptTags, renderApiReference, serializeConfigToJs, } from './html-rendering.js';
+//# sourceMappingURL=index.d.ts.map

@@ -1,0 +1,51 @@
+{
+  "name": "zod-fast-check",
+  "version": "0.10.1",
+  "description": "Generate fast-check arbitraries from Zod schemas.",
+  "main": "dist/zod-fast-check.js",
+  "types": "dist/zod-fast-check.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "prettier --check src && jest",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test",
+    "postversion": "git push && git push --tags"
+  },
+  "author": "David Timms",
+  "license": "MIT",
+  "sideEffects": false,
+  "files": [
+    "dist/**/*"
+  ],
+  "keywords": [
+    "property-based testing",
+    "schema",
+    "unit testing",
+    "testing",
+    "validation",
+    "zod",
+    "fast-check",
+    "fastcheck"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DavidTimms/zod-fast-check.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DavidTimms/zod-fast-check/issues"
+  },
+  "homepage": "https://github.com/DavidTimms/zod-fast-check",
+  "devDependencies": {
+    "@types/jest": "^28.1.6",
+    "fast-check": "^3.0.0",
+    "jest": "^26.6.3",
+    "prettier": "^2.2.1",
+    "ts-jest": "^26.4.4",
+    "typescript": "^4.7.4",
+    "zod": "^3.20.5"
+  },
+  "peerDependencies": {
+    "fast-check": ">2.23.0 <4.0.0",
+    "zod": "^3.18.0"
+  }
+}
